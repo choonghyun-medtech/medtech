@@ -1,25 +1,57 @@
 {
- "updated": "2026-08-18T15:06:37Z",
- "source": "웹서치 기반 수동 리서치 (Naver API 자동화 전 단계) · 뉴스클리핑 가이드라인.md / medtech_news_clipping_rules.md 카테고리 기준",
+ "updated": "2026-08-18T15:15:36Z",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준",
  "domestic": [
   {
    "cat": "Digital Health",
    "items": [
     {
-     "co": "씨어스",
-     "ctx": "리포트",
-     "t": "주가 상승 여력 부각…목표주가 상향 제시",
-     "src": "아시아경제",
-     "date": "2026-03-16",
-     "url": "https://www.asiae.co.kr/article/2026031608155237209"
+     "co": "스카이랩스",
+     "ctx": "뉴스",
+     "t": "'스카이랩스 공모주' 수요예측 흥행 기대...상장일 언제?",
+     "src": "gukjenews.com",
+     "date": "2026-08-19",
+     "url": "https://www.gukjenews.com/news/articleView.html?idxno=3667774"
     },
     {
-     "co": "인바디",
-     "ctx": "전략",
-     "t": "유럽신장학회 활용해 체성분분석 글로벌 확장 전략 공개",
-     "src": "더벨",
-     "date": "2026-06-04",
-     "url": "https://www.thebell.co.kr/front/newsview.asp?key=202506041152482360108943"
+     "co": "씨어스",
+     "ctx": "뉴스",
+     "t": "[주가] 8월 18일 주요 제약·바이오·기기 5% 변동 현황 - 62곳 감소",
+     "src": "medipana.com",
+     "date": "2026-08-18",
+     "url": "https://www.medipana.com/news/articleView.html?idxno=416130"
+    },
+    {
+     "co": "씨어스",
+     "ctx": "뉴스",
+     "t": "씨어스 흑자…루닛·코어라인 매출 증가",
+     "src": "dailymedi.com",
+     "date": "2026-08-18",
+     "url": "https://www.dailymedi.com/news/news_view.php?wr_id=939496"
+    },
+    {
+     "co": "씨어스",
+     "ctx": "뉴스",
+     "t": "[CEO 리포트] '24년차 대웅맨' 이창재 대표, 디지털 헬스 영토 넓힌다",
+     "src": "daily.hankooki.com",
+     "date": "2026-08-18",
+     "url": "https://daily.hankooki.com/news/articleView.html?idxno=1389209"
+    },
+    {
+     "co": "메쥬",
+     "ctx": "뉴스",
+     "t": "제약바이오 IPO 하반기 줄잇는다…바로팜도 출격",
+     "src": "kpanews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.kpanews.co.kr/news/articleView.html?idxno=540811"
+    },
+    {
+     "co": "메쥬",
+     "ctx": "뉴스",
+     "t": "동아에스티, 메쥬 지분 전량 처분…투자 5년 만에 수익률 2배",
+     "src": "dailypharm.com",
+     "date": "2026-08-18",
+     "url": "https://www.dailypharm.com/user/news/341509?REFERER=NP"
     }
    ]
   },
@@ -27,20 +59,52 @@
    "cat": "Aesthetics",
    "items": [
     {
-     "co": "파마리서치",
-     "ctx": "리포트",
-     "t": "금리 상승기 주목 종목으로 재조명…목표가 54만원 제시",
-     "src": "네이트뉴스(상상인증권)",
-     "date": "2026-07-28",
-     "url": "https://news.nate.com/view/20260728n12392"
+     "co": "클래시스",
+     "ctx": "뉴스",
+     "t": "클래시스, 의료기기 공급 제한에…한의·치과계 반발",
+     "src": "srtimes.kr",
+     "date": "2026-08-18",
+     "url": "http://www.srtimes.kr/news/articleView.html?idxno=210264"
     },
     {
      "co": "클래시스",
-     "ctx": "리포트",
-     "t": "미국·유럽·중국 글로벌 3대 시장 동시 진출 부각…목표가 6만2000원",
-     "src": "네이트뉴스(IBK투자증권)",
-     "date": "2026-07-23",
-     "url": "https://news.nate.com/view/20260723n07652"
+     "ctx": "뉴스",
+     "t": "삼전닉스에 무슨 일이…\"목표가 하향으로 분위기 역전\"",
+     "src": "이데일리",
+     "date": "2026-08-18",
+     "url": "https://www.edaily.co.kr/news/newspath.asp?newsid=04428006645548632"
+    },
+    {
+     "co": "클래시스",
+     "ctx": "뉴스",
+     "t": "'전강후약' 코스피, 美금리 불안에 1.55% 하락 마감",
+     "src": "pointdaily.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.pointdaily.co.kr/news/articleView.html?idxno=315835"
+    },
+    {
+     "co": "휴젤",
+     "ctx": "뉴스",
+     "t": "휴젤 웰라쥬, '올리브영 페스타 LA' 참가…북미 현장 방문객 1만1000명",
+     "src": "thefirstmedia.net",
+     "date": "2026-08-18",
+     "url": "http://www.thefirstmedia.net/news/articleView.html?idxno=206246"
+    },
+    {
+     "co": "휴젤",
+     "ctx": "뉴스",
+     "t": "휴젤, '웰라쥬, LA서 열린 K-뷰티 페스티벌서 북미 소비자와 접점 확대 ...",
+     "src": "queen.co.kr",
+     "date": "2026-08-18",
+     "url": "http://www.queen.co.kr/news/articleView.html?idxno=461899"
+    },
+    {
+     "co": "휴젤",
+     "ctx": "뉴스",
+     "t": "\"속수분감, 물방울로 연출\" 휴젤 웰라쥬, 美서 속건조 개선 '리얼 히알루...",
+     "src": "catchnews.kr",
+     "date": "2026-08-18",
+     "url": "https://www.catchnews.kr/news/articleView.html?idxno=127437"
     }
    ]
   },
@@ -48,12 +112,187 @@
    "cat": "Robotics",
    "items": [
     {
+     "co": "고영",
+     "ctx": "뉴스",
+     "t": "코스피200 2분기 영업익 245조…반도체 넘어 실적 훈풍 확산",
+     "src": "mt.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.mt.co.kr/stock/2026/08/18/2026081815574562919"
+    },
+    {
+     "co": "고영",
+     "ctx": "뉴스",
+     "t": "스마트팩토리주 엇갈린 행보... 검사·로봇 일부 반등 vs 대형 IT·설비주...",
+     "src": "pinpointnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=478301"
+    },
+    {
+     "co": "고영",
+     "ctx": "뉴스",
+     "t": "AI 반도체 수혜 전망 속 수급 차별화... 시스템반도체 테마 매물 쏟아지...",
+     "src": "pinpointnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=478292"
+    },
+    {
+     "co": "큐렉소",
+     "ctx": "뉴스",
+     "t": "국내 로봇 상장사 상반기 매출 9.8% 증가…외형 성장에도 영업적자 1343억...",
+     "src": "irobotnews.com",
+     "date": "2026-08-18",
+     "url": "https://www.irobotnews.com/news/articleView.html?idxno=47959"
+    },
+    {
      "co": "리브스메드",
-     "ctx": "학회",
-     "t": "KSERS 2026서 차세대 수술로봇 '스타크' 등 전 제품 로드맵 공개",
-     "src": "메디칼타임즈",
-     "date": "2026-04-24",
-     "url": "https://www.medicaltimes.com/Users/News/NewsView.html?ID=1168434"
+     "ctx": "뉴스",
+     "t": "[주식] 인제니아테라퓨틱스, 코스닥 입성 첫 날 50%↑",
+     "src": "hitnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78469"
+    },
+    {
+     "co": "리브스메드",
+     "ctx": "뉴스",
+     "t": "리브스메드 2분기 적자 122억원…목표주가 12만→9만원",
+     "src": "tokenpost.kr",
+     "date": "2026-08-18",
+     "url": "https://www.tokenpost.kr/news/market/392265"
+    }
+   ]
+  },
+  {
+   "cat": "Humanoid",
+   "items": [
+    {
+     "co": "현대차그룹",
+     "ctx": "뉴스",
+     "t": "현대차, 미래사업 조직 촘촘히…'자율주행·SDV·로봇' 임원 보강",
+     "src": "bloter.net",
+     "date": "2026-08-18",
+     "url": "https://www.bloter.net/news/articleView.html?idxno=671166"
+    },
+    {
+     "co": "현대차그룹",
+     "ctx": "뉴스",
+     "t": "① 자회사 상장, 자유에서 예외로…첫 시험대는 솔리다임 [마켓프리즘]",
+     "src": "joseilbo.com",
+     "date": "2026-08-18",
+     "url": "http://www.joseilbo.com/news/news_read.php?uid=573989&class=18&grp="
+    },
+    {
+     "co": "현대차그룹",
+     "ctx": "뉴스",
+     "t": "현대차 43만5000원 마감…장중 45만9500원 찍고 3.97% 하락",
+     "src": "job-post.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.job-post.co.kr/news/articleView.html?idxno=224270"
+    },
+    {
+     "co": "레인보우로보틱스",
+     "ctx": "뉴스",
+     "t": "코스닥, 기관과 외인 매도에 하락 마감...이오테크닉스, 주성엔지니어링...",
+     "src": "econonews.co.kr",
+     "date": "2026-08-18",
+     "url": "http://www.econonews.co.kr/news/articleView.html?idxno=442991"
+    },
+    {
+     "co": "레인보우로보틱스",
+     "ctx": "뉴스",
+     "t": "[증시 오늘] 코스닥 3.52% 급락",
+     "src": "bigtanews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.bigtanews.co.kr/article/view/big202608180028"
+    },
+    {
+     "co": "레인보우로보틱스",
+     "ctx": "뉴스",
+     "t": "대동그룹, 레인보우로보틱스와 농업로봇 '애그로이드' 공동 개발",
+     "src": "newsfarm.co.kr",
+     "date": "2026-08-18",
+     "url": "http://www.newsfarm.co.kr/news/articleView.html?idxno=102024"
+    }
+   ]
+  },
+  {
+   "cat": "산업용·서비스 로봇",
+   "items": [
+    {
+     "co": "두산로보틱스",
+     "ctx": "뉴스",
+     "t": "LG전자 제조 데이터와 엔비디아 로보틱스 솔루션 만난다…\"12년 분량 로...",
+     "src": "consumernews.co.kr",
+     "date": "2026-08-18",
+     "url": "http://www.consumernews.co.kr/news/articleView.html?idxno=761717"
+    },
+    {
+     "co": "두산로보틱스",
+     "ctx": "뉴스",
+     "t": "젠슨 황 장녀는 왜 넉 달 만에 한국을 세 번 찾았나",
+     "src": "newskr.kr",
+     "date": "2026-08-18",
+     "url": "http://www.newskr.kr/news/articleView.html?idxno=105687"
+    },
+    {
+     "co": "두산로보틱스",
+     "ctx": "뉴스",
+     "t": "[더벨][영상 | thebell's view] 로봇 팔고 실트론 풀매수…두산, 2.3조 베...",
+     "src": "thebell.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202608181456204760104656"
+    }
+   ]
+  },
+  {
+   "cat": "로보틱스 밸류체인",
+   "items": [
+    {
+     "co": "로보티즈",
+     "ctx": "뉴스",
+     "t": "젠슨 황 딸까지 왔는데 주가는 왜 빠졌나··· LG·로봇株 '호재 소멸'?",
+     "src": "greenpostkorea.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.greenpostkorea.co.kr/news/articleView.html?idxno=307299"
+    },
+    {
+     "co": "로보티즈",
+     "ctx": "뉴스",
+     "t": "7216 찍고 6869 추락…기관 매물에 코스피 급반전",
+     "src": "kbmaeil.com",
+     "date": "2026-08-18",
+     "url": "https://www.kbmaeil.com/article/20260818500515"
+    },
+    {
+     "co": "로보티즈",
+     "ctx": "뉴스",
+     "t": "[코스닥 기관] 이오테크닉스 리파인 실리콘투 담고 알테오젠 에코프로 ...",
+     "src": "pinpointnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=478331"
+    },
+    {
+     "co": "에스비비테크",
+     "ctx": "뉴스",
+     "t": "에스비비테크, 상반기 매출 약 45억원·전년比 48% ↑",
+     "src": "newspim.com",
+     "date": "2026-08-18",
+     "url": "https://www.newspim.com/news/view/20260818000982"
+    },
+    {
+     "co": "에스비비테크",
+     "ctx": "뉴스",
+     "t": "국내 로봇 상장사 상반기 매출 9.8% 증가…외형 성장에도 영업적자 1343억...",
+     "src": "irobotnews.com",
+     "date": "2026-08-18",
+     "url": "https://www.irobotnews.com/news/articleView.html?idxno=47959"
+    },
+    {
+     "co": "에스피지",
+     "ctx": "뉴스",
+     "t": "에스피지 주가, 8월 18일 108,000원 8.94% 하락 마감",
+     "src": "topstarnews.net",
+     "date": "2026-08-18",
+     "url": "https://www.topstarnews.net/news/articleView.html?idxno=16166315"
     }
    ]
   },
@@ -61,12 +300,20 @@
    "cat": "Therapeutics",
    "items": [
     {
-     "co": "넥스트바이오메디컬",
-     "ctx": "실적",
-     "t": "2분기 매출 49억원…넥스파우더 수출 호조로 역대 최대",
-     "src": "뉴스핌",
-     "date": "2026-08-10",
-     "url": "https://www.newspim.com/news/view/20260810001111"
+     "co": "로킷헬스케어",
+     "ctx": "뉴스",
+     "t": "로킷헬스케어, 상반기 매출 163억 원…전년 대비 68% 성장",
+     "src": "medicaltimes.com",
+     "date": "2026-08-18",
+     "url": "https://www.medicaltimes.com/Main/News/NewsView.html?ID=1170223&ref=naverpc"
+    },
+    {
+     "co": "시지바이오",
+     "ctx": "뉴스",
+     "t": "시지바이오 뷰티냐 혁신이냐 기로",
+     "src": "medicaltimes.com",
+     "date": "2026-08-18",
+     "url": "https://www.medicaltimes.com/Main/News/NewsView.html?ID=1170179&ref=naverpc"
     }
    ]
   },
@@ -75,36 +322,141 @@
    "items": [
     {
      "co": "씨젠",
-     "ctx": "리포트",
-     "t": "영업이익 시장 추정치 18% 상회…HPV 매출 성장에 목표주가 4만7000원",
-     "src": "머니투데이(다올투자증권)",
-     "date": "2026-08-10",
-     "url": "https://www.mt.co.kr/stock/2026/08/10/2026081008381153099"
+     "ctx": "뉴스",
+     "t": "[주가] 8월 18일 주요 제약·바이오·기기 5% 변동 현황 - 62곳 감소",
+     "src": "medipana.com",
+     "date": "2026-08-18",
+     "url": "https://www.medipana.com/news/articleView.html?idxno=416130"
+    },
+    {
+     "co": "씨젠",
+     "ctx": "뉴스",
+     "t": "진단키트 업체들 수익성 개선…사업 다각화 성과에 실적 희비",
+     "src": "dailypharm.com",
+     "date": "2026-08-18",
+     "url": "https://www.dailypharm.com/user/news/341486?REFERER=NP"
+    },
+    {
+     "co": "에스디바이오센서",
+     "ctx": "뉴스",
+     "t": "에스디바이오센서, 2개 분기 연속 순이익 흑자…수익성 개선하며 재무구...",
+     "src": "sisacast.kr",
+     "date": "2026-08-18",
+     "url": "http://www.sisacast.kr/news/articleView.html?idxno=98882"
+    },
+    {
+     "co": "에스디바이오센서",
+     "ctx": "뉴스",
+     "t": "백영옥 유바이오로직스 대표, '콜레라 명가' 넘어 프리미엄 백신 도전",
+     "src": "insightkorea.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.insightkorea.co.kr/news/articleView.html?idxno=252635"
+    },
+    {
+     "co": "에스디바이오센서",
+     "ctx": "뉴스",
+     "t": "﻿[BIO톡]종근당바이오, 보툴리눔 톡신 제제 'CU-20101' 중국 시장 공략...",
+     "src": "getnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.getnews.co.kr/news/articleView.html?idxno=878192"
+    },
+    {
+     "co": "바디텍메드",
+     "ctx": "뉴스",
+     "t": "[데이터 뉴스룸] 제약사 중 부채비율 200% 넘는 곳 한 곳도 없어…셀트...",
+     "src": "greened.kr",
+     "date": "2026-08-18",
+     "url": "https://www.greened.kr/news/articleView.html?idxno=347811"
     }
    ]
   },
   {
    "cat": "Bio-Processing",
-   "items": []
+   "items": [
+    {
+     "co": "큐리오시스",
+     "ctx": "뉴스",
+     "t": "[주가] 8월 18일 주요 제약·바이오·기기 5% 변동 현황 - 62곳 감소",
+     "src": "medipana.com",
+     "date": "2026-08-18",
+     "url": "https://www.medipana.com/news/articleView.html?idxno=416130"
+    },
+    {
+     "co": "큐리옥스바이오시스템즈",
+     "ctx": "뉴스",
+     "t": "[주식] 인제니아테라퓨틱스, 코스닥 입성 첫 날 50%↑",
+     "src": "hitnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78469"
+    },
+    {
+     "co": "뷰웍스",
+     "ctx": "뉴스",
+     "t": "AI 시대의 인적자원개발 패러다임과 HSS솔루션 제시…엑스퍼트컨설팅, ...",
+     "src": "inews24.com",
+     "date": "2026-08-18",
+     "url": "http://www.inews24.com/view/1996015"
+    },
+    {
+     "co": "뷰웍스",
+     "ctx": "뉴스",
+     "t": "국내 라운딩 수요 회복세… 골프 테마주 일제히 강세 전환",
+     "src": "pinpointnews.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=478123"
+    }
+   ]
   },
   {
    "cat": "Dental",
    "items": [
     {
-     "co": "바텍",
-     "ctx": "실적",
-     "t": "2분기 매출 1214억·영업이익 245억…이머징 시장 판매 확대",
-     "src": "머니투데이",
-     "date": "2026-08-11",
-     "url": "https://www.mt.co.kr/stock/2026/08/11/2026081116352293808"
+     "co": "그래피",
+     "ctx": "뉴스",
+     "t": "그래피, 치과용 3D 프린팅 레진 5종 브라질 등록…중남미 공략 본격화",
+     "src": "이데일리",
+     "date": "2026-08-18",
+     "url": "https://www.edaily.co.kr/news/newspath.asp?newsid=03798246645548632"
     },
     {
      "co": "그래피",
-     "ctx": "실적",
-     "t": "2분기 매출 65억원…전년比 47.7%↑, SMA 매출 비중 확대",
-     "src": "뉴스핌",
-     "date": "2026-07-27",
-     "url": "https://www.newspim.com/news/view/20260727000412"
+     "ctx": "뉴스",
+     "t": "[의료기기업계 소식] 8월 18일",
+     "src": "doctorstimes.com",
+     "date": "2026-08-18",
+     "url": "http://www.doctorstimes.com/news/articleView.html?idxno=239561"
+    },
+    {
+     "co": "디오",
+     "ctx": "뉴스",
+     "t": "디오, 상반기 흑자전환…수익성 개선 속 매출채권 부담은 지속",
+     "src": "youthdaily.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.youthdaily.co.kr/news/article.html?no=225234"
+    },
+    {
+     "co": "덴티움",
+     "ctx": "뉴스",
+     "t": "[더벨][인사이드 헤지펀드] 얼라인파트너스, 덴티움 가처분 기각에 항고...",
+     "src": "thebell.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202608131706086320102770"
+    },
+    {
+     "co": "덴티움",
+     "ctx": "뉴스",
+     "t": "덴티움, 인도 주요 지역서 학술·임상교육 확대",
+     "src": "bokuennews.com",
+     "date": "2026-08-18",
+     "url": "http://www.bokuennews.com/news/article.html?no=282699"
+    },
+    {
+     "co": "덴티움",
+     "ctx": "뉴스",
+     "t": "\"현지 의료진 접점 넓힌다\"…덴티움, 인도서 학술·임상교육 확대",
+     "src": "youthdaily.co.kr",
+     "date": "2026-08-18",
+     "url": "https://www.youthdaily.co.kr/news/article.html?no=225282"
     }
    ]
   }
@@ -127,8 +479,7 @@
      "t": "How Guardant aims to expand cancer screening with a blood test",
      "src": "medtechdive.com",
      "date": "2026-08-18",
-     "url": "https://www.medtechdive.com/news/how-guardant-aims-to-expand-cancer-screening-with-a-blood-test/828083/",
-     "desc": "Sam Asgarian, Guardant Health’s vice president of clinical development, discusses the progress and challenges of blood-based testing in colorectal and multicancer screening."
+     "url": "https://www.medtechdive.com/news/how-guardant-aims-to-expand-cancer-screening-with-a-blood-test/828083/"
     }
    ]
   },
@@ -157,8 +508,7 @@
      "t": "Yaskawa Motoman Achieves Record Customer Satisfaction Score Through Customer-Driven Improvements",
      "src": "roboticstomorrow.com",
      "date": "2026-08-18",
-     "url": "http://www.RoboticsTomorrow.com/news/2026/08/18/yaskawa-motoman-achieves-record-customer-satisfaction-score-through-customer-driven-improvements-/26965",
-     "desc": ""
+     "url": "http://www.RoboticsTomorrow.com/news/2026/08/18/yaskawa-motoman-achieves-record-customer-satisfaction-score-through-customer-driven-improvements-/26965"
     }
    ]
   },
