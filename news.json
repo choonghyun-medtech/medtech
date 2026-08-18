@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T13:56:58Z",
+ "updated": "2026-08-18T14:32:41Z",
  "source": "네이버 뉴스검색 API(국내, 자동) + 웹서치 기반 수동 리서치(해외, 미자동화) · 뉴스클리핑 가이드라인 카테고리 기준",
  "domestic": [
   {
@@ -305,81 +305,45 @@
  "global": [
   {
    "cat": "MedTech",
-   "items": [
-    {
-     "co": "Boston Scientific",
-     "ctx": "Restructuring",
-     "t": "Board approves 2026 global restructuring plan, targets $500M annual savings by 2029",
-     "src": "MDDI",
-     "date": "2026-07-21",
-     "url": "https://www.mddionline.com/cardiovascular/boston-scientific-launches-major-restructuring-initiative-amid-competitive-pressures"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "Surgical Robot",
-   "items": [
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "Expansion",
-     "t": "Signs lease for new da Vinci component manufacturing facility in Penang, Malaysia",
-     "src": "ad-hoc-news.de",
-     "date": "2026-08-17",
-     "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/intuitive-surgical-stock-holds-steady-as-asia-expansion-follows-strong-q2/69959476"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "IVD",
    "items": [
     {
      "co": "Guardant Health",
-     "ctx": "Conference",
-     "t": "Shield and Reveal both posting 50%+ growth, outlines 2026 catalysts at Canaccord conference",
-     "src": "Investing.com",
-     "date": "2026-08-12",
-     "url": "https://www.investing.com/news/transcripts/guardant-health-at-canaccord-growth-conference-shield-drives-growth-93CH-4855929"
+     "ctx": "News",
+     "t": "How Guardant aims to expand cancer screening with a blood test",
+     "src": "medtechdive.com",
+     "date": "2026-08-18",
+     "url": "https://www.medtechdive.com/news/how-guardant-aims-to-expand-cancer-screening-with-a-blood-test/828083/"
     }
    ]
   },
   {
    "cat": "Digital Health",
-   "items": [
-    {
-     "co": "Hims & Hers",
-     "ctx": "Earnings",
-     "t": "Q2 revenue +38% YoY to ~$753M, raises FY2026 guidance to $3.1-3.3B",
-     "src": "Hims Investor Relations",
-     "date": "2026-08-10",
-     "url": "https://investors.hims.com/news/news-details/2026/Hims--Hers-Health-Inc--Reports-Second-Quarter-2026-Financial-Results/default.aspx"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "Healthcare Provider",
    "items": [
     {
-     "co": "UnitedHealth Group",
-     "ctx": "Legal",
-     "t": "New investor lawsuit over cybersecurity and governance failings weighs on shares",
-     "src": "ad-hoc-news.de",
-     "date": "2026-08-13",
-     "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/unitedhealth-group-stock-eases-as-lawsuit-shadows-the-rally/69949982"
+     "co": "UnitedHealth",
+     "ctx": "News",
+     "t": "<a href=\"https://www.fiercehealthcare.com/health-tech/ochsner-summit-health-among-health-systems-launch-real-time-prior-authorization-checks\" hreflang=\"en\">Four health systems, including Ochsner and Denver Health, go live with Epic's real-time prior authorization checks</a>",
+     "src": "fiercehealthcare.com",
+     "date": "2026-08-17",
+     "url": "https://www.fiercehealthcare.com/health-tech/ochsner-summit-health-among-health-systems-launch-real-time-prior-authorization-checks"
     }
    ]
   },
   {
    "cat": "Cash Pay Market",
-   "items": [
-    {
-     "co": "InMode",
-     "ctx": "Earnings",
-     "t": "Q2 revenue $95.6M beats consensus $93.7M, reiterates FY2026 guidance",
-     "src": "PRNewswire",
-     "date": "2026-08-05",
-     "url": "https://www.prnewswire.com/news-releases/inmode-to-report-second-quarter-2026-financial-results-on-august-5--2026--expects-q2-revenue-between-95-2m-95-4m-reiterates-fy-2026-revenue-guidance-between-365m-375m-302823516.html"
-    }
-   ]
+   "items": []
   }
  ]
 }
