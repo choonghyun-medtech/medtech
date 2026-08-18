@@ -160,6 +160,7 @@ tr:last-child td{border-bottom:none}
 
     <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
       <input id="news-search-input" class="filter-select" style="flex:1;min-width:160px" placeholder="기업명, 키워드로 검색..." autocomplete="off" />
+      <select id="news-category-select" class="filter-select"><option value="">전체 카테고리</option></select>
       <select id="news-company-select" class="filter-select"><option value="">전체 기업</option></select>
       <div class="toggle" id="news-period-toggle">
         <button data-days="0">오늘</button>
@@ -379,13 +380,22 @@ function renderNewsSection(wrapId, groups){
   wrap.innerHTML = html;
 }
 
-// ---- 검색 / 기업 드롭다운 / 기간 필터 ----
-const NEWS_STATE = { q:'', company:'', from:null, to:null };
+// ---- 검색 / 카테고리·기업 드롭다운 / 기간 필터 ----
+const NEWS_STATE = { q:'', company:'', category:'', from:null, to:null };
 
 function newsAllCompanies(){
   const set = new Set();
   [...NEWS_DOMESTIC, ...NEWS_GLOBAL].forEach(g=>g.items.forEach(it=>set.add(it.co)));
   return [...set].sort((a,b)=>a.localeCompare(b, 'ko'));
+}
+
+// 국내(Digital Health/Aesthetics/Robotics/Therapeutics/IVD/Bio-Processing/Dental)와
+// 해외(MedTech/Surgical Robot/IVD/Digital Health/Healthcare Provider/Cash Pay Market)
+// 카테고리를 합친 목록. Digital Health/IVD는 양쪽에 공통으로 있어 국내+해외 뉴스가 함께 보인다.
+function newsAllCategories(){
+  const set = new Set();
+  [...NEWS_DOMESTIC, ...NEWS_GLOBAL].forEach(g=>{ if(g.items.length) set.add(g.cat); });
+  return [...set];
 }
 
 function populateNewsCompanySelect(){
@@ -395,9 +405,17 @@ function populateNewsCompanySelect(){
   sel.innerHTML = '<option value="">전체 기업</option>' + companies.map(co=>`<option value="${co}">${co}</option>`).join('');
 }
 
+function populateNewsCategorySelect(){
+  const sel = document.getElementById('news-category-select');
+  if(!sel) return;
+  const cats = newsAllCategories();
+  sel.innerHTML = '<option value="">전체 카테고리</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
 function filterNewsGroups(groups){
   const q = NEWS_STATE.q.trim().toLowerCase();
   return groups.map(g=>{
+    if(NEWS_STATE.category && g.cat !== NEWS_STATE.category) return { cat: g.cat, items: [] };
     const items = g.items.filter(it=>{
       if(NEWS_STATE.company && it.co !== NEWS_STATE.company) return false;
       if(NEWS_STATE.from && it.date && it.date < NEWS_STATE.from) return false;
@@ -448,9 +466,13 @@ function setNewsPeriod(days){
 
 (function initNewsFilters(){
   populateNewsCompanySelect();
+  populateNewsCategorySelect();
 
   const searchInput = document.getElementById('news-search-input');
   if(searchInput) searchInput.addEventListener('input', ()=>{ NEWS_STATE.q = searchInput.value; applyNewsFilters(); });
+
+  const categorySelect = document.getElementById('news-category-select');
+  if(categorySelect) categorySelect.addEventListener('change', ()=>{ NEWS_STATE.category = categorySelect.value; applyNewsFilters(); });
 
   const companySelect = document.getElementById('news-company-select');
   if(companySelect) companySelect.addEventListener('change', ()=>{ NEWS_STATE.company = companySelect.value; applyNewsFilters(); });
@@ -480,9 +502,10 @@ function setNewsPeriod(days){
   const resetLink = document.getElementById('news-reset-link');
   if(resetLink) resetLink.addEventListener('click', (e)=>{
     e.preventDefault();
-    NEWS_STATE.q=''; NEWS_STATE.company=''; NEWS_STATE.from=null; NEWS_STATE.to=null;
+    NEWS_STATE.q=''; NEWS_STATE.company=''; NEWS_STATE.category=''; NEWS_STATE.from=null; NEWS_STATE.to=null;
     if(searchInput) searchInput.value='';
     if(companySelect) companySelect.value='';
+    if(categorySelect) categorySelect.value='';
     if(fromInput) fromInput.value='';
     if(toInput) toInput.value='';
     if(periodToggle){
@@ -502,6 +525,7 @@ async function loadNews(){
     NEWS_DOMESTIC = data.domestic || [];
     NEWS_GLOBAL = data.global || [];
     populateNewsCompanySelect();
+    populateNewsCategorySelect();
     applyNewsFilters();
     const flag = document.getElementById('news-mock-flag');
     if(flag){
