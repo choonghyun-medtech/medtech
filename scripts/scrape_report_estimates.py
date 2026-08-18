@@ -165,6 +165,27 @@ def find_target_price(full_text: str, debug=False):
     return None
 
 
+def debug_page_text_density(pdf, co: str, max_pages: int = 5):
+    """페이지별 실제 추출 가능한 글자 수 vs 삽입된 이미지가 페이지 면적에서 차지하는 비율을 찍는다.
+    글자 수는 적은데 이미지 비율이 크면 그 페이지는 표/텍스트가 이미지(그래픽)로 박혀 있어서
+    지금 방식(텍스트 레이어 추출)으로는 원천적으로 못 읽는다는 뜻 — 이 경우 OCR이 필요하다.
+    """
+    print(f"[DEBUG] {co}: 페이지별 텍스트/이미지 밀도 (최대 {max_pages}페이지)", file=sys.stderr)
+    for page in pdf.pages[:max_pages]:
+        area = (page.width or 1) * (page.height or 1)
+        img_area = 0.0
+        for im in page.images:
+            w = max(0.0, (im.get("x1", 0) - im.get("x0", 0)))
+            h = max(0.0, (im.get("y1", 0) - im.get("y0", 0)))
+            img_area += w * h
+        ratio = min(1.0, img_area / area) if area else 0.0
+        print(
+            f"  page={page.page_number} 글자수={len(page.chars)} 이미지개수={len(page.images)} "
+            f"이미지면적비율={ratio:.0%}",
+            file=sys.stderr,
+        )
+
+
 def process_report(session: requests.Session, co: str, report_date: str, pdf_id: str, debug_first: bool):
     if pdfplumber is None:
         print("[ERROR] pdfplumber가 설치되어 있지 않습니다.", file=sys.stderr)
@@ -185,6 +206,8 @@ def process_report(session: requests.Session, co: str, report_date: str, pdf_id:
                 print(f"[DEBUG] {co}: PDF 페이지수={len(pdf.pages)}, 텍스트 길이={len(full_text)}, 목표주가 파싱={target_price}", file=sys.stderr)
                 if found is not None:
                     print(f"[DEBUG] {co}: 표 발견 page={found[0]}, orientation={found[1]['orientation']}, headers={found[1]['headers']}, rows={found[1]['rows']}", file=sys.stderr)
+                else:
+                    debug_page_text_density(pdf, co)
     except Exception as e:
         print(f"[WARN] {co}: PDF 파싱 실패 ({e})", file=sys.stderr)
         return None

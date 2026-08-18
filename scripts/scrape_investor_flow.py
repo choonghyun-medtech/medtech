@@ -84,26 +84,11 @@ def fetch_page(session: requests.Session, code: str, page: int) -> str:
     return resp.content.decode("euc-kr", errors="replace")
 
 
-def parse_page(html: str, code: str, page: int):
-    """반환: [{date, close, inst_qty, foreign_qty}, ...] (최신순 아닐 수 있음, 호출부에서 정렬)"""
-    global _debug_dumped
-    soup = BeautifulSoup(html, "html.parser")
-    table = soup.select_one("table.type2")
-    if table is None:
-        if not _debug_dumped:
-            # table.type2 자체가 없는 경우 — 페이지 구조가 통째로 다르거나 접근이 막혔을 가능성.
-            has_type2_string = "type2" in html
-            print(
-                f"[DEBUG] {code} page{page}: table.type2 못 찾음 (html 안에 'type2' 문자열 존재={has_type2_string}). "
-                f"응답 앞부분:\n{html[:3000]}",
-                file=sys.stderr,
-            )
-            _debug_dumped = True
-        return []
-
+def _parse_rows_from_table(table, code: str, page: int, verbose: bool):
+    """table 하나에서 날짜 패턴(YYYY.MM.DD)에 매치되는 행만 골라 파싱한다."""
     rows = []
     trs = table.select("tr")
-    for idx, tr in enumerate(trs):
+    for tr in trs:
         tds = tr.find_all("td")
         if len(tds) < 5:
             continue
@@ -112,7 +97,7 @@ def parse_page(html: str, code: str, page: int):
         if not re.match(r"^\d{4}\.\d{2}\.\d{2}$", date_text):
             continue
 
-        if not _debug_dumped:
+        if verbose:
             print(f"[DEBUG] {code} page{page} 첫 데이터 행 셀 목록: {cell_texts}", file=sys.stderr)
 
         # 일반적인 frgn.naver 열 순서: 날짜, 종가, 전일비, 등락률, 거래량, 기관순매매량, 외국인순매매량, 보유주수, 보유율
@@ -120,13 +105,13 @@ def parse_page(html: str, code: str, page: int):
         inst_qty = parse_signed_int(cell_texts[5]) if len(cell_texts) > 5 else None
         foreign_qty = parse_signed_int(cell_texts[6]) if len(cell_texts) > 6 else None
 
-        if not _debug_dumped:
+        if verbose:
             print(
                 f"[DEBUG] {code} 파싱 결과: date={date_text} close={close} "
                 f"inst_qty={inst_qty} foreign_qty={foreign_qty}",
                 file=sys.stderr,
             )
-            _debug_dumped = True
+            verbose = False  # 같은 테이블 안에서는 첫 행만 자세히 찍는다
 
         rows.append(
             {
@@ -136,18 +121,49 @@ def parse_page(html: str, code: str, page: int):
                 "foreign_qty": foreign_qty,
             }
         )
+    return rows
 
-    # table.type2는 찾았는데 날짜 패턴에 매치되는 행이 하나도 없는 경우 —
-    # 지금까지는 이 경우 아무 디버그도 안 남아서 원인을 알 수 없었다. tr 원문을 몇 개 찍어본다.
-    if not rows and not _debug_dumped:
-        sample_trs = [str(tr)[:400] for tr in trs[:6]]
+
+def parse_page(html: str, code: str, page: int):
+    """반환: [{date, close, inst_qty, foreign_qty}, ...] (최신순 아닐 수 있음, 호출부에서 정렬)
+
+    frgn.naver 페이지에는 class="type2"인 표가 여러 개 있다(예: 상단의 매도상위/매수상위
+    증권사 표도 같은 클래스를 씀). select_one으로 첫 번째 table.type2만 집었더니 날짜 컬럼이
+    없는 엉뚱한 표를 계속 읽고 있었던 게 실제 원인이었다 — 이제는 모든 table.type2 후보를
+    순회하며 날짜 패턴에 매치되는 행이 실제로 나오는 표를 찾는다.
+    """
+    global _debug_dumped
+    soup = BeautifulSoup(html, "html.parser")
+    candidates = soup.select("table.type2")
+    if not candidates:
+        if not _debug_dumped:
+            has_type2_string = "type2" in html
+            print(
+                f"[DEBUG] {code} page{page}: table.type2 자체를 못 찾음 (html 안에 'type2' 문자열 존재={has_type2_string}). "
+                f"응답 앞부분:\n{html[:3000]}",
+                file=sys.stderr,
+            )
+            _debug_dumped = True
+        return []
+
+    for table in candidates:
+        rows = _parse_rows_from_table(table, code, page, verbose=not _debug_dumped)
+        if rows:
+            _debug_dumped = True
+            return rows
+
+    # table.type2 후보가 여러 개 있었는데 그 중 어느 것도 날짜 매치 행이 없는 경우.
+    if not _debug_dumped:
         print(
-            f"[DEBUG] {code} page{page}: table.type2는 찾았지만 날짜 패턴에 매치되는 행이 0개. "
-            f"tr 원문 최대 6개:\n" + "\n---\n".join(sample_trs),
+            f"[DEBUG] {code} page{page}: table.type2 후보 {len(candidates)}개 중 날짜 매치 행이 있는 표가 없음. "
+            f"각 후보의 앞부분 tr 3개씩:",
             file=sys.stderr,
         )
+        for i, table in enumerate(candidates):
+            trs_preview = [str(tr)[:250] for tr in table.select("tr")[:3]]
+            print(f"  [후보 {i}]\n" + "\n  ---\n".join(trs_preview), file=sys.stderr)
         _debug_dumped = True
-    return rows
+    return []
 
 
 def fetch_flow_for_code(session: requests.Session, code: str):
