@@ -1,0 +1,40 @@
+name: Update investor flow
+
+on:
+  schedule:
+    # 매일 평일(KST 월~금) 오전 7시 20분 = UTC 전날 22시 20분 (일~목 22:20 UTC)
+    - cron: "20 22 * * 0-4"
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-investor-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Fetch investor flow
+        run: python scripts/scrape_investor_flow.py --tickers scripts/tickers.json --out investor_flow.json
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add investor_flow.json
+          if git diff --cached --quiet -- investor_flow.json; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: investor_flow.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git push
+          fi
