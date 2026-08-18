@@ -12,7 +12,8 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
   실제로 들어있는 것만 골라 카테고리별로 묶는다(뉴스클리핑_gathering 대신 회사명 매칭).
 - 매체마다 pubDate 포맷이 달라(RFC822 vs 'Aug 18, 2026 7:53am' 커스텀 포맷) feedparser의
   기본 파서로 안 되는 경우 직접 포맷을 하나 더 시도한다.
-- 최근 RECENCY_DAYS일 이내 기사만 채택. 수집 결과가 0건이면 기존 news.json을 보존한다.
+- 수집 윈도우는 scrape_news.py와 동일 규칙(평일 24시간 / 월요일 72시간, 공휴일 미반영).
+  수집 결과가 0건이면 기존 news.json을 보존한다.
 
 사용법:
     python scrape_news_global.py --out news.json
@@ -31,7 +32,6 @@ FEEDS = [
     "https://www.fiercehealthcare.com/rss/xml",
 ]
 
-RECENCY_DAYS = 10
 MAX_ITEMS_PER_CATEGORY = 6
 REQUEST_TIMEOUT = 20
 
@@ -44,28 +44,54 @@ HEADERS = {
 
 # 해외 기업명 -> 뉴스클리핑_medtech 6개 카테고리(MedTech/Surgical Robot/IVD/
 # Digital Health/Healthcare Provider/Cash Pay Market). 영문 기사이므로 영문 회사명으로 매칭.
+# medtech_news_clipping_rules.md의 공식 기업 리스트를 그대로 반영(2026-08-18 기준 사용자 제공 버전).
+# 이전 버전에 있던 Exact Sciences / Cooper Companies는 이 md에 없어 제거했고,
+# Thermo Fisher(MedTech→IVD), Dexcom(MedTech→Digital Health)는 카테고리를 md에 맞게 수정.
 GLOBAL_COMPANY_CATEGORY = {
-    "Boston Scientific": "MedTech",
+    # 1. MedTech
+    "Abbott": "MedTech",
     "Stryker": "MedTech",
     "Medtronic": "MedTech",
-    "Thermo Fisher": "MedTech",
+    "Boston Scientific": "MedTech",
     "Edwards Lifesciences": "MedTech",
-    "Dexcom": "MedTech",
-    "Abbott": "MedTech",
+    # 2. Surgical Robot
     "Intuitive Surgical": "Surgical Robot",
-    "Exact Sciences": "IVD",
+    "Edge Medical": "Surgical Robot",
+    "Microport MedBot": "Surgical Robot",
+    # 3. IVD
+    "Thermo Fisher": "IVD",
+    "Natera": "IVD",
     "Guardant Health": "IVD",
+    "Tempus AI": "IVD",
+    # 4. Digital Health
+    "Dexcom": "Digital Health",
+    "RadNet": "Digital Health",
+    "iRhythm": "Digital Health",
     "Hims & Hers": "Digital Health",
     "Hims and Hers": "Digital Health",
     "Teladoc": "Digital Health",
+    # 5. Healthcare Provider
     "UnitedHealth": "Healthcare Provider",
+    # 6. Cash Pay Market
+    "Align Technology": "Cash Pay Market",
     "InMode": "Cash Pay Market",
-    "Cooper Companies": "Cash Pay Market",
+    "Straumann": "Cash Pay Market",
 }
 
 CATEGORY_ORDER = ["MedTech", "Surgical Robot", "IVD", "Digital Health", "Healthcare Provider", "Cash Pay Market"]
 
 CUSTOM_DATE_FMT = "%b %d, %Y %I:%M%p"  # Fierce 계열 매체가 쓰는 'Aug 18, 2026 7:53am' 형식
+
+
+def recency_hours_for_today(today: datetime.date) -> int:
+    """scrape_news.py와 동일한 단순화 규칙: 월요일(KST 기준 실행일)은 72시간,
+    그 외 평일은 24시간. 이 스크립트는 KST 평일에만 실행되므로(cron 0-4=일~목 UTC),
+    한국 공휴일 반영은 아직 없다 — medtech_news_clipping_rules.md가 경고하는
+    '해외는 토요일에도 기사가 나올 수 있다'는 점은 실행 요일이 아니라 실행 간격(주말 공백)
+    문제라 이 규칙으로 충분히 커버된다."""
+    if today.weekday() == 0:  # Monday
+        return 72
+    return 24
 
 
 def parse_entry_date(entry):
@@ -106,7 +132,9 @@ def main():
     existing_domestic = existing.get("domestic", [])
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    cutoff = now - datetime.timedelta(days=RECENCY_DAYS)
+    cutoff_hours = recency_hours_for_today(now.astimezone().date())
+    cutoff = now - datetime.timedelta(hours=cutoff_hours)
+    print(f"[INFO] 오늘 기준 수집 윈도우: 최근 {cutoff_hours}시간 이내", file=sys.stderr)
 
     by_category = {cat: [] for cat in CATEGORY_ORDER}
     seen_links = set()
