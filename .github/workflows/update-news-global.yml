@@ -1,17 +1,16 @@
-name: Update news
+name: Update news (global)
 
 on:
   schedule:
-    # 매일 평일(KST 월~금) 오전 6시 = UTC 전날 21시. 국내(네이버 API) + 해외(RSS)를
-    # 한 워크플로에서 순서대로 실행해 같은 news.json에 대한 두 워크플로의 git push 충돌을 없앴다.
-    - cron: "0 21 * * 0-4"
+    # 매일 평일(KST 월~금) 오전 8시 = UTC 전날 23시. update-news(국내) 다음 순서.
+    - cron: "0 23 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
   contents: write
 
 jobs:
-  update-news:
+  update-news-global:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,18 +24,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests feedparser
 
-      - name: Fetch domestic news (Naver API)
-        env:
-          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
-          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-        run: python scripts/scrape_news.py --out news.json
-
       - name: Fetch global news (RSS, no API key needed)
-        if: always()  # 국내(네이버 API) 수집이 실패해도 해외 RSS 수집은 독립적으로 계속 시도
         run: python scripts/scrape_news_global.py --out news.json
 
       - name: Commit changes if any
-        if: always()  # 둘 중 하나만 성공해도 그 결과는 커밋되도록
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -44,6 +35,6 @@ jobs:
           if git diff --cached --quiet -- news.json; then
             echo "변경 없음, 커밋 건너뜀"
           else
-            git commit -m "chore: news.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "chore: news.json(해외) 자동 갱신 ($(date -u +%Y-%m-%d))"
             git push
           fi
