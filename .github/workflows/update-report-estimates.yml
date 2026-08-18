@@ -1,0 +1,40 @@
+name: Update report estimates
+
+on:
+  schedule:
+    # reports.json 갱신(오전 7시) 이후에 돌도록 오전 7시 40분 = UTC 전날 22시 40분
+    - cron: "40 22 * * 0-4"
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-report-estimates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests pdfplumber
+
+      - name: Extract report estimates
+        run: python scripts/scrape_report_estimates.py --reports reports.json --out report_estimates.json
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add report_estimates.json
+          if git diff --cached --quiet -- report_estimates.json; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: report_estimates.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git push
+          fi
