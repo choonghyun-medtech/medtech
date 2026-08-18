@@ -504,9 +504,11 @@ async function loadNews(){
     populateNewsCompanySelect();
     applyNewsFilters();
     const flag = document.getElementById('news-mock-flag');
-    if(flag && data.updated){
-      const dt = new Date(data.updated);
-      flag.textContent = `ⓘ 이 탭은 웹서치 기반으로 수동 리서치한 실제 뉴스입니다(자동 실시간 수집 아님) · 뉴스클리핑 가이드라인 카테고리 기준 · 마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST · 최신 뉴스가 필요하면 다시 요청해 주세요.`;
+    if(flag){
+      const dt = data.updated ? new Date(data.updated) : null;
+      const whenStr = dt ? `마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST` : '';
+      const srcStr = data.source || '뉴스클리핑 가이드라인 카테고리 기준';
+      flag.textContent = `ⓘ ${srcStr} · ${whenStr}`;
     }
   }catch(e){
     NEWS_DOMESTIC = [];
