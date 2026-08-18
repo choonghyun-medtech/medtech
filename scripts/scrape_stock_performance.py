@@ -134,6 +134,7 @@ def fetch_one(item):
         "market": item["market"],
         "currency": MARKET_TO_CURRENCY.get(item["market"], "USD"),
         "market_cap_krw_tril": None,
+        "market_cap_krw_eok": None,  # 억원 단위 정밀값 (조원 1자리 반올림 후 재환산 시 발생하는 정밀도 손실 방지용)
         "returns": {"d1": None, "d5": None, "m1": None, "m3": None, "m6": None, "y1": None, "ytd": None},
         "as_of": None,  # 변화율 계산에 쓰인 최신 종가의 거래일 (YYYY-MM-DD, 해당 거래소 현지 날짜)
         "price_history": None,  # {"dates":[...], "close":[...]} 최근 약 12개월(거래일 기준) 종가
@@ -166,7 +167,9 @@ def fetch_one(item):
 
         if cap_local is not None:
             fx = FX_TO_KRW.get(result["currency"], 1)
-            result["market_cap_krw_tril"] = round(cap_local * fx / 1e12, 1)
+            cap_krw = cap_local * fx
+            result["market_cap_krw_tril"] = round(cap_krw / 1e12, 1)
+            result["market_cap_krw_eok"] = round(cap_krw / 1e8, 1)
     except Exception as e:
         result["error"] = str(e)
     return result
