@@ -42,6 +42,22 @@ HEADERS = {
 }
 
 _debug_dumped = False
+_debug_first_request_dumped = False  # 첫 요청은 성공 여부와 무관하게 무조건 한 번 상태를 찍어본다
+
+
+def make_session() -> requests.Session:
+    """네이버 금융 메인 페이지를 먼저 한 번 방문해 쿠키를 확보한 세션을 만든다.
+    (reports.json 스크래퍼에서도 같은 패턴을 썼음 — 실제로 필요한지는 아직 검증 전이지만
+    비용이 거의 없어 방어적으로 추가. 이게 원인이 아닐 수도 있으니 이번 라운드 로그로 확인 필요.)
+    """
+    session = requests.Session()
+    session.headers.update(HEADERS)
+    try:
+        resp = session.get("https://finance.naver.com/", timeout=15)
+        print(f"[DEBUG] 워밍업 요청 HTTP {resp.status_code}, 쿠키 {list(session.cookies.keys())}", file=sys.stderr)
+    except requests.RequestException as e:
+        print(f"[DEBUG] 워밍업 요청 실패(무시하고 진행): {e}", file=sys.stderr)
+    return session
 
 
 def parse_signed_int(text: str):
@@ -55,7 +71,15 @@ def parse_signed_int(text: str):
 
 
 def fetch_page(session: requests.Session, code: str, page: int) -> str:
+    global _debug_first_request_dumped
     resp = session.get(FRGN_URL, params={"code": code, "page": page}, timeout=15)
+    if not _debug_first_request_dumped:
+        print(
+            f"[DEBUG] 첫 요청 {code} page{page}: HTTP {resp.status_code}, "
+            f"응답 바이트수={len(resp.content)}, 최종 URL={resp.url}",
+            file=sys.stderr,
+        )
+        _debug_first_request_dumped = True
     resp.raise_for_status()
     return resp.content.decode("euc-kr", errors="replace")
 
@@ -67,7 +91,13 @@ def parse_page(html: str, code: str, page: int):
     table = soup.select_one("table.type2")
     if table is None:
         if not _debug_dumped:
-            print(f"[DEBUG] {code} page{page}: table.type2 못 찾음. 응답 앞부분:\n{html[:3000]}", file=sys.stderr)
+            # table.type2 자체가 없는 경우 — 페이지 구조가 통째로 다르거나 접근이 막혔을 가능성.
+            has_type2_string = "type2" in html
+            print(
+                f"[DEBUG] {code} page{page}: table.type2 못 찾음 (html 안에 'type2' 문자열 존재={has_type2_string}). "
+                f"응답 앞부분:\n{html[:3000]}",
+                file=sys.stderr,
+            )
             _debug_dumped = True
         return []
 
@@ -106,6 +136,17 @@ def parse_page(html: str, code: str, page: int):
                 "foreign_qty": foreign_qty,
             }
         )
+
+    # table.type2는 찾았는데 날짜 패턴에 매치되는 행이 하나도 없는 경우 —
+    # 지금까지는 이 경우 아무 디버그도 안 남아서 원인을 알 수 없었다. tr 원문을 몇 개 찍어본다.
+    if not rows and not _debug_dumped:
+        sample_trs = [str(tr)[:400] for tr in trs[:6]]
+        print(
+            f"[DEBUG] {code} page{page}: table.type2는 찾았지만 날짜 패턴에 매치되는 행이 0개. "
+            f"tr 원문 최대 6개:\n" + "\n---\n".join(sample_trs),
+            file=sys.stderr,
+        )
+        _debug_dumped = True
     return rows
 
 
@@ -167,8 +208,7 @@ def main():
     kr_items = [it for it in items if it.get("market") == "KR"]
     print(f"국내 종목 {len(kr_items)}개 대상으로 투자자 수급 수집 시작")
 
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    session = make_session()
 
     result = {}
     ok = 0
