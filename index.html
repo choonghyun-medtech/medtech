@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>의료기기·디지털헬스 모니터링 (목업)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f7f8fa; --card:#ffffff; --border:#e6e8eb;
+  --text:#1a1d21; --sub:#5b6470; --dim:#8a919c;
+  --accent:#2563eb; --accent-soft:#eef2ff;
+  --green:#16a34a; --red:#dc2626; --purple:#7c3aed; --lime:#65a30d; --blue:#2563eb;
+  --radius:10px;
+}
+[data-theme="dark"]{
+  --bg:#0f1115; --bg2:#15181e; --card:#181b21; --border:#262a32;
+  --text:#e8eaed; --sub:#9aa2ad; --dim:#6b7280;
+  --accent:#5b8def; --accent-soft:#1b2436;
+  --green:#4ade80; --red:#f87171; --purple:#a78bfa; --lime:#a3e635; --blue:#5b8def;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard",sans-serif;
+  font-size:14px; line-height:1.5;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:20px 20px 60px}
+.topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+.brand{font-size:12px; color:var(--dim); font-weight:600; letter-spacing:.02em}
+h1{font-size:22px; margin:2px 0 2px}
+.subtitle{color:var(--sub); font-size:13px; margin-bottom:16px}
+.theme-toggle{
+  border:1px solid var(--border); background:var(--card); color:var(--text);
+  border-radius:20px; padding:6px 14px; font-size:12px; cursor:pointer;
+}
+.tabs{display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:18px}
+.tab{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;
+}
+.tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+.view{display:none}
+.view.active{display:block}
+.sec-h{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 8px}
+.sec-h:first-child{margin-top:0}
+.sec-h h2{font-size:15px; margin:0}
+.sec-h .note{font-size:11.5px; color:var(--dim)}
+.chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px}
+.chip{
+  border:1px solid var(--border); background:var(--bg2); color:var(--sub);
+  padding:5px 12px; border-radius:16px; font-size:12px; cursor:pointer; font-weight:500;
+}
+.chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
+.toggle button{
+  border:none; background:var(--card); color:var(--sub); padding:6px 12px; font-size:12px; cursor:pointer;
+  border-right:1px solid var(--border);
+}
+.toggle button:last-child{border-right:none}
+.toggle button.active{background:var(--accent); color:#fff}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:14px 16px; margin-bottom:10px;
+}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:6px}
+.stat-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px}
+.stat-card .lbl{font-size:11.5px; color:var(--dim); margin-bottom:4px}
+.stat-card .val{font-size:18px; font-weight:700}
+.stat-card .delta{font-size:12px; margin-top:2px}
+.up{color:var(--red)} .down{color:var(--blue)}
+.chart-box{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:6px; position:relative; height:280px}
+.chart-box.small{height:200px}
+table{width:100%; border-collapse:collapse; font-size:13px}
+th,td{padding:9px 10px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap}
+th{color:var(--dim); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700}
+.badge.buy{background:rgba(37,99,235,.12); color:var(--accent)}
+.badge.hold{background:rgba(138,145,156,.15); color:var(--sub)}
+.badge.domestic{background:var(--accent-soft); color:var(--accent)}
+.badge.foreign{background:rgba(124,58,237,.12); color:var(--purple)}
+.badge.ir{background:rgba(37,99,235,.12); color:var(--blue)}
+.badge.earn{background:rgba(101,163,13,.15); color:var(--lime)}
+.badge.disc{background:rgba(124,58,237,.12); color:var(--purple)}
+.badge.agm{background:rgba(22,163,74,.12); color:var(--green)}
+.news-item{padding:11px 0; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:3px}
+.news-item:last-child{border-bottom:none}
+.news-item .t{font-size:13.5px; font-weight:600}
+.news-item .meta{font-size:11.5px; color:var(--dim); display:flex; gap:8px; align-items:center}
+.cal-head{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:8px}
+.cal-head button{border:1px solid var(--border); background:var(--card); border-radius:6px; width:28px; height:28px; cursor:pointer; color:var(--text)}
+.cal-head .m{font-weight:700; font-size:14px; min-width:90px; text-align:center}
+.grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px}
+.dow{text-align:center; font-size:11px; color:var(--dim); padding:4px 0}
+.day{
+  aspect-ratio:1; border:1px solid var(--border); border-radius:6px; padding:5px;
+  font-size:11px; color:var(--sub); position:relative; background:var(--card);
+}
+.day.dim{opacity:.35}
+.day .n{font-weight:600; color:var(--text)}
+.day .dots{display:flex; gap:2px; margin-top:3px; flex-wrap:wrap}
+.dot{width:6px; height:6px; border-radius:50%}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
+.legend span{display:flex; align-items:center; gap:5px}
+.legend .dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+.up-list{display:flex; flex-direction:column}
+.up-row{display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px}
+.up-row:last-child{border-bottom:none}
+.up-row .d{width:44px; color:var(--dim); font-size:11.5px; flex-shrink:0}
+.mock-flag{
+  display:inline-block; font-size:10.5px; color:var(--dim); background:var(--bg2);
+  border:1px dashed var(--border); border-radius:6px; padding:4px 8px; margin-bottom:14px;
+}
+.chip-group{margin-bottom:10px}
+.chip-group-label{font-size:10.5px; color:var(--dim); font-weight:700; margin-bottom:4px; text-transform:uppercase; letter-spacing:.03em}
+.filter-select{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:6px 10px; font-size:12px}
+.perf-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:720px){.perf-grid{grid-template-columns:1fr}}
+.perf-table-title{font-size:13px; font-weight:700; padding:8px 10px; border-radius:8px 8px 0 0; color:#fff}
+.perf-table-title.top{background:#0F6E56}
+.perf-table-title.bottom{background:#A32D2D}
+.perf-up{color:#0F6E56; font-weight:700}
+.perf-down{color:#A32D2D; font-weight:700}
+.perf-flat{color:var(--dim)}
+.market-badge{display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--bg2); color:var(--sub); margin-left:5px; vertical-align:middle}
+.perf-name-link{color:inherit; text-decoration:none; font-weight:600}
+.perf-name-link:hover{text-decoration:underline}
+.perf-table-box table{font-size:12.5px}
+.perf-table-box{border:1px solid var(--border); border-radius:0 0 10px 10px; overflow:hidden}
+.news-cat-h{font-size:12px; font-weight:700; color:var(--accent); margin:16px 0 4px}
+.news-cat-h:first-child{margin-top:0}
+.news-co{font-weight:700; margin-right:4px}
+.news-ctx{color:var(--dim); font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="brand">리서치 · 의료기기/디지털헬스</div>
+      <h1>모니터링 대시보드</h1>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 다크 모드</button>
+  </div>
+  <div class="subtitle">'리서치 보고서' 탭은 reports.json을 매일 자동 갱신 · 나머지 탭은 샘플 데이터입니다</div>
+  <div class="mock-flag">⚠ '리서치 보고서' 탭: 미래에셋증권 김충현, CFA 발간분, GitHub Actions로 평일 오전 자동 갱신 · 다른 탭은 목업</div>
+
+  <div class="tabs">
+    <button class="tab active" data-view="news">산업·기업 뉴스</button>
+    <button class="tab" data-view="stock">주가 데이터</button>
+    <button class="tab" data-view="calendar">이벤트 캘린더</button>
+    <button class="tab" data-view="industry">산업데이터</button>
+    <button class="tab" data-view="reports">리서치 보고서</button>
+  </div>
+
+  <!-- ================= NEWS ================= -->
+  <section class="view active" id="view-news">
+    <div class="mock-flag">⚠ 이 탭은 뉴스클리핑 가이드라인의 카테고리·트래킹 기업 분류 기준으로 구성된 샘플입니다. 네이버 API 키를 GitHub Actions 시크릿에 등록하지 않는 한 완전 자동 수집은 어렵고, 대화창에서 "정리해줘"(국내) / "조사해줘"(해외) 요청 시 최신 결과를 이 자리에 붙여넣는 방식을 권장합니다.</div>
+
+    <div class="sec-h"><h2>오늘의 클리핑 · 국내</h2><span class="note">네이버뉴스 기준 · 카테고리별 트래킹 기업</span></div>
+    <div id="news-domestic-wrap"></div>
+
+    <div class="sec-h"><h2>Global MedTech News</h2><span class="note">Google 검색(site:) 기반 · 카테고리별 트래킹 기업</span></div>
+    <div id="news-global-wrap"></div>
+  </section>
+
+  <!-- ================= STOCK ================= -->
+  <section class="view" id="view-stock">
+    <div class="sec-h"><h2>수익률 Top10 / Bottom10</h2><span class="note" id="perf-source-note">글로벌 헬스케어 유니버스 · 로컬 통화 기준</span></div>
+    <div class="toggle" id="perf-period-toggle">
+      <button data-p="d1" class="active">1일</button>
+      <button data-p="d5">5일</button>
+      <button data-p="m1">1개월</button>
+      <button data-p="m3">3개월</button>
+      <button data-p="m6">6개월</button>
+      <button data-p="y1">1년</button>
+      <button data-p="ytd">YTD</button>
+    </div>
+    <div class="note" id="perf-asof-note" style="margin:4px 0"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+      <select id="perf-cap-filter" class="filter-select">
+        <option value="all">시총 전체</option>
+        <option value="lt1">1조 미만</option>
+        <option value="gt1">1조 이상</option>
+        <option value="lt2">2조 미만</option>
+        <option value="lt3">3조 미만</option>
+        <option value="gt10">10조 이상</option>
+      </select>
+      <select id="perf-region-filter" class="filter-select">
+        <option value="all">지역 전체</option>
+        <option value="KR">한국</option>
+        <option value="GLOBAL">글로벌</option>
+      </select>
+      <select id="perf-sector-filter" class="filter-select">
+        <option value="all">섹터 전체</option>
+      </select>
+    </div>
+    <div id="perf-body">
+      <div class="na-msg">stock_performance.json 로딩 중...</div>
+    </div>
+
+    <div class="sec-h"><h2>추적 종목</h2><span class="note">칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가</span></div>
+    <div style="position:relative;margin-bottom:8px;max-width:280px">
+      <input id="stock-search-input" class="filter-select" style="width:100%" placeholder="종목명 또는 티커 검색..." autocomplete="off" />
+      <div id="stock-search-results" class="card" style="display:none;position:absolute;top:36px;left:0;z-index:10;width:100%;max-height:240px;overflow-y:auto;padding:4px"></div>
+    </div>
+    <div class="chips" id="stock-tracked-chips"></div>
+
+    <div class="cards" id="stock-stat-cards"></div>
+
+    <div class="sec-h"><h2>주가 흐름 추이 <span class="note" id="stock-selected-label"></span></h2>
+      <div class="toggle" id="price-period-toggle">
+        <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
+      </div>
+    </div>
+    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가 · 실데이터(stock_performance.json, yfinance 기준)</div>
+    <div class="chart-box"><canvas id="priceChart"></canvas></div>
+
+    <div class="sec-h"><h2>투자자 수급</h2>
+      <div class="toggle" id="flow-period-toggle">
+        <button data-days="42" class="active">2개월</button>
+        <button data-days="63">3개월</button>
+      </div>
+    </div>
+    <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
+    <div class="chart-box"><canvas id="flowChart"></canvas></div>
+  </section>
+
+  <!-- ================= CALENDAR ================= -->
+  <section class="view" id="view-calendar">
+    <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note">실적발표 · IR · 공시기한 · 주총</span></div>
+    <div class="cal-head"><button>‹</button><div class="m">2026년 8월</div><button>›</button></div>
+    <div class="grid">
+      <div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div>
+    </div>
+    <div class="grid" style="margin-top:5px" id="cal-grid"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--blue)"></i> IR·기업설명회</span>
+      <span><i class="dot" style="background:var(--lime)"></i> 실적발표·잠정실적</span>
+      <span><i class="dot" style="background:var(--purple)"></i> 공시 제출기한</span>
+      <span><i class="dot" style="background:var(--green)"></i> 주총·기준일</span>
+    </div>
+
+    <div class="sec-h"><h2>다가오는 일정</h2><span class="note">이번달 기준</span></div>
+    <div class="up-list">
+      <div class="up-row"><span class="d">8/19</span><span class="badge earn">실적</span><span>파마리서치 2Q26 잠정실적 발표</span></div>
+      <div class="up-row"><span class="d">8/21</span><span class="badge ir">IR</span><span>클래시스 하반기 IR 데이 (온라인)</span></div>
+      <div class="up-row"><span class="d">8/25</span><span class="badge disc">공시</span><span>루트로닉 반기보고서 제출기한</span></div>
+      <div class="up-row"><span class="d">8/28</span><span class="badge agm">주총</span><span>뷰노 임시주주총회 기준일</span></div>
+    </div>
+  </section>
+
+  <!-- ================= INDUSTRY DATA ================= -->
+  <section class="view" id="view-industry">
+    <div class="sec-h"><h2>수출 데이터</h2><span class="note">관세청/TRASS · 미용의료기기·필러류 HS코드 기준</span></div>
+    <div class="cards">
+      <div class="stat-card"><div class="lbl">이번달 수출액</div><div class="val">$142M</div><div class="delta up">▲ 18.2% YoY</div></div>
+      <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">+6.4%</div><div class="delta up">MoM</div></div>
+      <div class="stat-card"><div class="lbl">최대 수출국</div><div class="val">중국</div><div class="delta">비중 24%</div></div>
+    </div>
+    <div class="chart-box"><canvas id="exportChart"></canvas></div>
+
+    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 소비 · aesthetic-web 참고 구성</span></div>
+    <div class="cards">
+      <div class="stat-card"><div class="lbl">이번달 방한객</div><div class="val">98.4만명</div><div class="delta up">▲ 11.5% YoY</div></div>
+      <div class="stat-card"><div class="lbl">피부과 소비액</div><div class="val">312억원</div><div class="delta up">▲ 7.8%</div></div>
+    </div>
+
+    <div class="sec-h"><h2 style="font-size:13px">외국인 의료소비 vs 피부과 소비액</h2><span class="note">월별 · 억원 · 글로벌 · 신한카드 외국인 카드소비</span></div>
+    <div class="chart-box"><canvas id="visitorSpendChart"></canvas></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">국가별 피부과 소비액</h2><span class="note">월별 스택 · 억원 · 기타 = 글로벌 − 상위 5개국</span></div>
+    <div class="chart-box"><canvas id="visitorCountrySpendChart"></canvas></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note">만명 · 한국관광통계 (공표 시차 약 2개월)</span></div>
+    <div class="chart-box"><canvas id="visitorChart"></canvas></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">대륙별 방한 외국인</h2><span class="note">월별 스택 · 만명 · 기타 = 아프리카·교포·미상</span></div>
+    <div class="chart-box"><canvas id="visitorContinentChart"></canvas></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 12일 자동 작성 (예정)</span></div>
+    <div class="card">아직 월간 분석이 없습니다 — 매월 12일 자동 작성됩니다.</div>
+  </section>
+
+  <!-- ================= REPORTS ================= -->
+  <section class="view" id="view-reports">
+    <div class="sec-h"><h2>리서치 보고서</h2><span class="note" id="rep-source-note">미래에셋증권 · 실데이터 연동</span></div>
+
+    <div class="sec-h"><h2>추적 기업</h2><span class="note">카테고리별 드롭다운에서 종목 선택 시 해당 리포트만 필터 · <a href="#" id="rep-reset-link" style="color:var(--accent);text-decoration:none;font-weight:600">전체 보기</a></span></div>
+    <div id="rep-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
+
+    <div id="rep-company-detail"></div>
+
+    <div id="rep-table-wrap"></div>
+  </section>
+
+</div>
+
+<script>
+// ---- theme ----
+function toggleTheme(){
+  const el = document.documentElement;
+  const isDark = el.getAttribute('data-theme') === 'dark';
+  el.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isDark ? '🌙 다크 모드' : '☀️ 라이트 모드';
+}
+
+// ---- tabs ----
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+// ---- chip toggle (visual only, mockup) ----
+document.querySelectorAll('.chips').forEach(group=>{
+  group.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+});
+document.querySelectorAll('.toggle').forEach(group=>{
+  group.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      group.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+});
+
+// ==================================================================
+// 산업/기업 뉴스 — 뉴스클리핑 가이드라인.md / medtech_news_clipping_rules.md 기준 카테고리
+// 실제 운영: 대화창에서 "정리해줘"(국내)·"조사해줘"(해외) 요청 시 최신 결과로 교체
+// ==================================================================
+const NEWS_DOMESTIC = [
+  { cat:'Digital Health', items:[
+    { co:'씨어스', ctx:'IR행사', t:'하반기 신제품 파이프라인 및 해외 진출 전략 공개', src:'한국경제', time:'09:41' },
+  ]},
+  { cat:'Aesthetics', items:[
+    { co:'파마리서치', ctx:'실적', t:'리쥬란 유럽 판매 호조에 3분기 실적 눈높이 상향', src:'이데일리', time:'08:55' },
+    { co:'클래시스', ctx:'신제품', t:"신규 장비 '볼뉴머' 국내 출시…에스테틱 라인업 확대", src:'머니투데이', time:'08:12' },
+  ]},
+  { cat:'Robotics', items:[
+    { co:'리브스메드', ctx:'계약', t:'해외 유통사와 봉합기 공급 계약 체결', src:'전자신문', time:'07:50' },
+  ]},
+  { cat:'Therapeutics', items:[
+    { co:'넥스트바이오메디컬', ctx:'임상', t:'색전용 미세구체 국내 임상 결과 발표', src:'메디게이트', time:'07:30' },
+  ]},
+  { cat:'IVD', items:[
+    { co:'씨젠', ctx:'수주', t:'중남미향 분자진단 시약 공급 계약 체결', src:'아시아경제', time:'07:10' },
+  ]},
+  { cat:'Bio-Processing', items:[]},
+  { cat:'Dental', items:[
+    { co:'덴티움', ctx:'해외진출', t:'중국 임플란트 유통망 확대…현지 생산법인 증설', src:'헤럴드경제', time:'06:50' },
+  ]},
+];
+const NEWS_GLOBAL = [
+  { cat:'MedTech', items:[
+    { co:'Boston Scientific', ctx:'Earnings', t:'Q3 revenue beats on strong structural heart demand', src:'MedTech Dive', time:'07:30' },
+  ]},
+  { cat:'Surgical Robot', items:[
+    { co:'Intuitive Surgical', ctx:'Product', t:'New da Vinci 5 procedure volume update at investor day', src:'MassDevice', time:'07:00' },
+  ]},
+  { cat:'IVD', items:[
+    { co:'Guardant Health', ctx:'FDA', t:'FDA grants breakthrough device designation for liquid biopsy assay', src:'360Dx', time:'06:40' },
+  ]},
+  { cat:'Digital Health', items:[
+    { co:'Hims & Hers', ctx:'Partnership', t:'Expands telehealth partnership into weight-management category', src:'Fierce Healthcare', time:'06:20' },
+  ]},
+  { cat:'Healthcare Provider', items:[]},
+  { cat:'Cash Pay Market', items:[
+    { co:'InMode', ctx:'Earnings', t:'Reiterates FY guidance despite softer discretionary demand', src:'The Aesthetic Guide', time:'05:50' },
+  ]},
+];
+
+function renderNewsSection(wrapId, groups, domesticStyle){
+  const wrap = document.getElementById(wrapId);
+  let html = '';
+  groups.forEach(g=>{
+    if(g.items.length===0) return;
+    html += `<div class="news-cat-h">${g.cat}</div><div class="card" style="padding:0 16px">`;
+    g.items.forEach(it=>{
+      const ctxLabel = domesticStyle ? `[${it.ctx}]` : `[${it.ctx}]`;
+      html += `<div class="news-item">
+        <div class="t"><span class="news-co">${it.co}</span><span class="news-ctx">${ctxLabel}</span> ${it.t}</div>
+        <div class="meta"><span>${it.src}</span><span>${it.time}</span></div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  if(!html) html = '<div class="note" style="padding:8px 0">해당 기간 수집된 기사가 없습니다.</div>';
+  wrap.innerHTML = html;
+}
+renderNewsSection('news-domestic-wrap', NEWS_DOMESTIC, true);
+renderNewsSection('news-global-wrap', NEWS_GLOBAL, false);
+
+// ---- calendar grid (mock) ----
+(function(){
+  const grid = document.getElementById('cal-grid');
+  const events = {5:['blue'],12:['lime'],19:['lime'],21:['blue'],25:['purple'],28:['green'],14:['purple']};
+  const daysInMonth = 31, startDow = 6; // Aug 2026 starts on Saturday
+  let html = '';
+  for(let i=0;i<startDow;i++) html += '<div class="day dim"></div>';
+  for(let d=1; d<=daysInMonth; d++){
+    const dots = (events[d]||[]).map(c=>`<span class="dot" style="background:var(--${c})"></span>`).join('');
+    html += `<div class="day"><div class="n">${d}</div><div class="dots">${dots}</div></div>`;
+  }
+  grid.innerHTML = html;
+})();
+
+// ---- charts (sample data) ----
+const gridColor = () => getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('--sub').trim();
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+Chart.defaults.font.size = 11;
+
+function mkLine(id, labels, datasets, opts={}){
+  return new Chart(document.getElementById(id), {
+    type:'line',
+    data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:datasets.length>1, labels:{color:textColor()}}},
+      scales:{
+        x:{grid:{color:gridColor()}, ticks:{color:textColor()}},
+        y:{grid:{color:gridColor()}, ticks:{color:textColor()}}
+      },
+      ...opts
+    }
+  });
+}
+function mkBar(id, labels, datasets, opts={}){
+  return new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:datasets.length>1, labels:{color:textColor()}}},
+      scales:{
+        x:{grid:{display:false}, ticks:{color:textColor()}, stacked:opts.stacked||false},
+        y:{grid:{color:gridColor()}, ticks:{color:textColor()}, stacked:opts.stacked||false}
+      }
+    }
+  });
+}
+
+// 주가 흐름 추이 — 실데이터(stock_performance.json의 price_history) · 기간 토글(1/3/6/12개월)
+const MONTHS_TO_TRADING_DAYS = {1:22, 3:65, 6:130, 12:260};
+let priceChartInstance = null;
+let selectedPriceMonths = 6;
+function renderPriceChart(ticker, months){
+  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
+  const note = document.getElementById('price-chart-note');
+  const box = document.getElementById('priceChart').parentElement;
+  if(!perf || !perf.price_history || !perf.price_history.close || perf.price_history.close.length===0){
+    if(priceChartInstance){ priceChartInstance.destroy(); priceChartInstance=null; }
+    note.textContent = 'stock_performance.json에 이 종목의 일별 종가가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
+    return;
+  }
+  const { dates, close } = perf.price_history;
+  const n = MONTHS_TO_TRADING_DAYS[months] || 130;
+  const sliceDates = dates.slice(-n);
+  const sliceClose = close.slice(-n);
+  const labels = sliceDates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
+  note.textContent = `일별 종가 · 실데이터(stock_performance.json, yfinance 기준) · ${sliceDates[0]} ~ ${sliceDates[sliceDates.length-1]}`;
+  if(priceChartInstance){ priceChartInstance.destroy(); }
+  priceChartInstance = mkLine('priceChart', labels, [{
+    label:'종가', data: sliceClose,
+    borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', fill:true, tension:.2, pointRadius:0, borderWidth:2
+  }]);
+}
+document.querySelectorAll('#price-period-toggle button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#price-period-toggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    selectedPriceMonths = parseInt(b.dataset.months,10);
+    renderPriceChart(selectedStockTicker, selectedPriceMonths);
+  });
+});
+
+// 투자자 수급 — 일별 순매수 누적(라인) · 샘플 데이터, 기간 토글(2/3개월) 지원
+function genFlowData(days){
+  const labels = [];
+  const today = new Date();
+  for(let i=days-1;i>=0;i--){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+  }
+  function cumulative(volatility, upBias){
+    let sum = 0;
+    return Array.from({length:days}, ()=>{ sum += (Math.random()-upBias)*volatility; return Math.round(sum); });
+  }
+  return { labels, inst: cumulative(30,0.45), foreign: cumulative(25,0.42), retail: cumulative(20,0.55) };
+}
+let flowChartInstance = null;
+function renderFlowChart(days){
+  const {labels, inst, foreign, retail} = genFlowData(days);
+  if(flowChartInstance){ flowChartInstance.destroy(); }
+  flowChartInstance = mkLine('flowChart', labels, [
+    {label:'기관(누적)', data: inst, borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2},
+    {label:'외국인(누적)', data: foreign, borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2},
+    {label:'개인(누적)', data: retail, borderColor:'#65a30d', backgroundColor:'rgba(101,163,13,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2}
+  ]);
+}
+renderFlowChart(42);
+document.querySelectorAll('#flow-period-toggle button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#flow-period-toggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderFlowChart(parseInt(b.dataset.days,10));
+  });
+});
+
+// ==================================================================
+// 수익률 Top10 / Bottom10 — 실데이터 (stock_performance.json fetch)
+// 종목 유니버스: stock_performance_requirements.md 기준 145종목
+// ==================================================================
+let STOCK_PERF = [];
+let perfState = { period:'d1', cap:'all', region:'all', sector:'all' };
+
+function capFilterPass(capTril, filterVal){
+  if(filterVal==='all') return true;
+  if(capTril == null) return false;
+  switch(filterVal){
+    case 'lt1': return capTril < 1;
+    case 'gt1': return capTril >= 1;
+    case 'lt2': return capTril < 2;
+    case 'lt3': return capTril < 3;
+    case 'gt10': return capTril >= 10;
+    default: return true;
+  }
+}
+function regionFilterPass(market, filterVal){
+  if(filterVal==='all') return true;
+  if(filterVal==='KR') return market==='KR';
+  if(filterVal==='GLOBAL') return market!=='KR';
+  return true;
+}
+function newsUrl(name){ return 'https://www.google.com/search?q=' + encodeURIComponent(name) + '&tbm=nws'; }
+function fmtPct(v){ if(v==null) return '-'; const sign = v>0?'+':''; return sign + v.toFixed(1); }
+function pctClass(v){ if(v==null || v===0) return 'perf-flat'; return v>0 ? 'perf-up' : 'perf-down'; }
+
+function populatePerfSectorFilter(){
+  const sectors = [...new Set(STOCK_PERF.map(s=>s.sector))].sort();
+  const sel = document.getElementById('perf-sector-filter');
+  sel.innerHTML = '<option value="all">섹터 전체</option>' + sectors.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function renderPerfAsOfNote(){
+  const byMarket = {};
+  STOCK_PERF.forEach(s=>{
+    if(!s.as_of) return;
+    if(!byMarket[s.market] || s.as_of > byMarket[s.market]) byMarket[s.market] = s.as_of;
+  });
+  const markets = Object.keys(byMarket).sort();
+  const el = document.getElementById('perf-asof-note');
+  if(markets.length===0){ el.textContent=''; return; }
+  el.textContent = '종가 기준일 — ' + markets.map(m=>`${m} ${byMarket[m]}`).join(' · ') + ' · 시장별 거래일 차이로 최대 1일 다를 수 있음 (행에 마우스를 올리면 종목별 기준일 확인 가능)';
+}
+
+function renderPerfTables(){
+  const body = document.getElementById('perf-body');
+  if(STOCK_PERF.length===0){
+    body.innerHTML = '<div class="na-msg">데이터 없음 — GitHub Actions가 아직 실행되지 않았다면 Actions 탭에서 "Update stock performance"를 수동 실행해주세요.</div>';
+    return;
+  }
+  const filtered = STOCK_PERF.filter(s=>
+    capFilterPass(s.market_cap_krw_tril, perfState.cap) &&
+    regionFilterPass(s.market, perfState.region) &&
+    (perfState.sector==='all' || s.sector===perfState.sector) &&
+    s.returns[perfState.period] != null
+  );
+  const sorted = filtered.slice().sort((a,b)=> b.returns[perfState.period]-a.returns[perfState.period]);
+  const top10 = sorted.slice(0,10);
+  const bottom10 = sorted.slice(-10).reverse();
+
+  function buildTable(list){
+    const header = '<thead><tr><th>#</th><th>종목</th><th>섹터</th><th>시총(조원)</th><th>변화율(%)</th></tr></thead>';
+    const rows = list.map((s,i)=>`
+      <tr title="${s.as_of ? '종가 기준일 '+s.as_of : '기준일 정보 없음'}">
+        <td>${i+1}</td>
+        <td><a class="perf-name-link" href="${newsUrl(s.name)}" target="_blank" rel="noopener">${s.name}</a><span class="market-badge">${s.market}</span></td>
+        <td>${s.sector}</td>
+        <td>${s.market_cap_krw_tril!=null ? s.market_cap_krw_tril.toFixed(1) : '-'}</td>
+        <td class="${pctClass(s.returns[perfState.period])}">${fmtPct(s.returns[perfState.period])}</td>
+      </tr>`).join('');
+    return `<table>${header}<tbody>${rows || '<tr><td colspan="5" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>'}</tbody></table>`;
+  }
+
+  body.innerHTML = `
+    <div class="perf-grid">
+      <div>
+        <div class="perf-table-title top">Top 10</div>
+        <div class="perf-table-box">${buildTable(top10)}</div>
+      </div>
+      <div>
+        <div class="perf-table-title bottom">Bottom 10</div>
+        <div class="perf-table-box">${buildTable(bottom10)}</div>
+      </div>
+    </div>`;
+}
+
+document.querySelectorAll('#perf-period-toggle button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#perf-period-toggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    perfState.period = b.dataset.p;
+    renderPerfTables();
+  });
+});
+document.getElementById('perf-cap-filter').addEventListener('change', e=>{ perfState.cap = e.target.value; renderPerfTables(); });
+document.getElementById('perf-region-filter').addEventListener('change', e=>{ perfState.region = e.target.value; renderPerfTables(); });
+document.getElementById('perf-sector-filter').addEventListener('change', e=>{ perfState.sector = e.target.value; renderPerfTables(); });
+
+async function loadStockPerformance(){
+  try{
+    const res = await fetch('stock_performance.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    STOCK_PERF = data.stocks || [];
+    populatePerfSectorFilter();
+    renderPerfAsOfNote();
+    renderPerfTables();
+    if(data.updated){
+      const note = document.getElementById('perf-source-note');
+      const dt = new Date(data.updated);
+      note.textContent = `글로벌 헬스케어 유니버스 · 로컬 통화 기준 · ${data.ok_count}/${data.count}종목 수집 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+    }
+    if(typeof renderStockStatCards === 'function') renderStockStatCards(selectedStockTicker);
+    if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
+  }catch(e){
+    document.getElementById('perf-body').innerHTML =
+      '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
+  }
+}
+loadStockPerformance();
+
+// ==================================================================
+// 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
+// ==================================================================
+const TRACKED_DEFAULT = ['214450.KS','214150.KS','096530.KS','145720.KS','318060.KQ','458870.KS','145020.KS','314930.KS','389650.KQ','491000.KQ'];
+let TICKER_UNIVERSE = [];
+let extraTrackedTickers = [];
+let selectedStockTicker = TRACKED_DEFAULT[0];
+
+function tickerInfo(ticker){
+  return TICKER_UNIVERSE.find(t=>t.ticker===ticker);
+}
+function stockDisplayName(ticker){
+  const info = tickerInfo(ticker);
+  if(!info) return ticker;
+  return info.name === '씨어스테크놀로지' ? '씨어스' : info.name;
+}
+
+function renderTrackedChips(){
+  const wrap = document.getElementById('stock-tracked-chips');
+  const list = TRACKED_DEFAULT.concat(extraTrackedTickers);
+  wrap.innerHTML = list.map(t=>{
+    const label = stockDisplayName(t);
+    return `<div class="chip${t===selectedStockTicker?' active':''}" data-ticker="${t}">${label}</div>`;
+  }).join('');
+  wrap.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=> selectStock(chip.dataset.ticker));
+  });
+}
+
+function renderStockStatCards(ticker){
+  const name = stockDisplayName(ticker);
+  const label = document.getElementById('stock-selected-label');
+  if(label) label.textContent = `· ${name}`;
+  const cardsWrap = document.getElementById('stock-stat-cards');
+  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
+  if(!perf){
+    cardsWrap.innerHTML = `<div class="stat-card"><div class="lbl">${name}</div><div class="val">데이터 없음</div><div class="delta">stock_performance.json 대기 중</div></div>`;
+    return;
+  }
+  const r = perf.returns;
+  cardsWrap.innerHTML = `
+    <div class="stat-card"><div class="lbl">${name} · ${perf.market}</div><div class="val">${fmtPct(r.d1)}%</div><div class="delta ${pctClass(r.d1)}">1일 등락</div></div>
+    <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${perf.market_cap_krw_tril!=null ? Math.round(perf.market_cap_krw_tril*10000).toLocaleString('ko-KR')+'억' : '-'}</div><div class="delta">KRW 환산</div></div>
+    <div class="stat-card"><div class="lbl">1개월 등락</div><div class="val">${fmtPct(r.m1)}%</div><div class="delta ${pctClass(r.m1)}">거래일 기준</div></div>
+    <div class="stat-card"><div class="lbl">YTD</div><div class="val">${fmtPct(r.ytd)}%</div><div class="delta ${pctClass(r.ytd)}">연초 대비</div></div>
+  `;
+}
+
+function selectStock(ticker){
+  selectedStockTicker = ticker;
+  if(!TRACKED_DEFAULT.includes(ticker) && !extraTrackedTickers.includes(ticker)){
+    extraTrackedTickers.push(ticker);
+  }
+  renderTrackedChips();
+  renderStockStatCards(ticker);
+  renderPriceChart(ticker, selectedPriceMonths);
+  const input = document.getElementById('stock-search-input');
+  const results = document.getElementById('stock-search-results');
+  if(input) input.value = '';
+  if(results) results.style.display = 'none';
+}
+
+function renderStockSearchResults(query){
+  const results = document.getElementById('stock-search-results');
+  if(!query){ results.style.display='none'; results.innerHTML=''; return; }
+  const q = query.toLowerCase();
+  const matches = TICKER_UNIVERSE.filter(t=>
+    t.name.toLowerCase().includes(q) || t.ticker.toLowerCase().includes(q)
+  ).slice(0, 8);
+  if(matches.length===0){
+    results.innerHTML = '<div class="note" style="padding:8px">일치하는 종목이 없습니다</div>';
+    results.style.display = 'block';
+    return;
+  }
+  results.innerHTML = matches.map(t=>
+    `<div class="stock-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${t.name} <span class="note">${t.ticker} · ${t.market} · ${t.sector}</span></div>`
+  ).join('');
+  results.querySelectorAll('.stock-search-item').forEach(item=>{
+    item.addEventListener('mouseenter', ()=> item.style.background='var(--bg2)');
+    item.addEventListener('mouseleave', ()=> item.style.background='');
+    item.addEventListener('click', ()=> selectStock(item.dataset.ticker));
+  });
+  results.style.display = 'block';
+}
+
+async function loadTickerUniverse(){
+  try{
+    const res = await fetch('scripts/tickers.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    TICKER_UNIVERSE = await res.json();
+  }catch(e){
+    TICKER_UNIVERSE = [];
+  }
+  renderTrackedChips();
+  renderStockStatCards(selectedStockTicker);
+  renderPriceChart(selectedStockTicker, selectedPriceMonths);
+  const input = document.getElementById('stock-search-input');
+  if(input){
+    input.addEventListener('input', ()=> renderStockSearchResults(input.value.trim()));
+    input.addEventListener('focus', ()=>{ if(input.value.trim()) renderStockSearchResults(input.value.trim()); });
+    document.addEventListener('click', (e)=>{
+      if(!e.target.closest('#stock-search-input') && !e.target.closest('#stock-search-results')){
+        document.getElementById('stock-search-results').style.display='none';
+      }
+    });
+  }
+}
+loadTickerUniverse();
+
+mkBar('exportChart', ['3월','4월','5월','6월','7월','8월'], [
+  {label:'수출액 ($M)', data:[98,105,112,121,134,142], backgroundColor:'#2563eb'}
+]);
+
+mkBar('visitorChart', ['3월','4월','5월','6월','7월','8월'], [
+  {label:'방한 외국인 (만명)', data:[74,81,86,90,93,98], backgroundColor:'#7c3aed'}
+]);
+
+mkLine('visitorSpendChart', ['3월','4월','5월','6월','7월','8월'], [
+  {label:'외국인 전체 의료소비(억원)', data:[420,455,480,510,545,580], borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2},
+  {label:'피부과 소비액(억원)', data:[210,228,245,268,290,312], borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2}
+]);
+
+mkBar('visitorCountrySpendChart', ['3월','4월','5월','6월','7월','8월'], [
+  {label:'중국', data:[62,68,71,78,84,92], backgroundColor:'#2563eb'},
+  {label:'일본', data:[45,48,52,55,58,61], backgroundColor:'#7c3aed'},
+  {label:'미국', data:[30,32,35,37,40,42], backgroundColor:'#16a34a'},
+  {label:'베트남', data:[18,20,22,24,26,28], backgroundColor:'#f59e0b'},
+  {label:'태국', data:[14,15,16,18,19,21], backgroundColor:'#dc2626'},
+  {label:'기타', data:[41,45,49,56,63,68], backgroundColor:'#8a919c'}
+], {stacked:true});
+
+mkBar('visitorContinentChart', ['3월','4월','5월','6월','7월','8월'], [
+  {label:'아시아', data:[52,56,59,62,65,70], backgroundColor:'#2563eb'},
+  {label:'미주', data:[9,10,10,11,12,13], backgroundColor:'#16a34a'},
+  {label:'유럽', data:[7,8,8,9,9,10], backgroundColor:'#7c3aed'},
+  {label:'오세아니아', data:[2,2,2,3,3,3], backgroundColor:'#f59e0b'},
+  {label:'기타', data:[4,5,7,5,4,2], backgroundColor:'#8a919c'}
+], {stacked:true});
+
+// ==================================================================
+// 리서치 보고서 — 실데이터 (미래에셋증권 · 김충현, CFA 발간분)
+// 출처: securities.miraeasset.com 리서치 리포트 게시판, 작성자 검색
+// 수집일 기준 2025-08-28 ~ 2026-08-14, 총 104건
+// 실제 배포본(index.html)에서는 이 배열을 reports.json fetch로 대체합니다.
+// ==================================================================
+let REPORTS = [];
+
+function repBadgeClass(op){
+  if(op.indexOf('매수')>-1) return 'buy';
+  return 'hold';
+}
+
+function renderReports(filterCo){
+  filterCo = filterCo || '전체';
+  const rows = REPORTS.filter(r => filterCo==='전체' || r.co===filterCo);
+
+  // table
+  const wrap = document.getElementById('rep-table-wrap');
+  let html = '<table><thead><tr><th>작성일</th><th>종목</th><th>제목</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    const codeStr = r.code ? ` (${r.code})` : '';
+    const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${r.op}</span>` : '<span class="note">—</span>';
+    const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
+    const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">PDF ↗</a>` : '—';
+    html += `<tr><td>${r.d}</td><td>${r.co}${codeStr}</td><td>${r.t}</td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  // source note
+  document.getElementById('rep-source-note').textContent =
+    `미래에셋증권 · 김충현, CFA 발간 · ${rows.length}건 표시 (전체 ${REPORTS.length}건)`;
+}
+
+// 추적 기업 카테고리 — 필요시 회사명만 추가/이동하면 됨
+const CATEGORIES = [
+  {name:'산업', companies:['의료기기/디지털헬스']},
+  {name:'디지털헬스', companies:['씨어스테크놀로지','인바디','아이센스','고영','리브스메드','루닛','큐렉소']},
+  {name:'미용기기', companies:['클래시스','파마리서치']},
+  {name:'치료용 의료기기', companies:['넥스트바이오메디컬']},
+  {name:'치과', companies:['덴티움','바텍','디오','그래피']},
+  {name:'체외진단', companies:['씨젠','바이오다인']},
+  {name:'생명공학', companies:['큐리오시스']},
+  {name:'기타', companies:['아이엠비디엑스','뷰웍스','뉴로핏']},
+  {name:'해외기업', companies:['보스턴 사이언티픽 코퍼레이션','스트라이커','덱스컴','에드워즈 라이프사이언시스','써모 피셔 사이언티픽','인튜이티브 서지컬','애보트 래보러토리','유나이티드 헬스 그룹','메드트로닉','쿠퍼 컴퍼니스','이그젝트 사이언스','메드봇']}
+];
+
+function resetRepFilter(){
+  document.querySelectorAll('.rep-cat-select').forEach(sel=>{ sel.value=''; });
+  renderReports('전체');
+  renderCompanyDetail('전체');
+}
+
+function renderRepCategoryDropdowns(){
+  const counts = {};
+  REPORTS.forEach(r=>{ counts[r.co] = (counts[r.co]||0)+1; });
+  const categorized = new Set();
+  CATEGORIES.forEach(c=>c.companies.forEach(co=>categorized.add(co)));
+  const leftover = Object.keys(counts).filter(co=>!categorized.has(co));
+
+  const wrap = document.getElementById('rep-dropdown-wrap');
+  let html = '';
+  CATEGORIES.forEach(cat=>{
+    let list = cat.companies.filter(co=>counts[co]);
+    if(cat.name==='기타') list = list.concat(leftover);
+    if(list.length===0) return;
+    html += `<select class="filter-select rep-cat-select" data-category="${cat.name}">
+      <option value="">${cat.name}</option>
+      ${list.map(co=>`<option value="${co}">${co} (${counts[co]||0})</option>`).join('')}
+    </select>`;
+  });
+  wrap.innerHTML = html;
+
+  const selects = wrap.querySelectorAll('.rep-cat-select');
+  selects.forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      if(!sel.value) return;
+      selects.forEach(other=>{ if(other!==sel) other.value=''; });
+      renderReports(sel.value);
+      renderCompanyDetail(sel.value);
+    });
+  });
+
+  const resetLink = document.getElementById('rep-reset-link');
+  resetLink.addEventListener('click', (e)=>{ e.preventDefault(); resetRepFilter(); });
+}
+
+function renderCompanyDetail(co){
+  const panel = document.getElementById('rep-company-detail');
+  if(!co || co==='전체'){ panel.innerHTML=''; return; }
+  const rows = REPORTS.filter(r=>r.co===co).slice().sort((a,b)=> a.d.localeCompare(b.d));
+  if(rows.length===0){ panel.innerHTML=''; return; }
+  const latest = rows[rows.length-1];
+  const first = rows[0];
+  const codeStr = latest.code ? ` (${latest.code})` : '';
+
+  let timeline = [];
+  let prevOp = null;
+  rows.forEach(r=>{
+    if(r.op && r.op !== prevOp){ timeline.push({d:r.d, op:r.op}); prevOp = r.op; }
+  });
+  const timelineHtml = timeline.length
+    ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${t.op}</span>`).join('')
+    : '<span class="note">의견 변경 이력 없음</span>';
+
+  panel.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <div style="font-weight:700;font-size:15px">${co}${codeStr}</div>
+        <div class="note">보고서 ${rows.length}건 · ${first.d} ~ ${latest.d} · 최신 의견 ${latest.op ? `<span class="badge ${repBadgeClass(latest.op)}">${latest.op}</span>` : '—'}</div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="note" style="margin-bottom:6px">투자의견 변경 이력</div>
+        ${timelineHtml}
+      </div>
+      <div class="note" style="margin-top:10px">목표주가·분기 실적 추정치는 리포트 원문(PDF) 안에만 있어 아직 집계하지 않았습니다 — 필요하시면 PDF 본문에서 추출하는 작업을 추가로 진행할 수 있습니다.</div>
+    </div>
+  `;
+}
+
+async function loadReports(){
+  try{
+    const res = await fetch('reports.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    REPORTS = data.reports || [];
+    renderRepCategoryDropdowns();
+    renderReports('전체');
+    renderCompanyDetail('전체');
+    if(data.updated){
+      const note = document.getElementById('rep-source-note');
+      const dt = new Date(data.updated);
+      note.textContent += ` · 마지막 업데이트 ${dt.toLocaleString('ko-KR', {timeZone:'Asia/Seoul'})} KST`;
+    }
+  }catch(e){
+    document.getElementById('rep-table-wrap').innerHTML =
+      '<div class="card">reports.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions가 아직 한 번도 실행되지 않았다면 Actions 탭에서 워크플로를 수동 실행(Run workflow)해주세요.</div>';
+  }
+}
+loadReports();
+</script>
+</body>
+</html>
