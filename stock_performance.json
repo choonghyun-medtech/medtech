@@ -1,0 +1,2772 @@
+{
+ "updated": "2026-08-18T00:26:09Z",
+ "fx_to_krw": {
+  "USD": 1370,
+  "HKD": 175,
+  "CHF": 1540,
+  "JPY": 9,
+  "CNY": 190,
+  "GBP": 1730,
+  "EUR": 1540,
+  "KRW": 1
+ },
+ "count": 145,
+ "ok_count": 143,
+ "stocks": [
+  {
+   "ticker": "ABT",
+   "name": "Abbott",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 263.4,
+   "returns": {
+    "d1": -0.8,
+    "d5": 1.6,
+    "m1": 9.6,
+    "m3": 30.8,
+    "m6": 1.2,
+    "y1": -17.6,
+    "ytd": -11.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "SYK",
+   "name": "Stryker",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 174.3,
+   "returns": {
+    "d1": -2.2,
+    "d5": -4.1,
+    "m1": 3.7,
+    "m3": 12.6,
+    "m6": -8.5,
+    "y1": -10.3,
+    "ytd": -4.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "MDT",
+   "name": "Medtronic",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 158.9,
+   "returns": {
+    "d1": -0.7,
+    "d5": 1.3,
+    "m1": 8.9,
+    "m3": 17.9,
+    "m6": -12.0,
+    "y1": -4.9,
+    "ytd": -5.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "BSX",
+   "name": "Boston Scientific",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 102.1,
+   "returns": {
+    "d1": -0.8,
+    "d5": 1.9,
+    "m1": 16.8,
+    "m3": -4.9,
+    "m6": -33.8,
+    "y1": -47.3,
+    "ytd": -45.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "EW",
+   "name": "Edwards",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 71.6,
+   "returns": {
+    "d1": -0.9,
+    "d5": -1.3,
+    "m1": 5.9,
+    "m3": 13.9,
+    "m6": 16.3,
+    "y1": 16.8,
+    "ytd": 6.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "OM",
+   "name": "Outset Medical",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": 0.0,
+    "d5": -8.0,
+    "m1": 3.4,
+    "m3": 23.6,
+    "m6": -8.0,
+    "y1": -68.9,
+    "ytd": 21.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "IART",
+   "name": "Integra LifeSciences",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.9,
+   "returns": {
+    "d1": -3.7,
+    "d5": 3.5,
+    "m1": -8.3,
+    "m3": 28.2,
+    "m6": 62.3,
+    "y1": 23.2,
+    "ytd": 47.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "STAA",
+   "name": "STAAR Surgical",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.7,
+   "returns": {
+    "d1": -8.0,
+    "d5": -4.1,
+    "m1": -8.9,
+    "m3": -14.5,
+    "m6": 41.1,
+    "y1": -10.3,
+    "ytd": 2.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "BFLY",
+   "name": "Butterfly Network",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 3.3,
+   "returns": {
+    "d1": 2.0,
+    "d5": -7.0,
+    "m1": 36.3,
+    "m3": 116.8,
+    "m6": 179.3,
+    "y1": 367.4,
+    "ytd": 140.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "PLSE",
+   "name": "Pulse Biosciences",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 4.6,
+   "returns": {
+    "d1": 5.1,
+    "d5": 12.7,
+    "m1": 63.1,
+    "m3": 100.8,
+    "m6": 241.8,
+    "y1": 164.4,
+    "ytd": 249.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "LIVN",
+   "name": "LivaNova",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 6.1,
+   "returns": {
+    "d1": -0.9,
+    "d5": 6.9,
+    "m1": -0.4,
+    "m3": 16.3,
+    "m6": 24.5,
+    "y1": 55.7,
+    "ytd": 34.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "LNTH",
+   "name": "Lantheus Holdings",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 9.0,
+   "returns": {
+    "d1": -0.0,
+    "d5": -0.0,
+    "m1": -4.0,
+    "m3": 7.3,
+    "m6": 53.1,
+    "y1": 99.3,
+    "ytd": 50.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TFX",
+   "name": "Teleflex",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 7.7,
+   "returns": {
+    "d1": -3.0,
+    "d5": 0.1,
+    "m1": -1.1,
+    "m3": 3.1,
+    "m6": 25.7,
+    "y1": 8.8,
+    "ytd": 8.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "BAX",
+   "name": "Baxter International",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 18.4,
+   "returns": {
+    "d1": -3.1,
+    "d5": -6.7,
+    "m1": 14.6,
+    "m3": 44.8,
+    "m6": 19.0,
+    "y1": 13.8,
+    "ytd": 32.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "SOLV",
+   "name": "Solventum",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 20.2,
+   "returns": {
+    "d1": -2.0,
+    "d5": 4.6,
+    "m1": 6.3,
+    "m3": 17.1,
+    "m6": 13.5,
+    "y1": 20.2,
+    "ytd": 9.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "GMED",
+   "name": "Globus Medical",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 15.7,
+   "returns": {
+    "d1": -0.9,
+    "d5": 3.4,
+    "m1": 5.2,
+    "m3": 11.0,
+    "m6": -2.2,
+    "y1": 50.9,
+    "ytd": -2.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "COO",
+   "name": "Cooper Companies",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 20.1,
+   "returns": {
+    "d1": -1.4,
+    "d5": -1.6,
+    "m1": 4.7,
+    "m3": 25.3,
+    "m6": -6.2,
+    "y1": 9.5,
+    "ytd": -7.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "SNN",
+   "name": "Smith & Nephew",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 17.0,
+   "returns": {
+    "d1": -0.4,
+    "d5": -1.3,
+    "m1": -3.0,
+    "m3": -1.3,
+    "m6": -15.6,
+    "y1": -18.2,
+    "ytd": -9.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ZBH",
+   "name": "Zimmer Biomet",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 25.7,
+   "returns": {
+    "d1": -2.4,
+    "d5": 0.4,
+    "m1": 7.8,
+    "m3": 17.8,
+    "m6": 10.7,
+    "y1": -0.3,
+    "ytd": 9.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "PHG",
+   "name": "Philips",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 35.9,
+   "returns": {
+    "d1": -1.7,
+    "d5": -0.4,
+    "m1": -0.5,
+    "m3": -0.7,
+    "m6": -7.1,
+    "y1": -1.6,
+    "ytd": -0.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "GEHC",
+   "name": "GE HealthCare",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 45.1,
+   "returns": {
+    "d1": -1.8,
+    "d5": 0.8,
+    "m1": 10.2,
+    "m3": 17.3,
+    "m6": -12.4,
+    "y1": -1.0,
+    "ytd": -12.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ALC",
+   "name": "Alcon",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 48.0,
+   "returns": {
+    "d1": -2.4,
+    "d5": 0.9,
+    "m1": 2.6,
+    "m3": 16.9,
+    "m6": -8.3,
+    "y1": -2.2,
+    "ytd": -6.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "BDX",
+   "name": "Becton Dickinson",
+   "sector": "MedTech",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 68.0,
+   "returns": {
+    "d1": -0.7,
+    "d5": 1.4,
+    "m1": 15.1,
+    "m3": 23.4,
+    "m6": 12.2,
+    "y1": 23.7,
+    "ytd": 18.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "2160.HK",
+   "name": "Microport Cardioflow",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": -3.1,
+    "d5": 3.3,
+    "m1": 18.1,
+    "m3": -46.3,
+    "m6": -70.8,
+    "y1": -82.0,
+    "ytd": -78.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "9996.HK",
+   "name": "Peijia Medical",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 0.6,
+   "returns": {
+    "d1": -2.1,
+    "d5": -4.0,
+    "m1": 21.9,
+    "m3": -15.2,
+    "m6": -26.8,
+    "y1": -24.8,
+    "ytd": -19.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1501.HK",
+   "name": "Shanghai INT Medical",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 1.2,
+   "returns": {
+    "d1": -2.2,
+    "d5": 2.4,
+    "m1": -0.7,
+    "m3": -13.6,
+    "m6": 4.9,
+    "y1": 5.4,
+    "ytd": 11.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1789.HK",
+   "name": "AK Medical Holdings",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 1.1,
+   "returns": {
+    "d1": 1.6,
+    "d5": 2.2,
+    "m1": 1.1,
+    "m3": -6.6,
+    "m6": 1.3,
+    "y1": 6.4,
+    "ytd": 1.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1302.HK",
+   "name": "Lifetech Scientific",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 1.1,
+   "returns": {
+    "d1": 1.1,
+    "d5": -6.0,
+    "m1": 0.4,
+    "m3": -31.6,
+    "m6": -23.9,
+    "y1": -24.3,
+    "ytd": -10.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1066.HK",
+   "name": "Weigao Group",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 2.7,
+   "returns": {
+    "d1": 2.2,
+    "d5": 1.6,
+    "m1": 0.7,
+    "m3": 0.1,
+    "m6": -33.4,
+    "y1": -39.4,
+    "ytd": -30.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "0853.HK",
+   "name": "Microport Scientific",
+   "sector": "MedTech",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 2.3,
+   "returns": {
+    "d1": -1.1,
+    "d5": -1.7,
+    "m1": 1.0,
+    "m3": -19.0,
+    "m6": -44.0,
+    "y1": -49.4,
+    "ytd": -37.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "7747.T",
+   "name": "Asahi Intecc",
+   "sector": "MedTech",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 10.0,
+   "returns": {
+    "d1": 2.5,
+    "d5": 8.0,
+    "m1": 21.3,
+    "m3": 27.0,
+    "m6": 63.8,
+    "y1": 64.5,
+    "ytd": 41.7
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "7701.T",
+   "name": "Shimadzu",
+   "sector": "MedTech",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 10.7,
+   "returns": {
+    "d1": -1.3,
+    "d5": -0.6,
+    "m1": -2.4,
+    "m3": 17.6,
+    "m6": -2.0,
+    "y1": 10.7,
+    "ytd": -2.4
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "7733.T",
+   "name": "Olympus",
+   "sector": "MedTech",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 20.0,
+   "returns": {
+    "d1": 0.5,
+    "d5": -0.6,
+    "m1": 19.4,
+    "m3": 15.3,
+    "m6": 11.9,
+    "y1": 12.7,
+    "ytd": 2.5
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "4543.T",
+   "name": "Terumo",
+   "sector": "MedTech",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 34.8,
+   "returns": {
+    "d1": -0.1,
+    "d5": 1.7,
+    "m1": 18.6,
+    "m3": 35.7,
+    "m6": 27.9,
+    "y1": 6.5,
+    "ytd": 15.7
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "FRE.DE",
+   "name": "Fresenius",
+   "sector": "MedTech",
+   "market": "DE",
+   "currency": "EUR",
+   "market_cap_krw_tril": 40.5,
+   "returns": {
+    "d1": 0.6,
+    "d5": 0.0,
+    "m1": 12.7,
+    "m3": 22.8,
+    "m6": -4.4,
+    "y1": 1.3,
+    "ytd": -1.4
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "SHL.DE",
+   "name": "Siemens Healthineers",
+   "sector": "MedTech",
+   "market": "DE",
+   "currency": "EUR",
+   "market_cap_krw_tril": 67.2,
+   "returns": {
+    "d1": 0.7,
+    "d5": -0.5,
+    "m1": 13.1,
+    "m3": 15.9,
+    "m6": -7.7,
+    "y1": -13.8,
+    "ytd": -10.9
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "300760.SZ",
+   "name": "Mindray",
+   "sector": "MedTech",
+   "market": "CN",
+   "currency": "CNY",
+   "market_cap_krw_tril": 34.5,
+   "returns": {
+    "d1": -0.5,
+    "d5": -3.8,
+    "m1": 0.2,
+    "m3": -7.2,
+    "m6": -20.4,
+    "y1": -37.5,
+    "ytd": -25.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "300003.SZ",
+   "name": "Lepu Medical Technology",
+   "sector": "MedTech",
+   "market": "CN",
+   "currency": "CNY",
+   "market_cap_krw_tril": 4.5,
+   "returns": {
+    "d1": -1.2,
+    "d5": -3.0,
+    "m1": 1.1,
+    "m3": -7.3,
+    "m6": -29.6,
+    "y1": -33.8,
+    "ytd": -32.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "688271.SS",
+   "name": "Shanghai Lianying Medical",
+   "sector": "MedTech",
+   "market": "CN",
+   "currency": "CNY",
+   "market_cap_krw_tril": 16.9,
+   "returns": {
+    "d1": -0.6,
+    "d5": -4.3,
+    "m1": -2.3,
+    "m3": -3.7,
+    "m6": -15.8,
+    "y1": -29.5,
+    "ytd": -18.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "389650.KQ",
+   "name": "넥스트바이오메디컬",
+   "sector": "MedTech",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": -4.7,
+    "d5": -16.6,
+    "m1": -5.6,
+    "m3": -35.0,
+    "m6": -53.0,
+    "y1": -54.0,
+    "ytd": -56.9
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "376900.KQ",
+   "name": "로킷헬스케어",
+   "sector": "MedTech",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": -4.8,
+    "d5": -12.3,
+    "m1": -36.5,
+    "m3": -56.5,
+    "m6": -49.3,
+    "y1": 80.8,
+    "ytd": -50.6
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "DXCM",
+   "name": "Dexcom",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 45.9,
+   "returns": {
+    "d1": -1.1,
+    "d5": 1.3,
+    "m1": 15.8,
+    "m3": 45.2,
+    "m6": 27.0,
+    "y1": 31.9,
+    "ytd": 33.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "RDNT",
+   "name": "RadNet",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 8.2,
+   "returns": {
+    "d1": -0.6,
+    "d5": -1.7,
+    "m1": 22.1,
+    "m3": 35.6,
+    "m6": 17.7,
+    "y1": -0.4,
+    "ytd": 7.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "IRTC",
+   "name": "iRhythm",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 5.3,
+   "returns": {
+    "d1": -7.5,
+    "d5": -8.5,
+    "m1": 1.4,
+    "m3": 0.1,
+    "m6": -23.3,
+    "y1": -31.0,
+    "ytd": -33.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "HIMS",
+   "name": "Hims & Hers",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 9.1,
+   "returns": {
+    "d1": 1.6,
+    "d5": -9.9,
+    "m1": -12.9,
+    "m3": 14.3,
+    "m6": 21.8,
+    "y1": -49.6,
+    "ytd": -14.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TDOC",
+   "name": "Teladoc",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.6,
+   "returns": {
+    "d1": -4.0,
+    "d5": -7.6,
+    "m1": -30.6,
+    "m3": -3.4,
+    "m6": 38.3,
+    "y1": -15.4,
+    "ytd": -7.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "RMD",
+   "name": "ResMed",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 43.6,
+   "returns": {
+    "d1": -1.8,
+    "d5": 0.1,
+    "m1": 10.7,
+    "m3": 8.1,
+    "m6": -17.5,
+    "y1": -19.5,
+    "ytd": -10.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "PODD",
+   "name": "Insulet",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 13.3,
+   "returns": {
+    "d1": -2.5,
+    "d5": -2.2,
+    "m1": -14.8,
+    "m3": -11.8,
+    "m6": -42.5,
+    "y1": -54.8,
+    "ytd": -50.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "DOCS",
+   "name": "Doximity",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 6.0,
+   "returns": {
+    "d1": -1.1,
+    "d5": -4.3,
+    "m1": 13.9,
+    "m3": -7.3,
+    "m6": -26.4,
+    "y1": -66.5,
+    "ytd": -43.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TNDM",
+   "name": "Tandem Diabetes Care",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 2.1,
+   "returns": {
+    "d1": -2.0,
+    "d5": -0.6,
+    "m1": 36.6,
+    "m3": 50.7,
+    "m6": 17.2,
+    "y1": 88.8,
+    "ytd": 3.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "INSP",
+   "name": "Inspire Medical",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 2.3,
+   "returns": {
+    "d1": 0.2,
+    "d5": -4.9,
+    "m1": 11.0,
+    "m3": 32.0,
+    "m6": -16.1,
+    "y1": -24.3,
+    "ytd": -38.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "GDRX",
+   "name": "GoodRx Holdings",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.7,
+   "returns": {
+    "d1": -0.3,
+    "d5": 1.6,
+    "m1": 18.5,
+    "m3": 38.3,
+    "m6": 62.4,
+    "y1": -12.1,
+    "ytd": 35.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "MMED",
+   "name": "MiniMed Group",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 7.5,
+   "returns": {
+    "d1": -3.1,
+    "d5": -0.4,
+    "m1": 23.0,
+    "m3": 75.0,
+    "m6": null,
+    "y1": null,
+    "ytd": 5.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "HTFL",
+   "name": "HeartFlow",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 5.0,
+   "returns": {
+    "d1": -0.3,
+    "d5": 45.5,
+    "m1": 61.5,
+    "m3": 42.7,
+    "m6": 49.0,
+    "y1": 21.6,
+    "ytd": 44.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "HNGE",
+   "name": "Hinge Health",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 9.7,
+   "returns": {
+    "d1": -0.7,
+    "d5": -4.0,
+    "m1": 0.9,
+    "m3": 59.1,
+    "m6": 176.4,
+    "y1": 79.0,
+    "ytd": 92.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "OMDA",
+   "name": "Omada Health",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 2.0,
+   "returns": {
+    "d1": -1.2,
+    "d5": 0.3,
+    "m1": 0.3,
+    "m3": 61.7,
+    "m6": 75.8,
+    "y1": 6.4,
+    "ytd": 59.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "BBNX",
+   "name": "Beta Bionics",
+   "sector": "디지털헬스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.1,
+   "returns": {
+    "d1": -0.1,
+    "d5": 10.4,
+    "m1": 3.9,
+    "m3": 78.3,
+    "m6": 24.6,
+    "y1": -11.6,
+    "ytd": -40.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "2413.T",
+   "name": "M3",
+   "sector": "디지털헬스",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 10.4,
+   "returns": {
+    "d1": 0.3,
+    "d5": 13.0,
+    "m1": -9.8,
+    "m3": 32.3,
+    "m6": -7.7,
+    "y1": -24.9,
+    "ytd": -16.1
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "6618.HK",
+   "name": "JD Health International",
+   "sector": "디지털헬스",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 21.8,
+   "returns": {
+    "d1": -1.0,
+    "d5": -2.4,
+    "m1": 5.1,
+    "m3": -13.9,
+    "m6": -38.2,
+    "y1": -43.2,
+    "ytd": -30.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "0241.HK",
+   "name": "Alibaba Health Info Tech",
+   "sector": "디지털헬스",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 9.3,
+   "returns": {
+    "d1": 1.1,
+    "d5": -10.4,
+    "m1": -2.4,
+    "m3": -27.1,
+    "m6": -50.8,
+    "y1": -50.6,
+    "ytd": -37.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1833.HK",
+   "name": "Ping An Healthcare",
+   "sector": "디지털헬스",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 2.8,
+   "returns": {
+    "d1": -0.9,
+    "d5": -6.0,
+    "m1": -1.3,
+    "m3": -31.4,
+    "m6": -50.1,
+    "y1": -64.8,
+    "ytd": -49.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "458870.KS",
+   "name": "씨어스테크놀로지",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.9,
+   "returns": {
+    "d1": -1.0,
+    "d5": 4.1,
+    "m1": -26.0,
+    "m3": -43.0,
+    "m6": -55.2,
+    "y1": 24.1,
+    "ytd": -41.5
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "0088M0.KQ",
+   "name": "메쥬",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": -3.2,
+    "d5": -5.7,
+    "m1": -3.3,
+    "m3": -60.0,
+    "m6": null,
+    "y1": null,
+    "ytd": -67.8
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "041920.KS",
+   "name": "메디아나",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -1.5,
+    "d5": 7.5,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 1.7
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "099190.KS",
+   "name": "아이센스",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": 0.5,
+    "d5": 0.3,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 22.9
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "328130.KS",
+   "name": "루닛",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.8,
+   "returns": {
+    "d1": 0.4,
+    "d5": -2.8,
+    "m1": 5.2,
+    "m3": -44.6,
+    "m6": -54.0,
+    "y1": -48.2,
+    "ytd": -48.6
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "041830.KS",
+   "name": "인바디",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.8,
+   "returns": {
+    "d1": -2.7,
+    "d5": -9.0,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 18.8
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "380550.KQ",
+   "name": "뉴로핏",
+   "sector": "디지털헬스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": -1.6,
+    "d5": -3.4,
+    "m1": 9.1,
+    "m3": -51.7,
+    "m6": -69.0,
+    "y1": -45.7,
+    "ytd": -60.9
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "ISRG",
+   "name": "Intuitive Surgical",
+   "sector": "로보틱스",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 191.6,
+   "returns": {
+    "d1": -1.1,
+    "d5": -0.8,
+    "m1": 13.0,
+    "m3": -9.6,
+    "m6": -18.1,
+    "y1": -12.7,
+    "ytd": -30.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "2675.HK",
+   "name": "Edge Medical",
+   "sector": "로보틱스",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 2.6,
+   "returns": {
+    "d1": -2.2,
+    "d5": -3.1,
+    "m1": 2.3,
+    "m3": -28.0,
+    "m6": -39.4,
+    "y1": null,
+    "ytd": -33.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "2252.HK",
+   "name": "Microport MedBot",
+   "sector": "로보틱스",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 4.4,
+   "returns": {
+    "d1": -3.8,
+    "d5": 4.9,
+    "m1": 22.1,
+    "m3": -11.6,
+    "m6": -14.3,
+    "y1": -14.3,
+    "ytd": 0.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "098460.KS",
+   "name": "고영",
+   "sector": "로보틱스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 2.2,
+   "returns": {
+    "d1": 1.4,
+    "d5": 9.3,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 22.5
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "060280.KS",
+   "name": "큐렉소",
+   "sector": "로보틱스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.4,
+   "returns": {
+    "d1": 1.5,
+    "d5": 10.1,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 19.4
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "491000.KQ",
+   "name": "리브스메드",
+   "sector": "로보틱스",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 1.0,
+   "returns": {
+    "d1": -12.7,
+    "d5": -19.7,
+    "m1": 5.8,
+    "m3": -38.2,
+    "m6": -47.3,
+    "y1": null,
+    "ytd": -25.1
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "INMD",
+   "name": "InMode",
+   "sector": "미용",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.2,
+   "returns": {
+    "d1": -0.9,
+    "d5": -1.9,
+    "m1": -3.7,
+    "m3": 9.1,
+    "m6": 0.0,
+    "y1": 0.1,
+    "ytd": 1.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "SKIN",
+   "name": "Beauty Health",
+   "sector": "미용",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": -10.0,
+    "d5": -9.2,
+    "m1": -27.0,
+    "m3": -7.7,
+    "m6": -58.6,
+    "y1": -70.0,
+    "ytd": -57.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ESTA",
+   "name": "Establishment Labs",
+   "sector": "미용",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 3.1,
+   "returns": {
+    "d1": -3.6,
+    "d5": -1.0,
+    "m1": -17.0,
+    "m3": 7.2,
+    "m6": 10.8,
+    "y1": 85.2,
+    "ytd": 11.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "AIRS",
+   "name": "AirSculpt Technologies",
+   "sector": "미용",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": -10.1,
+    "d5": 12.2,
+    "m1": -30.7,
+    "m3": -25.8,
+    "m6": 59.8,
+    "y1": -61.5,
+    "ytd": 66.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "1696.HK",
+   "name": "Sisram Medical",
+   "sector": "미용",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -1.3,
+    "d5": 3.2,
+    "m1": -2.2,
+    "m3": -24.0,
+    "m6": -47.8,
+    "y1": -61.4,
+    "ytd": -47.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "214150.KS",
+   "name": "클래시스",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 2.4,
+   "returns": {
+    "d1": -5.5,
+    "d5": -18.3,
+    "m1": -17.7,
+    "m3": -32.6,
+    "m6": -50.4,
+    "y1": -31.2,
+    "ytd": -36.0
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "145020.KS",
+   "name": "휴젤",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 3.1,
+   "returns": {
+    "d1": -2.5,
+    "d5": -6.4,
+    "m1": 9.6,
+    "m3": -13.2,
+    "m6": -11.3,
+    "y1": -17.2,
+    "ytd": 8.9
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "214450.KS",
+   "name": "파마리서치",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 4.0,
+   "returns": {
+    "d1": -6.5,
+    "d5": 5.2,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 18.3
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "056090.KS",
+   "name": "시지메드텍",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": -0.7,
+    "d5": 5.8,
+    "m1": 5.2,
+    "m3": -35.9,
+    "m6": -26.7,
+    "y1": 2.0,
+    "ytd": -10.7
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "042520.KS",
+   "name": "한스바이오메드",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": 1.0,
+    "d5": -2.8,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": -8.1
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "290650.KS",
+   "name": "엘앤씨바이오",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 1.5,
+   "returns": {
+    "d1": 0.0,
+    "d5": -11.8,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": -23.0
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "278470.KS",
+   "name": "에이피알",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 14.3,
+   "returns": {
+    "d1": -2.6,
+    "d5": -1.7,
+    "m1": -3.2,
+    "m3": -8.4,
+    "m6": 40.9,
+    "y1": 75.3,
+    "ytd": 63.3
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "086900.KS",
+   "name": "메디톡스",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": 0.1,
+    "d5": -3.6,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 7.4
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "336570.KS",
+   "name": "원텍",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": -0.4,
+    "d5": 2.5,
+    "m1": -4.0,
+    "m3": -40.1,
+    "m6": -43.5,
+    "y1": -48.4,
+    "ytd": -35.6
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "394420.KQ",
+   "name": "리센스메디컬",
+   "sector": "미용",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.1,
+   "returns": {
+    "d1": -0.8,
+    "d5": 6.5,
+    "m1": -3.6,
+    "m3": -60.4,
+    "m6": null,
+    "y1": null,
+    "ytd": -36.9
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "TMO",
+   "name": "Thermo Fisher",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 296.6,
+   "returns": {
+    "d1": -0.5,
+    "d5": -2.4,
+    "m1": 10.0,
+    "m3": 27.5,
+    "m6": 8.0,
+    "y1": 20.7,
+    "ytd": -1.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "NTRA",
+   "name": "Natera",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 62.0,
+   "returns": {
+    "d1": 1.4,
+    "d5": -2.5,
+    "m1": 16.4,
+    "m3": 57.8,
+    "m6": 52.8,
+    "y1": 92.6,
+    "ytd": 37.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "GH",
+   "name": "Guardant Health",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 29.7,
+   "returns": {
+    "d1": 2.8,
+    "d5": -4.0,
+    "m1": 4.3,
+    "m3": 67.2,
+    "m6": 52.3,
+    "y1": 160.8,
+    "ytd": 58.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TEM",
+   "name": "Tempus AI",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 12.8,
+   "returns": {
+    "d1": -0.9,
+    "d5": -6.2,
+    "m1": -1.6,
+    "m3": 10.0,
+    "m6": -1.5,
+    "y1": -36.0,
+    "ytd": -17.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ILMN",
+   "name": "Illumina",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 40.0,
+   "returns": {
+    "d1": 1.2,
+    "d5": 0.7,
+    "m1": 3.5,
+    "m3": 32.6,
+    "m6": 44.6,
+    "y1": 103.4,
+    "ytd": 43.8
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "A",
+   "name": "Agilent Technologies",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 57.4,
+   "returns": {
+    "d1": -0.1,
+    "d5": -0.2,
+    "m1": 12.9,
+    "m3": 31.5,
+    "m6": 14.5,
+    "y1": 15.7,
+    "ytd": 7.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TECH",
+   "name": "Bio-Techne",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 15.5,
+   "returns": {
+    "d1": -0.0,
+    "d5": 0.4,
+    "m1": 0.4,
+    "m3": 52.7,
+    "m6": 9.9,
+    "y1": 30.1,
+    "ytd": 21.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "TXG",
+   "name": "10x Genomics",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 10.4,
+   "returns": {
+    "d1": 3.4,
+    "d5": -1.0,
+    "m1": 32.6,
+    "m3": 177.2,
+    "m6": 227.6,
+    "y1": 396.1,
+    "ytd": 248.9
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "WGS",
+   "name": "GeneDx Holdings",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 3.2,
+   "returns": {
+    "d1": -0.9,
+    "d5": 0.4,
+    "m1": 25.4,
+    "m3": 95.4,
+    "m6": -9.3,
+    "y1": -32.1,
+    "ytd": -41.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "PACB",
+   "name": "Pacific Biosciences",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": 5.2,
+    "d5": 5.2,
+    "m1": -16.0,
+    "m3": -5.5,
+    "m6": -29.7,
+    "y1": -5.5,
+    "ytd": -34.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "NEO",
+   "name": "NeoGenomics",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 2.9,
+   "returns": {
+    "d1": 1.4,
+    "d5": -2.8,
+    "m1": 10.6,
+    "m3": 84.7,
+    "m6": 43.4,
+    "y1": 109.3,
+    "ytd": 37.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "MYGN",
+   "name": "Myriad Genetics",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 0.4,
+   "returns": {
+    "d1": 0.7,
+    "d5": -6.2,
+    "m1": -50.6,
+    "m3": -25.1,
+    "m6": -40.2,
+    "y1": -57.8,
+    "ytd": -50.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "VCYT",
+   "name": "Veracyte",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 4.6,
+   "returns": {
+    "d1": 2.0,
+    "d5": -10.9,
+    "m1": -28.9,
+    "m3": 6.0,
+    "m6": 16.6,
+    "y1": 25.2,
+    "ytd": -0.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "CDNA",
+   "name": "CareDx",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 3.3,
+   "returns": {
+    "d1": 2.3,
+    "d5": -0.7,
+    "m1": 15.0,
+    "m3": 115.2,
+    "m6": 145.0,
+    "y1": 212.1,
+    "ytd": 142.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ADPT",
+   "name": "Adaptive Biotechnologies",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 5.4,
+   "returns": {
+    "d1": 0.1,
+    "d5": -0.6,
+    "m1": 12.1,
+    "m3": 82.9,
+    "m6": 43.2,
+    "y1": 84.0,
+    "ytd": 55.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "DHR",
+   "name": "Danaher",
+   "sector": "생명공학",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 195.2,
+   "returns": {
+    "d1": 0.1,
+    "d5": -3.2,
+    "m1": -0.6,
+    "m3": 21.9,
+    "m6": -6.1,
+    "y1": 2.2,
+    "ytd": -12.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ONT.L",
+   "name": "Oxford Nanopore",
+   "sector": "생명공학",
+   "market": "GB",
+   "currency": "GBP",
+   "market_cap_krw_tril": 2.1,
+   "returns": {
+    "d1": -3.3,
+    "d5": -2.3,
+    "m1": 5.3,
+    "m3": 1.2,
+    "m6": -16.6,
+    "y1": -22.4,
+    "ytd": -4.7
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "494120.KQ",
+   "name": "큐리오시스",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -4.0,
+    "d5": -3.2,
+    "m1": -19.8,
+    "m3": -58.6,
+    "m6": -68.7,
+    "y1": null,
+    "ytd": -55.9
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "475960.KQ",
+   "name": "토모큐브",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.5,
+   "returns": {
+    "d1": -4.8,
+    "d5": -11.7,
+    "m1": -6.3,
+    "m3": -34.9,
+    "m6": -24.6,
+    "y1": -30.7,
+    "ytd": -30.1
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "445680.KS",
+   "name": "큐리옥스바이오시스템즈",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.9,
+   "returns": {
+    "d1": 29.9,
+    "d5": 22.8,
+    "m1": 19.2,
+    "m3": -45.3,
+    "m6": -58.1,
+    "y1": -1.9,
+    "ytd": -57.7
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "100120.KS",
+   "name": "뷰웍스",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": 5.1,
+    "d5": 17.7,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 27.8
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "394800.KQ",
+   "name": "쓰리빌리언",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -2.9,
+    "d5": -4.7,
+    "m1": 2.5,
+    "m3": -46.6,
+    "m6": -60.5,
+    "y1": -14.8,
+    "ytd": -63.1
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "468530.KQ",
+   "name": "프로티나",
+   "sector": "생명공학",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.4,
+   "returns": {
+    "d1": -7.8,
+    "d5": 13.6,
+    "m1": 43.8,
+    "m3": -33.1,
+    "m6": -56.0,
+    "y1": 2.8,
+    "ytd": -65.9
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "ROG.SW",
+   "name": "Roche Holding",
+   "sector": "IVD",
+   "market": "CH",
+   "currency": "CHF",
+   "market_cap_krw_tril": null,
+   "returns": {
+    "d1": null,
+    "d5": null,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": null
+   },
+   "as_of": null,
+   "error": "no price history"
+  },
+  {
+   "ticker": "LH",
+   "name": "Labcorp",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 35.9,
+   "returns": {
+    "d1": 1.6,
+    "d5": 0.6,
+    "m1": 14.1,
+    "m3": 25.6,
+    "m6": 16.2,
+    "y1": 12.6,
+    "ytd": 28.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "RVTY",
+   "name": "Revvity",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 17.8,
+   "returns": {
+    "d1": -0.6,
+    "d5": 0.1,
+    "m1": 5.5,
+    "m3": 17.0,
+    "m6": 16.7,
+    "y1": 32.5,
+    "ytd": 18.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "HOLX",
+   "name": "Hologic",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": null,
+   "returns": {
+    "d1": null,
+    "d5": null,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": null
+   },
+   "as_of": null,
+   "error": "no price history"
+  },
+  {
+   "ticker": "BIO",
+   "name": "Bio-Rad Laboratories",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 13.0,
+   "returns": {
+    "d1": -0.3,
+    "d5": 0.2,
+    "m1": 16.7,
+    "m3": 47.0,
+    "m6": 18.6,
+    "y1": 26.7,
+    "ytd": 16.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "DGX",
+   "name": "Quest Diagnostics",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 35.6,
+   "returns": {
+    "d1": 0.5,
+    "d5": -0.9,
+    "m1": 11.8,
+    "m3": 23.8,
+    "m6": 22.5,
+    "y1": 23.6,
+    "ytd": 35.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "QDEL",
+   "name": "QuidelOrtho",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.4,
+   "returns": {
+    "d1": 2.0,
+    "d5": 6.0,
+    "m1": -16.1,
+    "m3": 31.1,
+    "m6": -49.2,
+    "y1": -50.5,
+    "ytd": -49.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "OPK",
+   "name": "OPKO Health",
+   "sector": "IVD",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 1.4,
+   "returns": {
+    "d1": -1.4,
+    "d5": -2.2,
+    "m1": 14.3,
+    "m3": 23.6,
+    "m6": 10.6,
+    "y1": -12.3,
+    "ytd": 7.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "6869.T",
+   "name": "Sysmex",
+   "sector": "IVD",
+   "market": "JP",
+   "currency": "JPY",
+   "market_cap_krw_tril": 10.1,
+   "returns": {
+    "d1": -0.2,
+    "d5": -6.8,
+    "m1": 19.0,
+    "m3": 37.5,
+    "m6": 26.1,
+    "y1": -1.0,
+    "ytd": 20.3
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "BIM.PA",
+   "name": "bioMerieux",
+   "sector": "IVD",
+   "market": "FR",
+   "currency": "EUR",
+   "market_cap_krw_tril": 13.2,
+   "returns": {
+    "d1": 0.1,
+    "d5": 0.3,
+    "m1": 1.7,
+    "m3": -2.1,
+    "m6": -25.0,
+    "y1": -36.7,
+    "ytd": -33.2
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "QIA.DE",
+   "name": "Qiagen",
+   "sector": "IVD",
+   "market": "DE",
+   "currency": "EUR",
+   "market_cap_krw_tril": 11.8,
+   "returns": {
+    "d1": -1.0,
+    "d5": 2.3,
+    "m1": 1.8,
+    "m3": 31.5,
+    "m6": -14.2,
+    "y1": -5.8,
+    "ytd": -7.8
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "096530.KS",
+   "name": "씨젠",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 1.6,
+   "returns": {
+    "d1": 0.8,
+    "d5": 11.2,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 12.6
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "137310.KS",
+   "name": "에스디바이오센서",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.8,
+   "returns": {
+    "d1": -2.9,
+    "d5": -4.1,
+    "m1": 1.0,
+    "m3": -20.0,
+    "m6": -29.5,
+    "y1": -38.4,
+    "ytd": -30.0
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "228760.KS",
+   "name": "지노믹트리",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": -0.7,
+    "d5": 4.7,
+    "m1": 9.0,
+    "m3": -11.3,
+    "m6": -42.8,
+    "y1": -37.0,
+    "ytd": -55.1
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "314930.KS",
+   "name": "바이오다인",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -1.8,
+    "d5": -0.6,
+    "m1": -3.2,
+    "m3": -26.1,
+    "m6": -37.6,
+    "y1": -43.7,
+    "ytd": -39.1
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "206640.KS",
+   "name": "바디텍메드",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -0.1,
+    "d5": 2.8,
+    "m1": 0.9,
+    "m3": 0.9,
+    "m6": -15.0,
+    "y1": -21.0,
+    "ytd": -14.9
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "064550.KS",
+   "name": "바이오니아",
+   "sector": "IVD",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -1.2,
+    "d5": 4.5,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 16.5
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "ALGN",
+   "name": "Align Technology",
+   "sector": "치과",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 16.7,
+   "returns": {
+    "d1": -5.6,
+    "d5": -2.8,
+    "m1": -3.2,
+    "m3": 3.2,
+    "m6": -2.5,
+    "y1": 36.7,
+    "ytd": 9.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "XRAY",
+   "name": "Dentsply Sirona",
+   "sector": "치과",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 3.1,
+   "returns": {
+    "d1": -3.5,
+    "d5": -4.0,
+    "m1": -20.4,
+    "m3": 1.7,
+    "m6": -10.7,
+    "y1": -11.8,
+    "ytd": -0.7
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "NVST",
+   "name": "Envista Holdings",
+   "sector": "치과",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 6.1,
+   "returns": {
+    "d1": -1.5,
+    "d5": -1.8,
+    "m1": 2.4,
+    "m3": 14.2,
+    "m6": 16.8,
+    "y1": 36.6,
+    "ytd": 27.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "STMN.SW",
+   "name": "Straumann",
+   "sector": "치과",
+   "market": "CH",
+   "currency": "CHF",
+   "market_cap_krw_tril": 24.7,
+   "returns": {
+    "d1": -1.9,
+    "d5": -2.4,
+    "m1": 1.3,
+    "m3": 20.2,
+    "m6": 2.5,
+    "y1": 15.5,
+    "ytd": 6.5
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "6699.HK",
+   "name": "Angelalign Technology",
+   "sector": "치과",
+   "market": "HK",
+   "currency": "HKD",
+   "market_cap_krw_tril": 2.9,
+   "returns": {
+    "d1": 0.6,
+    "d5": 3.4,
+    "m1": 27.6,
+    "m3": 10.8,
+    "m6": 36.3,
+    "y1": 43.9,
+    "ytd": 56.0
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "002690.SZ",
+   "name": "Hefei Meyer Optoelectronic",
+   "sector": "치과",
+   "market": "CN",
+   "currency": "CNY",
+   "market_cap_krw_tril": 2.6,
+   "returns": {
+    "d1": 1.8,
+    "d5": 0.6,
+    "m1": 7.3,
+    "m3": -5.5,
+    "m6": -24.9,
+    "y1": -24.0,
+    "ytd": -26.1
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "318060.KQ",
+   "name": "그래피",
+   "sector": "치과",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": 7.6,
+    "d5": 9.2,
+    "m1": 13.1,
+    "m3": -20.5,
+    "m6": -60.2,
+    "y1": 134.3,
+    "ytd": -22.4
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "043150.KS",
+   "name": "바텍",
+   "sector": "치과",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": 0.0,
+    "d5": 8.9,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": 19.4
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "039840.KS",
+   "name": "디오",
+   "sector": "치과",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.2,
+   "returns": {
+    "d1": -0.6,
+    "d5": -2.2,
+    "m1": null,
+    "m3": null,
+    "m6": null,
+    "y1": null,
+    "ytd": -2.6
+   },
+   "as_of": "2026-08-14",
+   "error": null
+  },
+  {
+   "ticker": "145720.KS",
+   "name": "덴티움",
+   "sector": "치과",
+   "market": "KR",
+   "currency": "KRW",
+   "market_cap_krw_tril": 0.3,
+   "returns": {
+    "d1": -1.0,
+    "d5": -5.5,
+    "m1": 0.1,
+    "m3": -20.2,
+    "m6": -16.2,
+    "y1": -31.1,
+    "ytd": -16.0
+   },
+   "as_of": "2026-08-18",
+   "error": null
+  },
+  {
+   "ticker": "UNH",
+   "name": "UnitedHealth",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 486.5,
+   "returns": {
+    "d1": -1.5,
+    "d5": -3.2,
+    "m1": -7.2,
+    "m3": -0.2,
+    "m6": 47.3,
+    "y1": 14.6,
+    "ytd": 17.6
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "CVS",
+   "name": "CVS Health",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 164.7,
+   "returns": {
+    "d1": -3.2,
+    "d5": -1.7,
+    "m1": -12.5,
+    "m3": -1.2,
+    "m6": 23.2,
+    "y1": 24.7,
+    "ytd": 17.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "ELV",
+   "name": "Elevance Health",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 115.9,
+   "returns": {
+    "d1": -2.5,
+    "d5": -1.9,
+    "m1": 4.6,
+    "m3": -0.8,
+    "m6": 17.5,
+    "y1": 20.8,
+    "ytd": 10.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "CI",
+   "name": "Cigna",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 99.7,
+   "returns": {
+    "d1": -2.6,
+    "d5": -1.1,
+    "m1": -2.2,
+    "m3": -7.8,
+    "m6": -3.2,
+    "y1": -4.5,
+    "ytd": -1.4
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "HUM",
+   "name": "Humana",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 63.2,
+   "returns": {
+    "d1": -1.2,
+    "d5": -0.4,
+    "m1": -3.9,
+    "m3": 30.1,
+    "m6": 98.6,
+    "y1": 47.7,
+    "ytd": 45.3
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  },
+  {
+   "ticker": "CNC",
+   "name": "Centene",
+   "sector": "Healthcare Provider",
+   "market": "US",
+   "currency": "USD",
+   "market_cap_krw_tril": 43.6,
+   "returns": {
+    "d1": -4.5,
+    "d5": -3.2,
+    "m1": -3.1,
+    "m3": 8.6,
+    "m6": 61.3,
+    "y1": 80.5,
+    "ytd": 54.2
+   },
+   "as_of": "2026-08-17",
+   "error": null
+  }
+ ]
+}
