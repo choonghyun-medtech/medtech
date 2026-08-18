@@ -88,6 +88,7 @@ tr:last-child td{border-bottom:none}
 .news-item:last-child{border-bottom:none}
 .news-item .t{font-size:13.5px; font-weight:600}
 .news-item .meta{font-size:11.5px; color:var(--dim); display:flex; gap:8px; align-items:center}
+.news-summary{font-size:12.5px; color:var(--dim); line-height:1.5}
 .cal-head{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:8px}
 .cal-head button{border:1px solid var(--border); background:var(--card); border-radius:6px; width:28px; height:28px; cursor:pointer; color:var(--text)}
 .cal-head .m{font-weight:700; font-size:14px; min-width:90px; text-align:center}
@@ -359,6 +360,10 @@ document.querySelectorAll('.toggle').forEach(group=>{
 let NEWS_DOMESTIC = [];
 let NEWS_GLOBAL = [];
 
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function renderNewsSection(wrapId, groups){
   const wrap = document.getElementById(wrapId);
   let html = '';
@@ -369,8 +374,14 @@ function renderNewsSection(wrapId, groups){
       const titleHtml = it.url
         ? `<a href="${it.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${it.t}</a>`
         : it.t;
+      // summary는 자동 요약 파이프라인(summarize_news.py, Claude Haiku)이 생성한
+      // "[맥락] ~했음." 성격의 텍스트라 escapeHtml로 이스케이프한 뒤 표시한다.
+      const summaryHtml = it.summary
+        ? `<div class="news-summary">${escapeHtml(it.summary).replace(/\n/g,'<br>')}</div>`
+        : '';
       html += `<div class="news-item">
         <div class="t"><span class="news-co">${it.co}</span><span class="news-ctx">[${it.ctx}]</span> ${titleHtml}</div>
+        ${summaryHtml}
         <div class="meta"><span>${it.date||''}</span><span>${it.src}</span></div>
       </div>`;
     });
@@ -383,19 +394,71 @@ function renderNewsSection(wrapId, groups){
 // ---- 검색 / 카테고리·기업 드롭다운 / 기간 필터 ----
 const NEWS_STATE = { q:'', company:'', category:'', from:null, to:null };
 
+// 드롭다운은 "현재 news.json에 실제로 기사가 있는 기업/카테고리"가 아니라 뉴스클리핑
+// 가이드라인.md / medtech_news_clipping_rules.md가 트래킹하기로 정한 전체 목록을 기준으로
+// 채운다 — 그래야 오늘 기사가 0건인 기업/카테고리도 드롭다운에 계속 보인다.
+// scripts/scrape_news.py의 NEWS_COMPANY_CATEGORY / CATEGORY_ORDER, scripts/scrape_news_global.py의
+// GLOBAL_COMPANY_CATEGORY / CATEGORY_ORDER와 정확히 동일해야 한다(md가 갱신되면 3곳 모두 같이 반영).
+const NEWS_TRACKED_DOMESTIC = {
+  "씨어스": "Digital Health", "메쥬": "Digital Health", "메디아나": "Digital Health",
+  "아이센스": "Digital Health", "루닛": "Digital Health", "인바디": "Digital Health",
+  "뉴로핏": "Digital Health", "GC메디아이": "Digital Health", "에어스메디컬": "Digital Health",
+  "스카이랩스": "Digital Health", "카카오헬스케어": "Digital Health",
+  "클래시스": "Aesthetics", "휴젤": "Aesthetics", "파마리서치": "Aesthetics",
+  "시지메드텍": "Aesthetics", "한스바이오메드": "Aesthetics", "엘앤씨바이오": "Aesthetics",
+  "에이피알": "Aesthetics", "메디톡스": "Aesthetics", "리센스메디컬": "Aesthetics",
+  "고영": "Robotics", "큐렉소": "Robotics", "리브스메드": "Robotics",
+  "현대차그룹": "Humanoid", "레인보우로보틱스": "Humanoid", "삼성전자": "Humanoid",
+  "두산로보틱스": "산업용·서비스 로봇", "HL홀딩스": "산업용·서비스 로봇",
+  "로보티즈": "로보틱스 밸류체인", "에스비비테크": "로보틱스 밸류체인",
+  "에스피지": "로보틱스 밸류체인", "나우로보틱스": "로보틱스 밸류체인",
+  "넥스트바이오메디컬": "Therapeutics", "로킷헬스케어": "Therapeutics", "시지바이오": "Therapeutics",
+  "씨젠": "IVD", "에스디바이오센서": "IVD", "지노믹트리": "IVD", "바이오다인": "IVD", "바디텍메드": "IVD",
+  "큐리오시스": "Bio-Processing", "토모큐브": "Bio-Processing",
+  "큐리옥스바이오시스템즈": "Bio-Processing", "뷰웍스": "Bio-Processing",
+  "그래피": "Dental", "바텍": "Dental", "디오": "Dental", "덴티움": "Dental",
+};
+const NEWS_CATEGORY_ORDER_DOMESTIC = [
+  "Digital Health", "Aesthetics", "Robotics", "Humanoid", "산업용·서비스 로봇",
+  "로보틱스 밸류체인", "Therapeutics", "IVD", "Bio-Processing", "Dental",
+];
+
+const NEWS_TRACKED_GLOBAL = {
+  "Abbott": "MedTech", "Stryker": "MedTech", "Medtronic": "MedTech",
+  "Boston Scientific": "MedTech", "Edwards Lifesciences": "MedTech",
+  "Intuitive Surgical": "Surgical Robot", "Edge Medical": "Surgical Robot", "Microport MedBot": "Surgical Robot",
+  "Thermo Fisher": "IVD", "Natera": "IVD", "Guardant Health": "IVD", "Tempus AI": "IVD",
+  "Dexcom": "Digital Health", "RadNet": "Digital Health", "iRhythm": "Digital Health",
+  "Hims & Hers": "Digital Health", "Teladoc": "Digital Health",
+  "UnitedHealth": "Healthcare Provider",
+  "Align Technology": "Cash Pay Market", "InMode": "Cash Pay Market", "Straumann": "Cash Pay Market",
+  "Tesla": "Humanoid", "Figure AI": "Humanoid", "Agility Robotics": "Humanoid",
+  "Boston Dynamics": "Humanoid", "Unitree": "Humanoid", "AgiBot": "Humanoid",
+  "UBTECH": "Humanoid", "Leju": "Humanoid",
+  "FANUC": "산업용·서비스 로봇", "ABB": "산업용·서비스 로봇", "KUKA": "산업용·서비스 로봇",
+  "Yaskawa": "산업용·서비스 로봇", "Universal Robots": "산업용·서비스 로봇",
+  "Estun": "산업용·서비스 로봇", "Inovance": "산업용·서비스 로봇",
+  "Harmonic Drive Systems": "로보틱스 밸류체인", "Nabtesco": "로보틱스 밸류체인",
+  "Schaeffler": "로보틱스 밸류체인", "Bosch": "로보틱스 밸류체인", "Magna": "로보틱스 밸류체인",
+};
+const NEWS_CATEGORY_ORDER_GLOBAL = [
+  "MedTech", "Surgical Robot", "IVD", "Digital Health", "Healthcare Provider", "Cash Pay Market",
+  "Humanoid", "산업용·서비스 로봇", "로보틱스 밸류체인",
+];
+
 function newsAllCompanies(){
-  const set = new Set();
-  [...NEWS_DOMESTIC, ...NEWS_GLOBAL].forEach(g=>g.items.forEach(it=>set.add(it.co)));
+  const set = new Set([...Object.keys(NEWS_TRACKED_DOMESTIC), ...Object.keys(NEWS_TRACKED_GLOBAL)]);
   return [...set].sort((a,b)=>a.localeCompare(b, 'ko'));
 }
 
-// 국내(Digital Health/Aesthetics/Robotics/Therapeutics/IVD/Bio-Processing/Dental)와
-// 해외(MedTech/Surgical Robot/IVD/Digital Health/Healthcare Provider/Cash Pay Market)
-// 카테고리를 합친 목록. Digital Health/IVD는 양쪽에 공통으로 있어 국내+해외 뉴스가 함께 보인다.
+// 국내 10개 + 해외 9개 카테고리를 순서 유지하며 중복 제거(IVD/Digital Health/Humanoid는
+// 양쪽에 공통으로 있어 국내+해외 뉴스가 같은 카테고리 버킷에 함께 보인다).
 function newsAllCategories(){
-  const set = new Set();
-  [...NEWS_DOMESTIC, ...NEWS_GLOBAL].forEach(g=>{ if(g.items.length) set.add(g.cat); });
-  return [...set];
+  const seen = new Set(); const out = [];
+  [...NEWS_CATEGORY_ORDER_DOMESTIC, ...NEWS_CATEGORY_ORDER_GLOBAL].forEach(c=>{
+    if(!seen.has(c)){ seen.add(c); out.push(c); }
+  });
+  return out;
 }
 
 function populateNewsCompanySelect(){
@@ -421,7 +484,7 @@ function filterNewsGroups(groups){
       if(NEWS_STATE.from && it.date && it.date < NEWS_STATE.from) return false;
       if(NEWS_STATE.to && it.date && it.date > NEWS_STATE.to) return false;
       if(q){
-        const hay = `${it.co} ${it.ctx} ${it.t} ${it.src}`.toLowerCase();
+        const hay = `${it.co} ${it.ctx} ${it.t} ${it.src} ${it.summary||''}`.toLowerCase();
         if(hay.indexOf(q) === -1) return false;
       }
       return true;
