@@ -23,7 +23,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests feedparser
+        run: pip install requests feedparser google-genai anthropic
 
       - name: Fetch domestic news (Naver API)
         env:
@@ -34,6 +34,13 @@ jobs:
       - name: Fetch global news (RSS, no API key needed)
         if: always()  # 국내(네이버 API) 수집이 실패해도 해외 RSS 수집은 독립적으로 계속 시도
         run: python scripts/scrape_news_global.py --out news.json
+
+      - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
+        if: always()  # 요약 생성이 실패해도 기사 목록 자체는 이미 저장된 상태를 유지
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/summarize_news.py --out news.json
 
       - name: Commit changes if any
         if: always()  # 둘 중 하나만 성공해도 그 결과는 커밋되도록
