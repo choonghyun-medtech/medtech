@@ -11,6 +11,13 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
     · Fierce Healthcare       https://www.fiercehealthcare.com/rss/xml
     · Healthcare Dive         https://www.healthcaredive.com/feeds/news/
       (Healthcare Provider/Digital Health 카테고리 보강용으로 추가)
+    · MedCity News            https://medcitynews.com/feed/
+      (2026-08-20 추가 — 하루 10건 이상 올라오는 고빈도 헬스테크 매체. MedTech/Digital
+      Health/Healthcare Provider 전반의 원천 기사 풀을 넓히기 위해 추가.)
+  [Digital Health 채널] — 이 카테고리가 유독 매칭 건수가 적어(Dexcom/RadNet/iRhythm/
+  Hims&Hers/Teladoc 5개사) 전담 고빈도 소스를 추가로 보강했다.
+    · MobiHealthNews          https://www.mobihealthnews.com/rss.xml
+      (2026-08-20 추가 — 하루 여러 건씩 올라오는 디지털헬스 전문 매체.)
   [Surgical Robot 채널] — 기존에는 이 카테고리를 전담하는 소스가 없어 수집량이 0에
   가까웠다. 신규 추가로 보강.
     · Surgical Robotics Technology https://www.surgicalroboticstechnology.com/feed/
@@ -21,11 +28,26 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
     · The Robot Report        https://www.therobotreport.com/feed
     · Robotics Tomorrow        https://www.roboticstomorrow.com/rss/news
     · TechCrunch(Robotics)     https://techcrunch.com/category/robotics/feed
+    · Robotics & Automation News https://roboticsandautomationnews.com/feed/
+      (2026-08-20 추가 — 하루 여러 건씩 올라오고, FANUC/ABB/KUKA/Schaeffler 등
+      산업용·서비스 로봇/로보틱스 밸류체인 카테고리 기업이 실제로 자주 언급되는 것을
+      확인했다. 예: "Hexagon starts training AEON humanoid robots at Schaeffler
+      factories" 기사가 실제로 수집 테스트에서 확인됨.)
+    · IEEE Spectrum(Robotics) https://spectrum.ieee.org/feeds/topic/robotics.rss
+      (2026-08-20 추가 — 게재 빈도는 낮지만(주 2~3건) 휴머노이드 관련 심층 기사 위주라
+      Humanoid 카테고리 보강용으로 추가.)
   (md가 언급한 massdevice.com/reuters.com/semafor.com/irobotnews.com/중국어 사이트는
-  RSS가 없거나 접속 확인이 안 돼 제외 — massdevice는 이전에도 빈 응답이라 제외했었다.
-  dental-tribune.com은 피드가 2021년 테스트 글 1건뿐이라 사실상 방치된 피드로 판단해
-  제외, 360dx.com은 rss.xml/공식 피드 URL 모두 빈 응답이라 제외, theaestheticguide.com은
-  피드 응답이 비어 있어(확인 불가) 제외했다.
+  RSS가 없거나 접속 확인이 안 돼 제외 — massdevice는 이전에도 빈 응답이라 제외했었다
+  (2026-08-20 재확인해도 여전히 빈 응답). dental-tribune.com은 피드가 2021년 테스트
+  글 1건뿐이라 사실상 방치된 피드로 판단해 제외, 360dx.com은 rss.xml/공식 피드 URL
+  모두 빈 응답이라 제외, theaestheticguide.com은 피드 응답이 비어 있어(확인 불가)
+  제외했다. prnewswire.com의 "All Health" 피드도 확인했으나 반려동물 사료/치과의원
+  마케팅 등 무관 보도자료가 대부분이고(회사명 매칭 필터가 있어 오탐 위험은 없지만)
+  우리 41개 추적 기업의 실제 적중률이 낮아 보류했다.
+  Google 뉴스 RSS 검색(news.google.com/rss/search, 기업명별 쿼리)도 검토했으나 이
+  환경의 웹 접근 정책상 접속 확인이 불가능해(빈 응답) 검증하지 못했다 — 회사명별
+  실시간 검색이라 커버리지가 가장 넓을 것으로 예상되는 방법이었던 만큼, 필요하면
+  나중에 별도로 재검토할 수 있다.
   Google site: 검색 기반 수집(md의 원래 방법)은 자동화 스크립트로 안정적으로 재현하기
   어려워, 검증된 RSS 피드가 있는 소스만 사용한다.)
 - 회사명 매칭은 단순 substring이 아니라 단어 경계 정규식으로 한다(예: "ABB"가 다른 영단어
@@ -67,6 +89,9 @@ FEEDS = [
     "https://www.fiercebiotech.com/rss/medtech/xml",
     "https://www.fiercehealthcare.com/rss/xml",
     "https://www.healthcaredive.com/feeds/news/",
+    "https://medcitynews.com/feed/",
+    # Digital Health 채널 보강 (2026-08-20)
+    "https://www.mobihealthnews.com/rss.xml",
     # Surgical Robot 채널 (기존에 전담 소스가 없었음)
     "https://www.surgicalroboticstechnology.com/feed/",
     # Aesthetics/Cash Pay 채널 보강
@@ -75,6 +100,8 @@ FEEDS = [
     "https://www.therobotreport.com/feed",
     "https://www.roboticstomorrow.com/rss/news",
     "https://techcrunch.com/category/robotics/feed",
+    "https://roboticsandautomationnews.com/feed/",
+    "https://spectrum.ieee.org/feeds/topic/robotics.rss",
 ]
 
 MAX_ITEMS_PER_CATEGORY = 6

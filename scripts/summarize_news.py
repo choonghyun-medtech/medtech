@@ -3,9 +3,9 @@
 scrape_news.py / scrape_news_global.py가 만든 news.json의 각 기사에 대해
 LLM으로 뉴스클리핑 가이드라인 형식의 요약을 생성해 붙인다.
 
-- 국내(domestic): 뉴스클리핑_가이드라인.md의 "- [맥락] ~했음." 형식 —
-  대괄호 맥락 태그(예: [실적],[수주],[리포트],[IR행사],[학회발표],[공시],[인허가] 등)
-  + 한 문장 "~했음." 요약. 결과는 각 기사의 "ctx"/"summary" 필드로 저장된다.
+- 국내(domestic): 맥락 태그([실적],[수주],[리포트],[IR행사],[학회발표],[공시],[인허가] 등)는
+  뉴스클리핑_가이드라인.md 그대로 유지하되("ctx" 필드), 요약 자체는 2026-08-20 사용자 요청으로
+  1줄 → 2줄로 확장했다(해외와 동일하게). "summary" 필드에 줄바꿈("\n")으로 구분된 2줄 저장.
 - 해외(global): medtech_news_clipping_rules.md의 "2줄 내용 요약" 형식 —
   대괄호 태그 없이, 영문 기사 내용을 한국어 2줄로 요약. "summary" 필드(줄바꿈 "\n" 포함)로 저장.
 
@@ -29,9 +29,10 @@ LLM으로 뉴스클리핑 가이드라인 형식의 요약을 생성해 붙인�
 import argparse
 import json
 import os
+import re
 import sys
 
-MAX_ITEMS_PER_CALL = 40  # 한 번의 API 호출에 담는 기사 수 상한(과금/타임아웃 방지)
+MAX_ITEMS_PER_CALL = 20  # 한 번의 API 호출에 담는 기사 수 상한(과금/타임아웃 방지, 응답 잘림 위험 감소)
 
 GEMINI_MODEL = "gemini-3.6-flash"  # gemini-2.5-flash가 신규 API 키에는 404(단종)로 막혀 교체.
 # 2026-08-20 기준 ai.google.dev/gemini-api/docs/models 공식 문서에서 무료 티어(Free of charge)로
@@ -50,12 +51,15 @@ DOMESTIC_SYSTEM = f"""당신은 국내 의료기기/디지털헬스 증권 애�
 각 기사에 대해:
 1. "ctx": 기사 내용에 맞는 짧은 맥락 태그(2~6글자, 대괄호 없이). 예시 어휘: {DOMESTIC_CTX_EXAMPLES}.
    위 예시에 맞는 게 없으면 내용에 맞는 다른 짧은 명사형 태그를 새로 만들어도 됩니다.
-2. "summary": 기사 제목과 설명만 근거로, 한 문장으로 핵심을 요약하고 "~했음." 또는 "~함."으로
-   끝나는 서술체 문장. 기사에 없는 내용을 추측하거나 지어내지 마세요. 20~60자 내외로 간결하게.
+2. "summary": 기사 제목과 설명만 근거로 한국어 2줄 요약. 두 줄은 "\\n"(개행문자)로 구분하고,
+   각 줄은 "~했음." 또는 "~함."으로 끝나는 완결된 서술체 문장(줄당 20~50자 내외)이어야 합니다.
+   첫 줄은 핵심 사실, 둘째 줄은 배경/맥락이나 세부 내용으로 나누세요. 기사에 없는 내용을
+   추측하거나 지어내지 마세요. 둘째 줄로 나눌 만한 추가 내용이 없으면 같은 사실을 다른
+   각도로 보충하지 말고 "추가 세부 내용 없음"이라고 있는 그대로 쓰세요(추측 금지).
    단순 주가 등락만 언급하고 이유가 없는 기사면 summary에 "이유 설명 없는 단순 주가 등락"이라고
    있는 그대로 쓰세요(추측 금지).
 
-출력 형식: [{{"i": 0, "ctx": "...", "summary": "...했음."}}, {{"i": 1, ...}}, ...]
+출력 형식: [{{"i": 0, "ctx": "...", "summary": "첫째 줄.\\n둘째 줄."}}, {{"i": 1, ...}}, ...]
 입력된 기사 개수와 순서(i)를 정확히 맞춰서 모두 답하세요."""
 
 GLOBAL_SYSTEM = """당신은 한국 증권사 애널리스트를 위한 해외 의료기기/헬스케어 뉴스 요약 보조원입니다.
@@ -71,19 +75,53 @@ summary에 "단순 주가/자금흐름 기사"라고 있는 그대로 쓰세요(
 
 
 def parse_json_array(text):
-    """모델이 배열 뒤에 군더더기를 붙이는 경우까지 방어적으로 파싱."""
+    """모델이 배열 뒤에 군더더기를 붙이거나(마크다운 코드펜스 등), 토큰 한도에 걸려
+    배열이 중간에 잘린 경우까지 최대한 방어적으로 파싱한다.
+    - 온전한 JSON이면 그대로 파싱.
+    - ```json ... ``` 코드펜스로 감싸져 있으면 벗겨내고 재시도.
+    - 배열이 끝까지 안 닫힌 채로 잘렸어도(예: 20개 중 14개까지만 응답) 완성된 항목까지는
+      살려서 부분 리스트로 반환한다 — 예전에는 배치 전체를 통째로 버려서, 한 배치(최대
+      20건) 안의 일부 기사만 요약이 빠지는 원인이 됐었다."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\s*", "", text)
+        text = re.sub(r"```\s*$", "", text)
+        text = text.strip()
+
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         pass
+
     start = text.find("[")
+    if start == -1:
+        return None
+
     end = text.rfind("]")
-    if start == -1 or end == -1 or end <= start:
-        return None
-    try:
-        return json.loads(text[start:end + 1])
-    except json.JSONDecodeError:
-        return None
+    if end != -1 and end > start:
+        try:
+            return json.loads(text[start:end + 1])
+        except json.JSONDecodeError:
+            pass
+
+    # 여기까지 왔으면 배열이 온전히 안 닫혀 있다는 뜻 — 앞에서부터 완성된 객체만 순서대로
+    # 최대한 살린다(응답이 잘리기 시작한 지점 이후는 자연히 누락되지만, 그 앞까지는 정상 반영).
+    decoder = json.JSONDecoder()
+    idx = start + 1
+    n = len(text)
+    items = []
+    while idx < n:
+        while idx < n and text[idx] in " \t\n\r,":
+            idx += 1
+        if idx >= n or text[idx] == "]":
+            break
+        try:
+            obj, end_idx = decoder.raw_decode(text, idx)
+        except json.JSONDecodeError:
+            break
+        items.append(obj)
+        idx = end_idx
+    return items if items else None
 
 
 # ---------------------------------------------------------------------------
@@ -107,9 +145,18 @@ class GeminiProvider:
             contents=user_content,
             config=types.GenerateContentConfig(
                 system_instruction=system,
-                temperature=0,
+                # gemini-3.x는 구글 공식 마이그레이션 가이드가 temperature를 1.0(기본값)에서
+                # 낮추지 말라고 권고한다("looping or degraded performance" 우려) — 예전
+                # gemini-2.5용으로 넣어뒀던 temperature=0을 그대로 뒀더니 일부 배치에서
+                # JSON이 이상하게 잘리는 문제가 있었는데, 이게 원인 중 하나로 보여 제거했다.
                 max_output_tokens=max_tokens,
                 response_mime_type="application/json",
+                # gemini-3.x 계열은 기본으로 "thinking"(내부 추론)을 켜고 도는데, 이 추론
+                # 토큰도 max_output_tokens 예산을 같이 잡아먹는다. 이 작업은 정해진 스키마로
+                # 요약만 뽑는 단순 작업이라 추론이 전혀 필요 없어서, thinking_budget=0으로
+                # 완전히 꺼서 예산을 전부 실제 응답(JSON)에 쓰게 한다 — 일부 기사만 요약이
+                # 빠지던 문제(응답이 중간에 잘리던 문제)의 주된 원인으로 추정.
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
             ),
         )
         return resp.text
@@ -166,35 +213,46 @@ def build_provider():
 
 
 def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply_result_fn, debug=False):
-    """items를 MAX_ITEMS_PER_CALL 단위로 나눠 호출. 실패한 배치는 건너뛰고 다음 배치는 계속 시도."""
+    """items를 MAX_ITEMS_PER_CALL 단위로 나눠 호출. API 호출 실패/응답 잘림으로 배치 일부가
+    비어도 최대 1회 재시도하고, 그래도 안 되는 항목만 건너뛴다(다음 배치는 계속 진행)."""
     for start in range(0, len(items), MAX_ITEMS_PER_CALL):
         chunk = items[start:start + MAX_ITEMS_PER_CALL]
-        payload = [build_payload_fn(idx, it) for idx, it in enumerate(chunk)]
-        user_content = (
-            "다음은 기사 목록입니다(JSON). 각 항목의 i, co, title, desc를 참고해 규칙에 맞는 "
-            "JSON 배열로만 답하세요.\n\n" + json.dumps(payload, ensure_ascii=False)
-        )
-        try:
-            raw = provider.call(system, user_content, max_tokens)
-        except Exception as e:
-            print(f"[WARN] {provider.name} 요약 API 호출 실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
-            continue
-        results = parse_json_array(raw)
-        if results is None or not isinstance(results, list):
-            print(f"[WARN] 요약 응답 JSON 파싱 실패(항목 {start}~{start+len(chunk)-1}), 원본 유지", file=sys.stderr)
-            if debug:
-                print(f"[DEBUG] 응답 원문 앞 300자: {raw[:300]}", file=sys.stderr)
-            continue
-        by_i = {r.get("i"): r for r in results if isinstance(r, dict)}
-        applied = 0
-        for idx, it in enumerate(chunk):
-            r = by_i.get(idx)
-            if not r:
+        pending = {idx: it for idx, it in enumerate(chunk)}  # 아직 요약을 못 받은 항목만 추적
+
+        for attempt in range(2):  # 1차 시도 + 실패분 1회 재시도
+            if not pending:
+                break
+            idx_list = sorted(pending.keys())
+            payload = [build_payload_fn(idx, pending[idx]) for idx in idx_list]
+            user_content = (
+                "다음은 기사 목록입니다(JSON). 각 항목의 i, co, title, desc를 참고해 규칙에 맞는 "
+                "JSON 배열로만 답하세요.\n\n" + json.dumps(payload, ensure_ascii=False)
+            )
+            try:
+                raw = provider.call(system, user_content, max_tokens)
+            except Exception as e:
+                tag = "재시도도 " if attempt else ""
+                print(f"[WARN] {provider.name} 요약 API 호출 {tag}실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
                 continue
-            apply_result_fn(it, r)
-            applied += 1
-        if debug:
-            print(f"[DEBUG] 배치 {start}~{start+len(chunk)-1}: {applied}/{len(chunk)}건 요약 적용", file=sys.stderr)
+            results = parse_json_array(raw)
+            if results is None or not isinstance(results, list):
+                tag = "재시도도 " if attempt else ""
+                print(f"[WARN] 요약 응답 JSON 파싱 {tag}실패(항목 {start}~{start+len(chunk)-1}), 원본 유지", file=sys.stderr)
+                if debug:
+                    print(f"[DEBUG] 응답 원문 앞 300자: {raw[:300]}", file=sys.stderr)
+                continue
+            by_i = {r.get("i"): r for r in results if isinstance(r, dict)}
+            for idx in idx_list:
+                r = by_i.get(idx)
+                if not r:
+                    continue
+                apply_result_fn(pending[idx], r)
+                del pending[idx]
+
+        applied = len(chunk) - len(pending)
+        if debug or pending:
+            print(f"[DEBUG] 배치 {start}~{start+len(chunk)-1}: {applied}/{len(chunk)}건 요약 적용"
+                  + (f" ({len(pending)}건은 재시도 후에도 실패, 원본 유지)" if pending else ""), file=sys.stderr)
 
 
 def summarize_domestic(provider, items, debug=False):
@@ -210,9 +268,10 @@ def summarize_domestic(provider, items, debug=False):
         if ctx:
             it["ctx"] = ctx[:12]
         if summary:
-            it["summary"] = summary[:200]
+            it["summary"] = summary[:300]  # 1줄→2줄로 늘리면서 상한도 global과 동일하게 300자로 상향
 
-    max_tokens = min(8000, 400 + 120 * min(len(items), MAX_ITEMS_PER_CALL))
+    # 2줄 요약으로 늘어난 만큼 항목당 토큰 배분도 global과 동일하게(120→150) 상향.
+    max_tokens = min(8000, 400 + 150 * min(len(items), MAX_ITEMS_PER_CALL))
     summarize_batch(provider, items, DOMESTIC_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
 
 
