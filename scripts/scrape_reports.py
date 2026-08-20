@@ -12,6 +12,10 @@ reports.json으로 저장한다.
     python scrape_reports.py                       # 기본 작성자로 실행
     python scrape_reports.py --author "홍길동"      # 다른 작성자 지정
     python scrape_reports.py --out other.json       # 출력 파일 지정
+    python scrape_reports.py --authors "서미화,김승민" --out reports_bio.json
+                                                     # 여러 작성자를 한 파일에 합쳐서 저장
+                                                     # (각 행에 "author" 필드가 붙는다 —
+                                                     # index.html '바이오' 드롭다운이 이 필드로 필터링)
 """
 import argparse
 import datetime
@@ -192,25 +196,54 @@ def scrape(author: str):
     return unique_rows
 
 
+def scrape_multi(authors):
+    """여러 작성자를 순서대로 검색해 한 리스트로 합친다. 각 행에 "author" 필드를 붙여
+    나중에 index.html이 작성자별로 필터링할 수 있게 한다. 작성자 한 명이 0건이어도
+    (예: 최근 발간이 뜸한 애널리스트) 나머지 작성자는 계속 진행 — 전체가 0건일 때만 실패."""
+    combined = []
+    any_success = False
+    for author in authors:
+        print(f"[INFO] 작성자 '{author}' 검색 시작", file=sys.stderr)
+        rows = scrape(author)
+        if rows is None or len(rows) == 0:
+            print(f"[WARN] 작성자 '{author}': 검색 결과 0건, 건너뜁니다", file=sys.stderr)
+            continue
+        any_success = True
+        for r in rows:
+            combined.append({**r, "author": author})
+        time.sleep(REQUEST_DELAY_SEC)
+    if not any_success:
+        return None
+    combined.sort(key=lambda r: r["d"], reverse=True)
+    return combined
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--author", default="김충현, CFA", help="검색할 작성자명 (게시판 표기와 정확히 일치해야 함)")
+    ap.add_argument("--authors", default=None, help="콤마로 구분된 여러 작성자명. 지정하면 --author는 무시되고, 각 행에 author 필드가 붙는다")
     ap.add_argument("--out", default="reports.json", help="출력 JSON 파일 경로")
     args = ap.parse_args()
 
-    rows = scrape(args.author)
-    if rows is None:
+    if args.authors:
+        authors = [a.strip() for a in args.authors.split(",") if a.strip()]
+        rows = scrape_multi(authors)
+        source_label = f"securities.miraeasset.com 리서치 리포트 게시판 · 작성자: {', '.join(authors)}"
+        err_label = args.out
+    else:
+        rows = scrape(args.author)
+        source_label = f"securities.miraeasset.com 리서치 리포트 게시판 · 작성자: {args.author}"
+        err_label = args.out
+
+    if rows is None or len(rows) == 0:
         # 검색 결과 0건 = 사이트 차단/구조 변경 등 이상 상황일 가능성이 높음.
-        # 기존 reports.json을 빈 데이터로 덮어쓰지 않도록 파일을 건드리지 않고 실패로 종료한다.
-        print("[ERROR] 검색 결과 0건이라 기존 reports.json을 보존하고 종료합니다 (파일 미변경).", file=sys.stderr)
-        sys.exit(1)
-    if len(rows) == 0:
-        print("[ERROR] 파싱된 리포트가 0건이라 기존 reports.json을 보존하고 종료합니다 (파일 미변경).", file=sys.stderr)
+        # 기존 파일을 빈 데이터로 덮어쓰지 않도록 건드리지 않고 실패로 종료한다.
+        print(f"[ERROR] 검색 결과 0건이라 기존 {err_label}을(를) 보존하고 종료합니다 (파일 미변경).", file=sys.stderr)
         sys.exit(1)
 
     payload = {
         "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"securities.miraeasset.com 리서치 리포트 게시판 · 작성자: {args.author}",
+        "source": source_label,
         "count": len(rows),
         "reports": rows,
     }

@@ -9,6 +9,13 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
     · MedTech Dive            https://www.medtechdive.com/feeds/news/
     · Fierce Biotech(Medtech) https://www.fiercebiotech.com/rss/medtech/xml
     · Fierce Healthcare       https://www.fiercehealthcare.com/rss/xml
+    · Healthcare Dive         https://www.healthcaredive.com/feeds/news/
+      (Healthcare Provider/Digital Health 카테고리 보강용으로 추가)
+  [Surgical Robot 채널] — 기존에는 이 카테고리를 전담하는 소스가 없어 수집량이 0에
+  가까웠다. 신규 추가로 보강.
+    · Surgical Robotics Technology https://www.surgicalroboticstechnology.com/feed/
+  [Aesthetics/Cash Pay 채널] — InMode/Align/Straumann 등 미용·자비부담 시장 뉴스 보강용.
+    · Dermatology Times       https://www.dermatologytimes.com/rss.xml
   [Robotics 채널] — medtech_news_clipping_rules.md(2026-08-18 최신본)에서 신규 추가된
   휴머노이드/산업용·서비스 로봇/로보틱스 밸류체인 3개 카테고리를 커버하기 위해 추가.
     · The Robot Report        https://www.therobotreport.com/feed
@@ -16,6 +23,9 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
     · TechCrunch(Robotics)     https://techcrunch.com/category/robotics/feed
   (md가 언급한 massdevice.com/reuters.com/semafor.com/irobotnews.com/중국어 사이트는
   RSS가 없거나 접속 확인이 안 돼 제외 — massdevice는 이전에도 빈 응답이라 제외했었다.
+  dental-tribune.com은 피드가 2021년 테스트 글 1건뿐이라 사실상 방치된 피드로 판단해
+  제외, 360dx.com은 rss.xml/공식 피드 URL 모두 빈 응답이라 제외, theaestheticguide.com은
+  피드 응답이 비어 있어(확인 불가) 제외했다.
   Google site: 검색 기반 수집(md의 원래 방법)은 자동화 스크립트로 안정적으로 재현하기
   어려워, 검증된 RSS 피드가 있는 소스만 사용한다.)
 - 회사명 매칭은 단순 substring이 아니라 단어 경계 정규식으로 한다(예: "ABB"가 다른 영단어
@@ -56,6 +66,11 @@ FEEDS = [
     "https://www.medtechdive.com/feeds/news/",
     "https://www.fiercebiotech.com/rss/medtech/xml",
     "https://www.fiercehealthcare.com/rss/xml",
+    "https://www.healthcaredive.com/feeds/news/",
+    # Surgical Robot 채널 (기존에 전담 소스가 없었음)
+    "https://www.surgicalroboticstechnology.com/feed/",
+    # Aesthetics/Cash Pay 채널 보강
+    "https://www.dermatologytimes.com/rss.xml",
     # Robotics 채널 (휴머노이드/산업용·서비스 로봇/로보틱스 밸류체인 공용 소스)
     "https://www.therobotreport.com/feed",
     "https://www.roboticstomorrow.com/rss/news",

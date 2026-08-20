@@ -303,6 +303,29 @@ def fetch_news_for_company(client_id: str, client_secret: str, company: str, cut
     return out
 
 
+def merge_cross_company_duplicates(items):
+    """서로 다른 회사 검색에서 각각 채택됐지만 실은 같은 기사(예: "K바이오 M&A 지형도" 같은
+    업종 전체를 다루는 기사가 클래시스 검색에서도, 휴젤 검색에서도 걸리는 경우)를 하나로 합친다.
+    URL이 같으면 무조건 동일 기사, URL이 달라도 제목이 유사하면(신디케이션 등) 동일 기사로 보고
+    co 필드를 "클래시스, 휴젤"처럼 콤마로 합쳐서 하나의 항목으로 표시한다."""
+    merged = []
+    for it in items:
+        dup_idx = next(
+            (i for i, m in enumerate(merged)
+             if m["url"] == it["url"] or is_duplicate_title(it["t"], m["t"])),
+            None,
+        )
+        if dup_idx is None:
+            merged.append(dict(it))
+            continue
+        existing = merged[dup_idx]
+        cos = [c.strip() for c in existing["co"].split(",")]
+        if it["co"] not in cos:
+            cos.append(it["co"])
+            existing["co"] = ", ".join(cos)
+    return merged
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="news.json")
@@ -348,8 +371,9 @@ def main():
 
     domestic = []
     for cat in CATEGORY_ORDER:
-        items = sorted(by_category.get(cat, []), key=lambda x: x["date"], reverse=True)[:MAX_ITEMS_PER_CATEGORY]
-        domestic.append({"cat": cat, "items": items})
+        items = sorted(by_category.get(cat, []), key=lambda x: x["date"], reverse=True)
+        items = merge_cross_company_duplicates(items)
+        domestic.append({"cat": cat, "items": items[:MAX_ITEMS_PER_CATEGORY]})
 
     payload = {
         "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
