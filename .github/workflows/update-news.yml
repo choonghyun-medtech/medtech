@@ -46,13 +46,21 @@ jobs:
         if: always()  # news.json이 이미 저장된 상태라면 요약 성공 여부와 무관하게 아카이빙
         run: python scripts/archive_news_snapshot.py --news news.json --history news_history.jsonl
 
+      - name: Analyze news flow trend (카테고리별 최근 7일/30일 흐름 종합, Gemini 무료 티어 우선)
+        if: always()  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/analyze_news_trend.py --history news_history.jsonl --out news_trend.json
+
       - name: Commit changes if any
-        if: always()  # 셋 중 하나만 성공해도 그 결과는 커밋되도록
+        if: always()  # 넷 중 하나만 성공해도 그 결과는 커밋되도록
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add news.json news_history.jsonl
-          if git diff --cached --quiet -- news.json news_history.jsonl; then
+          if [ -f news_trend.json ]; then git add news_trend.json; fi
+          if git diff --cached --quiet -- news.json news_history.jsonl news_trend.json 2>/dev/null; then
             echo "변경 없음, 커밋 건너뜀"
           else
             git commit -m "chore: news.json 자동 갱신 ($(date -u +%Y-%m-%d))"
