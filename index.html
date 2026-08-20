@@ -292,15 +292,27 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= INDUSTRY DATA ================= -->
   <section class="view" id="view-industry">
-    <div class="sec-h"><h2>수출 데이터</h2><span class="note">관세청/TRASS · 미용의료기기·필러류 HS코드 기준</span></div>
-    <div class="cards">
-      <div class="stat-card"><div class="lbl">이번달 수출액</div><div class="val">$142M</div><div class="delta up">▲ 18.2% YoY</div></div>
-      <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">+6.4%</div><div class="delta up">MoM</div></div>
-      <div class="stat-card"><div class="lbl">최대 수출국</div><div class="val">중국</div><div class="delta">비중 24%</div></div>
+    <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
+    <div class="chips" id="export-cat-chips"></div>
+    <div class="note" id="export-companies-note" style="margin:-2px 0 10px"></div>
+
+    <div class="cards" id="export-stat-cards"></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">월별 수출 추이 <span class="note" id="export-selected-label"></span></h2>
+      <div class="toggle" id="export-period-toggle">
+        <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+      </div>
     </div>
+    <div class="note" id="export-chart-note" style="margin:-4px 0 8px"></div>
     <div class="chart-box"><canvas id="exportChart"></canvas></div>
 
-    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 소비 · aesthetic-web 참고 구성</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 수출 비중</h2><span class="note">최근 24개월 누적 · 상위국 + 기타 · 수출금액(달러) 기준</span></div>
+    <div class="chart-box small"><canvas id="exportCountryChart"></canvas></div>
+
+    <div class="sec-h"><h2 style="font-size:13px">월별 데이터</h2><span class="note">단위: 천 달러</span></div>
+    <div id="export-table-wrap"></div>
+
+    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 소비 · aesthetic-web 참고 구성 (아직 미연동 — 샘플)</span></div>
     <div class="cards">
       <div class="stat-card"><div class="lbl">이번달 방한객</div><div class="val">98.4만명</div><div class="delta up">▲ 11.5% YoY</div></div>
       <div class="stat-card"><div class="lbl">피부과 소비액</div><div class="val">312억원</div><div class="delta up">▲ 7.8%</div></div>
@@ -1224,10 +1236,10 @@ async function loadTickerUniverse(){
 }
 loadTickerUniverse();
 
-mkBar('exportChart', ['3월','4월','5월','6월','7월','8월'], [
-  {label:'수출액 ($M)', data:[98,105,112,121,134,142], backgroundColor:'#2563eb'}
-]);
-
+// exportChart는 더 이상 목업이 아니라 export_data.json 기반 실데이터로 그린다
+// (아래 "수출 데이터(카테고리별)" 섹션의 loadExportData() 참고). 방한외국인 관련
+// 차트 4개는 아직 실제 데이터 연동 전이라(한국관광 데이터랩/신한카드 데이터 미연동)
+// 지금은 샘플 그대로 남겨둔다 — 섹션 note에도 "미연동 — 샘플"이라고 표시해 뒀다.
 mkBar('visitorChart', ['3월','4월','5월','6월','7월','8월'], [
   {label:'방한 외국인 (만명)', data:[74,81,86,90,93,98], backgroundColor:'#7c3aed'}
 ]);
@@ -1253,6 +1265,183 @@ mkBar('visitorContinentChart', ['3월','4월','5월','6월','7월','8월'], [
   {label:'오세아니아', data:[2,2,2,3,3,3], backgroundColor:'#f59e0b'},
   {label:'기타', data:[4,5,7,5,4,2], backgroundColor:'#8a919c'}
 ], {stacked:true});
+
+// ==================================================================
+// 수출 데이터(카테고리별) — 산업데이터 탭 "수출 데이터" 섹션.
+// scripts/scrape_export_data.py가 관세청 수출입무역통계(공공데이터포털)에서
+// 톡신/미용기기/임플란트/필러(리쥬란류) 등 카테고리별 월별 수출액(HS코드 기준)을
+// 가져와 export_data.json으로 저장한 것을 읽는다. 참고한 두 사이트의 구성을 합쳤다:
+// aesthetic-web(리쥬란류 단일 품목 · 시계열 위주)의 형식 + newsbot 커버리지 대시보드
+// (톡신/미용기기/임플란트 등 여러 카테고리 · 품목별/국가별/월별·분기별)의 카테고리 폭.
+// DATA_GO_KR_SERVICE_KEY가 아직 GitHub Secrets에 등록되지 않았으면 export_data.json
+// 자체가 없을 수 있어(404) 그 경우 안내 문구만 보여준다.
+let EXPORT_DATA = { categories: [] };
+const EXPORT_STATE = { cat: '', gran: 'month' };
+let exportChartInstance = null;
+let exportCountryChartInstance = null;
+
+function fmtUsdShort(dlr){
+  if(dlr == null) return 'N/A';
+  const abs = Math.abs(dlr);
+  if(abs >= 1e9) return (dlr/1e9).toFixed(2) + 'B';
+  if(abs >= 1e6) return (dlr/1e6).toFixed(1) + 'M';
+  if(abs >= 1e3) return (dlr/1e3).toFixed(0) + 'K';
+  return String(dlr);
+}
+
+function currentExportCategory(){
+  return EXPORT_DATA.categories.find(c => c.key === EXPORT_STATE.cat) || null;
+}
+
+// monthly = [{ym:"YYYY-MM", expDlr, expWgt}] (오래된→최신 정렬 가정) 를 월/분기/연 단위로 합산.
+function aggregateExportMonthly(monthly, gran){
+  if(!monthly || !monthly.length) return [];
+  if(gran === 'month') return monthly.map(m => ({ label: m.ym, expDlr: m.expDlr }));
+  const map = new Map();
+  monthly.forEach(m => {
+    const [y, mo] = m.ym.split('-').map(Number);
+    let key;
+    if(gran === 'quarter') key = `${y}Q${Math.ceil(mo / 3)}`;
+    else key = String(y); // 'year'
+    map.set(key, (map.get(key) || 0) + (m.expDlr || 0));
+  });
+  return Array.from(map.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, expDlr]) => ({ label, expDlr }));
+}
+
+// "YYYY-MM" 문자열의 1년 전 같은 달을 반환 (YoY 비교용)
+function ymMinusYear(ym){
+  const [y, m] = ym.split('-').map(Number);
+  return `${y - 1}-${String(m).padStart(2, '0')}`;
+}
+
+function topCountryForExport(cat){
+  if(!cat || !cat.byCountry) return null;
+  const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
+    name, total: rows.reduce((s, r) => s + (r.expDlr || 0), 0)
+  })).filter(c => c.total > 0);
+  if(!totals.length) return null;
+  const grand = totals.reduce((s, c) => s + c.total, 0);
+  totals.sort((a, b) => b.total - a.total);
+  const top = totals[0];
+  return { name: top.name, pct: grand ? (top.total / grand * 100) : 0 };
+}
+
+function renderExportCategoryChips(){
+  const wrap = document.getElementById('export-cat-chips');
+  const companiesNote = document.getElementById('export-companies-note');
+  if(!EXPORT_DATA.categories.length){
+    wrap.innerHTML = '<span class="note">export_data.json이 아직 없습니다 — DATA_GO_KR_SERVICE_KEY를 GitHub Secrets에 등록하면 다음 갱신 때부터 자동 생성됩니다.</span>';
+    if(companiesNote) companiesNote.textContent = '';
+    return;
+  }
+  wrap.innerHTML = EXPORT_DATA.categories.map(c =>
+    `<div class="chip${c.key === EXPORT_STATE.cat ? ' active' : ''}" data-key="${c.key}">${escapeHtml(c.label)}</div>`
+  ).join('');
+  wrap.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      EXPORT_STATE.cat = chip.dataset.key;
+      renderExportCategoryChips();
+      renderExportAll();
+    });
+  });
+  const cat = currentExportCategory();
+  if(companiesNote) companiesNote.textContent = cat && cat.companies ? `관련 종목: ${cat.companies}` : '';
+}
+
+function renderExportStatCards(){
+  const wrap = document.getElementById('export-stat-cards');
+  const cat = currentExportCategory();
+  if(!cat || !cat.monthly || !cat.monthly.length){ wrap.innerHTML = ''; return; }
+  const m = cat.monthly;
+  const last = m[m.length - 1];
+  const prev = m.length > 1 ? m[m.length - 2] : null;
+  const yoyRow = m.find(x => x.ym === ymMinusYear(last.ym));
+  const momPct = prev && prev.expDlr ? (last.expDlr - prev.expDlr) / prev.expDlr * 100 : null;
+  const yoyPct = yoyRow && yoyRow.expDlr ? (last.expDlr - yoyRow.expDlr) / yoyRow.expDlr * 100 : null;
+  const top = topCountryForExport(cat);
+  wrap.innerHTML = `
+    <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">$${fmtUsdShort(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
+    <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
+    <div class="stat-card"><div class="lbl">최대 수출국(최근24개월)</div><div class="val">${top ? top.name : 'N/A'}</div><div class="delta">${top ? '비중 ' + top.pct.toFixed(0) + '%' : ''}</div></div>
+  `;
+}
+
+function renderExportChart(){
+  const cat = currentExportCategory();
+  const note = document.getElementById('export-chart-note');
+  const label = document.getElementById('export-selected-label');
+  if(label) label.textContent = cat ? `· ${cat.label}` : '';
+  if(exportChartInstance){ exportChartInstance.destroy(); exportChartInstance = null; }
+  if(!cat || !cat.monthly || !cat.monthly.length){
+    if(note) note.textContent = '';
+    return;
+  }
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러) · HS ${cat.hsCodes.join(', ')}`;
+  const agg = aggregateExportMonthly(cat.monthly, EXPORT_STATE.gran);
+  exportChartInstance = mkBar('exportChart', agg.map(a => a.label), [
+    { label: `${cat.label} 수출액($)`, data: agg.map(a => a.expDlr), backgroundColor: '#2563eb' }
+  ]);
+}
+
+function renderExportCountryChart(){
+  const cat = currentExportCategory();
+  if(exportCountryChartInstance){ exportCountryChartInstance.destroy(); exportCountryChartInstance = null; }
+  if(!cat || !cat.byCountry || !Object.keys(cat.byCountry).length) return;
+  const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
+    name, total: rows.reduce((s, r) => s + (r.expDlr || 0), 0)
+  })).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
+  const colors = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626', '#0891b2', '#8a919c', '#be185d'];
+  exportCountryChartInstance = mkBar('exportCountryChart', totals.map(t => t.name), [
+    { label: `${cat.label} 수출액(최근24개월, $)`, data: totals.map(t => t.total), backgroundColor: totals.map((_, i) => colors[i % colors.length]) }
+  ]);
+}
+
+function renderExportTable(){
+  const wrap = document.getElementById('export-table-wrap');
+  const cat = currentExportCategory();
+  if(!cat || !cat.monthly || !cat.monthly.length){ wrap.innerHTML = ''; return; }
+  const rows = cat.monthly.slice().reverse().slice(0, 36); // 최신 36개(월 기준) — 화면이 너무 길어지지 않게
+  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액($)</th></tr></thead><tbody>
+    ${rows.map(r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+function renderExportAll(){
+  renderExportStatCards();
+  renderExportChart();
+  renderExportCountryChart();
+  renderExportTable();
+}
+
+document.querySelectorAll('#export-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#export-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    EXPORT_STATE.gran = b.dataset.gran;
+    renderExportChart();
+  });
+});
+
+async function loadExportData(){
+  try{
+    const res = await fetch('export_data.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('no export_data.json yet');
+    EXPORT_DATA = await res.json();
+  }catch(e){
+    EXPORT_DATA = { categories: [] };
+  }
+  const sourceNote = document.getElementById('export-source-note');
+  if(sourceNote && EXPORT_DATA.source) sourceNote.textContent = EXPORT_DATA.source;
+  if(EXPORT_DATA.categories && EXPORT_DATA.categories.length && !EXPORT_STATE.cat){
+    EXPORT_STATE.cat = EXPORT_DATA.categories[0].key;
+  }
+  renderExportCategoryChips();
+  renderExportAll();
+}
+loadExportData();
 
 // ==================================================================
 // 리서치 보고서 — 실데이터 (미래에셋증권 · 김충현, CFA 발간분)
