@@ -44,6 +44,43 @@ HEADERS = {
 # (이모지·문장부호로 시작하는 잡담은 자동 제외됨).
 FIRST_LINE_RE = re.compile(r"^([가-힣A-Za-z0-9&\s]{1,20}?)\s*[:：]\s*(.+)$")
 
+# ---- 코멘트 본문 정제(2026-08-21 추가) ----
+# 화면에는 "종목명: 제목"(이미 리포트 행 제목으로 따로 표시됨)·링크·컴플라이언스
+# 문구를 빼고 실제 코멘트 본문만 작은 글씨로 헤드라인 밑에 보여주고 싶다는 요청에 따라
+# 원문(comment)과 별도로 정제된 버전(comment_clean)을 만들어 둔다. 채널을 실제로
+# 확인해보니(2026-08-21, t.me/s/globalmedtech) 컴플라이언스 문구가 발간처마다 문구가
+# 조금씩 다르다(예: "*당사 Compliance 승인을 거친 보고서 요약 자료입니다..." vs
+# "* 컴플라이언스 검필" + "* 본 정보는 키움증권 리서치센터에서...") — 완벽히 하나의
+# 정규식으로 잡을 순 없어 키워드 기반으로 걸러낸다. 정제 후 내용이 하나도 안 남으면
+# (제목+링크+디스클레이머만 있던 메시지) 프론트엔드에서 "코멘트 본문 없음"으로 표시한다.
+_URL_RE = re.compile(r"<https?://\S+>|https?://\S+")
+_DIVIDER_RE = re.compile(r"^[━\-=_]{3,}$")
+_LABEL_LINK_RE = re.compile(r"^[\*\-•]?\s*(링크|보고서|report|link)\s*[:：]\s*$", re.IGNORECASE)
+_DISCLAIMER_KEYWORDS = (
+    "컴플라이언스", "compliance", "법적 책임", "법적책임", "증빙자료", "투자참고",
+    "투자권유", "투자판단", "손실은 거래당사자", "검필", "리서치센터에서", "투자결과",
+)
+
+
+def clean_telegram_comment(text: str) -> str:
+    """원문 메시지에서 첫 줄(종목명: 제목)·링크·컴플라이언스 문구를 제거하고
+    실제 코멘트 본문만 남긴다."""
+    lines = text.split("\n")
+    lines = lines[1:] if lines else []  # 첫 줄(종목명: 제목) 제거
+    out = []
+    for raw_line in lines:
+        line = _URL_RE.sub("", raw_line).strip()
+        if not line:
+            continue
+        if _DIVIDER_RE.match(line):
+            continue
+        if _LABEL_LINK_RE.match(line):
+            continue
+        if any(kw.lower() in line.lower() for kw in _DISCLAIMER_KEYWORDS):
+            continue
+        out.append(line)
+    return "\n".join(out).strip()
+
 
 def fetch_page(channel: str, before: int | None = None) -> str:
     url = f"https://t.me/s/{channel}"
@@ -162,7 +199,8 @@ def extract_report_comments(messages, known_companies: set):
             "date": date_str,
             "co": co_candidate,
             "title": title,
-            "comment": text,
+            "comment": text,  # 원문 전체(디버깅/백업용, 화면에는 안 씀)
+            "comment_clean": clean_telegram_comment(text),  # 화면 표시용(제목·링크·컴플라이언스 제거)
             "urls": m["links"],
             "telegram_url": m["url"],
             "message_id": m["id"],

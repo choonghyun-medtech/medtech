@@ -347,8 +347,18 @@ def main():
 
     ok_categories = sum(1 for items in by_category.values() if items)
     if ok_categories == 0:
-        print(f"[ERROR] 총 {total_entries}개 기사를 훑었지만 매칭된 회사가 0개라 기존 news.json을 보존하고 종료합니다.", file=sys.stderr)
-        sys.exit(1)
+        # 2026-08-21: 이전에는 sys.exit(1)로 처리해서 "0건 매칭"이 곧 워크플로 실패(빨간
+        # X)로 보였는데, 실제 실행 로그를 보니(272개 기사 훑었지만 0건 매칭) 이건 대부분
+        # 스크래퍼 고장이 아니라 그날 RSS에 41개 추적 기업 중 하나도 언급이 안 된, 그냥
+        # 조용한 뉴스일(quiet day)이었을 뿐이었다 — MedTech Dive/FierceHealthcare 등은
+        # FDA 인사·정책 뉴스처럼 특정 기업명이 안 나오는 기사 비중이 원래 높다. 이걸
+        # 매번 "실패"로 표시하면 실제 문제(피드 자체가 깨진 경우)와 구분이 안 돼 알림
+        # 피로만 커지므로, sys.exit(0)으로 낮추고 경고 로그만 남긴다. 기존 news.json
+        # 보존 동작은 그대로 유지(global_section을 아예 안 만들고 여기서 종료).
+        print(f"[WARN] 총 {total_entries}개 기사를 훑었지만 매칭된 회사가 0개입니다(그날 언급이 "
+              f"없었을 가능성이 높음 — 실제 스크래퍼 고장이면 [DEBUG] HTTP 상태/entries 로그를 "
+              f"확인). 기존 news.json의 해외 섹션을 그대로 보존하고 종료합니다.", file=sys.stderr)
+        sys.exit(0)
 
     global_section = []
     for cat in CATEGORY_ORDER:

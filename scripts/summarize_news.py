@@ -276,7 +276,15 @@ def summarize_domestic(provider, items, debug=False):
 
 
 def summarize_global(provider, items, debug=False):
-    if not items:
+    # search_news_global_claude.py(2026-08-21 추가)가 만든 기사는 검색 그라운딩 상태에서
+    # 이미 2줄 한국어 요약을 직접 생성해 "summary" 필드를 채워 넣는다 — 여기서 title/desc
+    # 만으로 다시 요약하면 오히려 근거가 약한 요약으로 덮어쓰게 되므로, 이미 summary가
+    # 채워진 항목은 건너뛴다(비용 절감 + 품질 유지 둘 다 목적).
+    todo = [it for it in items if not (it.get("summary") or "").strip()]
+    skipped = len(items) - len(todo)
+    if skipped and debug:
+        print(f"[DEBUG] global: 이미 요약이 있는 {skipped}건은 재요약 건너뜀", file=sys.stderr)
+    if not todo:
         return
 
     def build_payload(idx, it):
@@ -287,8 +295,8 @@ def summarize_global(provider, items, debug=False):
         if summary:
             it["summary"] = summary[:300]
 
-    max_tokens = min(8000, 400 + 150 * min(len(items), MAX_ITEMS_PER_CALL))
-    summarize_batch(provider, items, GLOBAL_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
+    max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
+    summarize_batch(provider, todo, GLOBAL_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
 
 
 def main():
