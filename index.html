@@ -199,6 +199,7 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div class="sec-h" style="margin-top:22px"><h2>🕐 뉴스 플로우</h2><span class="note">위 검색·카테고리·기업·기간 필터 기준 · news_history.jsonl 누적 데이터로 시간 흐름을 봅니다(당일부터 매일 자동 누적)</span></div>
+    <div id="news-flow-trend-wrap"></div>
     <div class="note" id="news-flow-summary" style="margin-bottom:8px"></div>
     <div id="news-flow-wrap"></div>
   </section>
@@ -738,6 +739,12 @@ function mkBar(id, labels, datasets, opts={}){
 // 같은 기간 필터가 실제로 의미가 있다 — news.json 자체는 매일 덮어써져서 하루치만 남는다).
 // jsonl 한 줄 = {"date","region","cat","co","t","url","ctx"?,"summary"?}
 let NEWS_HISTORY = [];
+// news_trend.json — scripts/analyze_news_trend.py가 news_history.jsonl을 카테고리별로 모아
+// LLM으로 "최근 N일간 이 카테고리에서 어떤 흐름이 두드러졌는지" 종합해 둔 결과.
+// {scope:"category", key:"Aesthetics", period_days:7|30, text:"...", n_articles:N}[]
+// 건수 집계가 아니라 실제 기사 내용을 근거로 한 서술형 종합이라, 카테고리 하나를 선택했을
+// 때만 의미가 있어(여러 카테고리를 합쳐 놓으면 종합 문장이 뒤섞여 의미가 없음) 그 경우에만 보여준다.
+let NEWS_TREND = [];
 
 function parseJsonl(text){
   const out = [];
@@ -767,7 +774,32 @@ function filterNewsHistory(){
   });
 }
 
+// 카테고리를 하나 선택했을 때만 그 카테고리의 AI 트렌드 종합(news_trend.json)을 보여준다.
+// 기업 단위 트렌드는 아직 생성하지 않으므로(analyze_news_trend.py 주석 참고), 기업만
+// 선택하고 카테고리는 "전체"인 경우엔 안내 문구만 보여준다.
+function renderNewsFlowTrend(){
+  const wrap = document.getElementById('news-flow-trend-wrap');
+  if(!wrap) return;
+  const cat = NEWS_STATE.category;
+  if(!cat){
+    wrap.innerHTML = '<div class="note" style="margin-bottom:10px">카테고리를 하나 선택하면 AI가 최근 기사 내용을 종합한 트렌드 요약을 보여줍니다(건수 집계가 아니라 실제 내용 기반).</div>';
+    return;
+  }
+  const matches = NEWS_TREND.filter(t=>t.scope==='category' && t.key===cat).slice().sort((a,b)=>a.period_days-b.period_days);
+  if(matches.length === 0){
+    wrap.innerHTML = `<div class="note" style="margin-bottom:10px">"${escapeHtml(cat)}" 카테고리는 아직 AI 트렌드 종합이 없습니다(최근 기사가 3건 미만이거나, update-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
+    return;
+  }
+  wrap.innerHTML = matches.map(t=>`
+    <div class="card" style="margin-bottom:10px;border-left:3px solid var(--accent)">
+      <div class="note" style="margin-bottom:4px">🧭 최근 ${t.period_days}일 AI 트렌드 종합 · ${escapeHtml(t.key)} · 기사 ${t.n_articles}건 근거</div>
+      <div style="font-size:13px;line-height:1.6">${escapeHtml(t.text)}</div>
+    </div>
+  `).join('');
+}
+
 function renderNewsFlow(){
+  renderNewsFlowTrend();
   const filtered = filterNewsHistory();
   const wrap = document.getElementById('news-flow-wrap');
   const summary = document.getElementById('news-flow-summary');
@@ -822,6 +854,19 @@ async function loadNewsHistory(){
   renderNewsFlow();
 }
 loadNewsHistory();
+
+async function loadNewsTrend(){
+  try{
+    const res = await fetch('news_trend.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    NEWS_TREND = data.trends || [];
+  }catch(e){
+    NEWS_TREND = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderNewsFlowTrend가 안내 문구를 보여줌
+  }
+  renderNewsFlowTrend();
+}
+loadNewsTrend();
 
 // 주가 흐름 추이 — 실데이터(stock_performance.json의 price_history) · 기간 토글(1/3/6/12개월)
 const MONTHS_TO_TRADING_DAYS = {1:22, 3:65, 6:130, 12:260};
@@ -1262,10 +1307,16 @@ function findTelegramComment(co, dateStr){
   });
   return best;
 }
+// 텔레그램 채널 메시지는 한 달 주기로 자동 삭제되도록 설정돼 있어 telegram_url이 곧
+// 죽은 링크가 된다 — 그래서 링크가 아니라 코멘트 원문 텍스트 자체를 표에 직접 보여준다.
+// 표 칸은 좁으니 짧게 잘라서 보여주고, 전체 문장은 title 속성(마우스 올리면 툴팁)과
+// 종목 상세 패널(renderCompanyDetail)에서 전문으로 확인할 수 있다.
 function telegramCellHtml(co, dateStr){
   const tg = findTelegramComment(co, dateStr);
   if(!tg) return '<span class="note">—</span>';
-  return `<a href="${tg.telegram_url}" target="_blank" rel="noopener" title="${escapeHtml(tg.comment)}" style="color:var(--accent);text-decoration:none;font-weight:600">💬 코멘트</a>`;
+  const oneLine = tg.comment.replace(/\s*\n\s*/g, ' ').trim();
+  const short = oneLine.length > 40 ? oneLine.slice(0, 40) + '…' : oneLine;
+  return `<span title="${escapeHtml(oneLine)}" style="font-size:12.5px">${escapeHtml(short)}</span>`;
 }
 
 function renderReports(filterCo){
@@ -1461,6 +1512,8 @@ function renderCompanyDetail(co){
 
   // 이 기업으로 매칭된 텔레그램 코멘트를 최신순으로 나열(±5일 매칭 기준은
   // findTelegramComment와 동일 로직이라, 여기서는 co가 같은 코멘트를 전부 보여준다).
+  // 채널 메시지가 한 달 주기로 자동 삭제되도록 설정돼 있어 링크는 곧 죽으므로,
+  // 링크 없이 코멘트 원문 텍스트만 그대로 보여준다.
   const tgComments = TELEGRAM_COMMENTS.filter(c=>c.co===co).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const tgHtml = tgComments.length
     ? `<div style="margin-top:12px">
@@ -1469,7 +1522,6 @@ function renderCompanyDetail(co){
           <div class="news-item" style="padding:6px 0">
             <div class="meta" style="margin-bottom:2px">${c.date||''}</div>
             <div style="font-size:12.5px;white-space:pre-wrap;line-height:1.5">${escapeHtml(c.comment)}</div>
-            <a href="${c.telegram_url}" target="_blank" rel="noopener" style="color:var(--accent);font-size:12px;text-decoration:none">텔레그램에서 보기 ↗</a>
           </div>`).join('')}
       </div>`
     : '';
