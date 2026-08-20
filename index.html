@@ -160,7 +160,6 @@ tr:last-child td{border-bottom:none}
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
     <button class="tab" data-view="industry">산업데이터</button>
     <button class="tab" data-view="reports">리서치 보고서</button>
-    <button class="tab" data-view="analysis">분석</button>
   </div>
 
   <!-- ================= NEWS ================= -->
@@ -198,6 +197,10 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h"><h2>Global MedTech/Robotics News</h2><span class="note">medtech·헬스케어·로보틱스 매체 RSS 기준 · 카테고리별 트래킹 기업</span></div>
       <div id="news-global-wrap"></div>
     </div>
+
+    <div class="sec-h" style="margin-top:22px"><h2>🕐 뉴스 플로우</h2><span class="note">위 검색·카테고리·기업·기간 필터 기준 · news_history.jsonl 누적 데이터로 시간 흐름을 봅니다(당일부터 매일 자동 누적)</span></div>
+    <div class="note" id="news-flow-summary" style="margin-bottom:8px"></div>
+    <div id="news-flow-wrap"></div>
   </section>
 
   <!-- ================= STOCK ================= -->
@@ -338,41 +341,6 @@ tr:last-child td{border-bottom:none}
     <div id="bio-table-wrap"></div>
   </section>
 
-  <!-- ================= ANALYSIS (뉴스 플로우 분석) ================= -->
-  <section class="view" id="view-analysis">
-    <div class="mock-flag" id="analysis-mock-flag">ⓘ news_history.jsonl 로딩 중...</div>
-    <div class="sec-h"><h2>뉴스 플로우 분석</h2><span class="note">일자별 트래킹 기업 뉴스 건수 · news_history.jsonl 누적 기준(update-news 워크플로가 매일 자동 적재)</span></div>
-
-    <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
-      <select id="ana-category-select" class="filter-select"><option value="">전체 카테고리</option></select>
-      <select id="ana-company-select" class="filter-select"><option value="">전체 기업</option></select>
-      <select id="ana-region-select" class="filter-select">
-        <option value="">국내+해외</option>
-        <option value="domestic">국내만</option>
-        <option value="global">해외만</option>
-      </select>
-      <input id="ana-date-from" type="date" class="filter-select" title="시작일" />
-      <span class="note">~</span>
-      <input id="ana-date-to" type="date" class="filter-select" title="종료일" />
-      <div class="toggle" id="ana-period-toggle">
-        <button data-days="30">최근 30일</button>
-        <button data-days="90" class="active">최근 90일</button>
-        <button data-days="all">전체</button>
-      </div>
-      <a href="#" id="ana-reset-link" class="note" style="text-decoration:underline">초기화</a>
-    </div>
-    <div class="note" id="ana-filter-summary" style="margin-bottom:10px"></div>
-
-    <div class="sec-h"><h2 style="font-size:13px">일자별 기사 건수 추이</h2><span class="note">건수 · 필터 적용 기준</span></div>
-    <div class="chart-box"><canvas id="analysisChart"></canvas></div>
-
-    <div class="sec-h"><h2 style="font-size:13px">기업별 건수 Top 10</h2><span class="note">필터 적용 기간 내 누적</span></div>
-    <div id="ana-top-companies" class="card" style="padding:0 16px"></div>
-
-    <div class="sec-h"><h2 style="font-size:13px">카테고리별 건수</h2><span class="note">필터 적용 기간 내 누적</span></div>
-    <div id="ana-top-categories" class="card" style="padding:0 16px"></div>
-  </section>
-
 </div>
 
 <script>
@@ -464,7 +432,10 @@ function renderNewsSection(wrapId, groups){
 }
 
 // ---- 검색 / 카테고리·기업 드롭다운 / 기간 필터 ----
-const NEWS_STATE = { q:'', company:'', category:'', from:null, to:null };
+// region은 국내/해외 서브탭 상태 — HTML 기본값이 "국내" active라 초기값도 'domestic'으로 맞춘다.
+// 뉴스 목록 자체(filterNewsGroups)는 domestic/global 배열이 이미 분리돼 있어 region을 안 쓰지만,
+// 아래 뉴스 플로우 섹션(NEWS_HISTORY 기반)은 하나로 합쳐진 배열이라 region으로 걸러야 한다.
+const NEWS_STATE = { q:'', company:'', category:'', region:'domestic', from:null, to:null };
 
 // 드롭다운은 "현재 news.json에 실제로 기사가 있는 기업/카테고리"가 아니라 뉴스클리핑
 // 가이드라인.md / medtech_news_clipping_rules.md가 트래킹하기로 정한 전체 목록을 기준으로
@@ -586,10 +557,14 @@ function applyNewsFilters(){
       : '';
     summary.textContent = `총 ${total}건 표시${rangeLabel}`;
   }
+
+  // 뉴스 플로우 섹션도 같은 필터(NEWS_STATE) 기준으로 같이 갱신 — renderNewsFlow는 파일 뒤쪽에
+  // 정의돼 있지만 function 선언이라 호이스팅되어 여기서 호출 가능하다.
+  if(typeof renderNewsFlow === 'function') renderNewsFlow();
 }
 
 function setNewsPeriod(days){
-  const today = new Date('2026-08-18'); // 대시보드 기준일 — 실연동 시 서버 today로 교체
+  const today = new Date(); // 실제 오늘 날짜 기준(이전엔 '2026-08-18'로 고정돼 있던 버그 수정)
   const fromInput = document.getElementById('news-date-from');
   const toInput = document.getElementById('news-date-to');
   if(days === null){ // 전체
@@ -617,10 +592,12 @@ function setNewsPeriod(days){
         regionTabs.querySelectorAll('.region-tab').forEach(x=>x.classList.remove('active'));
         b.classList.add('active');
         const region = b.dataset.region;
+        NEWS_STATE.region = region; // 뉴스 플로우 섹션도 이 값 기준으로 국내/해외 전환
         const domesticBlock = document.getElementById('news-domestic-block');
         const globalBlock = document.getElementById('news-global-block');
         if(domesticBlock) domesticBlock.style.display = region === 'domestic' ? '' : 'none';
         if(globalBlock) globalBlock.style.display = region === 'global' ? '' : 'none';
+        if(typeof renderNewsFlow === 'function') renderNewsFlow();
       });
     });
   }
@@ -752,13 +729,15 @@ function mkBar(id, labels, datasets, opts={}){
 }
 
 // ==================================================================
-// 분석 탭 — news_history.jsonl(scripts/archive_news_snapshot.py가 update-news 워크플로에서
-// 매일 적재)을 시계열로 집계해 카테고리/기업별 뉴스 플로우를 보여준다.
-// jsonl 한 줄 = {"date":"YYYY-MM-DD","region":"domestic|global","cat":"...","co":"...","t":"...","url":"..."}
-// co는 뉴스 화면과 동일하게 콤마로 여러 기업이 합쳐진 경우가 있어 newsItemCompanies()로 분리한다.
+// 뉴스 플로우 — 산업·기업 뉴스 탭 안에 내장. 별도 탭/필터를 새로 만들지 않고 뉴스 탭 맨
+// 위의 검색·카테고리·기업·기간 필터(NEWS_STATE)와 국내/해외 서브탭(region)을 그대로 공유한다.
+// 목적은 건수 집계가 아니라 "그 기간 동안 무슨 일이 있었는지" 시간순 서술형 다이제스트를
+// 보여주는 것 — 그래서 차트/랭킹 대신 날짜별로 요약문(ctx/summary)을 나열한다.
+// 데이터는 오늘 하루치만 담는 news.json이 아니라, scripts/archive_news_snapshot.py가
+// update-news 워크플로에서 매일 누적 적재하는 news_history.jsonl을 쓴다(그래야 "최근 7일/30일"
+// 같은 기간 필터가 실제로 의미가 있다 — news.json 자체는 매일 덮어써져서 하루치만 남는다).
+// jsonl 한 줄 = {"date","region","cat","co","t","url","ctx"?,"summary"?}
 let NEWS_HISTORY = [];
-let analysisChartInstance = null;
-const ANALYSIS_STATE = { category:'', company:'', region:'', from:null, to:null };
 
 function parseJsonl(text){
   const out = [];
@@ -770,144 +749,66 @@ function parseJsonl(text){
   return out;
 }
 
-function populateAnalysisSelects(){
-  const catSel = document.getElementById('ana-category-select');
-  if(catSel) catSel.innerHTML = '<option value="">전체 카테고리</option>' + newsAllCategories().map(c=>`<option value="${c}">${c}</option>`).join('');
-  const coSel = document.getElementById('ana-company-select');
-  if(coSel) coSel.innerHTML = '<option value="">전체 기업</option>' + newsAllCompanies().map(co=>`<option value="${co}">${co}</option>`).join('');
-}
-
-function filterHistory(){
-  const { category, company, region, from, to } = ANALYSIS_STATE;
+// 뉴스 목록(filterNewsGroups)과 동일한 조건(검색어/카테고리/기업/기간)에 국내·해외
+// 서브탭(NEWS_STATE.region)까지 적용해 history를 필터링한다.
+function filterNewsHistory(){
+  const q = NEWS_STATE.q.trim().toLowerCase();
   return NEWS_HISTORY.filter(r=>{
-    if(region && r.region !== region) return false;
-    if(category && r.cat !== category) return false;
-    if(company && !newsItemCompanies(r).includes(company)) return false;
-    if(from && r.date && r.date < from) return false;
-    if(to && r.date && r.date > to) return false;
+    if(NEWS_STATE.region && r.region !== NEWS_STATE.region) return false;
+    if(NEWS_STATE.category && r.cat !== NEWS_STATE.category) return false;
+    if(NEWS_STATE.company && !newsItemCompanies(r).includes(NEWS_STATE.company)) return false;
+    if(NEWS_STATE.from && r.date && r.date < NEWS_STATE.from) return false;
+    if(NEWS_STATE.to && r.date && r.date > NEWS_STATE.to) return false;
+    if(q){
+      const hay = `${r.co||''} ${r.cat||''} ${r.t||''} ${r.summary||''}`.toLowerCase();
+      if(hay.indexOf(q) === -1) return false;
+    }
     return true;
   });
 }
 
-function renderAnalysis(){
-  const filtered = filterHistory();
+function renderNewsFlow(){
+  const filtered = filterNewsHistory();
+  const wrap = document.getElementById('news-flow-wrap');
+  const summary = document.getElementById('news-flow-summary');
+  if(!wrap) return;
 
-  // 일자별 건수
+  if(filtered.length === 0){
+    wrap.innerHTML = '<div class="note" style="padding:8px 0">조건에 맞는 뉴스 흐름이 없습니다 (오늘부터 매일 자동으로 쌓이니, 데이터가 누적되면 채워집니다).</div>';
+    if(summary) summary.textContent = '';
+    return;
+  }
+
   const byDate = {};
-  filtered.forEach(r=>{ if(r.date) byDate[r.date] = (byDate[r.date]||0) + 1; });
-  const labels = Object.keys(byDate).sort();
-  const data = labels.map(d=>byDate[d]);
+  filtered.forEach(r=>{ (byDate[r.date] = byDate[r.date] || []).push(r); });
+  const dates = Object.keys(byDate).sort().reverse();
 
-  if(analysisChartInstance){ analysisChartInstance.destroy(); analysisChartInstance = null; }
-  const canvas = document.getElementById('analysisChart');
-  if(canvas){
-    analysisChartInstance = mkLine('analysisChart', labels, [
-      { label:'기사 건수', data, borderColor:'#4f8cff', backgroundColor:'rgba(79,140,255,.15)', tension:.25, fill:true, pointRadius:2 }
-    ]);
-  }
+  let html = '';
+  dates.forEach(d=>{
+    const items = byDate[d];
+    html += `<div class="news-cat-h">${d} <span class="note">(${items.length}건)</span></div><div class="card" style="padding:0 16px">`;
+    items.forEach(r=>{
+      const regionTag = r.region === 'global' ? 'Global' : '국내';
+      const ctxTag = r.ctx ? `<span class="news-ctx">[${escapeHtml(r.ctx)}]</span> ` : '';
+      const titleHtml = r.url
+        ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
+        : escapeHtml(r.t);
+      const summaryHtml = r.summary
+        ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}</div>` : '';
+      html += `<div class="news-item">
+        <div class="t"><span class="news-co">${escapeHtml(r.co||'')}</span><span class="note" style="margin-right:4px">${regionTag}·${escapeHtml(r.cat||'')}</span>${ctxTag}${titleHtml}</div>
+        ${summaryHtml}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  wrap.innerHTML = html;
 
-  // 기업별 Top10
-  const byCompany = {};
-  filtered.forEach(r=>{ newsItemCompanies(r).forEach(co=>{ byCompany[co] = (byCompany[co]||0) + 1; }); });
-  const topCompanies = Object.entries(byCompany).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const coWrap = document.getElementById('ana-top-companies');
-  if(coWrap){
-    coWrap.innerHTML = topCompanies.length
-      ? topCompanies.map(([co,n])=>`<div class="news-item" style="display:flex;justify-content:space-between"><span>${escapeHtml(co)}</span><span class="note">${n}건</span></div>`).join('')
-      : '<div class="note" style="padding:8px 0">조건에 맞는 기사가 없습니다.</div>';
-  }
-
-  // 카테고리별 건수
-  const byCat = {};
-  filtered.forEach(r=>{ if(r.cat) byCat[r.cat] = (byCat[r.cat]||0) + 1; });
-  const catOrder = newsAllCategories().filter(c=>byCat[c]);
-  const catWrap = document.getElementById('ana-top-categories');
-  if(catWrap){
-    catWrap.innerHTML = catOrder.length
-      ? catOrder.map(c=>`<div class="news-item" style="display:flex;justify-content:space-between"><span>${escapeHtml(c)}</span><span class="note">${byCat[c]}건</span></div>`).join('')
-      : '<div class="note" style="padding:8px 0">조건에 맞는 기사가 없습니다.</div>';
-  }
-
-  const summary = document.getElementById('ana-filter-summary');
   if(summary){
-    const rangeLabel = (ANALYSIS_STATE.from || ANALYSIS_STATE.to)
-      ? ` · ${ANALYSIS_STATE.from||'처음'} ~ ${ANALYSIS_STATE.to||'오늘'}`
-      : ' · 전체 기간';
+    const rangeLabel = (NEWS_STATE.from || NEWS_STATE.to) ? ` · ${NEWS_STATE.from||'처음'} ~ ${NEWS_STATE.to||'오늘'}` : '';
     summary.textContent = `총 ${filtered.length}건${rangeLabel}`;
   }
 }
-
-function setAnalysisPeriod(days){
-  const today = new Date();
-  const fromInput = document.getElementById('ana-date-from');
-  const toInput = document.getElementById('ana-date-to');
-  if(days === null){
-    ANALYSIS_STATE.from = null; ANALYSIS_STATE.to = null;
-    if(fromInput) fromInput.value = '';
-    if(toInput) toInput.value = '';
-  } else {
-    const from = new Date(today); from.setDate(from.getDate() - days);
-    ANALYSIS_STATE.from = from.toISOString().slice(0,10);
-    ANALYSIS_STATE.to = today.toISOString().slice(0,10);
-    if(fromInput) fromInput.value = ANALYSIS_STATE.from;
-    if(toInput) toInput.value = ANALYSIS_STATE.to;
-  }
-  renderAnalysis();
-}
-
-(function initAnalysisFilters(){
-  populateAnalysisSelects();
-
-  const catSel = document.getElementById('ana-category-select');
-  if(catSel) catSel.addEventListener('change', ()=>{ ANALYSIS_STATE.category = catSel.value; renderAnalysis(); });
-
-  const coSel = document.getElementById('ana-company-select');
-  if(coSel) coSel.addEventListener('change', ()=>{ ANALYSIS_STATE.company = coSel.value; renderAnalysis(); });
-
-  const regionSel = document.getElementById('ana-region-select');
-  if(regionSel) regionSel.addEventListener('change', ()=>{ ANALYSIS_STATE.region = regionSel.value; renderAnalysis(); });
-
-  const periodToggle = document.getElementById('ana-period-toggle');
-  if(periodToggle){
-    periodToggle.querySelectorAll('button').forEach(b=>{
-      b.addEventListener('click', ()=>{
-        periodToggle.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
-        b.classList.add('active');
-        const days = b.dataset.days === 'all' ? null : Number(b.dataset.days);
-        setAnalysisPeriod(days);
-      });
-    });
-  }
-
-  const fromInput = document.getElementById('ana-date-from');
-  const toInput = document.getElementById('ana-date-to');
-  [fromInput, toInput].forEach(inp=>{
-    if(!inp) return;
-    inp.addEventListener('change', ()=>{
-      if(periodToggle) periodToggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-      ANALYSIS_STATE.from = fromInput.value || null;
-      ANALYSIS_STATE.to = toInput.value || null;
-      renderAnalysis();
-    });
-  });
-
-  const resetLink = document.getElementById('ana-reset-link');
-  if(resetLink) resetLink.addEventListener('click', (e)=>{
-    e.preventDefault();
-    ANALYSIS_STATE.category=''; ANALYSIS_STATE.company=''; ANALYSIS_STATE.region=''; ANALYSIS_STATE.from=null; ANALYSIS_STATE.to=null;
-    if(catSel) catSel.value='';
-    if(coSel) coSel.value='';
-    if(regionSel) regionSel.value='';
-    if(fromInput) fromInput.value='';
-    if(toInput) toInput.value='';
-    if(periodToggle){
-      periodToggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-      const d90 = periodToggle.querySelector('[data-days="90"]');
-      if(d90) d90.classList.add('active');
-    }
-    setAnalysisPeriod(90);
-  });
-})();
 
 async function loadNewsHistory(){
   try{
@@ -915,16 +816,10 @@ async function loadNewsHistory(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const text = await res.text();
     NEWS_HISTORY = parseJsonl(text);
-    populateAnalysisSelects();
-    setAnalysisPeriod(90); // 기본값: 최근 90일(툴바 기본 선택과 동일)
-    const flag = document.getElementById('analysis-mock-flag');
-    if(flag) flag.textContent = `ⓘ news_history.jsonl 누적 ${NEWS_HISTORY.length}건 기준 (update-news 워크플로가 매일 자동 적재)`;
   }catch(e){
-    NEWS_HISTORY = [];
-    renderAnalysis();
-    const flag = document.getElementById('analysis-mock-flag');
-    if(flag) flag.textContent = 'ⓘ news_history.jsonl이 아직 없습니다 — update-news 워크플로가 한 번 이상 실행되면 자동으로 쌓입니다.';
+    NEWS_HISTORY = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderNewsFlow가 안내 문구를 보여줌
   }
+  renderNewsFlow();
 }
 loadNewsHistory();
 
