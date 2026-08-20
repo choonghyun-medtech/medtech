@@ -69,7 +69,9 @@ NITEMTRADE_URL = "https://apis.data.go.kr/1220000/nitemtrade/getNitemtradeList"
 
 START_YYMM = "201501"  # "최대한 길게" 요청에 따른 기본 시작월(2015-01) — 필요시 조정 가능
 REQUEST_DELAY_SEC = 0.15
-REQUEST_TIMEOUT = 20
+REQUEST_TIMEOUT = 30  # data.go.kr가 해외 리전(GitHub Actions 러너)에서 느릴 때가 있어 20→30초로 상향
+REQUEST_RETRIES = 3  # 타임아웃/연결오류 시 재시도 횟수(최초 시도 포함)
+REQUEST_RETRY_BACKOFF_SEC = 3  # 재시도 간 대기(시도 횟수에 비례해 증가)
 MAX_CONSECUTIVE_EMPTY_YEARS = 2  # 이 횟수만큼 연달아 빈 연도가 나오면 그 이전은 그만 조회
 
 # 카테고리 정의 — 라벨/HS코드(합산 대상 복수 가능)/참고 종목.
@@ -129,8 +131,30 @@ def yymm_range_chunks(start_yymm: str, end_yymm: str):
 
 
 def api_get(url, params, debug=False):
-    resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
-    resp.raise_for_status()
+    """data.go.kr는 GitHub Actions 러너(해외 리전)에서 호출할 때 TLS 핸드셰이크가
+    느리거나 가끔 타임아웃되는 경우가 실제로 관측됐다(2026-08-21, 첫 실행 로그에서
+    ReadTimeoutError 확인). 네트워크 예외를 잡지 않고 그대로 올리면 그 호출 하나 때문에
+    스크립트 전체가 죽어버려(exit 1) 이후 카테고리는 아예 시도조차 못 하게 된다 —
+    다른 스크립트들과 동일하게 "이 호출만 실패로 처리하고 계속 진행"하도록 재시도 +
+    예외 캐치를 추가했다.
+
+    반환값은 (items, raw_text, failed) 3-튜플이다. failed=True는 "이 기간에 데이터가
+    없다"가 아니라 "네트워크/파싱/API 오류로 이 호출 자체가 실패했다"는 뜻이라, 호출부에서
+    "여기부터는 과거 자료가 없다"는 판단(MAX_CONSECUTIVE_EMPTY_YEARS)에 실패 케이스를
+    섞지 않도록 구분해서 쓴다. 그렇게 안 하면 data.go.kr가 일시적으로 불안정할 때
+    "자료가 실제로는 있는데 접속이 안 돼서" 조기 중단해버리는 오판을 할 수 있다."""
+    for attempt in range(REQUEST_RETRIES):
+        try:
+            resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
+            resp.raise_for_status()
+            break
+        except requests.RequestException as e:
+            if debug or attempt == REQUEST_RETRIES - 1:
+                print(f"[WARN] {url} 호출 실패(시도 {attempt+1}/{REQUEST_RETRIES}): {e}", file=sys.stderr)
+            if attempt < REQUEST_RETRIES - 1:
+                time.sleep(REQUEST_RETRY_BACKOFF_SEC * (attempt + 1))
+    else:
+        return None, None, True
     text = resp.text
     if debug:
         print(f"[DEBUG] {url} params={ {k:v for k,v in params.items() if k!='serviceKey'} } "
@@ -139,19 +163,19 @@ def api_get(url, params, debug=False):
         root = ET.fromstring(text)
     except ET.ParseError as e:
         print(f"[WARN] XML 파싱 실패: {e} — 응답 앞 300자: {text[:300]}", file=sys.stderr)
-        return None, text
+        return None, text, True
     result_code_el = root.find(".//resultCode")
     result_code = result_code_el.text if result_code_el is not None else None
     if result_code not in (None, "00"):
         msg_el = root.find(".//resultMsg")
         msg = msg_el.text if msg_el is not None else "?"
         print(f"[WARN] API 오류 코드 {result_code}: {msg}", file=sys.stderr)
-        return None, text
+        return None, text, True
     items = []
     for item_el in root.findall(".//item"):
         row = {child.tag: (child.text or "").strip() for child in item_el}
         items.append(row)
-    return items, text
+    return items, text, False
 
 
 def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=False):
@@ -160,8 +184,11 @@ def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=Fal
     monthly = {}  # ym(YYYY-MM) -> {"expDlr": int, "expWgt": int}
     chunks = yymm_range_chunks(start_yymm, end_yymm)
     consecutive_empty = 0
+    failed_calls = 0
+    total_calls = 0
     for chunk_start, chunk_end in chunks:
         chunk_had_data = False
+        chunk_all_failed = True
         for hs in hs_codes:
             params = {
                 "serviceKey": service_key,
@@ -171,8 +198,13 @@ def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=Fal
                 "numOfRows": "999",
                 "pageNo": "1",
             }
-            items, _ = api_get(ITEMTRADE_URL, params, debug=debug)
+            total_calls += 1
+            items, _, failed = api_get(ITEMTRADE_URL, params, debug=debug)
             time.sleep(REQUEST_DELAY_SEC)
+            if failed:
+                failed_calls += 1
+                continue
+            chunk_all_failed = False  # 이 청크에서 최소 하나는 실패가 아니라 "확인된 응답"이었음
             if not items:
                 continue
             for row in items:
@@ -186,14 +218,22 @@ def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=Fal
                 slot["expDlr"] += exp_dlr
                 slot["expWgt"] += exp_wgt
                 chunk_had_data = True
+        if chunk_all_failed:
+            # 이 청크의 모든 HS코드 호출이 네트워크/API 오류로 실패 — "자료가 없다"는 판단에
+            # 넣지 않고 그냥 다음 청크로 넘어간다(조기 중단 카운터를 건드리지 않음).
+            continue
         if chunk_had_data:
             consecutive_empty = 0
         else:
             consecutive_empty += 1
             if consecutive_empty >= MAX_CONSECUTIVE_EMPTY_YEARS:
-                print(f"[INFO] {chunk_start}~ 구간이 {consecutive_empty}개 청크 연속 빈 응답 — "
+                print(f"[INFO] {chunk_start}~ 구간이 {consecutive_empty}개 청크 연속 (확인된) 빈 응답 — "
                       f"이 카테고리는 여기까지가 조회 가능한 과거 한계로 보고 중단", file=sys.stderr)
                 break
+    if failed_calls:
+        print(f"[WARN] 이 카테고리 호출 {total_calls}건 중 {failed_calls}건이 네트워크/API 오류로 실패함 "
+              f"— 해당 기간은 실제로 자료가 없는 게 아니라 이번 실행에서 못 가져온 것일 수 있음 "
+              f"(다음 실행에서 재시도됨)", file=sys.stderr)
     return sorted(({"ym": ym, **v} for ym, v in monthly.items()), key=lambda r: r["ym"])
 
 
@@ -212,8 +252,10 @@ def fetch_country_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=F
                 "numOfRows": "999",
                 "pageNo": "1",
             }
-            items, _ = api_get(NITEMTRADE_URL, params, debug=debug)
+            items, _, failed = api_get(NITEMTRADE_URL, params, debug=debug)
             time.sleep(REQUEST_DELAY_SEC)
+            if failed and debug:
+                print(f"[DEBUG] 국가별 호출 실패(무시하고 계속): {cnty_name}/{hs}", file=sys.stderr)
             if not items:
                 continue
             for row in items:
