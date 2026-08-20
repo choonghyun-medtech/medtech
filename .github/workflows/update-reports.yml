@@ -27,15 +27,28 @@ jobs:
       - name: Scrape reports
         run: python scripts/scrape_reports.py --out reports.json
 
+      - name: Scrape bio analyst reports (서미화, 김승민 · '바이오' 드롭다운용)
+        if: always()  # 김충현 CFA 리포트 수집이 실패해도 독립적으로 계속 시도
+        run: python scripts/scrape_reports.py --authors "서미화,김승민" --out reports_bio.json
+
+      - name: Scrape Telegram channel comments (t.me/globalmedtech · 리포트 코멘트 자동 매칭)
+        if: always()  # reports.json이 이미 저장된 상태라면 위 스텝 성공 여부와 무관하게 시도
+        run: python scripts/scrape_telegram_comments.py --channel globalmedtech --reports reports.json --out telegram_comments.json
+
       - name: Commit changes if any
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add reports.json
-          if git diff --cached --quiet -- reports.json; then
+          # reports_bio.json/telegram_comments.json은 해당 스텝이 0건으로 실패하면 파일 자체가
+          # 없을 수 있다(git add에 없는 파일을 넘기면 전체 스텝이 죽으므로 존재 확인 후 add).
+          if [ -f reports_bio.json ]; then git add reports_bio.json; fi
+          if [ -f telegram_comments.json ]; then git add telegram_comments.json; fi
+          if git diff --cached --quiet -- reports.json reports_bio.json telegram_comments.json 2>/dev/null; then
             echo "변경 없음, 커밋 건너뜀"
           else
-            git commit -m "chore: reports.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "chore: reports.json/reports_bio.json/telegram_comments.json 자동 갱신 ($(date -u +%Y-%m-%d))"
             # 다른 워크플로가 그 사이 먼저 push해서 main이 앞서 있으면 rebase 후 재시도
             # (여러 update-*.yml이 각자 다른 파일만 건드리므로 실제 충돌은 거의 없다).
             for i in 1 2 3 4 5; do

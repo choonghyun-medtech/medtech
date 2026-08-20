@@ -42,13 +42,17 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/summarize_news.py --out news.json
 
+      - name: Archive today's news into news_history.jsonl (분석 탭용 시계열 누적)
+        if: always()  # news.json이 이미 저장된 상태라면 요약 성공 여부와 무관하게 아카이빙
+        run: python scripts/archive_news_snapshot.py --news news.json --history news_history.jsonl
+
       - name: Commit changes if any
-        if: always()  # 둘 중 하나만 성공해도 그 결과는 커밋되도록
+        if: always()  # 셋 중 하나만 성공해도 그 결과는 커밋되도록
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json
-          if git diff --cached --quiet -- news.json; then
+          git add news.json news_history.jsonl
+          if git diff --cached --quiet -- news.json news_history.jsonl; then
             echo "변경 없음, 커밋 건너뜀"
           else
             git commit -m "chore: news.json 자동 갱신 ($(date -u +%Y-%m-%d))"
