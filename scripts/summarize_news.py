@@ -33,7 +33,10 @@ import sys
 
 MAX_ITEMS_PER_CALL = 40  # 한 번의 API 호출에 담는 기사 수 상한(과금/타임아웃 방지)
 
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.6-flash"  # gemini-2.5-flash가 신규 API 키에는 404(단종)로 막혀 교체.
+# 2026-08-20 기준 ai.google.dev/gemini-api/docs/models 공식 문서에서 무료 티어(Free of charge)로
+# 확인된 안정(stable) 모델. 추후 또 막히면 https://ai.google.dev/gemini-api/docs/pricing 에서
+# "Free Tier"가 표시되는 최신 stable 모델로 교체하면 된다.
 ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
 
 DOMESTIC_CTX_EXAMPLES = (

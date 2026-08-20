@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
 news.json(당일 스냅샷, 매일 덮어써짐)의 기사를 news_history.jsonl에 누적 기록한다.
-index.html의 "분석" 탭이 이 파일을 fetch해 일자별/기업별/카테고리별 뉴스 플로우를
-시계열로 집계한다. news.json은 수집 윈도우(평일 24시간/월요일 72시간)만 담고 매일
-덮어써지기 때문에, 과거 데이터를 보려면 이렇게 별도로 누적해 두는 파일이 필요하다.
+index.html의 산업·기업 뉴스 탭 안의 "뉴스 플로우" 섹션이 이 파일을 fetch해 날짜별로
+무슨 뉴스가 있었는지 서술형으로 보여준다(건수 집계가 아니라 ctx/summary 내용 자체가
+목적). news.json은 수집 윈도우(평일 24시간/월요일 72시간)만 담고 매일 덮어써지기
+때문에, 과거 데이터를 보려면 이렇게 별도로 누적해 두는 파일이 필요하다.
 
 - 한 줄 = 기사 1건. 필드: date, region(domestic|global), cat(카테고리), co(기업명,
   콤마로 여러 개일 수 있음 — scrape_news.py/scrape_news_global.py의 교차 기업 중복 병합
-  결과를 그대로 보존), t(제목), url.
+  결과를 그대로 보존), t(제목), url, ctx(국내만, [맥락] 태그), summary(자동 요약,
+  summarize_news.py가 이미 채운 값을 그대로 가져옴 — 이 스크립트가 요약을 새로 만들지
+  않는다). ctx/summary는 요약 단계가 실패했거나 아직 안 붙었으면 빈 문자열일 수 있다.
 - 같은 url은 이미 기록된 경우 다시 추가하지 않는다(news.json의 수집 윈도우가 겹쳐도
   history가 중복으로 쌓이지 않도록). url이 없는 항목은 건너뛴다(식별 불가).
-- 기존 줄은 절대 수정/삭제하지 않는다 — append-only.
+- 기존 줄은 절대 수정/삭제하지 않는다 — append-only. (그래서 summarize_news.py가 이
+  스크립트보다 먼저 실행돼 summary를 채워둔 상태여야 history에도 요약이 함께 남는다 —
+  update-news.yml에서 실제로 Summarize news 스텝 다음에 이 스텝을 배치했다.)
 
 사용법:
     python archive_news_snapshot.py --news news.json --history news_history.jsonl
@@ -70,6 +75,8 @@ def main():
                     "co": item.get("co", ""),
                     "t": item.get("t", ""),
                     "url": url,
+                    "ctx": item.get("ctx", ""),
+                    "summary": item.get("summary", ""),
                 })
                 seen_urls.add(url)
 
