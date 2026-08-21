@@ -35,6 +35,10 @@ jobs:
         if: always()  # 국내(네이버 API) 수집이 실패해도 해외 RSS 수집은 독립적으로 계속 시도
         run: python scripts/scrape_news_global.py --out news.json
 
+      - name: Fetch global news (Google 뉴스 검색 보강, md 가이드라인 site: 검색 방식, 무료·API 키 불필요)
+        if: always()  # RSS 결과는 이미 저장된 상태 — 이 단계가 실패해도 RSS 결과 그대로 유지
+        run: python scripts/scrape_news_global_gsearch.py --out news.json
+
       - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
         if: always()  # 요약 생성이 실패해도 기사 목록 자체는 이미 저장된 상태를 유지
         env:
