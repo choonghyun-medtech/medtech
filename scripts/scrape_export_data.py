@@ -16,15 +16,40 @@
 - API: 공공데이터포털(data.go.kr) "관세청_품목별 수출입실적(GW)"
     엔드포인트: https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList
     (전국 총계, 국가 구분 없음 — 카테고리별 메인 시계열에 사용)
-  국가별 세부 브레이크다운(최근 구간만, 호출량 절약)에는 같은 기관의
+  국가별 세부 브레이크다운(최근 구간만, 호출량 절약, 2026-08-21부터 카테고리마다
+  다른 국가 목록을 조회 — CATEGORIES의 "countries" 필드 참고)에는 같은 기관의
   "관세청_품목별 국가별 수출입실적(GW)"을 함께 쓴다.
     엔드포인트: https://apis.data.go.kr/1220000/nitemtrade/getNitemtradeList
-    (cntyCd 필수라 국가마다 별도 호출해야 함 — 그래서 최근 구간 + 주요국만 조회)
-  둘 다 무료(비용부과 없음)·이용허락범위 제한 없음·개발단계 자동승인(일 10,000건)임을
+    (cntyCd 필수라 국가마다 별도 호출해야 함 — 그래서 최근 구간 + 카테고리별 지정
+    국가만 조회)
+  지역별(시군구) 세부 브레이크다운에는 "관세청_시군구별 품목별 수출입실적"(데이터셋
+  id 15134343)을 쓴다.
+    엔드포인트: https://apis.data.go.kr/1220000/sigunguperprlstperacrs/getSigunguPerPrlstPerAcrs
+    (sidoCd 필수 — 시군구 코드가 아니라 시도코드만 넣으면 그 시도 관내 전체 시군구
+    데이터를 배열로 돌려줌, 응답의 sggNm에서 원하는 시군구만 걸러 씀. 2026-08-21에
+    사용자가 실제 서비스키로 라이브 호출해 엔드포인트/파라미터/응답 구조를 확인함 —
+    이 API는 제목에 "(GW)" 표시가 없어 처음엔 Itemtrade 계열과 다른 서비스 그룹으로
+    추정했으나, 실제로는 같은 1220000 그룹 소속이었음. 시도코드는 일반 행정표준코드와
+    달라(예: 강원은 42가 아니라 51=강원특별자치도) 사용자가 공식 코드표
+    관세청조회코드_v1.3.xlsx를 data.go.kr에서 받아 공유해줘서 확인함 — 아래
+    SIDO_CD_BY_NAME 주석 참고. 응답은 월별(priodTitle "2024.01" 형식)이라 국가별
+    수준으로 촘촘함.)
+  모두 무료(비용부과 없음)·이용허락범위 제한 없음·개발단계 자동승인(일 10,000건)임을
   공공데이터포털 페이지에서 확인했다(2026-08-20). serviceKey는 이 스크립트를 쓰는
-  사람이 data.go.kr에 직접 가입해 위 두 API를 "활용신청"한 뒤 발급받아야 한다(계정
+  사람이 data.go.kr에 직접 가입해 위 API들을 "활용신청"한 뒤 발급받아야 한다(계정
   생성은 본인이 해야 하는 일이라 이 스크립트가 대신할 수 없다). 신청은 개발계정
-  기준 보통 즉시~수 분 내 자동승인된다.
+  기준 보통 즉시~수 분 내 자동승인되지만, 승인 직후 첫 호출은 실제 게이트웨이에 키가
+  반영되기까지 시차가 있어 SERVICE_KEY_IS_NOT_REGISTERED_ERROR가 잠깐 날 수 있다(이번에
+  실제로 겪음 — 몇 분~길게는 1~2시간 뒤 재시도하면 해결됨). 참고로 data.go.kr의
+  "일반 인증키"는 계정 하나에 여러 API를 활용신청해도 키 값 자체는 계정 공용이지만,
+  각 API 활용신청 승인 상태는 API별로 따로 관리된다(마이페이지 > Open API 활용신청
+  현황에서 확인 가능) — 이번에 쓴 계정은 시군구별 API만 승인돼 있고 Itemtrade 등
+  기존 3개 API는 활용신청이 안 돼 있었음(=GitHub Actions 시크릿의 키와는 다른 계정으로
+  보임). 이 스크립트를 실제로 돌리려면 DATA_GO_KR_SERVICE_KEY 하나가 아래 4개 API를
+  전부 활용신청해서 승인된 계정의 키여야 한다: 관세청_품목별 수출입실적(GW),
+  관세청_품목별 국가별 수출입실적(GW), 관세청_시군구별 품목별 수출입실적 — 이 3개는
+  현재 GitHub Actions 시크릿 계정과 이번에 시군구 API 테스트에 쓴 계정이 다를 수 있어
+  재확인 필요.
 
 - HS코드 매핑: 관세청/K-stat이 카테고리명으로 직접 분류를 제공하지 않아, 이 카테고리들을
   전문적으로 다루는 투자리서치 블로그 "머니레시피"(moneyrecipe.blog, HS코드 기반 상장사
@@ -34,15 +59,20 @@
   달라지거나(회사별로 일부 다른 코드를 쓸 수 있음) 다른 품목이 같은 코드에 섞여 잡힐
   가능성이 있다. 특히 "의료용 미용기기"(HS 9018.90)는 미용기기 외 다른 의료기기도
   일부 섞여 잡힐 수 있는 넓은 코드라 진폭이 과장될 수 있다는 점에 유의.
-    · 톡신(보툴리눔) : 3002491000, 3002909000 (구코드 3002903090 포함 가능성 있어 참고용으로
-      같이 시도)
+    · 톡신(보툴리눔) : 3002491000 (2026-08-21: index.html EXPORT_CATEGORY_CONFIG 기준으로
+      단일 코드 확정 — 이전엔 3002909000도 합산했으나 사용자가 제외 확인)
     · 미용기기(의료용) : 901890 (6자리 — 클래시스/원텍/루트로닉/레이저옵텍 등)
-    · 임플란트(치과) : 9021290000 (오스템/덴티움 등 — 정형외과용 인공관절(9021.31)과는
-      다른 코드이니 혼동 주의)
+    · 임플란트(치과) : 902129 (6자리, 2026-08-21 확정 — 이전 10자리 9021290000에서
+      상위 6자리로 넓힘. 오스템/덴티움 등 — 정형외과용 인공관절(9021.31)과는 다른
+      코드이니 혼동 주의)
     · 필러·리쥬란류(기타화장품) : 3304999000 (휴젤 필러, 파마리서치 리쥬란 등이 여기 포함)
-    · 홈뷰터(가정용 미용기기) : 8543702020 (2026-08-21 추가 — 특정 상장사 매핑은 미확정)
     · 지혈제(지혈재) : 3006104000 (2026-08-21 추가 — 넥스트바이오메디컬 내시경용 지혈재)
-    · 치과영상장비 : 9022120000 (2026-08-21 추가 — 제노레이 덴탈 CBCT, 다른 종목은 미확인)
+    · 치과영상장비 : 902213 (6자리, 2026-08-21 확정 — 이전 10자리 9022120000에서
+      상위 6자리로 넓힘. 제노레이 덴탈 CBCT, 다른 종목은 미확인)
+    · 체외진단 PCR : 3822192020 (2026-08-21 신규 추가 — index.html 스펙, 상장사 미확인)
+    · 면역진단 : 3822191000 (2026-08-21 신규 추가 — index.html 스펙, 상장사 미확인)
+  홈뷰터(가정용 미용기기, HS 8543702020)는 2026-08-21에 사용자 확인으로 카테고리
+  목록에서 제외됨(index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음).
   각 카테고리는 여러 HS코드를 합산할 수 있어 CATEGORIES 딕셔너리 값이 리스트다.
 
 - 시계열 길이: "최대한 길게" 요청에 맞춰 기본 시작월을 START_YYMM(2015-01)로 잡았다.
@@ -69,12 +99,10 @@ import requests
 
 ITEMTRADE_URL = "https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList"
 NITEMTRADE_URL = "https://apis.data.go.kr/1220000/nitemtrade/getNitemtradeList"
-# "관세청_시도별 품목별 수출입실적(GW)"(data.go.kr id 15101641) — 2026-08-21에 사용자가
-# 활용신청 완료 후 실제 서비스키로 라이브 호출해 엔드포인트/파라미터를 확인했다(sidoCd=11
-# 서울/sidoCd=31 로 실데이터 응답 확인, resultCode 00). 국가별(nitemtrade)과 파라미터
-# 구조는 같고 cntyCd 대신 sidoCd만 다르다. 단, 응답 필드명이 달라(expDlr 대신 expUsdAmt,
-# year 대신 priodTitle) fetch_sido_breakdown()에서 별도로 파싱한다.
-SIDOITEMTRADE_URL = "https://apis.data.go.kr/1220000/sidoitemtrade/getSidoitemtradeList"
+# 시군구별 브레이크다운용 엔드포인트(SIGUNGU_ITEMTRADE_URL)는 아래 CATEGORIES 이후
+# 섹션에 정의돼 있다 — 2026-08-21에 사용자가 실제 서비스키로 확인한 값. (예전엔 시도
+# 단위 SIDOITEMTRADE_URL을 썼는데, CATEGORIES의 regions가 전부 시군구 단위라 안 맞아서
+# 시군구 단위 API로 교체함 — 자세한 경위는 아래 주석 참고.)
 
 START_YYMM = "201501"  # "최대한 길게" 요청에 따른 기본 시작월(2015-01) — 필요시 조정 가능
 REQUEST_DELAY_SEC = 0.15
@@ -83,46 +111,53 @@ REQUEST_RETRIES = 3  # 타임아웃/연결오류 시 재시도 횟수(최초 시
 REQUEST_RETRY_BACKOFF_SEC = 3  # 재시도 간 대기(시도 횟수에 비례해 증가)
 MAX_CONSECUTIVE_EMPTY_YEARS = 2  # 이 횟수만큼 연달아 빈 연도가 나오면 그 이전은 그만 조회
 
-# 카테고리 정의 — 라벨/HS코드(합산 대상 복수 가능)/참고 종목.
-# 출처: moneyrecipe.blog "HS코드 + 수출 데이터로 실적 추정하기 좋은 기업은?"(2025-11-17,
-# 2025-11-30 수정) 및 "26년 8월 수출 잠정치 분석: K-뷰티/헬스케어"(2026-08-11) 게시물의
-# "품목 수출통계 검색에 사용된 HS코드" 표. 위 스크립트 상단 docstring 참고.
+# 카테고리 정의 — 라벨/HS코드(합산 대상 복수 가능)/참고 종목/국가별·지역별 조회 대상.
+# 2026-08-21 인수인계: 사용자가 index.html EXPORT_CATEGORY_CONFIG에 지정한 8개
+# 품목·HS코드·국가/지역 범위를 스크래퍼 쪽에도 그대로 반영(사용자 확인: "셋 다 지금
+# 업데이트된 그대로 유지" — home_device 제외, 톡신 HS 단일화, 임플란트/치과CBCT 6자리
+# 코드 확정). 기존 CATEGORIES와의 차이점은 아래 각 항목 주석 참고.
+# 출처(HS코드): moneyrecipe.blog "HS코드 + 수출 데이터로 실적 추정하기 좋은 기업은?"
+# (2025-11-17, 2025-11-30 수정) 및 "26년 8월 수출 잠정치 분석: K-뷰티/헬스케어"
+# (2026-08-11) 게시물의 "품목 수출통계 검색에 사용된 HS코드" 표. 위 스크립트 상단
+# docstring 참고. countries/regions는 index.html EXPORT_CATEGORY_CONFIG와 동일(그
+# 목록의 근거/출처는 index.html 쪽에서 사용자가 직접 지정한 것이라 이 스크립트에는
+# 별도 출처 기록 없음).
 CATEGORIES = [
     {
         "key": "toxin",
         "label": "톡신(보툴리눔)",
-        "hsCodes": ["3002491000", "3002909000"],
+        # 기존엔 3002491000 + 3002909000 두 코드 합산이었으나, 사용자 확정 스펙은
+        # 3002491000 하나만(2026-08-21 사용자 확인).
+        "hsCodes": ["3002491000"],
         "companies": "휴젤·메디톡스·대웅제약·휴온스글로벌",
+        "countries": [("US", "미국"), ("CN", "중국"), ("BR", "브라질"), ("TH", "태국"), ("JP", "일본")],
+        "regions": [],
     },
     {
         "key": "device_medical",
         "label": "미용기기(의료용)",
         "hsCodes": ["901890"],
         "companies": "클래시스·루트로닉·원텍·레이저옵텍",
+        "countries": [("US", "미국"), ("BR", "브라질"), ("TH", "태국"), ("CN", "중국"), ("JP", "일본")],
+        "regions": ["경기 고양시", "서울 강남구", "서울 금천구", "대전 유성구"],
     },
     {
         "key": "implant_dental",
         "label": "임플란트(치과)",
-        "hsCodes": ["9021290000"],
+        # 기존 9021290000(10자리) → 사용자 확정 스펙 902129(6자리)로 변경(2026-08-21
+        # 사용자 확인 — 상위 6자리 기준으로 넓게 잡음).
+        "hsCodes": ["902129"],
         "companies": "오스템임플란트·덴티움",
+        "countries": [("RU", "러시아 연방"), ("CN", "중국"), ("US", "미국")],
+        "regions": ["서울 강서구", "경기 수원시", "부산 해운대구"],
     },
     {
         "key": "filler",
         "label": "필러·리쥬란류(기타화장품)",
         "hsCodes": ["3304999000"],
         "companies": "휴젤·파마리서치·휴메딕스",
-    },
-    {
-        # 2026-08-21 추가(newsbot-3uj.pages.dev coverage 탭 대비 보강 요청).
-        # 출처: moneyrecipe.blog "HS코드+수출 데이터로 실적 추정하기 좋은 기업은?"(2025-11-17)
-        # 표 — "K-뷰티·톡신·의료미용" 섹션에 8543.70-2020(가정용 미용기기)이 K-뷰티
-        # 수출통계 카테고리로 명시돼 있음. 상장 완제품 업체가 뚜렷하지 않아(다수 중소
-        # OEM 혼재 추정) companies는 대표 상장사가 아니라 카테고리 설명으로 채움 —
-        # 실제 종목 매핑은 재확인 필요.
-        "key": "home_device",
-        "label": "홈뷰터(가정용 미용기기)",
-        "hsCodes": ["8543702020"],
-        "companies": "가정용 LED마스크·미용기기 전반(특정 상장사 매핑 미확정 — 참고용)",
+        "countries": [],
+        "regions": ["강원 강릉시"],
     },
     {
         # 출처: moneyrecipe.blog 위 게시물의 "헬스케어·의료기기" 표 — "넥스트바이오메디컬
@@ -131,40 +166,81 @@ CATEGORIES = [
         "label": "지혈제(지혈재)",
         "hsCodes": ["3006104000"],
         "companies": "넥스트바이오메디컬",
+        "countries": [],
+        "regions": [],
     },
     {
         # 출처: 위 게시물 "헬스케어·의료기기" 표 — "제노레이 덴탈 CBCT 9022.12.0000"
         # (메디컬 C-ARM·Mammography는 9022.14.1090으로 별도 표기돼 있어 치과 전용
-        # 코드만 채택). 바텍 등 다른 치과영상장비 상장사도 동일 HS코드군을 쓸 가능성이
-        # 높지만 개별 확인은 못했다 — companies는 확인된 제노레이만 우선 기재.
+        # 코드만 채택). 기존 9022120000(10자리) → 사용자 확정 스펙 902213(6자리)로
+        # 변경(2026-08-21 사용자 확인). 바텍 등 다른 치과영상장비 상장사도 동일
+        # HS코드군을 쓸 가능성이 높지만 개별 확인은 못했다 — companies는 확인된
+        # 제노레이만 우선 기재.
         "key": "dental_imaging",
         "label": "치과영상장비",
-        "hsCodes": ["9022120000"],
+        "hsCodes": ["902213"],
         "companies": "제노레이(추가 종목 확인 필요)",
+        "countries": [("CN", "중국")],
+        "regions": ["경기 화성시", "경기 성남시"],
+    },
+    {
+        # 2026-08-21 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준). HS코드는
+        # 사용자가 지정한 값 그대로 사용 — 이 스크립트 작성 시점엔 별도 상장사 리서치를
+        # 못 해 companies는 비워둠(추후 확인 필요).
+        "key": "pcr_diagnostic",
+        "label": "체외진단 PCR",
+        "hsCodes": ["3822192020"],
+        "companies": "",  # TODO: 관련 상장사 확인 필요
+        "countries": [],
+        "regions": ["서울 송파구"],
+    },
+    {
+        "key": "immuno_diagnostic",
+        "label": "면역진단",
+        "hsCodes": ["3822191000"],
+        "companies": "",  # TODO: 관련 상장사 확인 필요
+        "countries": [],
+        "regions": ["경기 수원시"],
     },
 ]
+# home_device(홈뷰터, HS 8543702020)는 2026-08-21 사용자 확인으로 목록에서 제외됨
+# (index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음 — "셋 다 지금 업데이트된
+# 그대로 유지" 답변으로 확정).
 
-# 국가별 세부 브레이크다운에 쓸 주요국(전체 순회하면 호출량이 너무 커져 대표국만).
-TOP_COUNTRIES = [
-    ("CN", "중국"), ("US", "미국"), ("JP", "일본"), ("VN", "베트남"),
-    ("HK", "홍콩"), ("DE", "독일"), ("FR", "프랑스"), ("TH", "태국"),
-]
 COUNTRY_BREAKDOWN_MONTHS = 24  # 국가별은 최근 24개월만(호출량 절약)
 
-# 지역별(시도별) 브레이크다운 — 국내 지역 수출량으로 특정 기업의 실적을 추정하는 용도
+# 지역별(시군구) 브레이크다운 — 국내 지역 수출량으로 특정 기업의 실적을 추정하는 용도
 # (aesthetic-web의 "강릉=파마리서치·리쥬란" 프록시 방식과 동일한 아이디어).
-# 2026-08-21에 실제 서비스키로 라이브 호출해서 "존재하는" 시도코드를 직접 확인한 것만
-# 등록했다 — 관세청 시도코드는 일반적인 행정표준코드(41=경기·42=강원 등)와 다른 자체
-# 체계를 쓰는 걸로 보여서(예: 42로 조회하면 "존재하지 않는 시도코드입니다" 에러), 추측으로
-# 채워 넣으면 엉뚱한 지역에 특정 기업 실적을 잘못 매칭시킬 위험이 있다고 판단했다.
-# 확인 안 된 지역(경기/강원/충북/충남/인천/대전/부산 등 — 파마리서치·휴젤·넥스트바이오
-# 메디컬·원텍·제노레이 등 주요 추적 기업 상당수가 여기 걸쳐 있음)은 관세청이 제공하는
-# 공식 코드표(관세청조회코드_v1.3.xlsx, data.go.kr 해당 API 상세페이지에서 다운로드)를
-# 받아야 정확히 채울 수 있어 비워뒀다.
-SIDO_CODES_CONFIRMED = [
-    ("11", "서울특별시"),
-]
-SIDO_BREAKDOWN_MONTHS = 36  # 시도별은 (관찰상) 연 단위로만 집계되는 것으로 보여 넉넉히 3년
+#
+# 2026-08-21 갱신: 기존엔 시도(광역, 예: "서울특별시") 단위 API(sidoitemtrade)만 있었는데,
+# CATEGORIES의 regions가 전부 시군구(구/시, 예: "서울 강남구") 단위라 애초에 안 맞았다
+# (시도 단위로는 "강남구"처럼 세분화된 값을 못 얻음). 사용자가 공공데이터포털에서
+# "관세청_시군구별 품목별 수출입실적"(데이터셋 id 15134343) API를 별도로 활용신청하고
+# 실제 서비스키로 라이브 호출해서 엔드포인트/파라미터/응답 구조를 확인해줬다 — 그 결과로
+# 아래 SIGUNGU_ITEMTRADE_URL과 fetch_sigungu_breakdown()을 구현함(기존 시도 단위
+# fetch_sido_breakdown()/SIDOITEMTRADE_URL/SIDO_CODES_CONFIRMED는 이제 안 쓰므로 제거 —
+# 필요하면 git 히스토리에서 복원 가능).
+#
+# 이 API는 시군구 코드를 직접 넣는 게 아니라 sidoCd(시도코드)만 필수로 받고, 그 시도
+# 관내 전체 시군구의 데이터를 한 번에 배열로 돌려준다(응답 필드 sggNm이 "서울특별시
+# 강남구"처럼 시도 전체명+시군구명). 그래서 우리는 필요한 시도만 호출한 뒤 응답에서
+# 원하는 시군구명만 걸러 쓴다. 응답은 월별(priodTitle "2024.01" 형식)이라 기존 시도
+# API(연 단위로만 집계되는 것으로 보였음)보다 더 촘촘하다.
+SIGUNGU_ITEMTRADE_URL = "https://apis.data.go.kr/1220000/sigunguperprlstperacrs/getSigunguPerPrlstPerAcrs"
+
+# 시도코드 — 2026-08-21에 사용자가 data.go.kr에서 다운로드해 공유해준 공식 코드표
+# (관세청조회코드_v1.3.xlsx의 "시도코드" 시트)에서 확인. 일반 행정표준코드(41=경기 등)와
+# 다른 관세청 자체 코드라 이 표 없이는 추측으로 못 맞춘다(강원은 42가 아니라
+# 51=강원특별자치도, 2023년 개편명 반영). CATEGORIES의 regions에서 실제로 쓰는 시도만
+# 등록해뒀다 — 새 지역이 추가되면 이 표에서 추가로 찾아 넣어야 함.
+SIDO_CD_BY_NAME = {
+    "서울": "11",
+    "경기": "41",
+    "대전": "30",
+    "부산": "26",
+    "강원": "51",
+}
+SIGUNGU_BREAKDOWN_MONTHS = 24  # 국가별과 동일하게 최근 24개월만(호출량 절약) — 월별 응답이라 이 정도면 충분히 촘촘함
 
 
 def yymm_add_months(yymm: str, months: int) -> str:
@@ -291,10 +367,13 @@ def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=Fal
     return sorted(({"ym": ym, **v} for ym, v in monthly.items()), key=lambda r: r["ym"])
 
 
-def fetch_country_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=False):
-    """최근 구간만 주요국별로 조회(호출량 절약). 국가마다 개별 호출 필요."""
+def fetch_country_breakdown(service_key, hs_codes, countries, start_yymm, end_yymm, debug=False):
+    """최근 구간만 카테고리별로 지정된 국가에 대해서만 조회(호출량 절약). 국가마다
+    개별 호출 필요. countries는 [(cntyCd, 국가명), ...] — 카테고리마다 다르다
+    (2026-08-21부터: 예전엔 전 카테고리 공통 TOP_COUNTRIES 8개국 고정이었으나,
+    index.html EXPORT_CATEGORY_CONFIG에 카테고리별로 지정된 국가만 조회하도록 변경)."""
     by_country = {}
-    for cnty_cd, cnty_name in TOP_COUNTRIES:
+    for cnty_cd, cnty_name in countries:
         monthly = {}
         for hs in hs_codes:
             params = {
@@ -326,40 +405,77 @@ def fetch_country_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=F
     return by_country
 
 
-def fetch_sido_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=False):
-    """SIDO_CODES_CONFIRMED에 등록된(라이브로 존재를 확인한) 시도만 조회한다. 응답 필드명이
-    nitemtrade와 달라(expUsdAmt/priodTitle) 별도로 파싱한다. 실패해도(failed=True) 이
-    카테고리 전체를 죽이지 않고 그 지역만 건너뛴다."""
-    by_sido = {}
-    for sido_cd, sido_name in SIDO_CODES_CONFIRMED:
-        yearly = {}
+def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm, debug=False):
+    """regions는 CATEGORIES의 "regions" 필드 그대로(예: ["경기 고양시", "서울 강남구"]) —
+    "시도 단축명 시군구명" 형식, index.html EXPORT_CATEGORY_CONFIG의 regions와 동일한
+    문자열이어야 한다(반환 dict의 키로 그대로 씀 — index.html이 이 키로 조회하므로 형식이
+    어긋나면 화면에 안 뜬다).
+
+    이 API는 시군구 코드를 직접 못 넣고 sidoCd(시도)만 필수라, 필요한 시도만 호출해서
+    그 시도 관내 전체 시군구 응답을 받은 뒤 원하는 시군구명(sggNm에서 시도 전체명을 뗀
+    나머지)만 걸러 쓴다. 같은 시도에 지정 지역이 여러 개면(예: 경기 고양시+경기 수원시)
+    그 시도는 HS코드당 한 번만 호출하고 응답에서 둘 다 걸러낸다(중복 호출 방지).
+
+    실패해도(failed=True) 이 카테고리 전체를 죽이지 않고 그 시도만 건너뛴다."""
+    if not regions:
+        return {}
+
+    wanted = {}  # region_label(예: "경기 고양시") -> (sido_cd, sigungu_name(예: "고양시"))
+    for region in regions:
+        parts = region.split(" ", 1)
+        if len(parts) != 2:
+            print(f"[WARN] 지역 문자열 형식이 예상과 다름(건너뜀): {region!r}", file=sys.stderr)
+            continue
+        sido_short, sigungu_name = parts
+        sido_cd = SIDO_CD_BY_NAME.get(sido_short)
+        if not sido_cd:
+            print(f"[WARN] {region!r}: 시도 '{sido_short}'의 코드가 SIDO_CD_BY_NAME에 없음(코드표에서 "
+                  f"확인 후 추가 필요) — 건너뜀", file=sys.stderr)
+            continue
+        wanted[region] = (sido_cd, sigungu_name)
+
+    needed_sido_cds = sorted({v[0] for v in wanted.values()})
+    monthly_by_region = {region: {} for region in wanted}  # region -> {ym: expUsdAmt}
+
+    for sido_cd in needed_sido_cds:
         for hs in hs_codes:
             params = {
                 "serviceKey": service_key,
                 "strtYymm": start_yymm,
                 "endYymm": end_yymm,
-                "hsSgn": hs,
+                "HsSgn": hs,
                 "sidoCd": sido_cd,
                 "numOfRows": "999",
                 "pageNo": "1",
             }
-            items, _, failed = api_get(SIDOITEMTRADE_URL, params, debug=debug)
+            items, _, failed = api_get(SIGUNGU_ITEMTRADE_URL, params, debug=debug)
             time.sleep(REQUEST_DELAY_SEC)
             if failed and debug:
-                print(f"[DEBUG] 지역별 호출 실패(무시하고 계속): {sido_name}/{hs}", file=sys.stderr)
+                print(f"[DEBUG] 시군구별 호출 실패(무시하고 계속): sidoCd={sido_cd}/{hs}", file=sys.stderr)
             if not items:
                 continue
             for row in items:
+                sgg_nm = row.get("sggNm", "")
+                # sggNm은 "서울특별시 강남구"처럼 시도 전체명+시군구명이 붙어 있음 —
+                # 뒤쪽 시군구명만 떼서 우리가 찾는 지역명과 비교한다.
+                sigungu_part = sgg_nm.split(" ", 1)[1] if " " in sgg_nm else sgg_nm
                 period = row.get("priodTitle", "")
-                if not period or period == "총계" or not period[:4].isdigit():
-                    continue  # "총계"(합계) 행은 건너뛰고 실제 연도 행만 사용
-                exp = int((row.get("expUsdAmt") or "0").replace(",", ""))
-                yearly[period] = yearly.get(period, 0) + exp
-        if yearly:
-            by_sido[sido_name] = sorted(
-                ({"period": p, "expDlr": v} for p, v in yearly.items()), key=lambda r: r["period"]
+                if not period or not period[:4].isdigit():
+                    continue  # "총계" 등 합계 행 제외
+                ym = period.replace(".", "-")  # "2024.01" -> "2024-01"
+                exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0")
+                for region, (want_sido, want_sigungu) in wanted.items():
+                    if want_sido == sido_cd and want_sigungu == sigungu_part:
+                        slot = monthly_by_region[region]
+                        slot[ym] = slot.get(ym, 0) + exp
+
+    by_region = {}
+    for region, monthly in monthly_by_region.items():
+        if monthly:
+            by_region[region] = sorted(
+                ({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"]
             )
-    return by_sido
+    return by_region
 
 
 def main():
@@ -389,17 +505,22 @@ def main():
     # 불필요한 호출을 줄이기 위해 미리 뺀다).
     end_yymm = yymm_add_months(now.strftime("%Y%m"), -1)
     country_start_yymm = yymm_add_months(end_yymm, -(COUNTRY_BREAKDOWN_MONTHS - 1))
-    sido_start_yymm = yymm_add_months(end_yymm, -(SIDO_BREAKDOWN_MONTHS - 1))
+    sigungu_start_yymm = yymm_add_months(end_yymm, -(SIGUNGU_BREAKDOWN_MONTHS - 1))
 
     categories_out = []
     for cat in CATEGORIES:
         print(f"[INFO] {cat['label']} 조회 시작 (HS {cat['hsCodes']})", file=sys.stderr)
         monthly = fetch_national_series(service_key, cat["hsCodes"], args.start_yymm, end_yymm, debug=args.debug)
-        by_country = fetch_country_breakdown(
-            service_key, cat["hsCodes"], country_start_yymm, end_yymm, debug=args.debug
+        by_country = (
+            fetch_country_breakdown(
+                service_key, cat["hsCodes"], cat.get("countries", []), country_start_yymm, end_yymm,
+                debug=args.debug,
+            )
+            if cat.get("countries")
+            else {}
         )
-        by_region = fetch_sido_breakdown(
-            service_key, cat["hsCodes"], sido_start_yymm, end_yymm, debug=args.debug
+        by_region = fetch_sigungu_breakdown(
+            service_key, cat["hsCodes"], cat.get("regions", []), sigungu_start_yymm, end_yymm, debug=args.debug
         )
         if not monthly:
             print(f"[WARN] {cat['label']}: 전국 시계열을 하나도 못 가져왔습니다(API 실패 또는 "
@@ -415,10 +536,10 @@ def main():
             "companies": cat["companies"],
             "monthly": monthly,
             "byCountry": by_country,
-            "byRegion": by_region,  # 연 단위, 확인된 시도(현재는 서울만)만 포함 — 확장 예정
+            "byRegion": by_region,  # 월별, 이 카테고리가 지정한 시군구(regions)만 포함
         })
         print(f"[INFO] {cat['label']}: 월별 {len(monthly)}개월치, 국가별 {len(by_country)}개국, "
-              f"지역별 {len(by_region)}개 시도 확보", file=sys.stderr)
+              f"지역별 {len(by_region)}개 시군구 확보", file=sys.stderr)
 
     if not categories_out:
         print("[ERROR] 모든 카테고리 조회에 실패해 기존 export_data.json을 보존하고 종료합니다.", file=sys.stderr)
