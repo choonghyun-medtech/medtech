@@ -1395,6 +1395,20 @@ function renderExportStatCards(){
   `;
 }
 
+// 수집 자체는 scrape_export_data.py의 START_YYMM(2015-01)부터지만, 차트에는 2016-01월부터만
+// 그린다(2026-08-21 요청) — 2015년 구간은 전년동기 데이터가 없어 YoY 선이 그해 내내 끊겨서
+// 보기 안 좋기 때문. YoY 자체는 반드시 cat.monthly 전체(2015년 포함)로 먼저 계산한 뒤에
+// 화면 표시 구간만 잘라내야 한다 — 안 그러면 2016년 1월치의 전년동기(2015-01) 비교값을
+// 못 구해 2016년 첫 달의 YoY까지 같이 끊긴다. 월별 표(renderExportTable)는 최근 36개월만
+// 보여주는 방식이라 이 컷오프와 무관하게 이미 2015년 데이터가 안 나온다 — 손 안 댐.
+const EXPORT_CHART_DISPLAY_FROM = { month: '2016-01', quarter: '2016Q1', year: '2016' };
+function sliceExportDisplay(agg, yoy, gran){
+  const cutoff = EXPORT_CHART_DISPLAY_FROM[gran];
+  const startIdx = agg.findIndex(a => a.label >= cutoff);
+  if(startIdx <= 0) return { agg, yoy }; // 컷오프 이전 데이터가 없으면 그대로
+  return { agg: agg.slice(startIdx), yoy: yoy.slice(startIdx) };
+}
+
 function renderExportChart(){
   const cat = currentExportCategory();
   const note = document.getElementById('export-chart-note');
@@ -1406,9 +1420,10 @@ function renderExportChart(){
     return;
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cat.hsCodes.join(', ')}`;
-  const agg = aggregateExportMonthly(cat.monthly, EXPORT_STATE.gran);
-  const yoy = computeYoYSeries(agg, EXPORT_STATE.gran);
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cat.hsCodes.join(', ')} · 2016년 1월부터 표시(데이터 자체는 2015년 1월부터 수집)`;
+  const aggFull = aggregateExportMonthly(cat.monthly, EXPORT_STATE.gran);
+  const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
+  const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, EXPORT_STATE.gran);
   // mkBar()는 단일 y축 막대 전용이라 YoY 우측 보조축(막대+선 혼합)은 직접 Chart.js를 호출한다.
   exportChartInstance = new Chart(document.getElementById('exportChart'), {
     data: {
