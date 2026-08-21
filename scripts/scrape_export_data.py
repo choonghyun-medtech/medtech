@@ -309,10 +309,21 @@ def api_get(url, params, debug=False):
 
 
 def fetch_national_series(service_key, hs_codes, start_yymm, end_yymm, debug=False):
-    """카테고리(여러 HS코드 합산)의 전국 총계 월별 시계열. 오래된 연도부터 빈 응답이
-    MAX_CONSECUTIVE_EMPTY_YEARS번 연속되면 그 이전은 자료가 없다고 보고 중단한다."""
+    """카테고리(여러 HS코드 합산)의 전국 총계 월별 시계열. 최근 연도부터 거꾸로(최신→과거)
+    훑다가 빈 응답이 MAX_CONSECUTIVE_EMPTY_YEARS번 연속되면 그 이전은 자료가 없다고 보고
+    중단한다.
+
+    ⚠️ 2026-08-21 버그 수정: 원래 이 루프가 청크를 오래된 연도(start_yymm)부터 최신
+    순서로(오름차순) 돌면서 "2개 청크 연속 빈 응답이면 중단"했는데, 이러면 정작 가장
+    오래된 연도(2015~2016)에 데이터가 없는 카테고리는 최신 연도(실제로는 데이터가 있는
+    구간)까지 가보지도 못하고 맨 처음에 중단돼버리는 버그가 있었다 — 톡신 HS코드를
+    3002491000 하나로 단순화한 뒤(2026-08-21) 이 코드가 2015~2016년엔 신고 실적이
+    없다는 게 드러나면서 실제로 "전국 시계열을 하나도 못 가져옴"으로 나타남. 청크
+    순서를 최신→과거로 뒤집어서, "최근 데이터는 다 챙기고 나서 과거로 갈수록 없으면
+    그때 가서 중단"하도록 고쳤다(모아진 monthly는 마지막에 ym 기준으로 다시 정렬하므로
+    순회 순서 자체는 최종 결과에 영향 없음)."""
     monthly = {}  # ym(YYYY-MM) -> {"expDlr": int, "expWgt": int}
-    chunks = yymm_range_chunks(start_yymm, end_yymm)
+    chunks = list(reversed(yymm_range_chunks(start_yymm, end_yymm)))  # 최신 청크부터
     consecutive_empty = 0
     failed_calls = 0
     total_calls = 0
@@ -371,33 +382,43 @@ def fetch_country_breakdown(service_key, hs_codes, countries, start_yymm, end_yy
     """최근 구간만 카테고리별로 지정된 국가에 대해서만 조회(호출량 절약). 국가마다
     개별 호출 필요. countries는 [(cntyCd, 국가명), ...] — 카테고리마다 다르다
     (2026-08-21부터: 예전엔 전 카테고리 공통 TOP_COUNTRIES 8개국 고정이었으나,
-    index.html EXPORT_CATEGORY_CONFIG에 카테고리별로 지정된 국가만 조회하도록 변경)."""
+    index.html EXPORT_CATEGORY_CONFIG에 카테고리별로 지정된 국가만 조회하도록 변경).
+
+    ⚠️ 2026-08-21 버그 수정: 이 API도 fetch_national_series의 Itemtrade와 마찬가지로
+    "조회기간은 1년 이내만 가능"(API 오류 코드 99) 제한이 있는데, 이 함수는 원래
+    start_yymm~end_yymm(COUNTRY_BREAKDOWN_MONTHS=24개월)을 청크 없이 한 번에 요청하고
+    있었다 — 실제 서비스키로 처음 돌려보고서야 이 제한에 걸려 매번 오류 99만 받고
+    국가별 데이터가 전부 0건으로 나오는 게 드러났다. yymm_range_chunks로 1년 단위
+    청크로 쪼개서 호출하도록 수정."""
     by_country = {}
+    chunks = yymm_range_chunks(start_yymm, end_yymm)
     for cnty_cd, cnty_name in countries:
         monthly = {}
         for hs in hs_codes:
-            params = {
-                "serviceKey": service_key,
-                "strtYymm": start_yymm,
-                "endYymm": end_yymm,
-                "hsSgn": hs,
-                "cntyCd": cnty_cd,
-                "numOfRows": "999",
-                "pageNo": "1",
-            }
-            items, _, failed = api_get(NITEMTRADE_URL, params, debug=debug)
-            time.sleep(REQUEST_DELAY_SEC)
-            if failed and debug:
-                print(f"[DEBUG] 국가별 호출 실패(무시하고 계속): {cnty_name}/{hs}", file=sys.stderr)
-            if not items:
-                continue
-            for row in items:
-                year = row.get("year", "")
-                ym = year.replace(".", "-") if year else None
-                if not ym or len(ym) != 7:
+            for chunk_start, chunk_end in chunks:
+                params = {
+                    "serviceKey": service_key,
+                    "strtYymm": chunk_start,
+                    "endYymm": chunk_end,
+                    "hsSgn": hs,
+                    "cntyCd": cnty_cd,
+                    "numOfRows": "999",
+                    "pageNo": "1",
+                }
+                items, _, failed = api_get(NITEMTRADE_URL, params, debug=debug)
+                time.sleep(REQUEST_DELAY_SEC)
+                if failed and debug:
+                    print(f"[DEBUG] 국가별 호출 실패(무시하고 계속): {cnty_name}/{hs}/{chunk_start}~{chunk_end}",
+                          file=sys.stderr)
+                if not items:
                     continue
-                exp_dlr = int(row.get("expDlr") or 0)
-                monthly[ym] = monthly.get(ym, 0) + exp_dlr
+                for row in items:
+                    year = row.get("year", "")
+                    ym = year.replace(".", "-") if year else None
+                    if not ym or len(ym) != 7:
+                        continue
+                    exp_dlr = int(row.get("expDlr") or 0)
+                    monthly[ym] = monthly.get(ym, 0) + exp_dlr
         if monthly:
             by_country[cnty_name] = sorted(
                 ({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"]
@@ -416,7 +437,13 @@ def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm
     나머지)만 걸러 쓴다. 같은 시도에 지정 지역이 여러 개면(예: 경기 고양시+경기 수원시)
     그 시도는 HS코드당 한 번만 호출하고 응답에서 둘 다 걸러낸다(중복 호출 방지).
 
-    실패해도(failed=True) 이 카테고리 전체를 죽이지 않고 그 시도만 건너뛴다."""
+    실패해도(failed=True) 이 카테고리 전체를 죽이지 않고 그 시도만 건너뛴다.
+
+    ⚠️ 2026-08-21 버그 수정: 이 API도 "조회기간 1년 이내" 제한이 있는데(fetch_national_series/
+    fetch_country_breakdown과 동일), 원래 이 함수는 start_yymm~end_yymm
+    (SIGUNGU_BREAKDOWN_MONTHS=24개월)을 청크 없이 한 번에 요청해서 실제 서비스키로
+    처음 돌려보니 오류 코드 99만 받고 지역별 데이터가 전부 0건이었다. yymm_range_chunks로
+    1년 단위 청크로 쪼개서 호출하도록 수정."""
     if not regions:
         return {}
 
@@ -436,38 +463,41 @@ def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm
 
     needed_sido_cds = sorted({v[0] for v in wanted.values()})
     monthly_by_region = {region: {} for region in wanted}  # region -> {ym: expUsdAmt}
+    chunks = yymm_range_chunks(start_yymm, end_yymm)
 
     for sido_cd in needed_sido_cds:
         for hs in hs_codes:
-            params = {
-                "serviceKey": service_key,
-                "strtYymm": start_yymm,
-                "endYymm": end_yymm,
-                "HsSgn": hs,
-                "sidoCd": sido_cd,
-                "numOfRows": "999",
-                "pageNo": "1",
-            }
-            items, _, failed = api_get(SIGUNGU_ITEMTRADE_URL, params, debug=debug)
-            time.sleep(REQUEST_DELAY_SEC)
-            if failed and debug:
-                print(f"[DEBUG] 시군구별 호출 실패(무시하고 계속): sidoCd={sido_cd}/{hs}", file=sys.stderr)
-            if not items:
-                continue
-            for row in items:
-                sgg_nm = row.get("sggNm", "")
-                # sggNm은 "서울특별시 강남구"처럼 시도 전체명+시군구명이 붙어 있음 —
-                # 뒤쪽 시군구명만 떼서 우리가 찾는 지역명과 비교한다.
-                sigungu_part = sgg_nm.split(" ", 1)[1] if " " in sgg_nm else sgg_nm
-                period = row.get("priodTitle", "")
-                if not period or not period[:4].isdigit():
-                    continue  # "총계" 등 합계 행 제외
-                ym = period.replace(".", "-")  # "2024.01" -> "2024-01"
-                exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0")
-                for region, (want_sido, want_sigungu) in wanted.items():
-                    if want_sido == sido_cd and want_sigungu == sigungu_part:
-                        slot = monthly_by_region[region]
-                        slot[ym] = slot.get(ym, 0) + exp
+            for chunk_start, chunk_end in chunks:
+                params = {
+                    "serviceKey": service_key,
+                    "strtYymm": chunk_start,
+                    "endYymm": chunk_end,
+                    "HsSgn": hs,
+                    "sidoCd": sido_cd,
+                    "numOfRows": "999",
+                    "pageNo": "1",
+                }
+                items, _, failed = api_get(SIGUNGU_ITEMTRADE_URL, params, debug=debug)
+                time.sleep(REQUEST_DELAY_SEC)
+                if failed and debug:
+                    print(f"[DEBUG] 시군구별 호출 실패(무시하고 계속): sidoCd={sido_cd}/{hs}/{chunk_start}~{chunk_end}",
+                          file=sys.stderr)
+                if not items:
+                    continue
+                for row in items:
+                    sgg_nm = row.get("sggNm", "")
+                    # sggNm은 "서울특별시 강남구"처럼 시도 전체명+시군구명이 붙어 있음 —
+                    # 뒤쪽 시군구명만 떼서 우리가 찾는 지역명과 비교한다.
+                    sigungu_part = sgg_nm.split(" ", 1)[1] if " " in sgg_nm else sgg_nm
+                    period = row.get("priodTitle", "")
+                    if not period or not period[:4].isdigit():
+                        continue  # "총계" 등 합계 행 제외
+                    ym = period.replace(".", "-")  # "2024.01" -> "2024-01"
+                    exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0")
+                    for region, (want_sido, want_sigungu) in wanted.items():
+                        if want_sido == sido_cd and want_sigungu == sigungu_part:
+                            slot = monthly_by_region[region]
+                            slot[ym] = slot.get(ym, 0) + exp
 
     by_region = {}
     for region, monthly in monthly_by_region.items():
