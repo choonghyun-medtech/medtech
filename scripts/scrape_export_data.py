@@ -69,6 +69,12 @@ import requests
 
 ITEMTRADE_URL = "https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList"
 NITEMTRADE_URL = "https://apis.data.go.kr/1220000/nitemtrade/getNitemtradeList"
+# "관세청_시도별 품목별 수출입실적(GW)"(data.go.kr id 15101641) — 2026-08-21에 사용자가
+# 활용신청 완료 후 실제 서비스키로 라이브 호출해 엔드포인트/파라미터를 확인했다(sidoCd=11
+# 서울/sidoCd=31 로 실데이터 응답 확인, resultCode 00). 국가별(nitemtrade)과 파라미터
+# 구조는 같고 cntyCd 대신 sidoCd만 다르다. 단, 응답 필드명이 달라(expDlr 대신 expUsdAmt,
+# year 대신 priodTitle) fetch_sido_breakdown()에서 별도로 파싱한다.
+SIDOITEMTRADE_URL = "https://apis.data.go.kr/1220000/sidoitemtrade/getSidoitemtradeList"
 
 START_YYMM = "201501"  # "최대한 길게" 요청에 따른 기본 시작월(2015-01) — 필요시 조정 가능
 REQUEST_DELAY_SEC = 0.15
@@ -144,6 +150,21 @@ TOP_COUNTRIES = [
     ("HK", "홍콩"), ("DE", "독일"), ("FR", "프랑스"), ("TH", "태국"),
 ]
 COUNTRY_BREAKDOWN_MONTHS = 24  # 국가별은 최근 24개월만(호출량 절약)
+
+# 지역별(시도별) 브레이크다운 — 국내 지역 수출량으로 특정 기업의 실적을 추정하는 용도
+# (aesthetic-web의 "강릉=파마리서치·리쥬란" 프록시 방식과 동일한 아이디어).
+# 2026-08-21에 실제 서비스키로 라이브 호출해서 "존재하는" 시도코드를 직접 확인한 것만
+# 등록했다 — 관세청 시도코드는 일반적인 행정표준코드(41=경기·42=강원 등)와 다른 자체
+# 체계를 쓰는 걸로 보여서(예: 42로 조회하면 "존재하지 않는 시도코드입니다" 에러), 추측으로
+# 채워 넣으면 엉뚱한 지역에 특정 기업 실적을 잘못 매칭시킬 위험이 있다고 판단했다.
+# 확인 안 된 지역(경기/강원/충북/충남/인천/대전/부산 등 — 파마리서치·휴젤·넥스트바이오
+# 메디컬·원텍·제노레이 등 주요 추적 기업 상당수가 여기 걸쳐 있음)은 관세청이 제공하는
+# 공식 코드표(관세청조회코드_v1.3.xlsx, data.go.kr 해당 API 상세페이지에서 다운로드)를
+# 받아야 정확히 채울 수 있어 비워뒀다.
+SIDO_CODES_CONFIRMED = [
+    ("11", "서울특별시"),
+]
+SIDO_BREAKDOWN_MONTHS = 36  # 시도별은 (관찰상) 연 단위로만 집계되는 것으로 보여 넉넉히 3년
 
 
 def yymm_add_months(yymm: str, months: int) -> str:
@@ -305,6 +326,42 @@ def fetch_country_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=F
     return by_country
 
 
+def fetch_sido_breakdown(service_key, hs_codes, start_yymm, end_yymm, debug=False):
+    """SIDO_CODES_CONFIRMED에 등록된(라이브로 존재를 확인한) 시도만 조회한다. 응답 필드명이
+    nitemtrade와 달라(expUsdAmt/priodTitle) 별도로 파싱한다. 실패해도(failed=True) 이
+    카테고리 전체를 죽이지 않고 그 지역만 건너뛴다."""
+    by_sido = {}
+    for sido_cd, sido_name in SIDO_CODES_CONFIRMED:
+        yearly = {}
+        for hs in hs_codes:
+            params = {
+                "serviceKey": service_key,
+                "strtYymm": start_yymm,
+                "endYymm": end_yymm,
+                "hsSgn": hs,
+                "sidoCd": sido_cd,
+                "numOfRows": "999",
+                "pageNo": "1",
+            }
+            items, _, failed = api_get(SIDOITEMTRADE_URL, params, debug=debug)
+            time.sleep(REQUEST_DELAY_SEC)
+            if failed and debug:
+                print(f"[DEBUG] 지역별 호출 실패(무시하고 계속): {sido_name}/{hs}", file=sys.stderr)
+            if not items:
+                continue
+            for row in items:
+                period = row.get("priodTitle", "")
+                if not period or period == "총계" or not period[:4].isdigit():
+                    continue  # "총계"(합계) 행은 건너뛰고 실제 연도 행만 사용
+                exp = int((row.get("expUsdAmt") or "0").replace(",", ""))
+                yearly[period] = yearly.get(period, 0) + exp
+        if yearly:
+            by_sido[sido_name] = sorted(
+                ({"period": p, "expDlr": v} for p, v in yearly.items()), key=lambda r: r["period"]
+            )
+    return by_sido
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="export_data.json")
@@ -332,6 +389,7 @@ def main():
     # 불필요한 호출을 줄이기 위해 미리 뺀다).
     end_yymm = yymm_add_months(now.strftime("%Y%m"), -1)
     country_start_yymm = yymm_add_months(end_yymm, -(COUNTRY_BREAKDOWN_MONTHS - 1))
+    sido_start_yymm = yymm_add_months(end_yymm, -(SIDO_BREAKDOWN_MONTHS - 1))
 
     categories_out = []
     for cat in CATEGORIES:
@@ -339,6 +397,9 @@ def main():
         monthly = fetch_national_series(service_key, cat["hsCodes"], args.start_yymm, end_yymm, debug=args.debug)
         by_country = fetch_country_breakdown(
             service_key, cat["hsCodes"], country_start_yymm, end_yymm, debug=args.debug
+        )
+        by_region = fetch_sido_breakdown(
+            service_key, cat["hsCodes"], sido_start_yymm, end_yymm, debug=args.debug
         )
         if not monthly:
             print(f"[WARN] {cat['label']}: 전국 시계열을 하나도 못 가져왔습니다(API 실패 또는 "
@@ -354,8 +415,10 @@ def main():
             "companies": cat["companies"],
             "monthly": monthly,
             "byCountry": by_country,
+            "byRegion": by_region,  # 연 단위, 확인된 시도(현재는 서울만)만 포함 — 확장 예정
         })
-        print(f"[INFO] {cat['label']}: 월별 {len(monthly)}개월치, 국가별 {len(by_country)}개국 확보", file=sys.stderr)
+        print(f"[INFO] {cat['label']}: 월별 {len(monthly)}개월치, 국가별 {len(by_country)}개국, "
+              f"지역별 {len(by_region)}개 시도 확보", file=sys.stderr)
 
     if not categories_out:
         print("[ERROR] 모든 카테고리 조회에 실패해 기존 export_data.json을 보존하고 종료합니다.", file=sys.stderr)
