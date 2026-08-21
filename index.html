@@ -47,6 +47,14 @@ h1{font-size:22px; margin:2px 0 2px}
   padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;
 }
 .region-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+/* 산업데이터 → 수출 데이터 섹션의 "전체/지역별/국가별" 하위 탭 — 위 .region-tab과
+   같은 시각 스타일을 재사용하되, 클릭 핸들러가 서로 섞이지 않도록 별도 클래스로 분리
+   (2026-08-21, 품목별 국가/지역 드릴다운 UI 신규 추가). */
+.export-scope-tab{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.export-scope-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
 .view{display:none}
 .view.active{display:block}
 .sec-h{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 8px}
@@ -59,6 +67,17 @@ h1{font-size:22px; margin:2px 0 2px}
   padding:5px 12px; border-radius:16px; font-size:12px; cursor:pointer; font-weight:500;
 }
 .chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+/* 수출 데이터 품목 칩 — 기존 .chip은 한 줄 텍스트 전용이라, HS코드를 작은 글씨로 함께
+   보여주기 위한 2줄 버전(참고 사이트 "03 관세청 수출데이터" 탭의 칩 형태와 동일한 패턴,
+   2026-08-21). */
+.export-chip{
+  border:1px solid var(--border); background:var(--bg2); color:var(--sub);
+  padding:6px 12px; border-radius:10px; cursor:pointer; line-height:1.35;
+}
+.export-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.export-chip-label{font-size:12.5px; font-weight:700}
+.export-chip-hs{font-size:10.5px; color:var(--dim); margin-top:1px}
+.export-chip.active .export-chip-hs{color:var(--accent)}
 .toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
 .toggle button{
   border:none; background:var(--card); color:var(--sub); padding:6px 12px; font-size:12px; cursor:pointer;
@@ -295,6 +314,13 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
     <div class="chips" id="export-cat-chips"></div>
     <div class="note" id="export-companies-note" style="margin:-2px 0 10px"></div>
+
+    <!-- 품목별 "전체/지역별/국가별" 하위 탭 (2026-08-21 추가) — 참고 사이트 03 관세청
+         수출데이터 탭과 동일한 패턴: 품목 칩 선택 → 범위 탭(전체 고정 + 해당 품목에
+         지역/국가 목록이 있을 때만 지역별/국가별 탭 노출) → 범위 선택 시 구체적인
+         국가/지역명 칩이 아래에 추가로 뜬다. -->
+    <div class="tabs" id="export-scope-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+    <div class="chips" id="export-scope-keys" style="margin-bottom:10px"></div>
 
     <div class="cards" id="export-stat-cards"></div>
 
@@ -1276,9 +1302,48 @@ mkBar('visitorContinentChart', ['3월','4월','5월','6월','7월','8월'], [
 // DATA_GO_KR_SERVICE_KEY가 아직 GitHub Secrets에 등록되지 않았으면 export_data.json
 // 자체가 없을 수 있어(404) 그 경우 안내 문구만 보여준다.
 let EXPORT_DATA = { categories: [] };
-const EXPORT_STATE = { cat: '', gran: 'month' };
+const EXPORT_STATE = { cat: '', gran: 'month', scope: 'all', scopeKey: null };
 let exportChartInstance = null;
 let exportCountryChartInstance = null;
+
+// ================================================================
+// [2026-08-21] 품목별 "전체/지역별/국가별" 하위 탭 — 화면 뼈대만 우선 구성.
+// 사용자가 지정한 8개 품목·HS코드·수집 범위(국가/지역)를 정적 설정으로 고정해두고,
+// export_data.json에 아직 이 범위의 실제 데이터가 없어도(byCountry/byRegion에 해당
+// 키가 없거나 비어 있어도) 칩·탭 구조 자체는 항상 뜨도록 한다. 실제 국가별/지역별
+// 수집은 scrape_export_data.py 쪽 후속 작업(아직 미착수)이며, 이번 변경은 화면
+// 뼈대만 다룬다 — "우선 실제 데이터를 불러오기 전, 하위 탭 먼저 형성해줘" 요청.
+//
+// scripts/scrape_export_data.py의 기존 CATEGORIES와 달라진 점(추후 스크래퍼 갱신 시
+// 반드시 다시 확인할 것):
+//  - 톡신: HS 3002909000 제외, 3002491000만 사용(사용자 지정 범위)
+//  - 임플란트: HS 9021290000(10자리) → 902129(6자리)로 사용자가 새로 지정
+//  - 치과영상장비 → "치과 CBCT 장비"로 개편, HS 9022120000(10자리) → 902213(6자리)
+//  - 홈뷰터(home_device, HS 8543702020)는 새 8개 목록에 없어 칩에서 빠짐
+//  - 체외진단 PCR(HS 3822192020), 면역진단(HS 3822191000)은 이번에 신규 추가된 품목
+//    이라 관련 상장사(companies)를 아직 확인하지 못해 빈 값으로 둠 — 추후 채울 것.
+const EXPORT_CATEGORY_CONFIG = [
+  { key: 'toxin', label: '톡신', hsCodes: ['3002491000'], companies: '휴젤·메디톡스·대웅제약·휴온스글로벌',
+    countries: ['미국', '중국', '브라질', '태국', '일본'], regions: [] },
+  { key: 'device_medical', label: '미용기기', hsCodes: ['901890'], companies: '클래시스·루트로닉·원텍·레이저옵텍',
+    countries: ['미국', '브라질', '태국', '중국', '일본'], regions: ['경기 고양시', '서울 강남구', '서울 금천구', '대전 유성구'] },
+  { key: 'implant_dental', label: '임플란트', hsCodes: ['902129'], companies: '오스템임플란트·덴티움',
+    countries: ['러시아 연방', '중국', '미국'], regions: ['서울 강서구', '경기 수원시', '부산 해운대구'] },
+  { key: 'filler', label: '리쥬란류', hsCodes: ['3304999000'], companies: '휴젤·파마리서치·휴메딕스',
+    countries: [], regions: ['강원 강릉시'] },
+  { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '제노레이(추가 종목 확인 필요)',
+    countries: ['중국'], regions: ['경기 화성시', '경기 성남시'] },
+  { key: 'hemostat', label: '지혈재', hsCodes: ['3006104000'], companies: '넥스트바이오메디컬',
+    countries: [], regions: [] },
+  { key: 'pcr_diagnostic', label: '체외진단 PCR', hsCodes: ['3822192020'], companies: '',
+    countries: [], regions: ['서울 송파구'] },
+  { key: 'immuno_diagnostic', label: '면역진단', hsCodes: ['3822191000'], companies: '',
+    countries: [], regions: ['경기 수원시'] },
+];
+
+function currentExportCategoryConfig(){
+  return EXPORT_CATEGORY_CONFIG.find(c => c.key === EXPORT_STATE.cat) || null;
+}
 
 function fmtUsdShort(dlr){
   if(dlr == null) return 'N/A';
@@ -1358,40 +1423,121 @@ function topCountryForExport(cat){
 function renderExportCategoryChips(){
   const wrap = document.getElementById('export-cat-chips');
   const companiesNote = document.getElementById('export-companies-note');
-  if(!EXPORT_DATA.categories.length){
-    wrap.innerHTML = '<span class="note">export_data.json이 아직 없습니다 — DATA_GO_KR_SERVICE_KEY를 GitHub Secrets에 등록하면 다음 갱신 때부터 자동 생성됩니다.</span>';
-    if(companiesNote) companiesNote.textContent = '';
-    return;
-  }
-  wrap.innerHTML = EXPORT_DATA.categories.map(c =>
-    `<div class="chip${c.key === EXPORT_STATE.cat ? ' active' : ''}" data-key="${c.key}">${escapeHtml(c.label)}</div>`
+  // EXPORT_DATA.categories(실제 수집 결과)가 아니라 EXPORT_CATEGORY_CONFIG(정적 설정)를
+  // 기준으로 그린다 — 새로 지정한 8개 품목·범위 중 상당수는 아직 실데이터가 없어도 칩과
+  // 하위 탭 구조 자체는 항상 보여야 하기 때문(2026-08-21).
+  wrap.innerHTML = EXPORT_CATEGORY_CONFIG.map(c =>
+    `<div class="export-chip${c.key === EXPORT_STATE.cat ? ' active' : ''}" data-key="${c.key}">
+       <div class="export-chip-label">${escapeHtml(c.label)}</div>
+       <div class="export-chip-hs">HS ${escapeHtml(c.hsCodes.join(', '))}</div>
+     </div>`
   ).join('');
-  wrap.querySelectorAll('.chip').forEach(chip => {
+  wrap.querySelectorAll('.export-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       EXPORT_STATE.cat = chip.dataset.key;
+      EXPORT_STATE.scope = 'all';
+      EXPORT_STATE.scopeKey = null;
       renderExportCategoryChips();
+      renderExportScopeTabs();
       renderExportAll();
     });
   });
-  const cat = currentExportCategory();
-  if(companiesNote) companiesNote.textContent = cat && cat.companies ? `관련 종목: ${cat.companies}` : '';
+  const cfg = currentExportCategoryConfig();
+  if(companiesNote) companiesNote.textContent = cfg && cfg.companies ? `관련 종목: ${cfg.companies}` : '';
+}
+
+// "전체 / 지역별 / 국가별" 하위 탭. 해당 품목에 지역/국가 목록이 없으면(EXPORT_CATEGORY_CONFIG의
+// regions/countries가 빈 배열) 그 탭 자체를 숨긴다 — 참고 사이트에서 체외진단 PCR이 국가별 탭
+// 없이 전체/지역별만 보이는 것과 같은 패턴.
+function renderExportScopeTabs(){
+  const wrap = document.getElementById('export-scope-tabs');
+  const cfg = currentExportCategoryConfig();
+  if(!wrap || !cfg) return;
+  const tabs = [{ key: 'all', label: '전체' }];
+  if(cfg.regions.length) tabs.push({ key: 'region', label: '지역별' });
+  if(cfg.countries.length) tabs.push({ key: 'country', label: '국가별' });
+  if(!tabs.find(t => t.key === EXPORT_STATE.scope)) EXPORT_STATE.scope = 'all';
+  wrap.innerHTML = tabs.map(t =>
+    `<button class="export-scope-tab${EXPORT_STATE.scope === t.key ? ' active' : ''}" data-scope="${t.key}">${t.label}</button>`
+  ).join('');
+  wrap.querySelectorAll('.export-scope-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      EXPORT_STATE.scope = btn.dataset.scope;
+      EXPORT_STATE.scopeKey = null;
+      renderExportScopeTabs();
+      renderExportAll();
+    });
+  });
+  renderExportScopeKeys();
+}
+
+// 범위가 "지역별"/"국가별"일 때 구체적인 국가명/지역명을 고르는 2차 칩 목록.
+function renderExportScopeKeys(){
+  const wrap = document.getElementById('export-scope-keys');
+  const cfg = currentExportCategoryConfig();
+  if(!wrap || !cfg) return;
+  if(EXPORT_STATE.scope === 'all'){ wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+  const list = EXPORT_STATE.scope === 'region' ? cfg.regions : cfg.countries;
+  if(!list.length){ wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+  if(!EXPORT_STATE.scopeKey || !list.includes(EXPORT_STATE.scopeKey)) EXPORT_STATE.scopeKey = list[0];
+  wrap.style.display = '';
+  wrap.innerHTML = list.map(name =>
+    `<div class="chip${name === EXPORT_STATE.scopeKey ? ' active' : ''}" data-key="${escapeHtml(name)}">${escapeHtml(name)}</div>`
+  ).join('');
+  wrap.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      EXPORT_STATE.scopeKey = chip.dataset.key;
+      renderExportScopeKeys();
+      renderExportAll();
+    });
+  });
+}
+
+// 현재 선택된 품목·범위(전체/지역별/국가별 + 구체 국가/지역명)에 해당하는 실제 수집 데이터를
+// EXPORT_DATA(export_data.json)에서 찾아 monthly 형태([{ym, expDlr}])로 반환한다. 아직 해당
+// 범위의 데이터가 수집되지 않았으면(byCountry에 그 국가 키가 없거나, byRegion은 2026-08-21
+// 기준 스크래퍼에 아직 배포 전이라 사실상 전부) null을 반환 — 렌더 함수들은 이를 "아직
+// 수집되지 않음" 안내를 보여주는 신호로 쓴다.
+function currentExportMonthly(){
+  const cat = currentExportCategory(); // export_data.json 실데이터(없을 수 있음 — 정적 config와는 별개)
+  if(!cat) return null;
+  if(EXPORT_STATE.scope === 'all'){
+    return cat.monthly && cat.monthly.length ? cat.monthly : null;
+  }
+  if(EXPORT_STATE.scope === 'country'){
+    const rows = cat.byCountry && EXPORT_STATE.scopeKey ? cat.byCountry[EXPORT_STATE.scopeKey] : null;
+    return rows && rows.length ? rows.map(r => ({ ym: r.ym, expDlr: r.expDlr })) : null;
+  }
+  if(EXPORT_STATE.scope === 'region'){
+    const rows = cat.byRegion && EXPORT_STATE.scopeKey ? cat.byRegion[EXPORT_STATE.scopeKey] : null;
+    if(!rows || !rows.length) return null;
+    // byRegion 원본 스키마가 아직 미확정 — {period, expDlr}에서 period가 "YYYY-MM"이면 그대로,
+    // "YYYY"(연 단위)면 12월로 대표. 실제 라이브 배포 시 스키마 확인 후 다시 손볼 것.
+    return rows.map(r => ({ ym: /^\d{4}-\d{2}$/.test(r.period) ? r.period : `${r.period}-12`, expDlr: r.expDlr }));
+  }
+  return null;
 }
 
 function renderExportStatCards(){
   const wrap = document.getElementById('export-stat-cards');
-  const cat = currentExportCategory();
-  if(!cat || !cat.monthly || !cat.monthly.length){ wrap.innerHTML = ''; return; }
-  const m = cat.monthly;
+  const monthly = currentExportMonthly();
+  if(!monthly || !monthly.length){
+    wrap.innerHTML = '<div class="note" style="padding:4px 2px">아직 이 범위(선택한 국가·지역)의 데이터가 수집되지 않았습니다 — 하위 탭 구조만 우선 만든 상태입니다.</div>';
+    return;
+  }
+  const m = monthly;
   const last = m[m.length - 1];
   const prev = m.length > 1 ? m[m.length - 2] : null;
   const yoyRow = m.find(x => x.ym === ymMinusYear(last.ym));
   const momPct = prev && prev.expDlr ? (last.expDlr - prev.expDlr) / prev.expDlr * 100 : null;
   const yoyPct = yoyRow && yoyRow.expDlr ? (last.expDlr - yoyRow.expDlr) / yoyRow.expDlr * 100 : null;
-  const top = topCountryForExport(cat);
+  // "최대 수출국" 카드는 국가별 비중을 보여주는 카드라 scope가 '전체'일 때만 의미가 있다
+  // (이미 국가/지역 하나를 골라 본 상태에서는 중복 정보이므로 숨김).
+  const top = EXPORT_STATE.scope === 'all' ? topCountryForExport(currentExportCategory()) : null;
   wrap.innerHTML = `
     <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">$${fmtUsdShort(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
     <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
-    <div class="stat-card"><div class="lbl">최대 수출국(최근24개월)</div><div class="val">${top ? top.name : 'N/A'}</div><div class="delta">${top ? '비중 ' + top.pct.toFixed(0) + '%' : ''}</div></div>
+    ${top ? `<div class="stat-card"><div class="lbl">최대 수출국(최근24개월)</div><div class="val">${top.name}</div><div class="delta">비중 ${top.pct.toFixed(0)}%</div></div>` : ''}
   `;
 }
 
@@ -1410,18 +1556,21 @@ function sliceExportDisplay(agg, yoy, gran){
 }
 
 function renderExportChart(){
-  const cat = currentExportCategory();
+  const cfg = currentExportCategoryConfig();
   const note = document.getElementById('export-chart-note');
   const label = document.getElementById('export-selected-label');
-  if(label) label.textContent = cat ? `· ${cat.label}` : '';
+  const scopeLabel = EXPORT_STATE.scope === 'all' ? '' :
+    ` · ${EXPORT_STATE.scope === 'country' ? '국가' : '지역'}: ${EXPORT_STATE.scopeKey || ''}`;
+  if(label) label.textContent = cfg ? `· ${cfg.label}${scopeLabel}` : '';
   if(exportChartInstance){ exportChartInstance.destroy(); exportChartInstance = null; }
-  if(!cat || !cat.monthly || !cat.monthly.length){
-    if(note) note.textContent = '';
+  const monthly = currentExportMonthly();
+  if(!monthly || !monthly.length){
+    if(note) note.textContent = cfg ? `HS ${cfg.hsCodes.join(', ')} · 아직 이 범위의 데이터가 수집되지 않았습니다.` : '';
     return;
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cat.hsCodes.join(', ')} · 2016년 1월부터 표시(데이터 자체는 2015년 1월부터 수집)`;
-  const aggFull = aggregateExportMonthly(cat.monthly, EXPORT_STATE.gran);
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cfg.hsCodes.join(', ')} · 2016년 1월부터 표시(데이터 자체는 2015년 1월부터 수집)`;
+  const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
   const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, EXPORT_STATE.gran);
   // mkBar()는 단일 y축 막대 전용이라 YoY 우측 보조축(막대+선 혼합)은 직접 Chart.js를 호출한다.
@@ -1430,7 +1579,7 @@ function renderExportChart(){
       labels: agg.map(a => a.label),
       datasets: [
         {
-          type: 'bar', label: `${cat.label} 수출액($)`, data: agg.map(a => a.expDlr),
+          type: 'bar', label: `${cfg.label} 수출액($)`, data: agg.map(a => a.expDlr),
           backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
         },
         {
@@ -1473,9 +1622,9 @@ function renderExportCountryChart(){
 
 function renderExportTable(){
   const wrap = document.getElementById('export-table-wrap');
-  const cat = currentExportCategory();
-  if(!cat || !cat.monthly || !cat.monthly.length){ wrap.innerHTML = ''; return; }
-  const rows = cat.monthly.slice().reverse().slice(0, 36); // 최신 36개(월 기준) — 화면이 너무 길어지지 않게
+  const monthly = currentExportMonthly();
+  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
+  const rows = monthly.slice().reverse().slice(0, 36); // 최신 36개(월 기준) — 화면이 너무 길어지지 않게
   wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액($)</th></tr></thead><tbody>
     ${rows.map(r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`).join('')}
   </tbody></table>`;
@@ -1506,11 +1655,16 @@ async function loadExportData(){
     EXPORT_DATA = { categories: [] };
   }
   const sourceNote = document.getElementById('export-source-note');
-  if(sourceNote && EXPORT_DATA.source) sourceNote.textContent = EXPORT_DATA.source;
-  if(EXPORT_DATA.categories && EXPORT_DATA.categories.length && !EXPORT_STATE.cat){
-    EXPORT_STATE.cat = EXPORT_DATA.categories[0].key;
+  if(sourceNote){
+    sourceNote.textContent = EXPORT_DATA.source
+      ? EXPORT_DATA.source
+      : '관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신 (일부 품목·범위는 하위 탭 구조만 우선 구성 — 실제 데이터 수집 전)';
   }
+  // 표시할 품목 목록·순서는 이제 fetch된 EXPORT_DATA가 아니라 EXPORT_CATEGORY_CONFIG(정적
+  // 설정)가 기준 — 새 8개 품목 중 상당수는 아직 export_data.json에 없기 때문(2026-08-21).
+  if(!EXPORT_STATE.cat) EXPORT_STATE.cat = EXPORT_CATEGORY_CONFIG[0].key;
   renderExportCategoryChips();
+  renderExportScopeTabs();
   renderExportAll();
 }
 loadExportData();
