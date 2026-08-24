@@ -207,7 +207,12 @@ CATEGORIES = [
 # (index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음 — "셋 다 지금 업데이트된
 # 그대로 유지" 답변으로 확정).
 
-COUNTRY_BREAKDOWN_MONTHS = 24  # 국가별은 최근 24개월만(호출량 절약)
+# 국가별은 최근 36개월만 롤링 수집(호출량 절약). 24개월이었을 때는 index.html이 표시 구간
+# 전체(최근 24개월)에 걸쳐 YoY를 그리려 해도 뒤쪽 12개월치는 전년동기 비교 대상 자체가 수집
+# 범위 밖이라 YoY가 안 나왔다(2026-08-24 사용자 지적) — 그래서 "수집 3년 → 표시 2년"이 되도록
+# 12개월 늘림. index.html의 EXPORT_BREAKDOWN_DISPLAY_MONTHS(24)와 exportDisplayFromLabel()가
+# 이 여유분(앞 12개월)을 YoY 기준선으로만 쓰고 화면엔 뒤 24개월만 보여준다.
+COUNTRY_BREAKDOWN_MONTHS = 36
 
 # 지역별(시군구) 브레이크다운 — 국내 지역 수출량으로 특정 기업의 실적을 추정하는 용도
 # (aesthetic-web의 "강릉=파마리서치·리쥬란" 프록시 방식과 동일한 아이디어).
@@ -240,7 +245,7 @@ SIDO_CD_BY_NAME = {
     "부산": "26",
     "강원": "51",
 }
-SIGUNGU_BREAKDOWN_MONTHS = 24  # 국가별과 동일하게 최근 24개월만(호출량 절약) — 월별 응답이라 이 정도면 충분히 촘촘함
+SIGUNGU_BREAKDOWN_MONTHS = 36  # 국가별과 동일한 이유로 24 -> 36개월로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
 
 
 def yymm_add_months(yymm: str, months: int) -> str:
@@ -467,12 +472,18 @@ def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm
 
     for sido_cd in needed_sido_cds:
         for hs in hs_codes:
+            # 시군구별 API(sigunguperprlstperacrs)는 다른 세 API(Itemtrade/nitemtrade)와
+            # 달리 품목코드를 반드시 6자리로만 받는다("API 오류 코드 99: 품목코드는 6자리로
+            # 입력해야 합니다" — 2026-08-24 실서비스키로 확인). 카테고리 중 필러(3304999000)·
+            # 체외진단 PCR(3822192020)·면역진단(3822191000)처럼 10자리 코드를 쓰는 곳은
+            # 이 호출에서만 앞 6자리로 잘라서 보낸다(전국 시계열/국가별 호출은 원래 코드 그대로 유지).
+            hs_sigungu = hs[:6]
             for chunk_start, chunk_end in chunks:
                 params = {
                     "serviceKey": service_key,
                     "strtYymm": chunk_start,
                     "endYymm": chunk_end,
-                    "HsSgn": hs,
+                    "HsSgn": hs_sigungu,
                     "sidoCd": sido_cd,
                     "numOfRows": "999",
                     "pageNo": "1",

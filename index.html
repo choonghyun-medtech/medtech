@@ -1408,10 +1408,15 @@ function computeYoYSeries(agg, gran){
   });
 }
 
+// 국가별 breakdown은 scrape_export_data.py가 최근 36개월만 롤링 수집한다(호출량 절약,
+// COUNTRY_BREAKDOWN_MONTHS) — 그중 뒤쪽 24개월만 "최근24개월" 카드/차트에 쓴다(앞 12개월은
+// exportDisplayFromLabel()의 YoY 기준선용으로만 존재, 2026-08-24).
+const EXPORT_BREAKDOWN_DISPLAY_MONTHS = 24;
+
 function topCountryForExport(cat){
   if(!cat || !cat.byCountry) return null;
   const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
-    name, total: rows.reduce((s, r) => s + (r.expDlr || 0), 0)
+    name, total: rows.slice(-EXPORT_BREAKDOWN_DISPLAY_MONTHS).reduce((s, r) => s + (r.expDlr || 0), 0)
   })).filter(c => c.total > 0);
   if(!totals.length) return null;
   const grand = totals.reduce((s, c) => s + c.total, 0);
@@ -1510,10 +1515,10 @@ function currentExportMonthly(){
   }
   if(EXPORT_STATE.scope === 'region'){
     const rows = cat.byRegion && EXPORT_STATE.scopeKey ? cat.byRegion[EXPORT_STATE.scopeKey] : null;
-    if(!rows || !rows.length) return null;
-    // byRegion 원본 스키마가 아직 미확정 — {period, expDlr}에서 period가 "YYYY-MM"이면 그대로,
-    // "YYYY"(연 단위)면 12월로 대표. 실제 라이브 배포 시 스키마 확인 후 다시 손볼 것.
-    return rows.map(r => ({ ym: /^\d{4}-\d{2}$/.test(r.period) ? r.period : `${r.period}-12`, expDlr: r.expDlr }));
+    // byRegion 실제 스키마는 byCountry와 동일하게 {ym, expDlr}(scrape_export_data.py의
+    // fetch_sigungu_breakdown() 출력 참고) — 예전엔 {period, expDlr}로 잘못 가정해서 모든
+    // 행이 "undefined-12"로 깨졌었다(2026-08-24 실데이터로 확인 후 수정).
+    return rows && rows.length ? rows.map(r => ({ ym: r.ym, expDlr: r.expDlr })) : null;
   }
   return null;
 }
@@ -1541,15 +1546,41 @@ function renderExportStatCards(){
   `;
 }
 
-// 수집 자체는 scrape_export_data.py의 START_YYMM(2015-01)부터지만, 차트에는 2016-01월부터만
-// 그린다(2026-08-21 요청) — 2015년 구간은 전년동기 데이터가 없어 YoY 선이 그해 내내 끊겨서
-// 보기 안 좋기 때문. YoY 자체는 반드시 cat.monthly 전체(2015년 포함)로 먼저 계산한 뒤에
-// 화면 표시 구간만 잘라내야 한다 — 안 그러면 2016년 1월치의 전년동기(2015-01) 비교값을
-// 못 구해 2016년 첫 달의 YoY까지 같이 끊긴다. 월별 표(renderExportTable)는 최근 36개월만
-// 보여주는 방식이라 이 컷오프와 무관하게 이미 2015년 데이터가 안 나온다 — 손 안 댐.
-const EXPORT_CHART_DISPLAY_FROM = { month: '2016-01', quarter: '2016Q1', year: '2016' };
-function sliceExportDisplay(agg, yoy, gran){
-  const cutoff = EXPORT_CHART_DISPLAY_FROM[gran];
+// "YYYY-MM" 문자열에 개월수를 더한(음수면 뺀) "YYYY-MM"을 반환.
+function ymAddMonths(ym, months){
+  const [y, m] = ym.split('-').map(Number);
+  const total = y * 12 + (m - 1) + months;
+  const ny = Math.floor(total / 12), nm = (total % 12) + 1;
+  return `${ny}-${String(nm).padStart(2, '0')}`;
+}
+
+// 차트에는 수집 시작월+1년부터만 그린다(2026-08-21 요청) — 수집 시작 직후 1년은 전년동기
+// 데이터가 없어 YoY 선이 끊겨서 보기 안 좋기 때문. YoY 자체는 반드시 monthly 전체(수집
+// 시작월부터)로 먼저 계산한 뒤에 화면 표시 구간만 잘라내야 한다 — 안 그러면 표시 구간
+// 첫 달의 전년동기 비교값을 못 구해 그 달의 YoY까지 같이 끊긴다.
+//
+// 컷오프를 고정 날짜(예: "2016-01")로 박아두지 않고 monthly[0](실제 수집된 가장 오래된
+// 월)+1년으로 동적 계산한다 — "전체"(scope=all)는 국내 총계라 START_YYMM(2015-01)부터
+// 쌓이지만, "국가별"/"지역별"은 호출량 절약을 위해 최근 N개월(COUNTRY_BREAKDOWN_MONTHS/
+// SIGUNGU_BREAKDOWN_MONTHS, scrape_export_data.py)만 롤링 수집하므로 수집 시작월이 계속
+// 바뀐다. 고정 날짜를 쓰면 이 두 범위는 컷오프 이전 구간이라 매번 통째로 안 보이거나
+// (수집 36개월인데 표시 컷오프가 2016-01처럼 아주 오래전이면 전부 보임 — 그러면 YoY가
+// 안 되는 첫 1년까지 같이 보여버림) 하는 문제가 있었다(2026-08-24, 국가별/지역별 YoY가
+// 최근 1년치만 보인다는 사용자 지적으로 발견 — 원인은 COUNTRY_BREAKDOWN_MONTHS/
+// SIGUNGU_BREAKDOWN_MONTHS가 24개월이라 처음 12개월엔 전년동기 비교 대상이 아예 수집돼
+// 있지 않았던 것. 36개월로 늘리고 이 동적 컷오프로 "수집 3년 → 표시 2년, 표시 구간
+// 전체에 YoY 보장"으로 맞췄다).
+function exportDisplayFromLabel(monthly, gran){
+  if(!monthly || !monthly.length) return null;
+  const cutoffYm = ymAddMonths(monthly[0].ym, 12);
+  if(gran === 'month') return cutoffYm;
+  const [y, m] = cutoffYm.split('-').map(Number);
+  if(gran === 'quarter') return `${y}Q${Math.ceil(m / 3)}`;
+  return String(y); // 'year'
+}
+
+function sliceExportDisplay(agg, yoy, cutoff){
+  if(!cutoff) return { agg, yoy };
   const startIdx = agg.findIndex(a => a.label >= cutoff);
   if(startIdx <= 0) return { agg, yoy }; // 컷오프 이전 데이터가 없으면 그대로
   return { agg: agg.slice(startIdx), yoy: yoy.slice(startIdx) };
@@ -1569,10 +1600,11 @@ function renderExportChart(){
     return;
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cfg.hsCodes.join(', ')} · 2016년 1월부터 표시(데이터 자체는 2015년 1월부터 수집)`;
+  const displayFrom = exportDisplayFromLabel(monthly, EXPORT_STATE.gran);
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY 증감률(%, 오른쪽 축 선) · HS ${cfg.hsCodes.join(', ')} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
   const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
-  const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, EXPORT_STATE.gran);
+  const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
   // mkBar()는 단일 y축 막대 전용이라 YoY 우측 보조축(막대+선 혼합)은 직접 Chart.js를 호출한다.
   exportChartInstance = new Chart(document.getElementById('exportChart'), {
     data: {
@@ -1612,7 +1644,7 @@ function renderExportCountryChart(){
   if(exportCountryChartInstance){ exportCountryChartInstance.destroy(); exportCountryChartInstance = null; }
   if(!cat || !cat.byCountry || !Object.keys(cat.byCountry).length) return;
   const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
-    name, total: rows.reduce((s, r) => s + (r.expDlr || 0), 0)
+    name, total: rows.slice(-EXPORT_BREAKDOWN_DISPLAY_MONTHS).reduce((s, r) => s + (r.expDlr || 0), 0)
   })).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
   const colors = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626', '#0891b2', '#8a919c', '#be185d'];
   exportCountryChartInstance = mkBar('exportCountryChart', totals.map(t => t.name), [
