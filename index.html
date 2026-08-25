@@ -346,9 +346,9 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2 style="font-size:13px">월별 데이터</h2><span class="note">단위: 천 달러</span></div>
     <div id="export-table-wrap"></div>
 
-    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 방한객 수는 aesthetic-web 참고 구성(아직 미연동 — 샘플)</span></div>
+    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 실데이터 연동</span></div>
     <div class="cards">
-      <div class="stat-card"><div class="lbl">이번달 방한객</div><div class="val">98.4만명</div><div class="delta up">▲ 11.5% YoY</div></div>
+      <div class="stat-card" id="visitor-stat-card"></div>
       <div class="stat-card" id="medtour-stat-card"></div>
     </div>
 
@@ -367,10 +367,10 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note">만명 · 한국관광통계 (공표 시차 약 2개월)</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note" id="visitor-trend-note">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</span></div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">대륙별 방한 외국인</h2><span class="note">월별 스택 · 만명 · 기타 = 아프리카·교포·미상</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">대륙별 방한 외국인</h2><span class="note" id="visitor-continent-note">월별 스택 · 만명 · 기타 = 아프리카·교포·미상</span></div>
     <div class="chart-box"><canvas id="visitorContinentChart"></canvas></div>
 
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 12일 자동 작성 (예정)</span></div>
@@ -1281,21 +1281,139 @@ loadTickerUniverse();
 
 // exportChart는 더 이상 목업이 아니라 export_data.json 기반 실데이터로 그린다
 // (아래 "수출 데이터(카테고리별)" 섹션의 loadExportData() 참고). "외국인 의료 소비액 및
-// 소비건수 추이" / "진료과목별 비율 추이" 두 차트는 medical_tour.json 기반 실데이터로
-// 그린다(아래 "방한 외국인 · 의료관광객 데이터(실데이터)" 섹션의 loadMedicalTourData() 참고).
-// 방한객수/대륙별 차트 2개는 아직 실제 데이터 연동 전이라(한국관광통계 미연동) 지금은
-// 샘플 그대로 남겨둔다 — 섹션 note에도 "미연동 — 샘플"이라고 표시해 뒀다.
-mkBar('visitorChart', ['3월','4월','5월','6월','7월','8월'], [
-  {label:'방한 외국인 (만명)', data:[74,81,86,90,93,98], backgroundColor:'#7c3aed'}
-]);
+// 소비건수 추이" / "진료과목별 비율 추이" 두 차트는 medical_tour.json 기반 실데이터로,
+// "방한 외국인 월별 추이" / "대륙별 방한 외국인" 두 차트는 visitor_stats.json 기반
+// 실데이터로 그린다(아래 loadVisitorStatsData() 참고).
 
-mkBar('visitorContinentChart', ['3월','4월','5월','6월','7월','8월'], [
-  {label:'아시아', data:[52,56,59,62,65,70], backgroundColor:'#2563eb'},
-  {label:'미주', data:[9,10,10,11,12,13], backgroundColor:'#16a34a'},
-  {label:'유럽', data:[7,8,8,9,9,10], backgroundColor:'#7c3aed'},
-  {label:'오세아니아', data:[2,2,2,3,3,3], backgroundColor:'#f59e0b'},
-  {label:'기타', data:[4,5,7,5,4,2], backgroundColor:'#8a919c'}
-], {stacked:true});
+let VISITOR_STATS_DATA = { monthly: [], continentMonthly: [] };
+let visitorTrendChartInstance = null;
+let visitorContinentChartInstance = null;
+
+// continentMonthly의 원본 카테고리는 아시아/아메리카/유럽/오세아니아/아프리카/교포/기타
+// 7개(한국관광 데이터랩 NAT_08_01_011 그대로) — 화면 note("기타 = 아프리카·교포·미상")와
+// 맞추기 위해 작은 카테고리 3개를 "기타"로 묶어서 보여준다. 원본 데이터(visitor_stats.json)는
+// 그대로 두고 표시할 때만 묶는다.
+const VISITOR_CONTINENT_GROUPS = [
+  { label: '아시아', keys: ['아시아'], color: '#2563eb' },
+  { label: '아메리카', keys: ['아메리카'], color: '#16a34a' },
+  { label: '유럽', keys: ['유럽'], color: '#7c3aed' },
+  { label: '오세아니아', keys: ['오세아니아'], color: '#f59e0b' },
+  { label: '기타', keys: ['아프리카', '교포', '기타'], color: '#8a919c' },
+];
+
+function fmtManmyeong(v){ return (v / 10000).toFixed(1) + '만명'; }
+// 세로축 눈금은 소수점 없이 깔끔하게(예: 250만명) — 데이터 값(툴팁)은 fmtManmyeong으로 소수점
+// 한 자리까지 그대로 보여준다(2026-08-25 요청).
+function fmtManmyeongAxis(v){ return Math.round(v / 10000) + '만명'; }
+
+function renderVisitorStatCard(){
+  const card = document.getElementById('visitor-stat-card');
+  if(!card) return;
+  const m = VISITOR_STATS_DATA.monthly;
+  if(!m || !m.length){
+    card.innerHTML = `<div class="lbl">이번달 방한객</div><div class="val">-</div>`;
+    return;
+  }
+  const last = m[m.length - 1];
+  const yoy = m.find(r => r.ym === `${Number(last.ym.slice(0,4)) - 1}-${last.ym.slice(5)}`);
+  const yoyPct = yoy && yoy.visitors ? (last.visitors - yoy.visitors) / yoy.visitors * 100 : null;
+  card.innerHTML = `
+    <div class="lbl">이번달 방한객(${last.ym})</div>
+    <div class="val">${fmtManmyeong(last.visitors)}</div>
+    ${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : ''}
+  `;
+}
+
+function renderVisitorTrendChart(){
+  if(visitorTrendChartInstance){ visitorTrendChartInstance.destroy(); visitorTrendChartInstance = null; }
+  const rows = VISITOR_STATS_DATA.monthly;
+  const note = document.getElementById('visitor-trend-note');
+  if(!rows || !rows.length){
+    if(note) note.textContent = '만명 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
+    return;
+  }
+  if(note) note.textContent = `월별(최근 ${rows.length}개월, 10년치) · 한국관광 데이터랩 · getTempleteData.do 자동 갱신`;
+  visitorTrendChartInstance = new Chart(document.getElementById('visitorChart'), {
+    type: 'line',
+    data: {
+      labels: rows.map(r => r.ym),
+      datasets: [{
+        label: '방한 외국인', data: rows.map(r => r.visitors),
+        borderColor: '#7c3aed', backgroundColor: 'rgba(124, 58, 237, 0.15)', fill: true,
+        tension: 0.25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      // 점이 작아(pointRadius:0) 정확히 선 위를 겨누기 어려우니, 그 x축(월) 위 아무 곳에
+      // 커서를 올려도 값이 뜨도록 mode:'index'로 처리한다(대륙별 차트와 동일 패턴, 2026-08-25 요청).
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: { label: (ctx) => `방한 외국인: ${fmtManmyeong(ctx.parsed.y)}` },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxTicksLimit: 14, autoSkip: true } },
+        y: { grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => fmtManmyeongAxis(v) } },
+      },
+    },
+  });
+}
+
+function renderVisitorContinentChart(){
+  if(visitorContinentChartInstance){ visitorContinentChartInstance.destroy(); visitorContinentChartInstance = null; }
+  const rows = VISITOR_STATS_DATA.continentMonthly;
+  const note = document.getElementById('visitor-continent-note');
+  if(!rows || !rows.length){
+    if(note) note.textContent = '월별 스택 · 만명 · 아직 데이터가 없습니다.';
+    return;
+  }
+  if(note) note.textContent = `월별 스택(최근 ${rows.length}개월, 10년치) · 만명 · 기타 = 아프리카·교포·미상`;
+  const labels = rows.map(r => r.ym);
+  const datasets = VISITOR_CONTINENT_GROUPS.map(g => ({
+    label: g.label,
+    backgroundColor: g.color,
+    data: rows.map(r => g.keys.reduce((sum, k) => sum + (r.continents[k] || 0), 0)),
+  }));
+  visitorContinentChartInstance = new Chart(document.getElementById('visitorContinentChart'), {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      // 막대(대륙 하나)에 커서를 올려도 그 달의 다른 대륙 값이 한꺼번에 보이도록 mode:'index'로
+      // 같은 x축(월)의 모든 대륙 세그먼트를 툴팁에 함께 띄운다(medTourDeptChart와 동일 패턴).
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtManmyeong(ctx.parsed.y)}` },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxTicksLimit: 14, autoSkip: true }, stacked: true },
+        y: { grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => fmtManmyeongAxis(v) }, stacked: true },
+      },
+    },
+  });
+}
+
+async function loadVisitorStatsData(){
+  try{
+    const res = await fetch('visitor_stats.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('no visitor_stats.json yet');
+    VISITOR_STATS_DATA = await res.json();
+  }catch(e){
+    VISITOR_STATS_DATA = { monthly: [], continentMonthly: [] };
+  }
+  renderVisitorStatCard();
+  renderVisitorTrendChart();
+  renderVisitorContinentChart();
+}
+loadVisitorStatsData();
 
 // ==================================================================
 // 수출 데이터(카테고리별) — 산업데이터 탭 "수출 데이터" 섹션.
