@@ -1830,11 +1830,14 @@ loadExportData();
 // "의료관광 현황" 탭에서 신한카드 외국인 카드소비 기준 진료과목별 비율 API를 호출해 월별
 // 총액·총건수 + 진료과목별 비율을 medical_tour.json으로 저장한 것을 읽는다.
 // 화면 구성(2026-08-25 요청):
-//  1) 소비액·소비건수 추이 — 하나의 차트에 두 계열(왼쪽축 소비액·천원·막대 / 오른쪽축
-//     소비건수·건·선). 소비액은 데이터랩 사이트 표시(단위 '천원')와 동일하게 억원 환산 없이
-//     그대로 보여준다(2026-08-25 요청).
+//  1) 소비액·소비건수 추이 — 하나의 차트에 두 계열(왼쪽축 소비액·백만원·막대 / 오른쪽축
+//     소비건수·건·선). 조회 범위는 10개년(scrape_medical_tour.py LOOKBACK_MONTHS_TREND,
+//     실제 데이터는 2018-01부터). 소비액은 원본 데이터가 "천원" 단위라(사이트 표시와 동일)
+//     0이 너무 많아 읽기 어렵다는 지적(2026-08-25)에 따라 화면에서만 1,000으로 더 나눠
+//     "백만원" 단위 + 소수점 3자리로 표시한다(예: 28,561,957천원 → 28,561.957백만원).
 //  2) 진료과목별 비율 추이 — 데이터랩 원 사이트와 동일하게 누적 막대 차트, 소비액·소비건수용
-//     두 개를 나란히 배치.
+//     두 개를 나란히 배치. 이쪽은 조회 범위를 그대로 최근 1개년(12개월)로 유지한다
+//     (2026-08-25 요청 — 추이 차트만 10개년으로 확대, 비율 차트는 현행 유지).
 //  3) 전체/중국/일본/미국/태국 5개 탭 — 탭 전환 시 위 세 차트가 함께 바뀐다.
 let MEDICAL_TOUR_DATA = { tabs: [] };
 const MEDTOUR_STATE = { tab: 'all' };
@@ -1860,9 +1863,15 @@ function currentMedtourTab(){
 }
 
 // medical_tour.json의 monthly[].amt는 데이터랩 사이트 표시(callBackChart_03_01/chart_11,
-// medical_tour_chart.js — unit:'천원')와 동일하게 "천원" 단위 그대로다. 억원 환산·반올림 없이
-// 원래 숫자를 콤마만 찍어 사이트와 같은 형태로 보여준다(2026-08-25 요청).
-function fmtCheonwon(v){ return Math.round(v).toLocaleString() + '천원'; }
+// medical_tour_chart.js — unit:'천원')와 동일한 "천원" 단위로 저장돼 있다. 0이 너무 많아
+// 읽기 어렵다는 지적(2026-08-25)에 따라 화면에서는 1,000으로 한 번 더 나눠 "백만원" 단위로
+// 보여주되, 소수점을 3자리까지 고정 표시해 정밀도 손실이 드러나게 한다
+// (예: 28,561,957천원 → 28,561.957백만원).
+function fmtMillionWon(v){ return (v / 1000).toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3}) + '백만원'; }
+// 상단 통계 카드는 폭이 좁아 소수점 3자리(예: "213,079.682백만원")까지 넣으면 두 줄로
+// 넘어가 보기 불편했다(2026-08-25 지적) — 카드에서만 정수로 반올림해 한 줄에 들어가게 한다.
+// 그래프·툴팁 쪽 소수점 3자리 표시는 그대로 유지(그쪽은 건드리지 말라는 요청).
+function fmtMillionWonRounded(v){ return Math.round(v / 1000).toLocaleString() + '백만원'; }
 function fmtCnt(n){ return Math.round(n).toLocaleString() + '건'; }
 
 function renderMedtourTabs(){
@@ -1896,7 +1905,7 @@ function renderMedtourStatCard(){
   const momPct = prev && prev.amt ? (last.amt - prev.amt) / prev.amt * 100 : null;
   card.innerHTML = `
     <div class="lbl">${tab.label} 의료 소비액(${last.ym})</div>
-    <div class="val">${fmtCheonwon(last.amt)}</div>
+    <div class="val">${fmtMillionWonRounded(last.amt)}</div>
     ${momPct != null ? `<div class="delta ${momPct >= 0 ? 'up' : 'down'}">${momPct >= 0 ? '▲' : '▼'} ${Math.abs(momPct).toFixed(1)}% MoM</div>` : ''}
   `;
 }
@@ -1909,14 +1918,14 @@ function renderMedtourTrendChart(){
     if(note) note.textContent = '월별 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
     return;
   }
-  const rows = tab.monthly.slice(-12); // 반영 시차 감안해 넉넉히 수집된 것 중 최신 12개월만 표시
-  if(note) note.textContent = `월별(최근 ${rows.length}개월) · ${tab.label} · 왼쪽축 소비액(천원, 막대) · 오른쪽축 소비건수(건, 선) · 신한카드 외국인 카드소비 기준`;
+  const rows = tab.monthly; // 10개년 전체(scrape_medical_tour.py가 수집한 범위 그대로, 2026-08-25 요청)
+  if(note) note.textContent = `월별(${rows[0].ym} ~ ${rows[rows.length-1].ym}, ${rows.length}개월) · ${tab.label} · 왼쪽축 소비액(백만원, 막대) · 오른쪽축 소비건수(건, 선) · 신한카드 외국인 카드소비 기준`;
   medTourTrendChartInstance = new Chart(document.getElementById('medTourTrendChart'), {
     data: {
       labels: rows.map(r => r.ym),
       datasets: [
         {
-          type: 'bar', label: '의료 소비액(천원)', data: rows.map(r => r.amt),
+          type: 'bar', label: '의료 소비액(백만원)', data: rows.map(r => r.amt / 1000),
           backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
         },
         {
@@ -1939,7 +1948,7 @@ function renderMedtourTrendChart(){
           callbacks: {
             label: (ctx) => ctx.dataset.yAxisID === 'y1'
               ? `${ctx.dataset.label}: ${fmtCnt(ctx.parsed.y)}`
-              : `${ctx.dataset.label}: ${fmtCheonwon(ctx.parsed.y)}`,
+              : `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
           },
         },
       },
@@ -1947,7 +1956,7 @@ function renderMedtourTrendChart(){
         x: { grid: { display: false }, ticks: { color: textColor() } },
         y: {
           position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
-          title: { display: true, text: '소비액(천원)', color: textColor() },
+          title: { display: true, text: '소비액(백만원)', color: textColor() },
         },
         y1: {
           position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor() },

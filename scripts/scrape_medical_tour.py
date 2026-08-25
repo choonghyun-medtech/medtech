@@ -31,9 +31,13 @@
        아니라 "천원" 단위로 저장하고, index.html도 억원 환산 없이 그대로
        "1,234,567,890천원" 형식으로 보여준다(2026-08-25 사용자 요청 — 사이트 표기와 통일).
 
-- 조회 범위: "최근 1개년 월별" 요청에 맞춰 이번 달 기준 과거 14개월을 요청 범위로 넉넉히 잡고
-  (관광공사 데이터 반영 시차가 매월 몇 주씩 있어 이번 달/전달 데이터가 비어 있을 수 있음),
-  실제로 값이 채워진 월만 저장한다. 화면(index.html)은 저장된 월 중 최신 12개월만 그린다.
+- 조회 범위: "소비액·소비건수 추이"(monthly)와 "진료과목별 비율 추이"(deptAmt/deptCnt)는
+  범위가 다르다(2026-08-25 요청).
+    · monthly(전용 추이 qid) — 10개년(120개월) 요청. 실제 데이터는 2026-08-25 확인 기준
+      2018-01부터만 있어(그 이전은 API가 빈 응답) 결과적으로 약 8.5년치가 저장된다 —
+      데이터가 더 쌓이면 자동으로 늘어난다. index.html은 저장된 monthly 전체를 그린다.
+    · deptAmt/deptCnt(진료과목별 비율 qid) — 기존과 동일하게 이번 달 기준 과거 14개월만
+      요청(반영 시차 감안 여유분 포함). index.html은 이 중 최신 12개월만 그린다.
 
 - 인증 불필요 · 무료. 이 단계도 "보강" 단계라, 호출이 전부 실패하면 기존 medical_tour.json을
   그대로 보존하고 경고만 남긴 채 0으로 종료한다(export_data.json 스크립트와 동일한 패턴).
@@ -54,7 +58,8 @@ REQUEST_TIMEOUT = 30
 REQUEST_RETRIES = 3
 REQUEST_RETRY_BACKOFF_SEC = 3
 REQUEST_DELAY_SEC = 0.2
-LOOKBACK_MONTHS = 14  # 반영 시차 감안해 12개월보다 넉넉히 요청 — index.html에서 최신 12개월만 표시
+LOOKBACK_MONTHS_RATIO = 14  # 진료과목별 비율(deptAmt/deptCnt) 조회 범위 — 반영 시차 감안 여유분 포함, index.html에서 최신 12개월만 표시
+LOOKBACK_MONTHS_TREND = 120  # 소비액·소비건수 추이(monthly) 조회 범위 — 10개년(2026-08-25 요청). 실제 데이터는 2018-01부터만 있음
 
 # key/label/natCd — natCd="000"은 전체(글로벌). 나머지는 selectComNatList.do로 확인한 코드
 # (2026-08-25): 중국=156, 일본=392, 미국=840, 태국=764.
@@ -108,13 +113,17 @@ def api_post(qid, nat_cd, base_ym1, base_ym2, tab_div, debug=False):
     return None, True
 
 
-def fetch_tab(tab, base_ym1, base_ym2, debug=False):
-    """진료과목별 비율(AMT/CNT) qid 두 번 + "전체 추이" 전용 qid(소비액/소비건수) 두 번,
-    총 네 번 호출한다. 전체(natCd=000)는 tabDiv=2 + 002_002(비율)/002_001(전용) qid, 국가별은
-    tabDiv=3 + 003_001(비율)/003_003(전용) qid — 응답 필드명이 서로 달라(MCLS_AMT_RATE vs
-    RATE_AMT 등) 아래에서 흡수한다. 월별 총액·총건수(monthly)는 반드시 전용 qid에서만
-    뽑는다(모듈 docstring의 ⚠️ 참고 — 진료과목 비율 qid의 합계 필드는 총건수는 근사치이고
-    총액은 단위가 다르다). 진료과목별 비율(dept_amt/dept_cnt)은 비율 qid에서 그대로 뽑는다."""
+def fetch_tab(tab, ratio_ym1, trend_ym1, base_ym2, debug=False):
+    """진료과목별 비율(AMT/CNT) qid 두 번(ratio_ym1~base_ym2, 최근 1개년 남짓) + "전체 추이"
+    전용 qid(소비액/소비건수) 두 번(trend_ym1~base_ym2, 10개년), 총 네 번 호출한다. 전체
+    (natCd=000)는 tabDiv=2 + 002_002(비율)/002_001(전용) qid, 국가별은 tabDiv=3 +
+    003_001(비율)/003_003(전용) qid — 응답 필드명이 서로 달라(MCLS_AMT_RATE vs RATE_AMT 등)
+    아래에서 흡수한다. 월별 총액·총건수(monthly)는 반드시 전용 qid에서만 뽑는다(모듈
+    docstring의 ⚠️ 참고 — 진료과목 비율 qid의 합계 필드는 총건수는 근사치이고 총액은 단위가
+    다르다). 진료과목별 비율(dept_amt/dept_cnt)은 비율 qid에서 그대로 뽑는다.
+
+    ⚠️ monthly와 deptAmt/deptCnt는 조회 범위가 서로 다르므로(10년 vs 1년) 겹치는 최근
+    구간이라도 두 qid를 각각 따로 호출해야 한다 — 하나로 합쳐 쓸 수 없다."""
     is_all = tab["natCd"] == "000"
     tab_div = "2" if is_all else "3"
     qid_amt = "BY_TH_MEDIC_002_002_AMT" if is_all else "BY_TH_MEDIC_003_001_AMT"
@@ -122,13 +131,13 @@ def fetch_tab(tab, base_ym1, base_ym2, debug=False):
     qid_amt_total = "BY_TH_MEDIC_002_001_AMT" if is_all else "BY_TH_MEDIC_003_003_AMT"
     qid_cnt_total = "BY_TH_MEDIC_002_001_CNT" if is_all else "BY_TH_MEDIC_003_003_CNT"
 
-    rows_amt, failed_amt = api_post(qid_amt, tab["natCd"], base_ym1, base_ym2, tab_div, debug=debug)
+    rows_amt, failed_amt = api_post(qid_amt, tab["natCd"], ratio_ym1, base_ym2, tab_div, debug=debug)
     time.sleep(REQUEST_DELAY_SEC)
-    rows_cnt, failed_cnt = api_post(qid_cnt, tab["natCd"], base_ym1, base_ym2, tab_div, debug=debug)
+    rows_cnt, failed_cnt = api_post(qid_cnt, tab["natCd"], ratio_ym1, base_ym2, tab_div, debug=debug)
     time.sleep(REQUEST_DELAY_SEC)
-    rows_amt_total, failed_amt_total = api_post(qid_amt_total, tab["natCd"], base_ym1, base_ym2, tab_div, debug=debug)
+    rows_amt_total, failed_amt_total = api_post(qid_amt_total, tab["natCd"], trend_ym1, base_ym2, tab_div, debug=debug)
     time.sleep(REQUEST_DELAY_SEC)
-    rows_cnt_total, failed_cnt_total = api_post(qid_cnt_total, tab["natCd"], base_ym1, base_ym2, tab_div, debug=debug)
+    rows_cnt_total, failed_cnt_total = api_post(qid_cnt_total, tab["natCd"], trend_ym1, base_ym2, tab_div, debug=debug)
     time.sleep(REQUEST_DELAY_SEC)
 
     if (failed_amt or failed_cnt or failed_amt_total or failed_cnt_total
@@ -220,13 +229,14 @@ def main():
 
     now = datetime.datetime.now(datetime.timezone.utc)
     this_ym = now.strftime("%Y%m")
-    base_ym1 = yyyymm_add_months(this_ym, -(LOOKBACK_MONTHS - 1))
+    ratio_ym1 = yyyymm_add_months(this_ym, -(LOOKBACK_MONTHS_RATIO - 1))
+    trend_ym1 = yyyymm_add_months(this_ym, -(LOOKBACK_MONTHS_TREND - 1))
     base_ym2 = this_ym
 
     tabs_out = []
     for tab in TABS:
         print(f"[INFO] {tab['label']}(NAT_CD={tab['natCd']}) 조회 시작", file=sys.stderr)
-        result = fetch_tab(tab, base_ym1, base_ym2, debug=args.debug)
+        result = fetch_tab(tab, ratio_ym1, trend_ym1, base_ym2, debug=args.debug)
         if result is None:
             print(f"[WARN] {tab['label']}: 데이터를 가져오지 못했습니다 — 이전 데이터를 유지합니다.",
                   file=sys.stderr)
