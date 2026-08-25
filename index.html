@@ -55,6 +55,14 @@ h1{font-size:22px; margin:2px 0 2px}
   padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
 }
 .export-scope-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+/* 산업데이터 → "방한 외국인 · 의료관광객 데이터" 섹션의 전체/국가별 탭 — 위 .export-scope-tab과
+   같은 시각 스타일을 재사용하되, 클릭 핸들러가 섞이지 않도록 별도 클래스로 분리
+   (2026-08-25, 의료관광 소비 실데이터 연동 시 추가). */
+.medtour-tab{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.medtour-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
 .view{display:none}
 .view.active{display:block}
 .sec-h{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 8px}
@@ -338,17 +346,26 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2 style="font-size:13px">월별 데이터</h2><span class="note">단위: 천 달러</span></div>
     <div id="export-table-wrap"></div>
 
-    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 소비 · aesthetic-web 참고 구성 (아직 미연동 — 샘플)</span></div>
+    <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 방한객 수는 aesthetic-web 참고 구성(아직 미연동 — 샘플)</span></div>
     <div class="cards">
       <div class="stat-card"><div class="lbl">이번달 방한객</div><div class="val">98.4만명</div><div class="delta up">▲ 11.5% YoY</div></div>
-      <div class="stat-card"><div class="lbl">피부과 소비액</div><div class="val">312억원</div><div class="delta up">▲ 7.8%</div></div>
+      <div class="stat-card" id="medtour-stat-card"></div>
     </div>
 
-    <div class="sec-h"><h2 style="font-size:13px">외국인 의료소비 vs 피부과 소비액</h2><span class="note">월별 · 억원 · 글로벌 · 신한카드 외국인 카드소비</span></div>
-    <div class="chart-box"><canvas id="visitorSpendChart"></canvas></div>
+    <div class="sec-h"><h2 style="font-size:13px">외국인 의료 소비액 및 소비건수 추이</h2><span class="note" id="medtour-trend-note">월별 · 한국관광 데이터랩 · medical_tour.json 자동 갱신</span></div>
+    <div class="tabs" id="medtour-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+    <div class="chart-box"><canvas id="medTourTrendChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">국가별 피부과 소비액</h2><span class="note">월별 스택 · 억원 · 기타 = 글로벌 − 상위 5개국</span></div>
-    <div class="chart-box"><canvas id="visitorCountrySpendChart"></canvas></div>
+    <div class="perf-grid">
+      <div>
+        <div class="sec-h"><h2 style="font-size:13px">소비액 진료과목별 비율 추이</h2></div>
+        <div class="chart-box small"><canvas id="medTourDeptAmtChart"></canvas></div>
+      </div>
+      <div>
+        <div class="sec-h"><h2 style="font-size:13px">소비건수 진료과목별 비율 추이</h2></div>
+        <div class="chart-box small"><canvas id="medTourDeptCntChart"></canvas></div>
+      </div>
+    </div>
 
     <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note">만명 · 한국관광통계 (공표 시차 약 2개월)</span></div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
@@ -1263,26 +1280,14 @@ async function loadTickerUniverse(){
 loadTickerUniverse();
 
 // exportChart는 더 이상 목업이 아니라 export_data.json 기반 실데이터로 그린다
-// (아래 "수출 데이터(카테고리별)" 섹션의 loadExportData() 참고). 방한외국인 관련
-// 차트 4개는 아직 실제 데이터 연동 전이라(한국관광 데이터랩/신한카드 데이터 미연동)
-// 지금은 샘플 그대로 남겨둔다 — 섹션 note에도 "미연동 — 샘플"이라고 표시해 뒀다.
+// (아래 "수출 데이터(카테고리별)" 섹션의 loadExportData() 참고). "외국인 의료 소비액 및
+// 소비건수 추이" / "진료과목별 비율 추이" 두 차트는 medical_tour.json 기반 실데이터로
+// 그린다(아래 "방한 외국인 · 의료관광객 데이터(실데이터)" 섹션의 loadMedicalTourData() 참고).
+// 방한객수/대륙별 차트 2개는 아직 실제 데이터 연동 전이라(한국관광통계 미연동) 지금은
+// 샘플 그대로 남겨둔다 — 섹션 note에도 "미연동 — 샘플"이라고 표시해 뒀다.
 mkBar('visitorChart', ['3월','4월','5월','6월','7월','8월'], [
   {label:'방한 외국인 (만명)', data:[74,81,86,90,93,98], backgroundColor:'#7c3aed'}
 ]);
-
-mkLine('visitorSpendChart', ['3월','4월','5월','6월','7월','8월'], [
-  {label:'외국인 전체 의료소비(억원)', data:[420,455,480,510,545,580], borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2},
-  {label:'피부과 소비액(억원)', data:[210,228,245,268,290,312], borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.08)', fill:true, tension:.3, pointRadius:0, borderWidth:2}
-]);
-
-mkBar('visitorCountrySpendChart', ['3월','4월','5월','6월','7월','8월'], [
-  {label:'중국', data:[62,68,71,78,84,92], backgroundColor:'#2563eb'},
-  {label:'일본', data:[45,48,52,55,58,61], backgroundColor:'#7c3aed'},
-  {label:'미국', data:[30,32,35,37,40,42], backgroundColor:'#16a34a'},
-  {label:'베트남', data:[18,20,22,24,26,28], backgroundColor:'#f59e0b'},
-  {label:'태국', data:[14,15,16,18,19,21], backgroundColor:'#dc2626'},
-  {label:'기타', data:[41,45,49,56,63,68], backgroundColor:'#8a919c'}
-], {stacked:true});
 
 mkBar('visitorContinentChart', ['3월','4월','5월','6월','7월','8월'], [
   {label:'아시아', data:[52,56,59,62,65,70], backgroundColor:'#2563eb'},
@@ -1700,6 +1705,223 @@ async function loadExportData(){
   renderExportAll();
 }
 loadExportData();
+
+// ==================================================================
+// 방한 외국인 · 의료관광객 데이터(실데이터) — 산업데이터 탭 "방한 외국인 · 의료관광객
+// 데이터" 섹션. scripts/scrape_medical_tour.py가 한국관광 데이터랩(datalab.visitkorea.or.kr)
+// "의료관광 현황" 탭에서 신한카드 외국인 카드소비 기준 진료과목별 비율 API를 호출해 월별
+// 총액·총건수 + 진료과목별 비율을 medical_tour.json으로 저장한 것을 읽는다.
+// 화면 구성(2026-08-25 요청):
+//  1) 소비액·소비건수 추이 — 하나의 차트에 두 계열(왼쪽축 소비액·천원·막대 / 오른쪽축
+//     소비건수·건·선). 소비액은 데이터랩 사이트 표시(단위 '천원')와 동일하게 억원 환산 없이
+//     그대로 보여준다(2026-08-25 요청).
+//  2) 진료과목별 비율 추이 — 데이터랩 원 사이트와 동일하게 누적 막대 차트, 소비액·소비건수용
+//     두 개를 나란히 배치.
+//  3) 전체/중국/일본/미국/태국 5개 탭 — 탭 전환 시 위 세 차트가 함께 바뀐다.
+let MEDICAL_TOUR_DATA = { tabs: [] };
+const MEDTOUR_STATE = { tab: 'all' };
+let medTourTrendChartInstance = null;
+let medTourDeptAmtChartInstance = null;
+let medTourDeptCntChartInstance = null;
+
+// 8개 진료과목 고정 팔레트(데이터에 실제로 등장하는 이름 기준) — exportCountryChart와 같은
+// 팔레트를 재사용해 대시보드 전체 색감을 통일. 목록에 없는 새 과목이 나타나면 이름 해시로
+// 나머지 색을 순환 배정해 최소한 매 렌더마다 같은 색을 유지한다.
+const MEDTOUR_PALETTE = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626', '#0891b2', '#8a919c', '#be185d'];
+const MEDTOUR_DEPT_ORDER = ['피부과', '성형외과', '약국', '대학/종합병원', '치과', '안과', '한의학과', '한약방'];
+function medtourDeptColor(name){
+  const idx = MEDTOUR_DEPT_ORDER.indexOf(name);
+  if(idx >= 0) return MEDTOUR_PALETTE[idx];
+  let h = 0;
+  for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
+  return MEDTOUR_PALETTE[h % MEDTOUR_PALETTE.length];
+}
+
+function currentMedtourTab(){
+  return MEDICAL_TOUR_DATA.tabs.find(t => t.key === MEDTOUR_STATE.tab) || MEDICAL_TOUR_DATA.tabs[0] || null;
+}
+
+// medical_tour.json의 monthly[].amt는 데이터랩 사이트 표시(callBackChart_03_01/chart_11,
+// medical_tour_chart.js — unit:'천원')와 동일하게 "천원" 단위 그대로다. 억원 환산·반올림 없이
+// 원래 숫자를 콤마만 찍어 사이트와 같은 형태로 보여준다(2026-08-25 요청).
+function fmtCheonwon(v){ return Math.round(v).toLocaleString() + '천원'; }
+function fmtCnt(n){ return Math.round(n).toLocaleString() + '건'; }
+
+function renderMedtourTabs(){
+  const wrap = document.getElementById('medtour-tabs');
+  if(!wrap) return;
+  if(!MEDICAL_TOUR_DATA.tabs.length){ wrap.innerHTML = ''; return; }
+  if(!MEDICAL_TOUR_DATA.tabs.find(t => t.key === MEDTOUR_STATE.tab)) MEDTOUR_STATE.tab = MEDICAL_TOUR_DATA.tabs[0].key;
+  wrap.innerHTML = MEDICAL_TOUR_DATA.tabs.map(t =>
+    `<button class="medtour-tab${t.key === MEDTOUR_STATE.tab ? ' active' : ''}" data-key="${t.key}">${escapeHtml(t.label)}</button>`
+  ).join('');
+  wrap.querySelectorAll('.medtour-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      MEDTOUR_STATE.tab = btn.dataset.key;
+      renderMedtourTabs();
+      renderMedtourAll();
+    });
+  });
+}
+
+function renderMedtourStatCard(){
+  const card = document.getElementById('medtour-stat-card');
+  if(!card) return;
+  const tab = currentMedtourTab();
+  const m = tab && tab.monthly && tab.monthly.length ? tab.monthly : null;
+  if(!m){
+    card.innerHTML = `<div class="lbl">의료 소비액</div><div class="val">-</div>`;
+    return;
+  }
+  const last = m[m.length - 1];
+  const prev = m.length > 1 ? m[m.length - 2] : null;
+  const momPct = prev && prev.amt ? (last.amt - prev.amt) / prev.amt * 100 : null;
+  card.innerHTML = `
+    <div class="lbl">${tab.label} 의료 소비액(${last.ym})</div>
+    <div class="val">${fmtCheonwon(last.amt)}</div>
+    ${momPct != null ? `<div class="delta ${momPct >= 0 ? 'up' : 'down'}">${momPct >= 0 ? '▲' : '▼'} ${Math.abs(momPct).toFixed(1)}% MoM</div>` : ''}
+  `;
+}
+
+function renderMedtourTrendChart(){
+  if(medTourTrendChartInstance){ medTourTrendChartInstance.destroy(); medTourTrendChartInstance = null; }
+  const tab = currentMedtourTab();
+  const note = document.getElementById('medtour-trend-note');
+  if(!tab || !tab.monthly || !tab.monthly.length){
+    if(note) note.textContent = '월별 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
+    return;
+  }
+  const rows = tab.monthly.slice(-12); // 반영 시차 감안해 넉넉히 수집된 것 중 최신 12개월만 표시
+  if(note) note.textContent = `월별(최근 ${rows.length}개월) · ${tab.label} · 왼쪽축 소비액(천원, 막대) · 오른쪽축 소비건수(건, 선) · 신한카드 외국인 카드소비 기준`;
+  medTourTrendChartInstance = new Chart(document.getElementById('medTourTrendChart'), {
+    data: {
+      labels: rows.map(r => r.ym),
+      datasets: [
+        {
+          type: 'bar', label: '의료 소비액(천원)', data: rows.map(r => r.amt),
+          backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: '의료 소비건수(건)', data: rows.map(r => r.cnt),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          tension: 0.25, pointRadius: 2, borderWidth: 3, order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      // 막대(소비액)에 커서를 올려도 같은 달의 소비건수(선, 점이 작아 직접 겨냥하기 어려움)가
+      // 함께 보이도록 mode:'index'로 그 x축 위치의 모든 데이터셋을 한꺼번에 툴팁에 띄운다
+      // (2026-08-25 요청 — 기본값은 intersect:true라 막대/점 중 실제로 겨눈 것만 보였음).
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${fmtCnt(ctx.parsed.y)}`
+              : `${ctx.dataset.label}: ${fmtCheonwon(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor() } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '소비액(천원)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor() },
+          title: { display: true, text: '소비건수(건)', color: textColor() },
+        },
+      },
+    },
+  });
+}
+
+// deptRows({ym, dept, ratio, rank}[])를 months(x축 순서) 기준으로 과목별 시계열 데이터셋으로
+// 피벗한다. 과목 순서는 가장 최근 달의 비중 순위(rank)를 기준으로 정렬해 데이터랩 원 사이트의
+// 누적 막대와 같은 방식(비중 큰 과목이 아래쪽부터)으로 보이게 한다.
+function pivotMedtourDeptRatio(deptRows, months){
+  const depts = [...new Set(deptRows.map(r => r.dept))];
+  const lastYm = months[months.length - 1];
+  const rankOf = (dept, ym) => {
+    const row = deptRows.find(r => r.dept === dept && r.ym === ym);
+    return row ? row.rank : 99;
+  };
+  depts.sort((a, b) => rankOf(a, lastYm) - rankOf(b, lastYm));
+  return depts.map(dept => ({
+    label: dept,
+    backgroundColor: medtourDeptColor(dept),
+    data: months.map(ym => {
+      const row = deptRows.find(r => r.dept === dept && r.ym === ym);
+      return row ? row.ratio : 0;
+    }),
+  }));
+}
+
+function renderMedtourStackedChart(canvasId, prevInstance, deptRows, months, label){
+  if(prevInstance){ prevInstance.destroy(); }
+  if(!deptRows || !deptRows.length || !months.length) return null;
+  const datasets = pivotMedtourDeptRatio(deptRows, months);
+  return new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: { labels: months, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      // 막대 하나(과목 하나)에 커서를 올려도 그 달의 다른 과목 비율까지 한꺼번에 보이도록
+      // mode:'index'로 같은 x축(월)의 모든 과목 세그먼트를 툴팁에 함께 띄운다(2026-08-25 요청).
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: textColor(), boxWidth: 10, font: {size: 10} } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor() }, stacked: true },
+        y: {
+          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v + '%' },
+          stacked: true, min: 0, max: 100,
+          title: { display: true, text: `${label} 비중(%)`, color: textColor() },
+        },
+      },
+    },
+  });
+}
+
+function renderMedtourDeptCharts(){
+  const tab = currentMedtourTab();
+  if(!tab || !tab.monthly || !tab.monthly.length){
+    if(medTourDeptAmtChartInstance){ medTourDeptAmtChartInstance.destroy(); medTourDeptAmtChartInstance = null; }
+    if(medTourDeptCntChartInstance){ medTourDeptCntChartInstance.destroy(); medTourDeptCntChartInstance = null; }
+    return;
+  }
+  const months = tab.monthly.slice(-12).map(r => r.ym); // 위 추이 차트와 동일한 x축 구간
+  medTourDeptAmtChartInstance = renderMedtourStackedChart('medTourDeptAmtChart', medTourDeptAmtChartInstance, tab.deptAmt, months, '소비액');
+  medTourDeptCntChartInstance = renderMedtourStackedChart('medTourDeptCntChart', medTourDeptCntChartInstance, tab.deptCnt, months, '소비건수');
+}
+
+function renderMedtourAll(){
+  renderMedtourStatCard();
+  renderMedtourTrendChart();
+  renderMedtourDeptCharts();
+}
+
+async function loadMedicalTourData(){
+  try{
+    const res = await fetch('medical_tour.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('no medical_tour.json yet');
+    MEDICAL_TOUR_DATA = await res.json();
+  }catch(e){
+    MEDICAL_TOUR_DATA = { tabs: [] };
+  }
+  renderMedtourTabs();
+  renderMedtourAll();
+}
+loadMedicalTourData();
 
 // ==================================================================
 // 리서치 보고서 — 실데이터 (미래에셋증권 · 김충현, CFA 발간분)

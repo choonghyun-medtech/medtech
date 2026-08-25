@@ -1,0 +1,57 @@
+name: Update medical tour data
+
+on:
+  schedule:
+    # 한국관광 데이터랩 통계도 월 단위 갱신이라(카드사 집계 반영 시차 있음) 매일 돌릴 필요는
+    # 없음. export_data.json(매월 16일)과 겹치지 않게 매월 20일 KST 07:00 = 19일 22:00 UTC.
+    - cron: "0 22 19 * *"
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-medical-tour:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch medical tour data (한국관광 데이터랩)
+        run: python scripts/scrape_medical_tour.py --out medical_tour.json
+
+      - name: Commit changes if any
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ ! -f medical_tour.json ]; then
+            echo "medical_tour.json이 아직 없음 — 커밋할 것 없음"
+            exit 0
+          fi
+          git add medical_tour.json
+          if git diff --cached --quiet -- medical_tour.json; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: medical_tour.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            for i in 1 2 3 4 5; do
+              if git push; then
+                echo "푸시 성공"
+                exit 0
+              fi
+              echo "푸시 실패, 재시도 $i/5 (원격 변경사항 반영 후 재시도)"
+              git fetch origin main
+              git rebase origin/main || { echo "리베이스 충돌, 수동 확인 필요"; exit 1; }
+              sleep $((RANDOM % 6 + 2))
+            done
+            echo "5회 재시도에도 푸시 실패"
+            exit 1
+          fi
