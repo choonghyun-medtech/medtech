@@ -588,8 +588,7 @@ def main():
 
     payload = {
         "updated": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": "관세청 수출입무역통계(공공데이터포털 data.go.kr) · HS코드 매핑은 "
-                  "moneyrecipe.blog 리서치 자료 참고(공식 관세청 분류 아님, 교차검증 권장)",
+        "source": "관세청 수출입무역통계(공공데이터포털 data.go.kr) · 카테고리별 HS코드 기준",
         "categories": categories_out,
     }
     with open(args.out, "w", encoding="utf-8") as f:

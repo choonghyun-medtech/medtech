@@ -1775,14 +1775,37 @@ function renderExportCountryChart(){
   ]);
 }
 
+// 월별 표가 36행까지 나오면 화면이 너무 세로로 길어져서, "올해(오늘 기준)" 데이터는 그냥
+// 보여주고 그 이전 연도분은 접어뒀다가 버튼을 눌러야 펼쳐지게 한다(2026-08-25 요청).
+// 연도 구분은 하드코딩이 아니라 매번 new Date()로 다시 계산하므로, 해가 바뀌면 자동으로
+// 그 시점의 "올해"만 기본 노출되고 나머지는 다시 접힌 상태로 바뀐다.
+// 카테고리/기간 탭을 바꿔도 펼쳐둔 상태는 유지한다.
+let exportTableExpanded = false;
+
 function renderExportTable(){
   const wrap = document.getElementById('export-table-wrap');
   const monthly = currentExportMonthly();
   if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
   const rows = monthly.slice().reverse().slice(0, 36); // 최신 36개(월 기준) — 화면이 너무 길어지지 않게
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액($)</th></tr></thead><tbody>
-    ${rows.map(r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`).join('')}
-  </tbody></table>`;
+  const thisYear = String(new Date().getFullYear());
+  const currentYearRows = rows.filter(r => r.ym.slice(0, 4) === thisYear);
+  const pastYearRows = rows.filter(r => r.ym.slice(0, 4) !== thisYear);
+  const rowHtml = r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`;
+  const toggleLabel = exportTableExpanded ? '접기 ▴' : `${pastYearRows.length}개월(${thisYear}년 이전) 펼쳐보기 ▾`;
+  wrap.innerHTML = `
+    <table><thead><tr><th>기간</th><th>수출액($)</th></tr></thead><tbody>
+      ${currentYearRows.map(rowHtml).join('')}
+      ${exportTableExpanded ? pastYearRows.map(rowHtml).join('') : ''}
+    </tbody></table>
+    ${pastYearRows.length ? `<button id="export-table-toggle" type="button" style="background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;padding:4px 0;font-size:12px">${toggleLabel}</button>` : ''}
+  `;
+  const toggleBtn = document.getElementById('export-table-toggle');
+  if(toggleBtn){
+    toggleBtn.addEventListener('click', () => {
+      exportTableExpanded = !exportTableExpanded;
+      renderExportTable();
+    });
+  }
 }
 
 function renderExportAll(){
