@@ -27,9 +27,9 @@ jobs:
       - name: Scrape reports
         run: python scripts/scrape_reports.py --out reports.json
 
-      - name: Scrape bio analyst reports (서미화, 김승민 · '바이오' 드롭다운용)
+      - name: Scrape bio/robotics analyst reports (김승민, 서미화, 박선영 · '바이오/로보틱스' 버튼용)
         if: always()  # 김충현 CFA 리포트 수집이 실패해도 독립적으로 계속 시도
-        run: python scripts/scrape_reports.py --authors "서미화,김승민" --out reports_bio.json
+        run: python scripts/scrape_reports.py --authors "서미화,김승민,박선영" --out reports_bio.json
 
       - name: Scrape Telegram channel comments (t.me/globalmedtech · 리포트 코멘트 자동 매칭)
         if: always()  # reports.json이 이미 저장된 상태라면 위 스텝 성공 여부와 무관하게 시도

@@ -117,11 +117,26 @@ tr:last-child td{border-bottom:none}
 #rep-table-wrap th:nth-child(4), #rep-table-wrap td:nth-child(4){width:92px; white-space:nowrap}
 #rep-table-wrap th:nth-child(5), #rep-table-wrap td:nth-child(5){width:70px; white-space:nowrap}
 #bio-table-wrap th:nth-child(1), #bio-table-wrap td:nth-child(1){width:100px; white-space:nowrap}
-#bio-table-wrap th:nth-child(2), #bio-table-wrap td:nth-child(2){width:80px; white-space:nowrap}
-#bio-table-wrap th:nth-child(3), #bio-table-wrap td:nth-child(3){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
-#bio-table-wrap th:nth-child(4), #bio-table-wrap td:nth-child(4){white-space:normal}
-#bio-table-wrap th:nth-child(5), #bio-table-wrap td:nth-child(5){width:92px; white-space:nowrap}
-#bio-table-wrap th:nth-child(6), #bio-table-wrap td:nth-child(6){width:70px; white-space:nowrap}
+#bio-table-wrap th:nth-child(2), #bio-table-wrap td:nth-child(2){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
+#bio-table-wrap th:nth-child(3), #bio-table-wrap td:nth-child(3){white-space:normal}
+#bio-table-wrap th:nth-child(4), #bio-table-wrap td:nth-child(4){width:92px; white-space:nowrap}
+#bio-table-wrap th:nth-child(5), #bio-table-wrap td:nth-child(5){width:70px; white-space:nowrap}
+/* 리포트 표 페이지네이션 — 추적 기업/바이오·로보틱스 공통, 페이지당 10건 */
+.rep-pager{display:flex; align-items:center; justify-content:center; gap:4px; margin-top:12px}
+.rep-pager button{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  min-width:26px; height:26px; padding:0 4px; border-radius:4px; cursor:pointer;
+  font-size:12px; display:inline-flex; align-items:center; justify-content:center;
+}
+.rep-pager button:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
+.rep-pager button:disabled{opacity:.35; cursor:default}
+.rep-pager button.page-num{border-color:transparent; background:transparent}
+.rep-pager button.page-num.active{background:var(--accent); border-color:var(--accent); color:#fff}
+.bio-author-tab{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.bio-author-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
 /* 원문 PDF 링크: 아이콘/텍스트가 한 줄에 붙어 보이도록 */
 .rep-pdf-link{
   color:var(--accent); font-weight:600; text-decoration:none; white-space:nowrap;
@@ -423,14 +438,16 @@ tr:last-child td{border-bottom:none}
     <div id="rep-company-detail"></div>
 
     <div id="rep-table-wrap"></div>
+    <div id="rep-pager" class="rep-pager"></div>
     <div id="rep-stock-box" style="margin-top:14px"></div>
 
-    <div class="sec-h" style="margin-top:24px"><h2>바이오</h2><span class="note">서미화·김승민 애널리스트 발간분 · reports_bio.json 자동 갱신</span></div>
+    <div class="sec-h" style="margin-top:24px"><h2>바이오/로보틱스</h2><span class="note">김승민·서미화·박선영 애널리스트 발간분 · reports_bio.json 자동 갱신</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-      <select id="bio-author-select" class="filter-select"><option value="">전체 작성자</option></select>
+      <div id="bio-author-tabs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
       <span class="note" id="bio-source-note"></span>
     </div>
     <div id="bio-table-wrap"></div>
+    <div id="bio-pager" class="rep-pager"></div>
   </section>
 
 </div>
@@ -2134,8 +2151,9 @@ function repBadgeClass(op){
   return 'hold';
 }
 // "Not Rated"는 배지 안에서 "NR"로 간결하게 줄여 매수/중립 배지와 크기를 맞춘다.
+// "Not Rated/신규"처럼 뒤에 태그가 붙어도 앞부분만 보고 줄인다.
 function repOpLabel(op){
-  return op === 'Not Rated' ? 'NR' : op;
+  return op.startsWith('Not Rated') ? op.replace('Not Rated', 'NR') : op;
 }
 
 // 사명 변경 대응: 구사명으로 발간된 과거 보고서도 현재 사명 기준으로 한데 묶어서 필터링.
@@ -2236,14 +2254,45 @@ function repCompanyCellHtml(co, code){
   return `<strong style="word-break:keep-all">${escapeHtml(co)}</strong>${codeLine}`;
 }
 
+const REP_PAGE_SIZE = 10;
+let repPage = 1;
+
+// 리포트 표 공용 페이지네이션(처음/이전/숫자/다음/끝). 페이지 수가 적어(수십 건 기준
+// 10건씩이면 최대 10페이지 안팎) 숫자를 모두 나열하며, 블록 단위 접기는 두지 않는다.
+function renderPager(containerId, page, totalPages, onChange){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+  if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+  const atFirst = page <= 1, atLast = page >= totalPages;
+  let html = '';
+  html += `<button type="button" data-page="1" ${atFirst?'disabled':''} title="처음">&laquo;</button>`;
+  html += `<button type="button" data-page="${Math.max(1,page-1)}" ${atFirst?'disabled':''} title="이전">&lsaquo;</button>`;
+  for(let p=1;p<=totalPages;p++){
+    html += `<button type="button" class="page-num${p===page?' active':''}" data-page="${p}">${p}</button>`;
+  }
+  html += `<button type="button" data-page="${Math.min(totalPages,page+1)}" ${atLast?'disabled':''} title="다음">&rsaquo;</button>`;
+  html += `<button type="button" data-page="${totalPages}" ${atLast?'disabled':''} title="마지막">&raquo;</button>`;
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('button[data-page]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.disabled) return;
+      onChange(parseInt(btn.dataset.page, 10));
+    });
+  });
+}
+
 function renderReports(filterCo){
   filterCo = filterCo || '전체';
   const rows = REPORTS.filter(r => filterCo==='전체' || r.co===filterCo);
+  const totalPages = Math.max(1, Math.ceil(rows.length / REP_PAGE_SIZE));
+  if(repPage > totalPages) repPage = totalPages;
+  const start = (repPage - 1) * REP_PAGE_SIZE;
+  const displayRows = rows.slice(start, start + REP_PAGE_SIZE);
 
   // table
   const wrap = document.getElementById('rep-table-wrap');
   let html = '<table><thead><tr><th>작성일</th><th>종목</th><th>제목·코멘트</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
-  rows.forEach(r=>{
+  displayRows.forEach(r=>{
     const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${repOpLabel(r.op)}</span>` : '<span class="note">—</span>';
     const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
     const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
@@ -2252,10 +2301,11 @@ function renderReports(filterCo){
   html += '</tbody></table>';
   wrap.innerHTML = html;
   refreshTgCommentToggles(wrap);
+  renderPager('rep-pager', repPage, totalPages, (p)=>{ repPage = p; renderReports(filterCo); });
 
   // source note
   document.getElementById('rep-source-note').textContent =
-    `미래에셋증권 · 김충현, CFA 발간 · ${rows.length}건 표시 (전체 ${REPORTS.length}건)`;
+    `미래에셋증권 · 김충현, CFA 발간 · 전체 ${rows.length}건 · ${repPage}/${totalPages}페이지`;
 }
 
 // 추적 기업 카테고리 — 필요시 회사명만 추가/이동하면 됨
@@ -2274,6 +2324,7 @@ const CATEGORIES = [
 function resetRepFilter(){
   document.querySelectorAll('.rep-cat-select').forEach(sel=>{ sel.value=''; });
   selectedRepCompany = null;
+  repPage = 1;
   renderReports('전체');
   renderCompanyDetail('전체');
 }
@@ -2304,6 +2355,7 @@ function renderRepCategoryDropdowns(){
       if(!sel.value) return;
       selects.forEach(other=>{ if(other!==sel) other.value=''; });
       selectedRepCompany = sel.value;
+      repPage = 1;
       renderReports(sel.value);
       renderCompanyDetail(sel.value);
     });
@@ -2522,43 +2574,55 @@ loadTelegramComments();
 // 김충현 CFA 본인 발간분(REPORTS)과는 별도 트랙으로 관리 · scrape_reports.py --authors로 수집
 // ==================================================================
 let BIO_REPORTS = [];
+const BIO_AUTHORS = ['김승민', '서미화', '박선영'];
+let bioAuthorFilter = '';
+let bioPage = 1;
 
 function renderBioReports(filterAuthor){
   filterAuthor = filterAuthor || '';
   const rows = BIO_REPORTS.filter(r => !filterAuthor || r.author === filterAuthor);
   const wrap = document.getElementById('bio-table-wrap');
   if(!wrap) return;
+  const totalPages = Math.max(1, Math.ceil(rows.length / REP_PAGE_SIZE));
+  if(bioPage > totalPages) bioPage = totalPages;
   if(rows.length === 0){
-    wrap.innerHTML = '<div class="card note">표시할 바이오 리포트가 없습니다.</div>';
+    wrap.innerHTML = '<div class="card note">표시할 바이오/로보틱스 리포트가 없습니다.</div>';
+    renderPager('bio-pager', 1, 1, ()=>{});
   } else {
-    let html = '<table><thead><tr><th>작성일</th><th>작성자</th><th>종목</th><th>제목·코멘트</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
-    rows.forEach(r=>{
+    const start = (bioPage - 1) * REP_PAGE_SIZE;
+    const displayRows = rows.slice(start, start + REP_PAGE_SIZE);
+    let html = '<table><thead><tr><th>작성일</th><th>종목</th><th>제목</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
+    displayRows.forEach(r=>{
       const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${repOpLabel(r.op)}</span>` : '<span class="note">—</span>';
       const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
       const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
-      html += `<tr><td>${r.d}</td><td>${r.author||''}</td><td>${repCompanyCellHtml(r.co, r.code)}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
+      html += `<tr><td>${r.d}</td><td>${repCompanyCellHtml(r.co, r.code)}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
     });
     html += '</tbody></table>';
     wrap.innerHTML = html;
     refreshTgCommentToggles(wrap);
+    renderPager('bio-pager', bioPage, totalPages, (p)=>{ bioPage = p; renderBioReports(filterAuthor); });
   }
   const note = document.getElementById('bio-source-note');
-  if(note) note.textContent = `${rows.length}건 표시 (전체 ${BIO_REPORTS.length}건)`;
+  if(note) note.textContent = `전체 ${rows.length}건 · ${bioPage}/${totalPages}페이지`;
 }
 
-function populateBioAuthorSelect(){
-  const sel = document.getElementById('bio-author-select');
-  if(!sel) return;
-  const authors = [...new Set(BIO_REPORTS.map(r=>r.author).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">전체 작성자</option>' + authors.map(a=>`<option value="${a}">${a}</option>`).join('');
-  sel.value = authors.includes(cur) ? cur : '';
+function renderBioAuthorTabs(){
+  const wrap = document.getElementById('bio-author-tabs');
+  if(!wrap) return;
+  const tabs = [{ key: '', label: '전체' }, ...BIO_AUTHORS.map(a=>({ key: a, label: a }))];
+  wrap.innerHTML = tabs.map(t =>
+    `<button type="button" class="bio-author-tab${bioAuthorFilter===t.key ? ' active' : ''}" data-key="${t.key}">${t.label}</button>`
+  ).join('');
+  wrap.querySelectorAll('.bio-author-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      bioAuthorFilter = btn.dataset.key;
+      bioPage = 1;
+      renderBioAuthorTabs();
+      renderBioReports(bioAuthorFilter);
+    });
+  });
 }
-
-(function initBioFilter(){
-  const sel = document.getElementById('bio-author-select');
-  if(sel) sel.addEventListener('change', ()=>{ renderBioReports(sel.value); });
-})();
 
 async function loadBioReports(){
   try{
@@ -2566,8 +2630,8 @@ async function loadBioReports(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     BIO_REPORTS = data.reports || [];
-    populateBioAuthorSelect();
-    renderBioReports('');
+    renderBioAuthorTabs();
+    renderBioReports(bioAuthorFilter);
     if(data.updated){
       const note = document.getElementById('bio-source-note');
       const dt = new Date(data.updated);

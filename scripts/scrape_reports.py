@@ -12,10 +12,10 @@ reports.json으로 저장한다.
     python scrape_reports.py                       # 기본 작성자로 실행
     python scrape_reports.py --author "홍길동"      # 다른 작성자 지정
     python scrape_reports.py --out other.json       # 출력 파일 지정
-    python scrape_reports.py --authors "서미화,김승민" --out reports_bio.json
+    python scrape_reports.py --authors "서미화,김승민,박선영" --out reports_bio.json
                                                      # 여러 작성자를 한 파일에 합쳐서 저장
                                                      # (각 행에 "author" 필드가 붙는다 —
-                                                     # index.html '바이오' 드롭다운이 이 필드로 필터링)
+                                                     # index.html '바이오/로보틱스' 버튼이 이 필드로 필터링)
 """
 import argparse
 import datetime
@@ -32,6 +32,13 @@ BASE_URL = "https://securities.miraeasset.com/bbs/board/message/list.do"
 CATEGORY_ID = "1521"  # 전체 리서치 리포트
 PER_PAGE = 10
 REQUEST_DELAY_SEC = 0.5  # 게시판에 부담 주지 않기 위한 페이지 간 대기
+
+# parse_rows()가 제목 괄호 안 첫 조각을 종목코드/티커 대신 투자의견으로 판단할 때 쓰는
+# 사전. 소문자로 비교한다(원문 대소문자는 그대로 opinion 값에 보존).
+OPINION_WORDS = {
+    "매수", "비중확대", "중립", "보유", "매도", "비중축소",
+    "buy", "hold", "sell", "neutral", "overweight", "underweight", "not rated",
+}
 
 # 브라우저처럼 보이도록 세션/헤더를 구성한다.
 # (requests의 기본 요청은 쿠키·Referer·Accept류 헤더가 없어서, 실제 브라우저로
@@ -129,16 +136,17 @@ def parse_rows(html: str):
         if m:
             company = m.group(1).strip()
             inner = m.group(2).strip()
-            if "/" in inner:
-                code, opinion = inner.split("/", 1)
-                code, opinion = code.strip(), opinion.strip()
-            elif inner.isdigit():
-                code, opinion = inner, ""
+            # 괄호 안은 "티커/의견[/신규]"(종목 리포트) 또는 "의견[/신규]"(산업 리포트, 티커
+            # 없음) 두 형태가 있다. 해외 종목은 티커가 숫자가 아닐 수 있어(예: "SYK US",
+            # "9880 HK") 숫자 여부로는 구분할 수 없다 — 대신 첫 조각이 알려진 투자의견
+            # 문구(OPINION_WORDS)와 일치하는지로 산업/종목 리포트를 구분한다.
+            segments = [s.strip() for s in inner.split("/") if s.strip()]
+            if segments and segments[0].lower() not in OPINION_WORDS:
+                code = segments[0]
+                opinion = "/".join(segments[1:])
             else:
-                # "헬스케어 산업(비중확대)"처럼 괄호 안이 종목코드가 아니라 업종 의견
-                # 하나만 있는 산업 리포트 — 코드가 아니라 투자의견으로 취급한다
-                # (2026-08-26 전까지는 code 칸에 "비중확대"가 잘못 들어가고 있었음).
-                code, opinion = "", inner
+                code = ""
+                opinion = "/".join(segments)
         else:
             # 종목 코드가 없는 산업 전망 리포트 등
             company, code, opinion = header.strip(), "", ""
