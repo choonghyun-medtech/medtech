@@ -89,18 +89,22 @@ _DISCLAIMER_KEYWORDS = (
 )
 
 
-def clean_telegram_comment(text: str) -> str:
-    """원문 메시지에서 첫 줄(종목명: 제목)·컴플라이언스 문구·순수 링크 안내 줄만
-    제거하고 실제 코멘트 본문은 남긴다. 2026-08-26 수정: 이전엔 모든 줄에서 URL을
-    무조건 잘라내는 바람에 "미국: ~~ https://..."처럼 설명 뒤에 근거 링크를 붙인
+def clean_telegram_comment(text: str, extra_header_line: str | None = None) -> str:
+    """원문 메시지에서 첫 줄(종목명: 제목 / 팀·저자명)·컴플라이언스 문구·순수 링크
+    안내 줄만 제거하고 실제 코멘트 본문은 남긴다. 2026-08-26 수정: 이전엔 모든 줄에서
+    URL을 무조건 잘라내는 바람에 "미국: ~~ https://..."처럼 설명 뒤에 근거 링크를 붙인
     줄도 링크가 통째로 사라졌다 — 이제는 "그 줄이 링크뿐인지"만 판정에 쓰고, 실제로
-    남기는 줄은 원문(URL 포함) 그대로 보존한다."""
+    남기는 줄은 원문(URL 포함) 그대로 보존한다.
+    extra_header_line: 팀/산업 리포트처럼 제목이 첫 줄이 아니라 본문 중간에 별도
+    줄로 반복되는 경우(2026-08-27), 그 제목 줄도 함께 제거하기 위한 값."""
     lines = text.split("\n")
-    lines = lines[1:] if lines else []  # 첫 줄(종목명: 제목) 제거
+    lines = lines[1:] if lines else []  # 첫 줄(종목명: 제목 또는 팀/저자명) 제거
     out = []
     for raw_line in lines:
         line = raw_line.strip()
         if not line:
+            continue
+        if extra_header_line is not None and line == extra_header_line:
             continue
         if _DIVIDER_RE.match(line):
             continue
@@ -204,21 +208,46 @@ def scrape_channel(channel: str, cutoff: datetime.datetime):
     return list(all_msgs.values())
 
 
-def extract_report_comments(messages, known_companies: set):
+def extract_report_comments(messages, known_companies: set, title_to_report: dict):
     out = []
     for m in messages:
         text = m["text"]
         if not text:
             continue
-        first_line = text.split("\n", 1)[0].strip()
-        mobj = FIRST_LINE_RE.match(first_line)
-        if not mobj:
+        lines = [l.strip() for l in text.split("\n") if l.strip()]
+        if not lines:
             continue
-        co_candidate = mobj.group(1).strip()
-        title = mobj.group(2).strip()
-        co = resolve_company(co_candidate, known_companies)
+
+        co = None
+        title = None
+        extra_header_line = None
+
+        first_line = lines[0]
+        mobj = FIRST_LINE_RE.match(first_line)
+        if mobj:
+            co_candidate = mobj.group(1).strip()
+            candidate_title = mobj.group(2).strip()
+            resolved = resolve_company(co_candidate, known_companies)
+            if resolved:
+                co = resolved
+                title = candidate_title
+
         if co is None:
-            continue  # reports.json에 없는 종목명(영문 별칭 포함)이면 잡담으로 간주
+            # "헬스케어 산업(비중확대)"처럼 여러 애널리스트가 공동 작성한 산업 리포트는
+            # 첫 줄이 "{종목명}: {제목}"이 아니라 "미래에셋증권 헬스케어팀 김충현, 김승민,
+            # 서미화"처럼 팀/저자명만 있는 경우가 있다(2026-08-27 확인). 이런 메시지는
+            # co를 첫 줄에서 뽑을 수 없으니, 대신 reports.json에 있는 리포트 제목이 본문
+            # 어딘가에 그대로 한 줄로 들어있는지로 매칭한다.
+            for line in lines[1:]:
+                hit = title_to_report.get(line)
+                if hit:
+                    co = hit["co"]
+                    title = line
+                    extra_header_line = line  # 본문에 반복된 제목 줄은 코멘트에서 제외
+                    break
+
+        if co is None:
+            continue  # reports.json에 없는 종목명/제목이면 잡담으로 간주
 
         date_str = None
         if m["iso_dt"]:
@@ -234,7 +263,7 @@ def extract_report_comments(messages, known_companies: set):
             "co": co,
             "title": title,
             "comment": text,  # 원문 전체(디버깅/백업용, 화면에는 안 씀)
-            "comment_clean": clean_telegram_comment(text),  # 화면 표시용(제목·링크·컴플라이언스 제거)
+            "comment_clean": clean_telegram_comment(text, extra_header_line),  # 화면 표시용(제목·링크·컴플라이언스 제거)
             "urls": m["links"],
             "telegram_url": m["url"],
             "message_id": m["id"],
@@ -255,6 +284,9 @@ def main():
         with open(args.reports, encoding="utf-8") as f:
             reports_data = json.load(f)
         known_companies = {r.get("co", "").strip() for r in reports_data.get("reports", []) if r.get("co")}
+        # 팀/산업 리포트(예: "헬스케어 산업(비중확대)")는 첫 줄에 종목명이 안 나오므로
+        # 리포트 제목으로도 매칭할 수 있도록 제목 -> 리포트 사전을 함께 준비한다.
+        title_to_report = {r["t"].strip(): r for r in reports_data.get("reports", []) if r.get("t")}
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"[ERROR] {args.reports}을(를) 읽지 못해 종목명 매칭 기준이 없습니다: {e}", file=sys.stderr)
         sys.exit(0)  # reports.json 문제는 scrape_reports.py가 이미 처리 — 여기선 조용히 종료
@@ -273,7 +305,7 @@ def main():
         print(f"[ERROR] 텔레그램 채널 스크래핑 실패: {e}", file=sys.stderr)
         sys.exit(0)
 
-    comments = extract_report_comments(messages, known_companies)
+    comments = extract_report_comments(messages, known_companies, title_to_report)
     if not comments:
         print("[WARN] 매칭된 리포트 코멘트가 0건입니다 (채널 구조 변경 또는 종목명 불일치 가능성).", file=sys.stderr)
 
