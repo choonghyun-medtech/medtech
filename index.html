@@ -10,14 +10,14 @@
   --bg:#ffffff; --bg2:#f7f8fa; --card:#ffffff; --border:#e6e8eb;
   --text:#1a1d21; --sub:#5b6470; --dim:#8a919c;
   --accent:#2563eb; --accent-soft:#eef2ff;
-  --green:#16a34a; --red:#dc2626; --purple:#7c3aed; --lime:#65a30d; --blue:#2563eb;
+  --green:#16a34a; --red:#dc2626; --purple:#7c3aed; --lime:#65a30d; --blue:#2563eb; --teal:#0d9488;
   --radius:10px;
 }
 [data-theme="dark"]{
   --bg:#0f1115; --bg2:#15181e; --card:#181b21; --border:#262a32;
   --text:#e8eaed; --sub:#9aa2ad; --dim:#6b7280;
   --accent:#5b8def; --accent-soft:#1b2436;
-  --green:#4ade80; --red:#f87171; --purple:#a78bfa; --lime:#a3e635; --blue:#5b8def;
+  --green:#4ade80; --red:#f87171; --purple:#a78bfa; --lime:#a3e635; --blue:#5b8def; --teal:#2dd4bf;
 }
 *{box-sizing:border-box}
 body{
@@ -109,8 +109,44 @@ table{width:100%; border-collapse:collapse; font-size:13px}
 th,td{padding:9px 10px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap}
 th{color:var(--dim); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em}
 tr:last-child td{border-bottom:none}
+/* 리서치 보고서 표: 열별로 줄바꿈 여부/너비를 개별 지정 (전역 nowrap을 필요한 열만 풀어준다) */
+#rep-table-wrap td, #bio-table-wrap td{vertical-align:top}
+#rep-table-wrap th:nth-child(1), #rep-table-wrap td:nth-child(1){width:100px; white-space:nowrap}
+#rep-table-wrap th:nth-child(2), #rep-table-wrap td:nth-child(2){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
+#rep-table-wrap th:nth-child(3), #rep-table-wrap td:nth-child(3){white-space:normal}
+#rep-table-wrap th:nth-child(4), #rep-table-wrap td:nth-child(4){width:92px; white-space:nowrap}
+#rep-table-wrap th:nth-child(5), #rep-table-wrap td:nth-child(5){width:70px; white-space:nowrap}
+#bio-table-wrap th:nth-child(1), #bio-table-wrap td:nth-child(1){width:100px; white-space:nowrap}
+#bio-table-wrap th:nth-child(2), #bio-table-wrap td:nth-child(2){width:80px; white-space:nowrap}
+#bio-table-wrap th:nth-child(3), #bio-table-wrap td:nth-child(3){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
+#bio-table-wrap th:nth-child(4), #bio-table-wrap td:nth-child(4){white-space:normal}
+#bio-table-wrap th:nth-child(5), #bio-table-wrap td:nth-child(5){width:92px; white-space:nowrap}
+#bio-table-wrap th:nth-child(6), #bio-table-wrap td:nth-child(6){width:70px; white-space:nowrap}
+/* 원문 PDF 링크: 아이콘/텍스트가 한 줄에 붙어 보이도록 */
+.rep-pdf-link{
+  color:var(--accent); font-weight:600; text-decoration:none; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:2px;
+}
+/* 제목 + 텔레그램 코멘트 셀: 기본 2줄까지만 노출, 우측 하단 ▼ 버튼으로 전체 펼치기 */
+.rep-title-cell{position:relative}
+.rep-title-cell.has-toggle{padding-right:30px; padding-bottom:22px}
+.tg-comment{margin-top:5px}
+.tg-comment-text{
+  font-size:11.5px; color:var(--dim); white-space:pre-wrap; line-height:1.45;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.tg-comment-text.expanded{-webkit-line-clamp:unset; display:block; overflow:visible}
+.tg-comment-toggle{
+  position:absolute; right:0; bottom:0; width:22px; height:18px; font-size:10px; line-height:1;
+  color:var(--dim); background:var(--bg2); border:1px solid var(--border); border-radius:5px;
+  padding:0; cursor:pointer; transition:transform .15s ease, color .15s ease, background .15s ease;
+  display:flex; align-items:center; justify-content:center;
+}
+.tg-comment-toggle:hover{color:var(--accent); background:var(--accent-soft); border-color:var(--accent)}
+.tg-comment-toggle.expanded{transform:rotate(180deg)}
 .badge{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700}
 .badge.buy{background:rgba(37,99,235,.12); color:var(--accent)}
+.badge.neutral{background:rgba(13,148,136,.15); color:var(--teal)}
 .badge.hold{background:rgba(138,145,156,.15); color:var(--sub)}
 .badge.domestic{background:var(--accent-soft); color:var(--accent)}
 .badge.foreign{background:rgba(124,58,237,.12); color:var(--purple)}
@@ -428,6 +464,15 @@ document.querySelectorAll('.tab').forEach(btn=>{
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    // 리서치 보고서 탭이 처음 활성화되는 순간 텔레그램 코멘트 펼치기(▼) 버튼 노출 여부를
+    // 다시 계산한다 — 탭이 숨겨진 상태(display:none)에서는 요소 높이가 0으로 측정돼
+    // 최초 데이터 로드 시점에는 판정이 불가능했기 때문(2026-08-27).
+    if(btn.dataset.view === 'reports'){
+      const repWrap = document.getElementById('rep-table-wrap');
+      const bioWrap = document.getElementById('bio-table-wrap');
+      if(repWrap) refreshTgCommentToggles(repWrap);
+      if(bioWrap) refreshTgCommentToggles(bioWrap);
+    }
   });
 });
 
@@ -2084,8 +2129,13 @@ let REPORT_ESTIMATES = {}; // report_estimates.json · 기업별 최신 보고�
 let selectedRepCompany = null; // 보고서 탭에서 현재 선택된 기업 — 늦게 도착하는 stock_performance/tickers 데이터가 도착하면 이 값 기준으로 재렌더링
 
 function repBadgeClass(op){
-  if(op.indexOf('매수')>-1) return 'buy';
+  if(op.indexOf('매수')>-1 || op.indexOf('비중확대')>-1) return 'buy';
+  if(op.indexOf('중립')>-1) return 'neutral';
   return 'hold';
+}
+// "Not Rated"는 배지 안에서 "NR"로 간결하게 줄여 매수/중립 배지와 크기를 맞춘다.
+function repOpLabel(op){
+  return op === 'Not Rated' ? 'NR' : op;
 }
 
 // 사명 변경 대응: 구사명으로 발간된 과거 보고서도 현재 사명 기준으로 한데 묶어서 필터링.
@@ -2126,19 +2176,64 @@ function findTelegramComment(co, dateStr){
   });
   return best;
 }
+// URL을 클릭 가능한 링크로 바꾼다(escapeHtml 적용 이후 텍스트에 대해 실행 — href에
+// 들어가는 &amp; 등은 브라우저가 속성값에서 알아서 디코딩하므로 문제 없다).
+function linkifyHtml(escapedText){
+  return escapedText.replace(/https?:\/\/[^\s<]+/g, url => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--accent)">${url}</a>`);
+}
+
 // 텔레그램 채널 메시지는 한 달 주기로 자동 삭제되도록 설정돼 있어 telegram_url이 곧
 // 죽은 링크가 된다 — 그래서 링크가 아니라 코멘트 텍스트 자체를 보여준다.
-// 2026-08-21: 별도 "텔레그램" 열 대신, 제목 밑에 뉴스 카드의 메타 라인(.meta, 11.5px
-// 회색)과 같은 크기·톤으로 붙인다. comment_clean은 scrape_telegram_comments.py가
-// 종목명·제목 첫 줄·링크·컴플라이언스 문구를 이미 제거해 둔 버전이라 여기선 그대로 쓴다
-// (원문 comment는 표에 노출하지 않음 — 필요하면 나중에 상세보기에서만 노출 고려).
-function telegramSubHtml(co, dateStr){
+// 2026-08-26: 제목 밑에 최대 2줄까지만 보이도록 자르고(-webkit-line-clamp), 넘치는 경우에만
+// 제목 셀 우측 하단에 역삼각형(▼) 펼치기 버튼을 붙인다(rep-title-cell 안에서 절대 위치).
+// hover 미리보기(title 속성)는 사용자 요청으로 제거 — 펼치기 버튼으로만 전체 내용을 본다.
+// comment_clean은 scrape_telegram_comments.py가 종목명·제목 첫 줄·컴플라이언스 문구를
+// 이미 제거해 둔 버전이고, 코멘트 안에 있던 링크(예: "미국: ... https://...")는 그대로
+// 살려두므로 linkifyHtml로 클릭 가능하게만 만들어 보여준다.
+function telegramCommentBlockHtml(co, dateStr){
   const tg = findTelegramComment(co, dateStr);
   if(!tg) return '';
   const clean = (tg.comment_clean != null ? tg.comment_clean : '').trim();
-  const oneLine = clean ? clean.replace(/\s*\n\s*/g, ' ') : '(코멘트 본문 없음 — 링크/공지만 게시됨)';
-  const short = oneLine.length > 60 ? oneLine.slice(0, 60) + '…' : oneLine;
-  return `<div class="meta" style="margin-top:3px;white-space:normal" title="${escapeHtml(oneLine)}">💬 ${escapeHtml(short)}</div>`;
+  const body = clean || '(코멘트 본문 없음 — 링크/공지만 게시됨)';
+  return `<div class="tg-comment">
+    <div class="tg-comment-text">💬 ${linkifyHtml(escapeHtml(body))}</div>
+  </div>
+  <button type="button" class="tg-comment-toggle" style="display:none" title="펼치기" onclick="toggleTgComment(this)">▼</button>`;
+}
+
+// -webkit-line-clamp을 쓰는 요소는 브라우저에 따라 scrollHeight가 clientHeight와 같게
+// 나와(클램프된 높이 그대로 보고) overflow 여부를 못 미더워하는 경우가 있어, 클램프를
+// 잠깐 풀어서 "전체 높이"를 직접 잰 뒤 다시 되돌리는 방식으로 정확히 판정한다.
+// (테이블이 innerHTML로 새로 그려질 때마다 렌더 직후 호출)
+function refreshTgCommentToggles(container){
+  container.querySelectorAll('.rep-title-cell').forEach(cell=>{
+    const text = cell.querySelector('.tg-comment-text');
+    const btn = cell.querySelector('.tg-comment-toggle');
+    if(!text || !btn) return;
+    const clampedHeight = text.clientHeight;
+    text.style.setProperty('-webkit-line-clamp', 'unset');
+    text.style.display = 'block';
+    const fullHeight = text.scrollHeight;
+    text.style.removeProperty('-webkit-line-clamp');
+    text.style.removeProperty('display');
+    const overflowing = fullHeight > clampedHeight + 2;
+    btn.style.display = overflowing ? '' : 'none';
+    cell.classList.toggle('has-toggle', overflowing);
+  });
+}
+function toggleTgComment(btn){
+  const cell = btn.closest('.rep-title-cell');
+  const text = cell.querySelector('.tg-comment-text');
+  const expanded = text.classList.toggle('expanded');
+  btn.classList.toggle('expanded', expanded);
+  btn.title = expanded ? '접기' : '펼치기';
+}
+
+// 종목명(볼드) + 아랫줄 티커(작게/회색) 두 줄 표기 (item 6). 종목명은 word-break:keep-all로
+// 단어 중간(예: "사이언티" "픽")에서 어색하게 끊기지 않도록 한다.
+function repCompanyCellHtml(co, code){
+  const codeLine = code ? `<br><span style="font-size:11px;color:var(--dim);font-weight:400">${code}</span>` : '';
+  return `<strong style="word-break:keep-all">${escapeHtml(co)}</strong>${codeLine}`;
 }
 
 function renderReports(filterCo){
@@ -2147,16 +2242,16 @@ function renderReports(filterCo){
 
   // table
   const wrap = document.getElementById('rep-table-wrap');
-  let html = '<table><thead><tr><th>작성일</th><th>종목</th><th>제목</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>작성일</th><th>종목</th><th>제목·코멘트</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
   rows.forEach(r=>{
-    const codeStr = r.code ? ` (${r.code})` : '';
-    const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${r.op}</span>` : '<span class="note">—</span>';
+    const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${repOpLabel(r.op)}</span>` : '<span class="note">—</span>';
     const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
-    const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">PDF ↗</a>` : '—';
-    html += `<tr><td>${r.d}</td><td>${r.co}${codeStr}</td><td>${r.t}${telegramSubHtml(r.co, r.d)}</td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
+    const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
+    html += `<tr><td>${r.d}</td><td>${repCompanyCellHtml(r.co, r.code)}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
   });
   html += '</tbody></table>';
   wrap.innerHTML = html;
+  refreshTgCommentToggles(wrap);
 
   // source note
   document.getElementById('rep-source-note').textContent =
@@ -2312,7 +2407,7 @@ function renderCompanyDetail(co){
     if(r.op && r.op !== prevOp){ timeline.push({d:r.d, op:r.op}); prevOp = r.op; }
   });
   const timelineHtml = timeline.length
-    ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${t.op}</span>`).join('')
+    ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${repOpLabel(t.op)}</span>`).join('')
     : '<span class="note">의견 변경 이력 없음</span>';
 
   const est = REPORT_ESTIMATES[co];
@@ -2356,7 +2451,7 @@ function renderCompanyDetail(co){
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
         <div style="font-weight:700;font-size:15px">${companyLabel(co)}${codeStr}</div>
-        <div class="note">보고서 ${rows.length}건 · ${first.d} ~ ${latest.d} · 최신 의견 ${latest.op ? `<span class="badge ${repBadgeClass(latest.op)}">${latest.op}</span>` : '—'}</div>
+        <div class="note">보고서 ${rows.length}건 · ${first.d} ~ ${latest.d} · 최신 의견 ${latest.op ? `<span class="badge ${repBadgeClass(latest.op)}">${repOpLabel(latest.op)}</span>` : '—'}</div>
       </div>
       <div style="margin-top:10px">
         <div class="note" style="margin-bottom:6px">투자의견 변경 이력</div>
@@ -2436,16 +2531,16 @@ function renderBioReports(filterAuthor){
   if(rows.length === 0){
     wrap.innerHTML = '<div class="card note">표시할 바이오 리포트가 없습니다.</div>';
   } else {
-    let html = '<table><thead><tr><th>작성일</th><th>작성자</th><th>종목</th><th>제목</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>작성일</th><th>작성자</th><th>종목</th><th>제목·코멘트</th><th>투자의견</th><th>원문</th></tr></thead><tbody>';
     rows.forEach(r=>{
-      const codeStr = r.code ? ` (${r.code})` : '';
-      const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${r.op}</span>` : '<span class="note">—</span>';
+      const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${repOpLabel(r.op)}</span>` : '<span class="note">—</span>';
       const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
-      const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">PDF ↗</a>` : '—';
-      html += `<tr><td>${r.d}</td><td>${r.author||''}</td><td>${r.co}${codeStr}</td><td>${r.t}</td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
+      const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
+      html += `<tr><td>${r.d}</td><td>${r.author||''}</td><td>${repCompanyCellHtml(r.co, r.code)}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
     });
     html += '</tbody></table>';
     wrap.innerHTML = html;
+    refreshTgCommentToggles(wrap);
   }
   const note = document.getElementById('bio-source-note');
   if(note) note.textContent = `${rows.length}건 표시 (전체 ${BIO_REPORTS.length}건)`;

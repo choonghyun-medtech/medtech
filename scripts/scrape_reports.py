@@ -132,8 +132,13 @@ def parse_rows(html: str):
             if "/" in inner:
                 code, opinion = inner.split("/", 1)
                 code, opinion = code.strip(), opinion.strip()
+            elif inner.isdigit():
+                code, opinion = inner, ""
             else:
-                code, opinion = inner.strip(), ""
+                # "헬스케어 산업(비중확대)"처럼 괄호 안이 종목코드가 아니라 업종 의견
+                # 하나만 있는 산업 리포트 — 코드가 아니라 투자의견으로 취급한다
+                # (2026-08-26 전까지는 code 칸에 "비중확대"가 잘못 들어가고 있었음).
+                code, opinion = "", inner
         else:
             # 종목 코드가 없는 산업 전망 리포트 등
             company, code, opinion = header.strip(), "", ""
@@ -156,6 +161,80 @@ def parse_rows(html: str):
             }
         )
     return out
+
+
+# ---- 복수저자(팀/산업) 리포트 보완 스캔 ----
+# 2026-08-26 확인: "헬스케어 산업(비중확대)"처럼 여러 애널리스트가 공동 작성한 산업
+# 리포트는 게시판 저자란에 "김충현, CF..."처럼 표시되지만(다른 공동저자와 합쳐진 문자열이
+# 잘려 보임), 작성자 검색(searchType=5)은 저자 필드 완전일치라서 이런 복수저자 리포트가
+# 영원히 검색에서 빠진다. 이를 보완하기 위해 최근 N일치 전체 게시판(저자 필터 없음)을
+# 따로 훑어, 행별 저자란 텍스트에 대상 애널리스트 이름이 부분 일치하면 결과에 합친다.
+RECENT_TEAM_SCAN_DAYS = 30
+
+
+def build_general_url(curpage: int, start_date: datetime.date, end_date: datetime.date) -> str:
+    params = {
+        "categoryId": CATEGORY_ID,
+        "searchStartYear": str(start_date.year),
+        "searchStartMonth": f"{start_date.month:02d}",
+        "searchStartDay": f"{start_date.day:02d}",
+        "searchEndYear": str(end_date.year),
+        "searchEndMonth": f"{end_date.month:02d}",
+        "searchEndDay": f"{end_date.day:02d}",
+        "listType": "1",
+        "startId": "zzzzz~",
+        "startPage": "1",
+        "curPage": str(curpage),
+        "direction": "1",
+    }
+    query = "&".join(f"{k}={v}" for k, v in params.items())
+    return f"{BASE_URL}?{query}"
+
+
+def parse_rows_with_author(html: str):
+    """parse_rows와 동일한 필드를 뽑되, 저자란(마지막 td) 텍스트도 함께 반환한다.
+    저자 필터 없이 전체 게시판을 훑을 때 행별로 부분 일치 여부를 판단하기 위함."""
+    rows = parse_rows(html)
+    soup = BeautifulSoup(html, "html.parser")
+    trs = [tr for tr in soup.select("table tr") if tr.select_one('a[href^="javascript:view"]')]
+    for row, tr in zip(rows, trs):
+        tds = tr.find_all("td")
+        row["_author_text"] = tds[-1].get_text(strip=True) if tds else ""
+    return rows
+
+
+def scrape_recent_team_reports(session: requests.Session, author_hint: str, days: int = RECENT_TEAM_SCAN_DAYS):
+    """author_hint(예: "김충현")가 저자란에 부분 일치하는, 최근 days일 이내 전체
+    게시판(저자 필터 없음) 리포트를 모아 반환한다. 사이트 접근 실패는 조용히 빈 목록으로
+    처리 — 이 보완 스캔이 실패해도 본 검색 결과(reports.json)에는 영향 없어야 한다."""
+    end_date = datetime.datetime.utcnow().date()
+    start_date = end_date - datetime.timedelta(days=days)
+    all_rows = []
+    curpage = 1
+    total_pages = 1
+    while curpage <= total_pages:
+        url = build_general_url(curpage, start_date, end_date)
+        try:
+            resp = session.get(url, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"[WARN] 팀 리포트 보완 스캔 실패(page={curpage}): {e}", file=sys.stderr)
+            break
+        html = resp.content.decode("cp949", errors="replace")
+        if curpage == 1:
+            total = get_total_count(html)
+            if total == 0:
+                break
+            total_pages = max(1, -(-total // PER_PAGE))
+        all_rows.extend(parse_rows_with_author(html))
+        curpage += 1
+        if curpage <= total_pages:
+            time.sleep(REQUEST_DELAY_SEC)
+
+    matched = [r for r in all_rows if author_hint in r.get("_author_text", "")]
+    for r in matched:
+        r.pop("_author_text", None)
+    return matched
 
 
 def scrape(author: str):
@@ -191,6 +270,24 @@ def scrape(author: str):
             continue
         seen.add(key)
         unique_rows.append(r)
+
+    # 복수저자(팀/산업) 리포트 보완 — 저자 완전일치 검색이라 놓치는 리포트를 추가로 합친다.
+    author_hint = author.split(",")[0].strip()
+    if author_hint:
+        try:
+            extra_rows = scrape_recent_team_reports(session, author_hint)
+        except Exception as e:
+            print(f"[WARN] 팀 리포트 보완 스캔 중 오류(무시하고 진행): {e}", file=sys.stderr)
+            extra_rows = []
+        existing_pdfs = {r["pdf"] for r in unique_rows if r.get("pdf")}
+        added = 0
+        for r in extra_rows:
+            if r.get("pdf") and r["pdf"] not in existing_pdfs:
+                unique_rows.append(r)
+                existing_pdfs.add(r["pdf"])
+                added += 1
+        if added:
+            print(f"[INFO] 팀/산업 리포트 보완 스캔으로 {added}건 추가", file=sys.stderr)
 
     unique_rows.sort(key=lambda r: r["d"], reverse=True)
     return unique_rows

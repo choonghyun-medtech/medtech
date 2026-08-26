@@ -44,6 +44,33 @@ HEADERS = {
 # (이모지·문장부호로 시작하는 잡담은 자동 제외됨).
 FIRST_LINE_RE = re.compile(r"^([가-힣A-Za-z0-9&\s]{1,20}?)\s*[:：]\s*(.+)$")
 
+# 해외기업은 텔레그램 채널에 한글 정식명(reports.json의 co와 일치) 대신 영문 약칭으로
+# 올라오는 경우가 있어 그대로는 known_companies와 매칭되지 않았다(2026-08-26 요청).
+# 영문 표기 -> reports.json co(한글 정식명) 매핑을 두고, 매칭 시 이 별칭도 함께 확인한다.
+EN_TO_KO_ALIAS = {
+    "boston scientific": "보스턴 사이언티픽 코퍼레이션",
+    "stryker": "스트라이커",
+    "dexcom": "덱스컴",
+    "edwards lifesciences": "에드워즈 라이프사이언시스",
+    "thermo fisher": "써모 피셔 사이언티픽",
+    "intuitive surgical": "인튜이티브 서지컬",
+    "abbott laboratories": "애보트 래보러토리",
+    "united health group": "유나이티드 헬스 그룹",
+    "medtronic": "메드트로닉",
+}
+
+
+def resolve_company(co_candidate: str, known_companies: set) -> str | None:
+    """co_candidate가 known_companies(reports.json의 co)와 정확히 일치하면 그대로,
+    영문 별칭(EN_TO_KO_ALIAS)과 일치하면 대응하는 한글 정식명을 반환한다.
+    둘 다 아니면 None(리포트 코멘트가 아닌 잡담으로 간주)."""
+    if co_candidate in known_companies:
+        return co_candidate
+    ko = EN_TO_KO_ALIAS.get(co_candidate.strip().lower())
+    if ko and ko in known_companies:
+        return ko
+    return None
+
 # ---- 코멘트 본문 정제(2026-08-21 추가) ----
 # 화면에는 "종목명: 제목"(이미 리포트 행 제목으로 따로 표시됨)·링크·컴플라이언스
 # 문구를 빼고 실제 코멘트 본문만 작은 글씨로 헤드라인 밑에 보여주고 싶다는 요청에 따라
@@ -63,22 +90,28 @@ _DISCLAIMER_KEYWORDS = (
 
 
 def clean_telegram_comment(text: str) -> str:
-    """원문 메시지에서 첫 줄(종목명: 제목)·링크·컴플라이언스 문구를 제거하고
-    실제 코멘트 본문만 남긴다."""
+    """원문 메시지에서 첫 줄(종목명: 제목)·컴플라이언스 문구·순수 링크 안내 줄만
+    제거하고 실제 코멘트 본문은 남긴다. 2026-08-26 수정: 이전엔 모든 줄에서 URL을
+    무조건 잘라내는 바람에 "미국: ~~ https://..."처럼 설명 뒤에 근거 링크를 붙인
+    줄도 링크가 통째로 사라졌다 — 이제는 "그 줄이 링크뿐인지"만 판정에 쓰고, 실제로
+    남기는 줄은 원문(URL 포함) 그대로 보존한다."""
     lines = text.split("\n")
     lines = lines[1:] if lines else []  # 첫 줄(종목명: 제목) 제거
     out = []
     for raw_line in lines:
-        line = _URL_RE.sub("", raw_line).strip()
+        line = raw_line.strip()
         if not line:
             continue
         if _DIVIDER_RE.match(line):
             continue
-        if _LABEL_LINK_RE.match(line):
+        text_without_url = _URL_RE.sub("", line).strip()
+        if not text_without_url:
+            continue  # 줄 전체가 링크뿐인 경우(예: "https://...")
+        if _LABEL_LINK_RE.match(text_without_url):
+            continue  # "링크:"처럼 라벨만 남는 줄(뒤에 URL이 있었더라도 안내문일 뿐)
+        if any(kw.lower() in text_without_url.lower() for kw in _DISCLAIMER_KEYWORDS):
             continue
-        if any(kw.lower() in line.lower() for kw in _DISCLAIMER_KEYWORDS):
-            continue
-        out.append(line)
+        out.append(line)  # URL이 있었다면 그대로 살려서 보존
     return "\n".join(out).strip()
 
 
@@ -183,8 +216,9 @@ def extract_report_comments(messages, known_companies: set):
             continue
         co_candidate = mobj.group(1).strip()
         title = mobj.group(2).strip()
-        if co_candidate not in known_companies:
-            continue  # reports.json에 없는 종목명이면 리포트 코멘트가 아닌 잡담으로 간주
+        co = resolve_company(co_candidate, known_companies)
+        if co is None:
+            continue  # reports.json에 없는 종목명(영문 별칭 포함)이면 잡담으로 간주
 
         date_str = None
         if m["iso_dt"]:
@@ -197,7 +231,7 @@ def extract_report_comments(messages, known_companies: set):
 
         out.append({
             "date": date_str,
-            "co": co_candidate,
+            "co": co,
             "title": title,
             "comment": text,  # 원문 전체(디버깅/백업용, 화면에는 안 씀)
             "comment_clean": clean_telegram_comment(text),  # 화면 표시용(제목·링크·컴플라이언스 제거)
@@ -243,15 +277,32 @@ def main():
     if not comments:
         print("[WARN] 매칭된 리포트 코멘트가 0건입니다 (채널 구조 변경 또는 종목명 불일치 가능성).", file=sys.stderr)
 
+    # 텔레그램 채널은 메시지를 한 달 주기로 자동 삭제하므로, 이번 스크래핑에서 안 보인다고
+    # 그 메시지가 "틀렸던 것"은 아니다 — 이미 사이트에 반영된 과거 코멘트를 이번 결과로
+    # 덮어써서 사라지게 하면 안 되고, 새로 찾은 것만 더해서 누적해야 한다(2026-08-27).
+    # message_id 기준으로 병합: 기존 파일에 있던 항목은 그대로 남기고, 이번에 다시
+    # 수집된(=아직 채널에 남아있는) 메시지는 최신 내용으로 갱신한다.
+    existing_comments = []
+    try:
+        with open(args.out, encoding="utf-8") as f:
+            existing_comments = json.load(f).get("comments", [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+
+    merged_by_id = {c["message_id"]: c for c in existing_comments if c.get("message_id") is not None}
+    for c in comments:
+        merged_by_id[c["message_id"]] = c
+    merged_comments = sorted(merged_by_id.values(), key=lambda r: r["date"] or "", reverse=True)
+
     payload = {
         "updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"t.me/{args.channel} 공개 채널 프리뷰 · 리포트 발간 코멘트 자동 매칭(비공식 HTML 파싱)",
-        "count": len(comments),
-        "comments": comments,
+        "source": f"t.me/{args.channel} 공개 채널 프리뷰 · 리포트 발간 코멘트 자동 매칭(비공식 HTML 파싱) · 채널에서 삭제된 과거 메시지도 이전 수집분은 누적 보존",
+        "count": len(merged_comments),
+        "comments": merged_comments,
     }
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=1)
-    print(f"저장 완료: {args.out} ({len(comments)}건 매칭 / 전체 수집 메시지 {len(messages)}건)")
+    print(f"저장 완료: {args.out} (신규/갱신 {len(comments)}건 수집, 누적 {len(merged_comments)}건 / 이번 수집 메시지 {len(messages)}건)")
 
 
 if __name__ == "__main__":
