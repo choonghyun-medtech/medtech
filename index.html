@@ -236,7 +236,8 @@ tr:last-child td{border-bottom:none}
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
     <button class="tab" data-view="stock">주가 데이터</button>
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
-    <button class="tab" data-view="industry">산업데이터</button>
+    <button class="tab" data-view="export">수출 데이터</button>
+    <button class="tab" data-view="medtour">의료관광 데이터</button>
     <button class="tab" data-view="reports">리서치 보고서</button>
   </div>
 
@@ -368,8 +369,8 @@ tr:last-child td{border-bottom:none}
     </div>
   </section>
 
-  <!-- ================= INDUSTRY DATA ================= -->
-  <section class="view" id="view-industry">
+  <!-- ================= EXPORT DATA ================= -->
+  <section class="view" id="view-export">
     <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
     <div class="chips" id="export-cat-chips"></div>
     <div class="note" id="export-companies-note" style="margin:-2px 0 10px"></div>
@@ -414,6 +415,12 @@ tr:last-child td{border-bottom:none}
       <div id="export-table-wrap" style="flex:1; min-width:220px"></div>
     </div>
 
+    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
+    <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
+  </section>
+
+  <!-- ================= MEDICAL TOURISM DATA ================= -->
+  <section class="view" id="view-medtour">
     <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 실데이터 연동</span></div>
     <div class="cards">
       <div class="stat-card" id="visitor-stat-card"></div>
@@ -426,6 +433,8 @@ tr:last-child td{border-bottom:none}
     <div class="chart-box"><canvas id="medTourAmtChart"></canvas></div>
     <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
     <div class="chart-box"><canvas id="medTourCntChart"></canvas></div>
+    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP</h2></div>
+    <div class="chart-box"><canvas id="medTourAspChart"></canvas></div>
 
     <div class="perf-grid">
       <div>
@@ -444,8 +453,8 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2 style="font-size:13px">대륙별 방한 외국인</h2><span class="note" id="visitor-continent-note">월별 스택 · 만명 · 기타 = 아프리카·교포·미상</span></div>
     <div class="chart-box"><canvas id="visitorContinentChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 12일 자동 작성 (예정)</span></div>
-    <div class="card">아직 월간 분석이 없습니다 — 매월 12일 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
+    <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
   </section>
 
   <!-- ================= REPORTS ================= -->
@@ -1830,7 +1839,7 @@ function renderExportChart(){
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: true, labels: { color: textColor() } } },
       scales: {
-        x: { grid: { display: false }, ticks: { color: textColor() } },
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
         y: {
           position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
           title: { display: true, text: '수출액($)', color: textColor() },
@@ -2005,6 +2014,7 @@ let MEDICAL_TOUR_DATA = { tabs: [] };
 const MEDTOUR_STATE = { tab: 'all' };
 let medTourAmtChartInstance = null;
 let medTourCntChartInstance = null;
+let medTourAspChartInstance = null;
 let medTourDeptAmtChartInstance = null;
 let medTourDeptCntChartInstance = null;
 
@@ -2076,64 +2086,151 @@ function renderMedtourStatCard(){
 function renderMedtourTrendChart(){
   if(medTourAmtChartInstance){ medTourAmtChartInstance.destroy(); medTourAmtChartInstance = null; }
   if(medTourCntChartInstance){ medTourCntChartInstance.destroy(); medTourCntChartInstance = null; }
+  if(medTourAspChartInstance){ medTourAspChartInstance.destroy(); medTourAspChartInstance = null; }
   const tab = currentMedtourTab();
   const note = document.getElementById('medtour-trend-note');
   if(!tab || !tab.monthly || !tab.monthly.length){
     if(note) note.textContent = '월별 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
     return;
   }
-  const rows = tab.monthly; // 10개년 전체(scrape_medical_tour.py가 수집한 범위 그대로, 2026-08-25 요청)
-  if(note) note.textContent = `월별(${rows[0].ym} ~ ${rows[rows.length-1].ym}, ${rows.length}개월) · ${tab.label} · 신한카드 외국인 카드소비 기준`;
+  const rows = tab.monthly; // 10개년 전체(scrape_medical_tour.py가 수집한 범위 그대로) — YoY 계산의 lookback용으로 그대로 둔다.
+
+  // YoY 비교가 가능한 시점(데이터 시작 다음 해 1월)부터만 차트에 표시 — 그 이전 구간은 전년
+  // 동월 데이터가 없어 YoY가 비어버려 보기 불편하다는 요청(2026-08-27). ASP 차트는 YoY 선이
+  // 없지만 통일성을 위해 같은 시작점을 쓴다. 원본 데이터(rows)는 그대로 두고 표시용으로만 자른다.
+  const [firstY, firstM] = rows[0].ym.split('-').map(Number);
+  const displayStartYm = `${firstY + 1}-${String(firstM).padStart(2, '0')}`;
+  const displayRows = rows.filter(r => r.ym >= displayStartYm);
+  if(note){
+    note.textContent = displayRows.length
+      ? `월별(${displayRows[0].ym} ~ ${displayRows[displayRows.length-1].ym}, ${displayRows.length}개월) · ${tab.label} · YoY 비교를 위해 ${displayStartYm}부터 표시(데이터 자체는 ${rows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      : '월별 · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.';
+  }
+  if(!displayRows.length) return;
+
+  // 같은 달 전년 대비 YoY(%) — 값이 amt/cnt로 다르므로 Map을 만들어 공용으로 계산.
+  // lookback은 전체 rows에서 찾고, 실제 반환값은 displayRows 순서에 맞춘다.
+  const yoySeries = (valueOf) => {
+    const byYm = new Map(rows.map(r => [r.ym, valueOf(r)]));
+    return displayRows.map(r => {
+      const prevVal = byYm.get(ymMinusYear(r.ym));
+      const curVal = byYm.get(r.ym);
+      if(prevVal == null || !prevVal || curVal == null) return null;
+      return (curVal - prevVal) / prevVal * 100;
+    });
+  };
+
   medTourAmtChartInstance = new Chart(document.getElementById('medTourAmtChart'), {
-    type: 'bar',
     data: {
-      labels: rows.map(r => r.ym),
+      labels: displayRows.map(r => r.ym),
       datasets: [
-        { label: '의료 소비액(백만원)', data: rows.map(r => r.amt / 1000), backgroundColor: '#2563eb' },
+        {
+          type: 'bar', label: '의료 소비액(백만원)', data: displayRows.map(r => r.amt / 1000),
+          backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.amt),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
       ],
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true, labels: { color: textColor() } },
         tooltip: {
+          mode: 'index', intersect: false,
           callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
           },
         },
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: textColor() } },
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
         y: {
-          grid: { color: gridColor() }, ticks: { color: textColor() },
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
           title: { display: true, text: '소비액(백만원)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
         },
       },
     },
   });
+
   medTourCntChartInstance = new Chart(document.getElementById('medTourCntChart'), {
-    type: 'line',
     data: {
-      labels: rows.map(r => r.ym),
+      labels: displayRows.map(r => r.ym),
       datasets: [
         {
-          label: '의료 소비건수(건)', data: rows.map(r => r.cnt),
-          borderColor: '#f59e0b', backgroundColor: '#f59e0b',
-          tension: 0.25, pointRadius: 2, borderWidth: 3,
+          type: 'bar', label: '의료 소비건수(건)', data: displayRows.map(r => r.cnt),
+          backgroundColor: '#16a34a', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.cnt),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
         },
       ],
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true, labels: { color: textColor() } },
-        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtCnt(ctx.parsed.y)}` } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${fmtCnt(ctx.parsed.y)}`,
+          },
+        },
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: textColor() } },
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '소비건수(건)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 천원) / 소비건수(cnt) / 10.
+  const asp = displayRows.map(r => r.cnt ? r.amt / r.cnt / 10 : null);
+  medTourAspChartInstance = new Chart(document.getElementById('medTourAspChart'), {
+    type: 'bar',
+    data: {
+      labels: displayRows.map(r => r.ym),
+      datasets: [
+        { label: 'ASP(만원)', data: asp, backgroundColor: '#7c3aed' },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
         y: {
           grid: { color: gridColor() }, ticks: { color: textColor() },
-          title: { display: true, text: '소비건수(건)', color: textColor() },
+          title: { display: true, text: 'ASP(만원)', color: textColor() },
         },
       },
     },
