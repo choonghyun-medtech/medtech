@@ -450,8 +450,8 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note" id="visitor-trend-note">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</span></div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">대륙별 방한 외국인</h2><span class="note" id="visitor-continent-note">월별 스택 · 만명 · 기타 = 아프리카·교포·미상</span></div>
-    <div class="chart-box"><canvas id="visitorContinentChart"></canvas></div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 방한 외국인</h2><span class="note" id="visitor-country-note">월별 스택 · 만명 · 기타 = 중국·일본·대만·미국 제외 전체</span></div>
+    <div class="chart-box"><canvas id="visitorCountryChart"></canvas></div>
 
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
     <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
@@ -1373,23 +1373,25 @@ loadTickerUniverse();
 // exportChart는 더 이상 목업이 아니라 export_data.json 기반 실데이터로 그린다
 // (아래 "수출 데이터(카테고리별)" 섹션의 loadExportData() 참고). "외국인 의료 소비액 및
 // 소비건수 추이" / "진료과목별 비율 추이" 두 차트는 medical_tour.json 기반 실데이터로,
-// "방한 외국인 월별 추이" / "대륙별 방한 외국인" 두 차트는 visitor_stats.json 기반
+// "방한 외국인 월별 추이" / "국가별 방한 외국인" 두 차트는 visitor_stats.json 기반
 // 실데이터로 그린다(아래 loadVisitorStatsData() 참고).
 
-let VISITOR_STATS_DATA = { monthly: [], continentMonthly: [] };
+let VISITOR_STATS_DATA = { monthly: [], countryMonthly: [] };
 let visitorTrendChartInstance = null;
-let visitorContinentChartInstance = null;
+let visitorCountryChartInstance = null;
 
-// continentMonthly의 원본 카테고리는 아시아/아메리카/유럽/오세아니아/아프리카/교포/기타
-// 7개(한국관광 데이터랩 NAT_08_01_011 그대로) — 화면 note("기타 = 아프리카·교포·미상")와
-// 맞추기 위해 작은 카테고리 3개를 "기타"로 묶어서 보여준다. 원본 데이터(visitor_stats.json)는
-// 그대로 두고 표시할 때만 묶는다.
-const VISITOR_CONTINENT_GROUPS = [
-  { label: '아시아', keys: ['아시아'], color: '#2563eb' },
-  { label: '아메리카', keys: ['아메리카'], color: '#16a34a' },
-  { label: '유럽', keys: ['유럽'], color: '#7c3aed' },
-  { label: '오세아니아', keys: ['오세아니아'], color: '#f59e0b' },
-  { label: '기타', keys: ['아프리카', '교포', '기타'], color: '#8a919c' },
+// countryMonthly는 scrape_visitor_stats.py가 이미 "고정 4개국 + 기타" 형태로 집계해서
+// 저장해두므로(원본 국가별 원시 데이터가 아니라), 여기서는 그리는 순서와 색상만 정한다.
+// 4개국만 고정한 이유(2026-08-27): 데이터랩 API가 "그 달 상위 5개국" 스냅샷만 주는데,
+// 중국/일본/대만/미국은 거의 항상 상위 5위 안에 들지만 "5번째 자리"는 홍콩·태국 등 어느
+// 나라로 고정해도 절반 이상의 달에서 순위 밖으로 밀려나 값을 못 얻는 구조적 한계가 있었다
+// (scrape_visitor_stats.py 상단 docstring 참고). 그래서 안정적으로 잡히는 4개국만 고정.
+const VISITOR_COUNTRY_GROUPS = [
+  { label: '중국', color: '#2563eb' },
+  { label: '일본', color: '#16a34a' },
+  { label: '대만', color: '#7c3aed' },
+  { label: '미국', color: '#f59e0b' },
+  { label: '기타', color: '#8a919c' },
 ];
 
 function fmtManmyeong(v){ return (v / 10000).toFixed(1) + '만명'; }
@@ -1454,33 +1456,37 @@ function renderVisitorTrendChart(){
   });
 }
 
-function renderVisitorContinentChart(){
-  if(visitorContinentChartInstance){ visitorContinentChartInstance.destroy(); visitorContinentChartInstance = null; }
-  const rows = VISITOR_STATS_DATA.continentMonthly;
-  const note = document.getElementById('visitor-continent-note');
+function renderVisitorCountryChart(){
+  if(visitorCountryChartInstance){ visitorCountryChartInstance.destroy(); visitorCountryChartInstance = null; }
+  const rows = VISITOR_STATS_DATA.countryMonthly;
+  const note = document.getElementById('visitor-country-note');
   if(!rows || !rows.length){
     if(note) note.textContent = '월별 스택 · 만명 · 아직 데이터가 없습니다.';
     return;
   }
-  if(note) note.textContent = `월별 스택(최근 ${rows.length}개월, 10년치) · 만명 · 기타 = 아프리카·교포·미상`;
+  if(note) note.textContent = `월별 스택(최근 ${rows.length}개월, 10년치) · 만명 · 기타 = 중국·일본·대만·미국 제외 전체`;
   const labels = rows.map(r => r.ym);
-  const datasets = VISITOR_CONTINENT_GROUPS.map(g => ({
+  const datasets = VISITOR_COUNTRY_GROUPS.map(g => ({
     label: g.label,
     backgroundColor: g.color,
-    data: rows.map(r => g.keys.reduce((sum, k) => sum + (r.continents[k] || 0), 0)),
+    data: rows.map(r => r.countries[g.label] || 0),
   }));
-  visitorContinentChartInstance = new Chart(document.getElementById('visitorContinentChart'), {
+  visitorCountryChartInstance = new Chart(document.getElementById('visitorCountryChart'), {
     type: 'bar',
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      // 막대(대륙 하나)에 커서를 올려도 그 달의 다른 대륙 값이 한꺼번에 보이도록 mode:'index'로
-      // 같은 x축(월)의 모든 대륙 세그먼트를 툴팁에 함께 띄운다(medTourDeptChart와 동일 패턴).
+      // 막대(국가 하나)에 커서를 올려도 그 달의 다른 국가 값이 한꺼번에 보이도록 mode:'index'로
+      // 같은 x축(월)의 모든 국가 세그먼트를 툴팁에 함께 띄운다(medTourDeptChart와 동일 패턴).
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true, labels: { color: textColor() } },
         tooltip: {
           mode: 'index', intersect: false,
+          // 그 달 상위 4개국 밖으로 밀려 값이 0(=수집 불가, "기타"에 합산됨)인 국가는
+          // "OO: 0.0만명"으로 뜨면 실제로 0명인 것처럼 오해될 수 있어, 툴팁 목록에서
+          // 아예 빼버린다(2026-08-27 요청) — "기타"만 그 달의 실제 합계를 그대로 보여준다.
+          filter: (item) => item.parsed.y !== 0,
           callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtManmyeong(ctx.parsed.y)}` },
         },
       },
@@ -1498,11 +1504,11 @@ async function loadVisitorStatsData(){
     if(!res.ok) throw new Error('no visitor_stats.json yet');
     VISITOR_STATS_DATA = await res.json();
   }catch(e){
-    VISITOR_STATS_DATA = { monthly: [], continentMonthly: [] };
+    VISITOR_STATS_DATA = { monthly: [], countryMonthly: [] };
   }
   renderVisitorStatCard();
   renderVisitorTrendChart();
-  renderVisitorContinentChart();
+  renderVisitorCountryChart();
 }
 loadVisitorStatsData();
 
@@ -1543,7 +1549,7 @@ const EXPORT_CATEGORY_CONFIG = [
     countries: ['미국', '브라질', '태국', '중국', '일본'], regions: ['경기 고양시', '서울 강남구', '서울 금천구', '대전 유성구'] },
   { key: 'implant_dental', label: '임플란트', hsCodes: ['902129'], companies: '오스템임플란트·덴티움',
     countries: ['러시아 연방', '중국', '미국'], regions: ['서울 강서구', '경기 수원시', '부산 해운대구'] },
-  { key: 'filler', label: '리쥬란류', hsCodes: ['3304999000'], companies: '휴젤·파마리서치·휴메딕스',
+  { key: 'filler', label: '필러', hsCodes: ['3304999000'], companies: '휴젤·파마리서치·휴메딕스',
     countries: [], regions: ['강원 강릉시'] },
   { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '제노레이(추가 종목 확인 필요)',
     countries: ['중국'], regions: ['경기 화성시', '경기 성남시'] },
