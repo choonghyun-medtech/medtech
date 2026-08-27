@@ -2,8 +2,9 @@ name: Update stock performance
 
 on:
   schedule:
-    # 매일 평일(KST 월~금) 오전 7시 10분 = UTC 전날 22시 10분 (일~목 22:10 UTC)
-    - cron: "10 22 * * 0-4"
+    # 매일 평일(KST 월~금) 오전 7시 26분 = UTC 전날 22시 26분 (일~목 22:26 UTC)
+    # 매시 10분 단위 스케줄 혼잡을 피하려 26분으로 이동 (2026-08-28)
+    - cron: "26 22 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:

@@ -2,9 +2,11 @@ name: Update news
 
 on:
   schedule:
-    # 매일 평일(KST 월~금) 오전 6시 = UTC 전날 21시. 국내(네이버 API) + 해외(RSS)를
+    # 매일 평일(KST 월~금) 오전 6시 7분 = UTC 전날 21시 7분. 국내(네이버 API) + 해외(RSS)를
     # 한 워크플로에서 순서대로 실행해 같은 news.json에 대한 두 워크플로의 git push 충돌을 없앴다.
-    - cron: "0 21 * * 0-4"
+    # 분(minute)을 정각에서 살짝 비껴 잡은 이유: GitHub Actions는 매시 정각(0분)에 스케줄 실행이
+    # 몰려 지연/드롭될 확률이 높다고 공식 문서에서 안내함 -> 혼잡을 피하려 07분으로 이동 (2026-08-28).
+    - cron: "7 21 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
