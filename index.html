@@ -189,22 +189,28 @@ tr:last-child td{border-bottom:none}
 .dow{text-align:center; font-size:11px; color:var(--dim); padding:4px 0}
 /* 캘린더 하루 칸 — 원래 aspect-ratio:1(정사각형)이라 화면에 비해 지나치게 컸던 걸
    고정 min-height로 낮췄다(2026-08-28). 일정 라벨(.ev)을 칸 안에 직접 표기하기 위해
-   flex 세로배치로 변경. */
+   flex 세로배치로 변경. 이후 사용자 피드백으로 최대 5건까지 칸 안에서 바로 보이도록
+   min-height를 다시 키움(2026-08-28) — overflow는 hidden을 빼서 "+N건" 클릭으로
+   펼쳤을 때 칸이 자연스럽게(그리드 행 전체가 함께) 늘어나도록 했다. */
 .day{
-  min-height:56px; border:1px solid var(--border); border-radius:6px; padding:4px 5px;
+  min-height:104px; border:1px solid var(--border); border-radius:6px; padding:4px 5px;
   font-size:11px; color:var(--sub); position:relative; background:var(--card);
-  display:flex; flex-direction:column; overflow:hidden;
+  display:flex; flex-direction:column;
 }
 .day.dim{opacity:.35}
 .day.today{border-color:var(--accent)}
 .day .n{font-weight:600; color:var(--text); font-size:11px; line-height:1.2}
-.day .evs{display:flex; flex-direction:column; gap:1px; margin-top:2px; overflow:hidden}
+.day .evs{display:flex; flex-direction:column; gap:1px; margin-top:2px}
 /* 날짜 칸 안에 기업명/행사명을 간략히 표기하는 라벨(도트만 있던 걸 대체, 2026-08-28) */
 .day .ev{
   font-size:9.5px; line-height:1.35; padding:0 3px; border-radius:3px; font-weight:600;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:default;
 }
-.day .ev-more{font-size:9px; color:var(--dim); padding:0 3px}
+/* "+N건" 더보기 / 펼친 뒤 "접기" — 클릭해서 하루 칸 안 나머지 일정을 펼쳐본다(2026-08-28) */
+.day .ev-more, .day .ev-collapse{
+  font-size:9px; color:var(--accent); padding:0 3px; cursor:pointer; font-weight:700;
+}
+.day .ev-more:hover, .day .ev-collapse:hover{text-decoration:underline}
 .dot{width:6px; height:6px; border-radius:50%}
 .legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
 .legend span{display:flex; align-items:center; gap:5px}
@@ -213,6 +219,16 @@ tr:last-child td{border-bottom:none}
 .up-row{display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px}
 .up-row:last-child{border-bottom:none}
 .up-row .d{width:44px; color:var(--dim); font-size:11.5px; flex-shrink:0}
+/* 캘린더 상단 "다가오는 일정" 카드(최대 5개) — 하단 표 형태의 .up-row와 달리 한눈에
+   훑어보기 좋은 타일 형태로 구성(2026-08-28) */
+.cal-next-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin-bottom:28px}
+.cal-next-card{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 12px; display:flex; flex-direction:column; gap:5px; text-decoration:none; color:inherit;
+}
+.cal-next-card .dt{font-size:11px; color:var(--dim); font-weight:700}
+.cal-next-card .co{font-size:13px; font-weight:700; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cal-next-card .ti{font-size:11px; color:var(--sub); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
 .mock-flag{
   display:inline-block; font-size:10.5px; color:var(--dim); background:var(--bg2);
   border:1px dashed var(--border); border-radius:6px; padding:4px 8px; margin-bottom:14px;
@@ -373,6 +389,12 @@ tr:last-child td{border-bottom:none}
       <button class="region-tab" data-region="domestic">국내</button>
       <button class="region-tab" data-region="global">해외</button>
     </div>
+
+    <!-- 캘린더보다 위쪽에 두는 "다가오는 일정" 카드 — 오늘 이후 최대 5건, 국내/해외 탭
+         선택에 맞춰 필터링(2026-08-28) -->
+    <div class="sec-h"><h2>다가오는 일정</h2><span class="note" id="cal-next-note">오늘 이후 · 최대 6건</span></div>
+    <div class="cal-next-grid" id="cal-next-grid"><div class="card">일정을 불러오는 중...</div></div>
+
     <div class="cal-head"><button id="cal-prev">‹</button><div class="m" id="cal-month-label">2026년 8월</div><button id="cal-next">›</button></div>
     <div class="grid">
       <div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div>
@@ -387,7 +409,7 @@ tr:last-child td{border-bottom:none}
       <span><i class="dot" style="background:var(--teal)"></i> 권리락</span>
     </div>
 
-    <div class="sec-h"><h2>다가오는 일정</h2><span class="note" id="cal-upcoming-note">이번달 기준</span></div>
+    <div class="sec-h"><h2>이번달 일정</h2><span class="note" id="cal-upcoming-note">이번달 기준</span></div>
     <div class="up-list" id="cal-up-list"><div class="card">일정을 불러오는 중...</div></div>
   </section>
 
@@ -864,7 +886,9 @@ const CAL_TYPE_META = {
 };
 let CAL_DATA = {domestic:[], global:[]};
 const today0 = new Date();
-const CAL_STATE = { year: today0.getFullYear(), month: today0.getMonth(), region: 'all' };
+// expandedDates: "+N건"을 눌러 펼쳐놓은 날짜(YYYY-MM-DD) 집합. 달을 넘기면 초기화한다.
+const CAL_STATE = { year: today0.getFullYear(), month: today0.getMonth(), region: 'all', expandedDates: new Set() };
+const CAL_DAY_MAX = 5; // 하루 칸에 기본으로 보여줄 최대 일정 수(2026-08-28, 3->5 확대)
 
 function calEventsForRegion(){
   if(CAL_STATE.region === 'domestic') return CAL_DATA.domestic;
@@ -874,6 +898,19 @@ function calEventsForRegion(){
 
 function calFmtDate(d){
   return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+// 달력 칸 라벨: 국내는 티커(종목코드)보다 기업명이 알아보기 쉬워 기업명으로,
+// 해외는 티커가 더 짧고 익숙해 티커 그대로 표기(2026-08-28 피드백 반영).
+// 국내 기업명은 자르지 않고 그대로 넣는다 — 칸보다 길면 .ev의 CSS
+// text-overflow:ellipsis가 "..."으로 시각적으로만 줄여 보여주고(hover 시 title
+// 속성으로 풀네임 확인 가능), 중간을 뭉텅 잘라내는 slice(0,6) 방식은 "..." 표시가
+// 없어 이상하게 잘린 것처럼 보인다는 피드백으로 제거함.
+function calEvLabel(ev, meta){
+  if(ev.region === 'domestic'){
+    return `${ev.company||''} ${meta.label}`;
+  }
+  return `${ev.ticker||ev.company||''} ${meta.label}`;
 }
 
 function renderCalendar(){
@@ -897,36 +934,74 @@ function renderCalendar(){
   for(let d=1; d<=daysInMonth; d++){
     const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dayEvents = (byDate[dateStr]||[]).slice().sort((a,b)=> (a.type>b.type?1:-1));
-    const shown = dayEvents.slice(0,3);
+    const expanded = CAL_STATE.expandedDates.has(dateStr);
+    const shown = expanded ? dayEvents : dayEvents.slice(0, CAL_DAY_MAX);
     const evHtml = shown.map(ev=>{
       const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
-      const label = ev.ticker ? `${ev.ticker} ${meta.label}` : `${meta.label} ${ev.company||''}`;
+      const label = calEvLabel(ev, meta);
       const full = `${meta.label} · ${ev.company||ev.ticker||''} · ${ev.title||''}`.trim();
       return `<div class="ev ${meta.cls}" title="${full.replace(/"/g,'&quot;')}">${label}</div>`;
     }).join('');
-    const more = dayEvents.length>3 ? `<div class="ev-more">+${dayEvents.length-3}건</div>` : '';
+    let more = '';
+    if(dayEvents.length > CAL_DAY_MAX){
+      more = expanded
+        ? `<div class="ev-collapse" data-date="${dateStr}">접기</div>`
+        : `<div class="ev-more" data-date="${dateStr}">+${dayEvents.length-CAL_DAY_MAX}건</div>`;
+    }
     const isToday = dateStr === todayStr ? ' today' : '';
     html += `<div class="day${isToday}"><div class="n">${d}</div><div class="evs">${evHtml}${more}</div></div>`;
   }
   grid.innerHTML = html;
 
-  renderCalUpcoming(events);
+  renderCalNextUp(events);
+  renderCalMonthList(events);
 }
 
-function renderCalUpcoming(events){
+// 캘린더보다 위쪽 카드 — 오늘 이후 다가오는 일정 최대 5건(2026-08-28)
+function renderCalNextUp(events){
+  const grid = document.getElementById('cal-next-grid');
+  const note = document.getElementById('cal-next-note');
+  if(!grid) return;
+  const todayStr = today0.toISOString().slice(0,10);
+  const upcoming = events
+    .filter(ev => ev.date >= todayStr)
+    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
+    .slice(0, 6);
+  if(note) note.textContent = `오늘 이후 · 최대 6건 · ${upcoming.length}건 표시`;
+  if(upcoming.length === 0){
+    grid.innerHTML = '<div class="card">다가오는 일정이 없습니다.</div>';
+    return;
+  }
+  grid.innerHTML = upcoming.map(ev=>{
+    const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+    const d = new Date(ev.date+'T00:00:00');
+    const co = ev.company || ev.ticker || '';
+    const inner = `
+      <span class="dt">${calFmtDate(d)} <span class="badge ${meta.cls}">${meta.label}</span></span>
+      <span class="co">${co}</span>
+      <span class="ti">${ev.title||''}</span>`;
+    return ev.source_url
+      ? `<a class="cal-next-card" href="${ev.source_url}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="cal-next-card">${inner}</div>`;
+  }).join('');
+}
+
+// 캘린더 하단 표 — "이번달 일정"(현재 보고 있는 달 전체, 과거/미래 무관, 2026-08-28)
+function renderCalMonthList(events){
   const list = document.getElementById('cal-up-list');
   const note = document.getElementById('cal-upcoming-note');
   if(!list) return;
-  const upcoming = events
-    .filter(ev => ev.date >= today0.toISOString().slice(0,10))
-    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
-    .slice(0, 30);
-  if(note) note.textContent = `오늘 이후 · ${upcoming.length}건`;
-  if(upcoming.length === 0){
-    list.innerHTML = '<div class="card">다가오는 일정이 없습니다.</div>';
+  const {year, month} = CAL_STATE;
+  const prefix = `${year}-${String(month+1).padStart(2,'0')}`;
+  const monthEvents = events
+    .filter(ev => ev.date && ev.date.startsWith(prefix))
+    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+  if(note) note.textContent = `${year}년 ${month+1}월 · ${monthEvents.length}건`;
+  if(monthEvents.length === 0){
+    list.innerHTML = '<div class="card">이번달 일정이 없습니다.</div>';
     return;
   }
-  list.innerHTML = upcoming.map(ev=>{
+  list.innerHTML = monthEvents.map(ev=>{
     const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
     const d = new Date(ev.date+'T00:00:00');
     const co = ev.company || ev.ticker || '';
@@ -941,6 +1016,7 @@ function calChangeMonth(delta){
   if(m < 0){ m = 11; y -= 1; }
   if(m > 11){ m = 0; y += 1; }
   CAL_STATE.month = m; CAL_STATE.year = y;
+  CAL_STATE.expandedDates.clear();
   renderCalendar();
 }
 
@@ -958,6 +1034,16 @@ function calChangeMonth(delta){
         CAL_STATE.region = btn.dataset.region;
         renderCalendar();
       });
+    });
+  }
+  // "+N건"/"접기" 클릭 — 그리드가 매번 다시 그려지므로 이벤트 위임으로 처리
+  const grid = document.getElementById('cal-grid');
+  if(grid){
+    grid.addEventListener('click', (e)=>{
+      const more = e.target.closest('.ev-more');
+      const collapse = e.target.closest('.ev-collapse');
+      if(more){ CAL_STATE.expandedDates.add(more.dataset.date); renderCalendar(); }
+      else if(collapse){ CAL_STATE.expandedDates.delete(collapse.dataset.date); renderCalendar(); }
     });
   }
 })();

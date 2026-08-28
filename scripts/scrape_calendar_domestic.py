@@ -48,16 +48,27 @@ CATEGORY_RULES = [
 ]
 
 
+KR_CODE_RE = re.compile(r"^[0-9A-Za-z]{6}$")
+
+
 def load_kr_tickers(path):
+    """tickers.json의 ticker는 "123456.KS"/"123456.KQ" 형식이 대부분이지만, 최근
+    상장한 일부 종목(예: 메쥬 0088M0)은 KRX가 문자가 섞인 6자리 코드를 쓴다. 예전
+    코드는 숫자만 남기고 6자리인지 검사해서 이런 종목을 통째로 걸러냈던 버그가
+    있었음(2026-08-28 수정) — 이제 "."을 기준으로 앞부분을 그대로 코드로 쓰고,
+    영숫자 6자리인지만 검사한다.
+    """
     with open(path, encoding="utf-8") as f:
         tickers = json.load(f)
     out = []
     for t in tickers:
         if t.get("market") != "KR":
             continue
-        code = re.sub(r"[^0-9]", "", t["ticker"])
-        if len(code) == 6:
+        code = t["ticker"].split(".")[0]
+        if KR_CODE_RE.match(code):
             out.append({"stock_code": code, "name": t["name"]})
+        else:
+            print(f"[WARN] {t['name']}: 종목코드 형식을 인식하지 못함 ({t['ticker']})", file=sys.stderr)
     return out
 
 
