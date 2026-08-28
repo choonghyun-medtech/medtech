@@ -362,18 +362,25 @@ tr:last-child td{border-bottom:none}
 
     <div class="cards" id="stock-stat-cards"></div>
 
-    <div class="sec-h"><h2>주가 흐름 추이 <span class="note" id="stock-selected-label"></span></h2>
+    <div class="sec-h"><h2>주가 추이 <span class="note" id="stock-selected-label"></span></h2>
       <div class="toggle" id="price-period-toggle">
         <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
       </div>
     </div>
-    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가 · 실데이터(stock_performance.json, yfinance 기준)</div>
+    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가 · 실데이터(stock_performance.json 기준)</div>
     <div class="chart-box"><canvas id="priceChart"></canvas></div>
+
+    <div class="sec-h"><h2>외국인 지분율 추이 <span class="note">· 국내 종목만</span></h2>
+      <div class="toggle" id="foreign-period-toggle">
+        <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
+      </div>
+    </div>
+    <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준)</div>
+    <div class="chart-box"><canvas id="foreignChart"></canvas></div>
 
     <div class="sec-h"><h2>투자자 수급</h2>
       <div class="toggle" id="flow-period-toggle">
-        <button data-days="42" class="active">2개월</button>
-        <button data-days="63">3개월</button>
+        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
       </div>
     </div>
     <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
@@ -1084,9 +1091,13 @@ function mkLine(id, labels, datasets, opts={}){
     data:{labels, datasets},
     options:{
       responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:datasets.length>1, labels:{color:textColor()}}},
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{display:datasets.length>1, labels:{color:textColor()}},
+        tooltip:{enabled:true, mode:'index', intersect:false}
+      },
       scales:{
-        x:{grid:{color:gridColor()}, ticks:{color:textColor()}},
+        x:{grid:{color:gridColor()}, ticks:{color:textColor(), autoSkip:true, maxRotation:0, minRotation:0, maxTicksLimit:12}},
         y:{grid:{color:gridColor()}, ticks:{color:textColor()}}
       },
       ...opts
@@ -1247,31 +1258,57 @@ async function loadNewsTrend(){
 }
 loadNewsTrend();
 
-// 주가 흐름 추이 — 실데이터(stock_performance.json의 price_history) · 기간 토글(1/3/6/12개월)
+// 주가/외국인 지분율 추이 — 실데이터(stock_performance.json) · 각자 독립 기간 토글(1/3/6/12개월)
 const MONTHS_TO_TRADING_DAYS = {1:22, 3:65, 6:130, 12:260};
 let priceChartInstance = null;
+let foreignChartInstance = null;
 let selectedPriceMonths = 6;
+let selectedForeignMonths = 6;
+
+function sliceSeriesByMonths(series, months){
+  if(!series || !series.dates || !series.dates.length) return null;
+  const n = MONTHS_TO_TRADING_DAYS[months] || 130;
+  return { dates: series.dates.slice(-n), values: (series.close || series.values).slice(-n) };
+}
+
 function renderPriceChart(ticker, months){
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const note = document.getElementById('price-chart-note');
-  const box = document.getElementById('priceChart').parentElement;
-  if(!perf || !perf.price_history || !perf.price_history.close || perf.price_history.close.length===0){
+  const sliced = perf ? sliceSeriesByMonths(perf.price_history, months) : null;
+  if(!sliced){
     if(priceChartInstance){ priceChartInstance.destroy(); priceChartInstance=null; }
     note.textContent = 'stock_performance.json에 이 종목의 일별 종가가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
     return;
   }
-  const { dates, close } = perf.price_history;
-  const n = MONTHS_TO_TRADING_DAYS[months] || 130;
-  const sliceDates = dates.slice(-n);
-  const sliceClose = close.slice(-n);
-  const labels = sliceDates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
-  note.textContent = `일별 종가 · 실데이터(stock_performance.json, yfinance 기준) · ${sliceDates[0]} ~ ${sliceDates[sliceDates.length-1]}`;
+  const labels = sliced.dates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
+  note.textContent = `일별 종가 · 실데이터(stock_performance.json 기준) · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]}`;
   if(priceChartInstance){ priceChartInstance.destroy(); }
   priceChartInstance = mkLine('priceChart', labels, [{
-    label:'종가', data: sliceClose,
+    label:'종가', data: sliced.values,
     borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', fill:true, tension:.2, pointRadius:0, borderWidth:2
   }]);
 }
+
+function renderForeignRatioChart(ticker, months){
+  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
+  const note = document.getElementById('foreign-chart-note');
+  const sliced = perf ? sliceSeriesByMonths(perf.foreign_ratio_history, months) : null;
+  if(!sliced){
+    if(foreignChartInstance){ foreignChartInstance.destroy(); foreignChartInstance=null; }
+    note.textContent = perf && perf.market!=='KR'
+      ? '외국인 지분율은 국내 종목만 제공됩니다.'
+      : '이 종목의 외국인 지분율 시계열이 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
+    return;
+  }
+  const labels = sliced.dates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
+  note.textContent = `일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준) · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]}`;
+  if(foreignChartInstance){ foreignChartInstance.destroy(); }
+  foreignChartInstance = mkLine('foreignChart', labels, [{
+    label:'외국인 지분율(%)', data: sliced.values,
+    borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.08)', fill:true, tension:.2, pointRadius:0, borderWidth:2
+  }]);
+}
+
 document.querySelectorAll('#price-period-toggle button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#price-period-toggle button').forEach(x=>x.classList.remove('active'));
@@ -1280,11 +1317,19 @@ document.querySelectorAll('#price-period-toggle button').forEach(b=>{
     renderPriceChart(selectedStockTicker, selectedPriceMonths);
   });
 });
+document.querySelectorAll('#foreign-period-toggle button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#foreign-period-toggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    selectedForeignMonths = parseInt(b.dataset.months,10);
+    renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
+  });
+});
 
 // 투자자 수급 — 일별 순매수 누적(라인) · 국내 종목은 실데이터(investor_flow.json),
 // 해외 종목/데이터 없는 경우는 샘플로 표시(화면에 명시)
 let INVESTOR_FLOW = {};
-let selectedFlowDays = 42;
+let selectedFlowMonths = 3;
 
 function genFlowData(days){
   const labels = [];
@@ -1306,7 +1351,8 @@ function cumulativeSum(arr){
 }
 
 let flowChartInstance = null;
-function renderFlowChart(ticker, days){
+function renderFlowChart(ticker, months){
+  const days = MONTHS_TO_TRADING_DAYS[months] || 65;
   const note = document.getElementById('flow-chart-note');
   const real = INVESTOR_FLOW[ticker];
   let labels, inst, foreign, retail;
@@ -1329,13 +1375,13 @@ function renderFlowChart(ticker, days){
     {label:'개인(누적,추정)', data: retail, borderColor:'#65a30d', backgroundColor:'rgba(101,163,13,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2}
   ]);
 }
-renderFlowChart('214450.KS', selectedFlowDays); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
+renderFlowChart('214450.KS', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
 document.querySelectorAll('#flow-period-toggle button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#flow-period-toggle button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    selectedFlowDays = parseInt(b.dataset.days,10);
-    renderFlowChart(selectedStockTicker, selectedFlowDays);
+    selectedFlowMonths = parseInt(b.dataset.months,10);
+    renderFlowChart(selectedStockTicker, selectedFlowMonths);
   });
 });
 
@@ -1348,7 +1394,7 @@ async function loadInvestorFlow(){
   }catch(e){
     INVESTOR_FLOW = {};
   }
-  renderFlowChart(selectedStockTicker, selectedFlowDays);
+  renderFlowChart(selectedStockTicker, selectedFlowMonths);
 }
 loadInvestorFlow();
 
@@ -1469,6 +1515,7 @@ async function loadStockPerformance(){
     }
     if(typeof renderStockStatCards === 'function') renderStockStatCards(selectedStockTicker);
     if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
+    if(typeof renderForeignRatioChart === 'function') renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
   }catch(e){
     document.getElementById('perf-body').innerHTML =
@@ -1537,6 +1584,7 @@ function renderStockStatCards(ticker){
     <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
     <div class="stat-card"><div class="lbl">1개월 등락</div><div class="val">${fmtPct(r.m1)}%</div><div class="delta ${pctClass(r.m1)}">거래일 기준</div></div>
     <div class="stat-card"><div class="lbl">YTD</div><div class="val">${fmtPct(r.ytd)}%</div><div class="delta ${pctClass(r.ytd)}">연초 대비</div></div>
+    <div class="stat-card"><div class="lbl">외국인 지분율</div><div class="val">${perf.foreign_ratio!=null ? perf.foreign_ratio.toFixed(2)+'%' : '-'}</div><div class="delta">${perf.foreign_ratio!=null ? '보유율' : '국내 종목만 제공'}</div></div>
   `;
 }
 
@@ -1548,7 +1596,8 @@ function selectStock(ticker){
   renderTrackedChips();
   renderStockStatCards(ticker);
   renderPriceChart(ticker, selectedPriceMonths);
-  renderFlowChart(ticker, selectedFlowDays);
+  renderForeignRatioChart(ticker, selectedForeignMonths);
+  renderFlowChart(ticker, selectedFlowMonths);
   const input = document.getElementById('stock-search-input');
   const results = document.getElementById('stock-search-results');
   if(input) input.value = '';

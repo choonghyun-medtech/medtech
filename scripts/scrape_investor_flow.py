@@ -27,7 +27,7 @@ import requests
 from bs4 import BeautifulSoup
 
 FRGN_URL = "https://finance.naver.com/item/frgn.naver"
-TRADING_DAYS_TO_COVER = 65  # 약 3개월 거래일
+TRADING_DAYS_TO_COVER = 260  # 약 12개월 거래일 (주가/시가총액/외국인지분율 차트와 기간 통일)
 ROWS_PER_PAGE = 10
 PAGES_NEEDED = -(-TRADING_DAYS_TO_COVER // ROWS_PER_PAGE) + 1  # 여유 1페이지
 REQUEST_DELAY_SEC = 0.3

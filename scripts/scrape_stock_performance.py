@@ -8,6 +8,9 @@
 - 기간은 거래일수 기준: 5일/21일(1개월)/66일(3개월)/132일(6개월)/220일(1년), YTD는 올해 첫 거래일 대비
 - 시가총액은 KRW 환산 조원 단위 (환산에만 환율 적용, 변화율에는 미적용)
 - 1차 소스: yfinance, 한국 시총은 Daum Finance API 우선 시도 후 yfinance fallback
+- 국내(KR) 종목의 주가 히스토리·외국인 지분율은 api.stock.naver.com 차트 API에서 가져온다
+  (yfinance가 일부 KRX 종목에서 짧은 히스토리를 반환하는 문제 회피 + 외국인보유율 필드 제공).
+  실패 시 yfinance 히스토리로 폴백한다.
 - 병렬 수집 ThreadPoolExecutor(max_workers=10), 실패 종목은 해당 값만 null 처리하고 계속 진행
 
 사용법:
@@ -21,8 +24,12 @@ import re
 import sys
 import time
 
+import pandas as pd
 import requests
 import yfinance as yf
+
+NAVER_CHART_URL = "https://api.stock.naver.com/chart/domestic/item/{code}/day"
+NAVER_HISTORY_DAYS = 400  # 260 거래일 확보를 위한 여유 캘린더일
 
 TICKERS_FILE = "tickers.json"
 
@@ -99,6 +106,36 @@ def yfinance_market_cap(t: yf.Ticker):
     return None
 
 
+def fetch_naver_kr_series(ticker: str):
+    """국내 종목의 일별 종가+외국인보유율을 api.stock.naver.com에서 가져온다.
+    반환: (close 시리즈(pd.Series, DatetimeIndex, 오름차순), foreign_ratio dict{date_str: float})
+    실패 시 (None, None).
+    """
+    m = re.match(r"^(\d{6})\.(KS|KQ)$", ticker)
+    if not m:
+        return None, None
+    code = m.group(1)
+    end = datetime.date.today()
+    start = end - datetime.timedelta(days=NAVER_HISTORY_DAYS)
+    url = NAVER_CHART_URL.format(code=code)
+    params = {"startDateTime": start.strftime("%Y%m%d"), "endDateTime": end.strftime("%Y%m%d")}
+    headers = {"User-Agent": "Mozilla/5.0"}
+    resp = requests.get(url, params=params, headers=headers, timeout=15)
+    resp.raise_for_status()
+    rows = resp.json()
+    if not rows:
+        return None, None
+    dates = [datetime.datetime.strptime(r["localDate"], "%Y%m%d") for r in rows]
+    closes = [float(r["closePrice"]) for r in rows]
+    close = pd.Series(closes, index=pd.DatetimeIndex(dates)).dropna()
+    foreign_ratio = {
+        str(datetime.datetime.strptime(r["localDate"], "%Y%m%d").date()): r.get("foreignRetentionRate")
+        for r in rows
+        if r.get("foreignRetentionRate") is not None
+    }
+    return close, foreign_ratio
+
+
 def pct_change(hist, offset):
     """hist: 종가 시리즈(오래된 -> 최신). offset 거래일 전 종가 대비 최신 종가 변화율(%)."""
     if hist is None or len(hist) <= offset:
@@ -138,22 +175,44 @@ def fetch_one(item):
         "returns": {"d1": None, "d5": None, "m1": None, "m3": None, "m6": None, "y1": None, "ytd": None},
         "as_of": None,  # 변화율 계산에 쓰인 최신 종가의 거래일 (YYYY-MM-DD, 해당 거래소 현지 날짜)
         "price_history": None,  # {"dates":[...], "close":[...]} 최근 약 12개월(거래일 기준) 종가
+        "foreign_ratio": None,  # 외국인 지분율(%) 최신값 (KR 종목만)
+        "foreign_ratio_history": None,  # {"dates":[...], "values":[...]} (KR 종목만)
         "error": None,
     }
     try:
-        t = yf.Ticker(ticker)
-        hist = t.history(period="15mo", auto_adjust=False)
-        if hist is None or hist.empty:
-            result["error"] = "no price history"
-            return result
-        close = hist["Close"].dropna()
+        t = None
+        close = None
+        foreign_ratio_map = None
+
+        if item["market"] == "KR":
+            try:
+                close, foreign_ratio_map = fetch_naver_kr_series(ticker)
+            except Exception:
+                close, foreign_ratio_map = None, None
+
+        if close is None or close.empty:
+            t = yf.Ticker(ticker)
+            hist = t.history(period="15mo", auto_adjust=False)
+            if hist is None or hist.empty:
+                result["error"] = "no price history"
+                return result
+            close = hist["Close"].dropna()
+            foreign_ratio_map = None
+
         if len(close) > 0:
             result["as_of"] = str(close.index[-1].date())
             recent = close.tail(260)  # 약 12개월치 거래일
+            recent_dates = [str(d.date()) for d in recent.index]
             result["price_history"] = {
-                "dates": [str(d.date()) for d in recent.index],
+                "dates": recent_dates,
                 "close": [round(float(v), 2) for v in recent.values],
             }
+            if foreign_ratio_map:
+                fr_values = [foreign_ratio_map.get(d) for d in recent_dates]
+                if any(v is not None for v in fr_values):
+                    result["foreign_ratio_history"] = {"dates": recent_dates, "values": fr_values}
+                    last_fr = next((v for v in reversed(fr_values) if v is not None), None)
+                    result["foreign_ratio"] = last_fr
 
         for key, offset in PERIOD_OFFSETS.items():
             result["returns"][key] = pct_change(close, offset)
@@ -163,6 +222,8 @@ def fetch_one(item):
         if item["market"] == "KR":
             cap_local = daum_market_cap(ticker)
         if cap_local is None:
+            if t is None:
+                t = yf.Ticker(ticker)
             cap_local = yfinance_market_cap(t)
 
         if cap_local is not None:
