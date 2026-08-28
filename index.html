@@ -264,8 +264,8 @@ tr:last-child td{border-bottom:none}
     </div>
     <button class="theme-toggle" onclick="toggleTheme()">☀️ 라이트 모드</button>
   </div>
-  <div class="subtitle">'리서치 보고서' 탭은 reports.json을 매일 자동 갱신 · 나머지 탭은 샘플 데이터입니다</div>
-  <div class="mock-flag">⚠ '리서치 보고서' 탭: 미래에셋증권 김충현, CFA 발간분, GitHub Actions로 평일 오전 자동 갱신 · 다른 탭은 목업</div>
+  <div class="subtitle">전 탭이 GitHub Actions로 평일 자동 갱신되는 실데이터입니다</div>
+  <div class="mock-flag">ⓘ 산업·기업 뉴스(news.json) · 주가 데이터(stock_performance.json, investor_flow.json) · 이벤트 캘린더(calendar_events.json) · 수출 데이터(export_data.json) · 의료관광 데이터(medical_tour.json, visitor_stats.json) · 리서치 보고서(reports.json, 미래에셋증권 김충현 CFA 발간분) — 모두 GitHub Actions로 평일 자동 갱신</div>
 
   <div class="tabs">
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
@@ -1375,7 +1375,7 @@ function renderFlowChart(ticker, months){
     {label:'개인(누적,추정)', data: retail, borderColor:'#65a30d', backgroundColor:'rgba(101,163,13,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2}
   ]);
 }
-renderFlowChart('214450.KS', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
+renderFlowChart('039840.KS', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
 document.querySelectorAll('#flow-period-toggle button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#flow-period-toggle button').forEach(x=>x.classList.remove('active'));
@@ -1527,7 +1527,7 @@ loadStockPerformance();
 // ==================================================================
 // 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
 // ==================================================================
-const TRACKED_DEFAULT = ['214450.KS','214150.KS','096530.KS','145720.KS','318060.KQ','458870.KS','145020.KS','314930.KS','389650.KQ','491000.KQ'];
+const TRACKED_DEFAULT = ['039840.KS','096530.KS','214450.KS','100120.KS','098460.KS','041830.KS','043150.KS','099190.KS','145720.KS','214150.KS']; // 디오,씨젠,파마리서치,뷰웍스,고영,인바디,바텍,아이센스,덴티움,클래시스
 let TICKER_UNIVERSE = [];
 let extraTrackedTickers = [];
 let selectedStockTicker = TRACKED_DEFAULT[0];

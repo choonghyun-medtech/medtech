@@ -31,6 +31,18 @@
   규칙을 반영해, 제목이 유사한 기사는 하나만 남기고(TRUSTED_SOURCE_DOMAINS에 있는 매체를
   우선) 나머지는 버린다.
 - 수집 결과가 0건이면 기존 news.json을 그대로 보존하고 실패로 종료한다(빈 데이터로 덮어쓰지 않음).
+- 콘텐츠 품질 필터(2026-08-28 추가/강화, 사용자 상세 기준 반영): 회사명이 매칭돼도 passes_content_filter()가
+  아래 순서로 최종 판단한다 (구현/키워드는 코드 상단 "콘텐츠 품질 필터" 섹션 참고).
+  1) 기사 유형 배제 — 특징주/상한가 종목/테마주/장마감 종목/증시브리핑/마감시황 같은 단순 종목 나열
+     칼럼, "목표주가 하향 순위" 같은 랭킹형 기사, 해시태그 남발·"무조건 사"·주식추천/급등주/추천주/
+     리딩방/눌림목/단타/세력 등 홍보성·추천 콘텐츠는 통째로 제외.
+  2) 포함 카테고리 화이트리스트 — 계약/인허가/실적·IR/주총·거버넌스/신제품·기술/해외 진출/M&A·투자
+     중 하나 이상 매칭돼야 채택.
+  3) 카테고리에 하나도 안 걸리면, "주가 등락"(강세/급등/상한가/신고가 등)을 다루는 기사에 한해
+     이유·배경 신호(때문/영향/덕분/전망/분석/호조/부진/목표주가/증권가 상향·하향 등)가 있을 때만
+     예외로 채택 — 등락도 다루지 않고 카테고리도 없는 기사는 채택하지 않는다.
+  정규식/키워드 기반 휴리스틱이라 완벽하지 않다 — 예를 들어 회사 자체의 IPO 뉴스도 "IPO 시장 냉각"
+  같은 업종 전체 기사에 낀 경우와 100% 구분되진 않는다.
 
 사용법:
     NAVER_CLIENT_ID=xxx NAVER_CLIENT_SECRET=yyy python scrape_news.py --out news.json
@@ -155,6 +167,93 @@ TRUSTED_SOURCE_DOMAINS = {
 TAG_RE = re.compile(r"<[^>]+>")
 NON_WORD_RE = re.compile(r"[^0-9A-Za-z가-힣\s]")
 
+# --- 콘텐츠 품질 필터 (2026-08-28 추가, 2026-08-28 사용자 상세 기준으로 강화) -------
+#
+# 회사명이 매칭돼도 아래 순서로 걸러낸다.
+# 1) 기사 유형 배제: 단순 종목 나열/시황 칼럼(특징주·상한가 종목·테마주·장마감 종목·
+#    증시브리핑·마감시황), 랭킹형(목표가 상향/하향 순위 등), 홍보성/추천 콘텐츠
+#    (해시태그 남발, "무조건 사", 주식추천/급등주/추천주/리딩방/눌림목/단타/세력 등).
+# 2) 포함 카테고리 화이트리스트: 계약/인허가/실적·IR/주총·거버넌스/신제품·기술/
+#    해외 진출/M&A·투자 중 하나 이상 매칭돼야 채택.
+# 3) 카테고리에 하나도 안 걸리면, "주가 등락"을 다루는 기사에 한해 이유·배경 신호
+#    (때문/영향/덕분/전망/분석/호조/부진/목표주가/증권가 상향·하향 등)가 있을 때만 예외로 채택.
+#    등락도 다루지 않고 카테고리도 없는 기사는 채택하지 않는다.
+
+# 1-a) 단순 종목 나열/시황 칼럼 — 매체가 반복 사용하는 코너/칼럼명이라 부분일치로도 오탐 위험이 낮다.
+LIST_COLUMN_PATTERNS = ["특징주", "상한가 종목", "상한가종목", "테마주", "장마감 종목", "증시브리핑", "증시 브리핑", "마감시황"]
+
+# 1-b) 랭킹/리스트형 시황 기사 제목 패턴 — 우리 추적 기업이 목록에 스쳐 지나갈 뿐 기사 주제가
+#      아닌 경우가 대부분이라 회사명 매칭 여부와 무관하게 통째로 제외한다.
+RANKING_TITLE_PATTERNS = [
+    re.compile(r"목표\s*(주가|가).{0,8}(상향|하향).{0,12}(순위|랭킹|\d+\s*위|top)", re.IGNORECASE),
+    re.compile(r"(상승률|하락률|등락률).{0,8}(상위|하위|순위|랭킹|top)", re.IGNORECASE),
+    re.compile(r"(급등|급락)주.{0,8}(top|톱|순위|베스트)", re.IGNORECASE),
+    re.compile(r"관심\s*종목.{0,8}(순위|랭킹|top)", re.IGNORECASE),
+    re.compile(r"(매수|매도)\s*상위.{0,8}(순위|랭킹|top)", re.IGNORECASE),
+]
+
+# 1-c) 홍보성/종목 추천 콘텐츠
+PROMO_KEYWORDS = ["무조건 사", "지금 사야", "주식추천", "급등주", "추천주", "리딩방", "눌림목", "단타", "세력"]
+PROMO_PHRASE_PATTERNS = [re.compile(r"무조건\s*사"), re.compile(r"지금\s*사야")]
+
+# 2) 포함 카테고리 화이트리스트
+# 2026-08-28: 키워드가 너무 좁아 "공략"(해외 진출)/"상용화"(신제품·기술)/"목표 달성"(실적·IR)처럼
+# 의미상 명백히 해당 카테고리인데 정확한 단어가 없어 걸러지던 사례를 보완(사용자 피드백,
+# "우선 애매하게 걸러진 건 포함시키고 추후 파인튜닝" — 계속 넓혀갈 예정).
+CATEGORY_KEYWORDS = {
+    "계약": ["계약", "수주", "공급", "파트너십", "MOU", "협약", "납품", "체결"],
+    "인허가": ["인허가", "허가", "승인", "인증", "식약처", "FDA", "CE인증", "CE 인증", "510(k)", "de novo", "de-novo"],
+    "실적·IR": ["실적", "매출", "영업이익", "IR", "컨퍼런스콜", "가이던스", "상장", "공모", "IPO", "목표 달성"],
+    "주총·거버넌스": ["주주총회", "이사회", "배당", "자사주", "액면분할"],
+    "신제품·기술": ["출시", "신제품", "개발", "임상", "특허", "양산", "launch", "clinical", "patent", "상용화", "국산화"],
+    "해외 진출": ["수출", "해외", "진출", "글로벌", "전시회", "학회", "참가", "공략"],
+    "M&A·투자": ["인수", "합병", "지분", "투자유치", "유상증자", "acquisition", "funding", "M&A"],
+}
+
+# 3) 주가 등락 단어 + 이유·배경 신호
+PRICE_MOOD_KEYWORDS = [
+    "급등", "급락", "폭등", "폭락", "강세", "약세", "상승", "하락",
+    "출렁", "들썩", "요동", "상한가", "하한가", "신고가", "신저가", "반등", "널뛰기",
+]
+REASON_SIGNAL_KEYWORDS = ["때문", "영향", "덕분", "전망", "분석", "호조", "부진", "목표주가", "목표가", "증권가", "상향", "하향"]
+
+
+def is_excluded_article_type(title: str, desc: str) -> bool:
+    """단순 종목 나열/시황 칼럼, 랭킹형, 홍보성/추천 콘텐츠인지 판별(회사명 매칭과 무관하게 제외)."""
+    if any(p in title for p in LIST_COLUMN_PATTERNS):
+        return True
+    if any(p.search(title) for p in RANKING_TITLE_PATTERNS):
+        return True
+    hay = f"{title} {desc}"
+    if hay.count("#") >= 3:
+        return True
+    if any(kw in hay for kw in PROMO_KEYWORDS):
+        return True
+    if any(p.search(hay) for p in PROMO_PHRASE_PATTERNS):
+        return True
+    return False
+
+
+def matched_category(title: str, desc: str):
+    """제목+요약이 포함 카테고리 화이트리스트에 하나라도 해당하면 그 카테고리명, 아니면 None."""
+    hay = f"{title} {desc}".lower()
+    for cat, kws in CATEGORY_KEYWORDS.items():
+        if any(kw.lower() in hay for kw in kws):
+            return cat
+    return None
+
+
+def passes_content_filter(title: str, desc: str) -> bool:
+    """기사 유형 배제 → 카테고리 화이트리스트 → (카테고리 없으면) 이유 있는 주가 등락만 예외 허용."""
+    if is_excluded_article_type(title, desc):
+        return False
+    if matched_category(title, desc):
+        return True
+    if any(kw in title for kw in PRICE_MOOD_KEYWORDS):
+        hay = f"{title} {desc}"
+        return any(kw in hay for kw in REASON_SIGNAL_KEYWORDS)
+    return False
+
 
 def clean_text(s: str) -> str:
     return html.unescape(TAG_RE.sub("", s or "")).strip()
@@ -265,6 +364,8 @@ def fetch_news_for_company(client_id: str, client_secret: str, company: str, cut
             if not company_mentioned(company, title, desc):
                 continue
             if not context_ok(company, title, desc):
+                continue
+            if not passes_content_filter(title, desc):
                 continue
             url = it.get("originallink") or it.get("link")
             if not url or url in seen_urls:
