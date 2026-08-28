@@ -169,6 +169,14 @@ tr:last-child td{border-bottom:none}
 .badge.earn{background:rgba(101,163,13,.15); color:var(--lime)}
 .badge.disc{background:rgba(124,58,237,.12); color:var(--purple)}
 .badge.agm{background:rgba(22,163,74,.12); color:var(--green)}
+.badge.listing{background:rgba(220,38,38,.12); color:var(--red)}
+.badge.exright{background:rgba(13,148,136,.15); color:var(--teal)}
+.day .ev.ir{background:rgba(37,99,235,.12); color:var(--blue)}
+.day .ev.earn{background:rgba(101,163,13,.18); color:var(--lime)}
+.day .ev.disc{background:rgba(124,58,237,.12); color:var(--purple)}
+.day .ev.agm{background:rgba(22,163,74,.12); color:var(--green)}
+.day .ev.listing{background:rgba(220,38,38,.12); color:var(--red)}
+.day .ev.exright{background:rgba(13,148,136,.15); color:var(--teal)}
 .news-item{padding:11px 0; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:3px}
 .news-item:last-child{border-bottom:none}
 .news-item .t{font-size:13.5px; font-weight:600}
@@ -179,13 +187,24 @@ tr:last-child td{border-bottom:none}
 .cal-head .m{font-weight:700; font-size:14px; min-width:90px; text-align:center}
 .grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px}
 .dow{text-align:center; font-size:11px; color:var(--dim); padding:4px 0}
+/* 캘린더 하루 칸 — 원래 aspect-ratio:1(정사각형)이라 화면에 비해 지나치게 컸던 걸
+   고정 min-height로 낮췄다(2026-08-28). 일정 라벨(.ev)을 칸 안에 직접 표기하기 위해
+   flex 세로배치로 변경. */
 .day{
-  aspect-ratio:1; border:1px solid var(--border); border-radius:6px; padding:5px;
+  min-height:56px; border:1px solid var(--border); border-radius:6px; padding:4px 5px;
   font-size:11px; color:var(--sub); position:relative; background:var(--card);
+  display:flex; flex-direction:column; overflow:hidden;
 }
 .day.dim{opacity:.35}
-.day .n{font-weight:600; color:var(--text)}
-.day .dots{display:flex; gap:2px; margin-top:3px; flex-wrap:wrap}
+.day.today{border-color:var(--accent)}
+.day .n{font-weight:600; color:var(--text); font-size:11px; line-height:1.2}
+.day .evs{display:flex; flex-direction:column; gap:1px; margin-top:2px; overflow:hidden}
+/* 날짜 칸 안에 기업명/행사명을 간략히 표기하는 라벨(도트만 있던 걸 대체, 2026-08-28) */
+.day .ev{
+  font-size:9.5px; line-height:1.35; padding:0 3px; border-radius:3px; font-weight:600;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:default;
+}
+.day .ev-more{font-size:9px; color:var(--dim); padding:0 3px}
 .dot{width:6px; height:6px; border-radius:50%}
 .legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
 .legend span{display:flex; align-items:center; gap:5px}
@@ -347,8 +366,14 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= CALENDAR ================= -->
   <section class="view" id="view-calendar">
-    <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note">실적발표 · IR · 공시기한 · 주총</span></div>
-    <div class="cal-head"><button>‹</button><div class="m">2026년 8월</div><button>›</button></div>
+    <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note" id="cal-source-note">실적발표 · IR · 공시 · 주총 · calendar_events.json 자동 갱신</span></div>
+    <!-- 국내/해외 구분 탭 — 뉴스 탭의 .region-tab 패턴 재사용(2026-08-28) -->
+    <div class="tabs" id="cal-region-tabs" style="margin-bottom:14px">
+      <button class="region-tab active" data-region="all">전체</button>
+      <button class="region-tab" data-region="domestic">국내</button>
+      <button class="region-tab" data-region="global">해외</button>
+    </div>
+    <div class="cal-head"><button id="cal-prev">‹</button><div class="m" id="cal-month-label">2026년 8월</div><button id="cal-next">›</button></div>
     <div class="grid">
       <div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div>
     </div>
@@ -356,17 +381,14 @@ tr:last-child td{border-bottom:none}
     <div class="legend">
       <span><i class="dot" style="background:var(--blue)"></i> IR·기업설명회</span>
       <span><i class="dot" style="background:var(--lime)"></i> 실적발표·잠정실적</span>
-      <span><i class="dot" style="background:var(--purple)"></i> 공시 제출기한</span>
+      <span><i class="dot" style="background:var(--purple)"></i> 공시(정기보고서 등)</span>
       <span><i class="dot" style="background:var(--green)"></i> 주총·기준일</span>
+      <span><i class="dot" style="background:var(--red)"></i> 신주상장</span>
+      <span><i class="dot" style="background:var(--teal)"></i> 권리락</span>
     </div>
 
-    <div class="sec-h"><h2>다가오는 일정</h2><span class="note">이번달 기준</span></div>
-    <div class="up-list">
-      <div class="up-row"><span class="d">8/19</span><span class="badge earn">실적</span><span>파마리서치 2Q26 잠정실적 발표</span></div>
-      <div class="up-row"><span class="d">8/21</span><span class="badge ir">IR</span><span>클래시스 하반기 IR 데이 (온라인)</span></div>
-      <div class="up-row"><span class="d">8/25</span><span class="badge disc">공시</span><span>루트로닉 반기보고서 제출기한</span></div>
-      <div class="up-row"><span class="d">8/28</span><span class="badge agm">주총</span><span>뷰노 임시주주총회 기준일</span></div>
-    </div>
+    <div class="sec-h"><h2>다가오는 일정</h2><span class="note" id="cal-upcoming-note">이번달 기준</span></div>
+    <div class="up-list" id="cal-up-list"><div class="card">일정을 불러오는 중...</div></div>
   </section>
 
   <!-- ================= EXPORT DATA ================= -->
@@ -825,19 +847,144 @@ async function loadNews(){
 }
 loadNews();
 
-// ---- calendar grid (mock) ----
-(function(){
+// ==================================================================
+// 이벤트 캘린더 — calendar_events.json(scripts/scrape_calendar_global.py +
+// scripts/scrape_calendar_domestic.py가 매일 갱신)을 읽어 월별 그리드 + 다가오는
+// 일정 목록을 그린다. 국내/해외 구분은 뉴스 탭의 region-tab 패턴을 그대로 재사용.
+// 이벤트 한 건 스키마: {date:"YYYY-MM-DD", region:"domestic"|"global", type, ticker,
+// company, title, source_name, source_url, estimated?}
+// type -> {cls, label} 매핑(범례/뱃지/달력 라벨 색상 공통)
+const CAL_TYPE_META = {
+  earn:     {cls:'earn',     label:'실적'},
+  ir:       {cls:'ir',       label:'IR'},
+  disc:     {cls:'disc',     label:'공시'},
+  agm:      {cls:'agm',      label:'주총'},
+  listing:  {cls:'listing',  label:'신주상장'},
+  exright:  {cls:'exright',  label:'권리락'},
+};
+let CAL_DATA = {domestic:[], global:[]};
+const today0 = new Date();
+const CAL_STATE = { year: today0.getFullYear(), month: today0.getMonth(), region: 'all' };
+
+function calEventsForRegion(){
+  if(CAL_STATE.region === 'domestic') return CAL_DATA.domestic;
+  if(CAL_STATE.region === 'global') return CAL_DATA.global;
+  return CAL_DATA.domestic.concat(CAL_DATA.global);
+}
+
+function calFmtDate(d){
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function renderCalendar(){
   const grid = document.getElementById('cal-grid');
-  const events = {5:['blue'],12:['lime'],19:['lime'],21:['blue'],25:['purple'],28:['green'],14:['purple']};
-  const daysInMonth = 31, startDow = 6; // Aug 2026 starts on Saturday
+  const monthLabel = document.getElementById('cal-month-label');
+  if(!grid || !monthLabel) return;
+  const {year, month} = CAL_STATE;
+  monthLabel.textContent = `${year}년 ${month+1}월`;
+
+  const events = calEventsForRegion();
+  const byDate = {};
+  events.forEach(ev=>{
+    (byDate[ev.date] = byDate[ev.date] || []).push(ev);
+  });
+
+  const firstDow = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayStr = today0.toISOString().slice(0,10);
   let html = '';
-  for(let i=0;i<startDow;i++) html += '<div class="day dim"></div>';
+  for(let i=0;i<firstDow;i++) html += '<div class="day dim"></div>';
   for(let d=1; d<=daysInMonth; d++){
-    const dots = (events[d]||[]).map(c=>`<span class="dot" style="background:var(--${c})"></span>`).join('');
-    html += `<div class="day"><div class="n">${d}</div><div class="dots">${dots}</div></div>`;
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvents = (byDate[dateStr]||[]).slice().sort((a,b)=> (a.type>b.type?1:-1));
+    const shown = dayEvents.slice(0,3);
+    const evHtml = shown.map(ev=>{
+      const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+      const label = ev.ticker ? `${ev.ticker} ${meta.label}` : `${meta.label} ${ev.company||''}`;
+      const full = `${meta.label} · ${ev.company||ev.ticker||''} · ${ev.title||''}`.trim();
+      return `<div class="ev ${meta.cls}" title="${full.replace(/"/g,'&quot;')}">${label}</div>`;
+    }).join('');
+    const more = dayEvents.length>3 ? `<div class="ev-more">+${dayEvents.length-3}건</div>` : '';
+    const isToday = dateStr === todayStr ? ' today' : '';
+    html += `<div class="day${isToday}"><div class="n">${d}</div><div class="evs">${evHtml}${more}</div></div>`;
   }
   grid.innerHTML = html;
+
+  renderCalUpcoming(events);
+}
+
+function renderCalUpcoming(events){
+  const list = document.getElementById('cal-up-list');
+  const note = document.getElementById('cal-upcoming-note');
+  if(!list) return;
+  const upcoming = events
+    .filter(ev => ev.date >= today0.toISOString().slice(0,10))
+    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
+    .slice(0, 30);
+  if(note) note.textContent = `오늘 이후 · ${upcoming.length}건`;
+  if(upcoming.length === 0){
+    list.innerHTML = '<div class="card">다가오는 일정이 없습니다.</div>';
+    return;
+  }
+  list.innerHTML = upcoming.map(ev=>{
+    const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+    const d = new Date(ev.date+'T00:00:00');
+    const co = ev.company || ev.ticker || '';
+    const link = ev.source_url ? ` <a href="${ev.source_url}" target="_blank" rel="noopener" style="color:var(--dim); font-size:11px">출처↗</a>` : '';
+    return `<div class="up-row"><span class="d">${calFmtDate(d)}</span><span class="badge ${meta.cls}">${meta.label}</span><span>${co} ${ev.title||''}${link}</span></div>`;
+  }).join('');
+}
+
+function calChangeMonth(delta){
+  let m = CAL_STATE.month + delta;
+  let y = CAL_STATE.year;
+  if(m < 0){ m = 11; y -= 1; }
+  if(m > 11){ m = 0; y += 1; }
+  CAL_STATE.month = m; CAL_STATE.year = y;
+  renderCalendar();
+}
+
+(function initCalendarControls(){
+  const prev = document.getElementById('cal-prev');
+  const next = document.getElementById('cal-next');
+  if(prev) prev.addEventListener('click', ()=>calChangeMonth(-1));
+  if(next) next.addEventListener('click', ()=>calChangeMonth(1));
+  const tabs = document.getElementById('cal-region-tabs');
+  if(tabs){
+    tabs.querySelectorAll('.region-tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        tabs.querySelectorAll('.region-tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        CAL_STATE.region = btn.dataset.region;
+        renderCalendar();
+      });
+    });
+  }
 })();
+
+async function loadCalendar(){
+  try{
+    const res = await fetch('calendar_events.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    CAL_DATA.domestic = data.domestic || [];
+    CAL_DATA.global = data.global || [];
+    const note = document.getElementById('cal-source-note');
+    if(note){
+      const dt = data.updated ? new Date(data.updated) : null;
+      const whenStr = dt ? `마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST` : '';
+      note.textContent = `실적발표 · IR · 공시 · 주총 · calendar_events.json 자동 갱신 · ${whenStr}`;
+    }
+    // 기본 화면은 항상 이번달로 연다(기존 동작 유지) — 7월 등 과거 백필 데이터는
+    // ‹ 버튼으로 이전달을 눌러 확인한다.
+    renderCalendar();
+  }catch(e){
+    renderCalendar();
+    const list = document.getElementById('cal-up-list');
+    if(list) list.innerHTML = '<div class="card">calendar_events.json을 불러오지 못했습니다 ('+e.message+').</div>';
+  }
+}
+loadCalendar();
 
 // ---- charts (sample data) ----
 const gridColor = () => getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
