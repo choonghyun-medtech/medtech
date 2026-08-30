@@ -72,10 +72,23 @@ def load_kr_tickers(path):
     return out
 
 
-def fetch_corp_code_map(api_key, session):
-    """DART corpCode.xml(zip)을 받아 {stock_code: corp_code} 매핑을 만든다."""
-    r = session.get(f"{DART_BASE}/corpCode.xml", params={"crtfc_key": api_key}, timeout=30)
-    r.raise_for_status()
+def fetch_corp_code_map(api_key, session, retries=3):
+    """DART corpCode.xml(zip)을 받아 {stock_code: corp_code} 매핑을 만든다.
+    opendart.fss.or.kr가 GitHub Actions runner에서 가끔 커넥션 타임아웃을 내는 걸
+    2026-08-31 자동 실행에서 확인했다 — 재시도로 일시적 장애를 흡수한다."""
+    last_err = None
+    for attempt in range(1, retries + 1):
+        try:
+            r = session.get(f"{DART_BASE}/corpCode.xml", params={"crtfc_key": api_key}, timeout=30)
+            r.raise_for_status()
+            break
+        except requests.exceptions.RequestException as e:
+            last_err = e
+            print(f"[WARN] corpCode.xml 요청 실패({attempt}/{retries}): {e}", file=sys.stderr)
+            if attempt < retries:
+                time.sleep(5 * attempt)
+    else:
+        raise last_err
     zf = zipfile.ZipFile(io.BytesIO(r.content))
     xml_bytes = zf.read("CORPCODE.xml")
     root = ET.fromstring(xml_bytes)
@@ -140,7 +153,12 @@ def main():
         print("[WARN] --insecure: TLS 인증서 검증을 건너뜁니다 (로컬 전용).", file=sys.stderr)
 
     kr_tickers = load_kr_tickers(args.tickers)
-    corp_map = fetch_corp_code_map(api_key, session)
+    try:
+        corp_map = fetch_corp_code_map(api_key, session)
+    except requests.exceptions.RequestException as e:
+        print(f"[WARN] DART corpCode.xml 조회가 재시도 후에도 실패해 이번 실행은 건너뜁니다: {e}",
+              file=sys.stderr)
+        return
 
     today = datetime.date.today()
     bgn_de = (today - datetime.timedelta(days=DAYS_BACK)).strftime("%Y%m%d")
