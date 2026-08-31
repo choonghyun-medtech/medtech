@@ -84,6 +84,14 @@
 - 이 단계도 "보강" 단계다 — DATA_GO_KR_SERVICE_KEY가 없거나 API 실패 시 기존
   export_data.json을 그대로 보존하고 경고만 남긴 채 0으로 종료한다.
 
+- "국가별 수출 비중"(countryShareRecent, 2026-08-31 신규): index.html "수출 데이터" 탭의
+  같은 이름 가로 막대 차트용 — 카테고리별로 미리 정해둔 소수 국가(countries)가 아니라
+  CANDIDATE_COUNTRIES(주요 교역국 30개국) 전체를 조회해 최근 6개월 각각 + 해당 연도 누적,
+  총 7개 기간마다 "실제" 상위 5개국 + 기타를 계산한다(fetch_country_share_recent 참고).
+  byCountry(카테고리별 지정 국가의 장기 추이, "국가별" 드릴다운 탭용)와는 별개 데이터다 —
+  전자는 "이 국가는 시간이 지나며 어떻게 변해왔나", 후자는 "이번 달 기준 진짜 상위국이
+  누구인가"를 답하는 서로 다른 질문이라 용도가 다르다.
+
 사용법:
     DATA_GO_KR_SERVICE_KEY=xxx python scrape_export_data.py --out export_data.json
 """
@@ -249,6 +257,24 @@ SIDO_CD_BY_NAME = {
     "강원": "51",
 }
 SIGUNGU_BREAKDOWN_MONTHS = 132  # 국가별과 동일한 이유로 132개월(11년)로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
+
+# "국가별 수출 비중" 요약 차트(2026-08-31 신규) — CATEGORIES의 countries는 카테고리마다 사람이
+# 미리 골라둔 소수 국가라(예: 치과영상장비는 중국 하나뿐), "실제 상위 5개국"을 보여주기엔
+# 부족하다는 지적이 있었다. nitemtrade API는 cntyCd를 반드시 지정해야 하는 구조라("전체
+# 국가 랭킹을 한 번에 달라"는 쿼리가 없음, 2026-08-21 실측 확인) "진짜 상위 5개국"을 찾으려면
+# 주요 교역국 후보군을 전부 조회해서 그중 상위 5개를 추려내는 수밖에 없다. 카테고리마다 미리
+# 정해둔 국가가 아니라 이 공통 후보 목록(주요 교역국 30개국)을 전 카테고리에 동일하게 적용해,
+# 실제로 어느 나라가 상위인지 데이터로 가려낸다. 최근 6개월+연간누적만 조회하면 되므로(아래
+# fetch_country_share_recent 참고) 국가당 청크 1개면 충분해 카테고리당 최대 30콜 수준이다.
+CANDIDATE_COUNTRIES = [
+    ("US", "미국"), ("CN", "중국"), ("JP", "일본"), ("DE", "독일"), ("GB", "영국"),
+    ("FR", "프랑스"), ("HK", "홍콩"), ("TW", "대만"), ("VN", "베트남"), ("TH", "태국"),
+    ("IN", "인도"), ("BR", "브라질"), ("RU", "러시아 연방"), ("CA", "캐나다"), ("AU", "호주"),
+    ("SG", "싱가포르"), ("MY", "말레이시아"), ("ID", "인도네시아"), ("PH", "필리핀"), ("MX", "멕시코"),
+    ("IT", "이탈리아"), ("ES", "스페인"), ("NL", "네덜란드"), ("SA", "사우디아라비아"), ("AE", "아랍에미리트"),
+    ("CH", "스위스"), ("SE", "스웨덴"), ("PL", "폴란드"), ("TR", "튀르키예"), ("ZA", "남아프리카공화국"),
+]
+COUNTRY_SHARE_RECENT_MONTHS = 6  # "국가별 수출 비중"에 표시할 최근 개별월 개수
 
 
 def yymm_add_months(yymm: str, months: int) -> str:
@@ -434,6 +460,101 @@ def fetch_country_breakdown(service_key, hs_codes, countries, start_yymm, end_yy
     return by_country
 
 
+def fetch_country_share_recent(service_key, hs_codes, national_monthly, end_yymm, debug=False):
+    """"국가별 수출 비중" 요약(최근 6개월 개별 + 해당 연도 누적)을 CANDIDATE_COUNTRIES 전체를
+    조회해서 만든다. 반환: {"periods": ["YYYY-MM"×6, "YYYY-YTD"], "byPeriod": {period: [
+    {"country", "expDlr", "pct"}×상위5 + 기타]}}.
+
+    쿼리 구간은 "최근 6개월"과 "올해 1월~end_yymm(YTD)" 중 더 이른 시작월부터 end_yymm까지
+    한 번에 잡는다 — 두 구간이 겹치므로 국가당 호출을 따로 안 해도 된다(예: end_yymm이
+    2026-07이면 최근6개월=2026-02~07, YTD=2026-01~07이라 결국 2026-01~07 한 구간이면 충분).
+    12개월을 넘어갈 일이 없어(최대 2026-01~12=12개월) yymm_range_chunks로 안전하게 나눠도
+    보통 청크 1개로 끝난다.
+
+    각 기간의 "기타" 비중은 후보 30개국 합계가 아니라 national_monthly(전국 총계, 이미
+    fetch_national_series로 수집된 값)를 기준으로 계산한다 — 후보 목록이 실제 수출국을 다
+    못 담았어도(예: 후보에 없는 31번째 국가) 기타 = 전국총계 - 상위5합 으로 항상 정확하다."""
+    # national_monthly는 fetch_national_series()의 반환값(list of {"ym","expDlr","expWgt"}) —
+    # ym으로 바로 조회할 수 있게 dict로 바꿔둔다.
+    national_by_ym = {r["ym"]: r["expDlr"] for r in national_monthly}
+
+    end_year, end_month = int(end_yymm[:4]), int(end_yymm[4:])
+    months_desc_yymm = [yymm_add_months(end_yymm, -i) for i in range(COUNTRY_SHARE_RECENT_MONTHS)]
+    months_asc_yymm = list(reversed(months_desc_yymm))
+    # API 파라미터(strtYymm/endYymm)는 YYYYMM 형식이 필요하지만, national_by_ym/
+    # by_country_monthly의 ym 키는 "YYYY-MM"(대시 포함) 형식이라 조회용으로 따로 변환해둔다.
+    months_asc = [f"{m[:4]}-{m[4:]}" for m in months_asc_yymm]
+    year_start_yymm = f"{end_year:04d}01"
+    window_start = min(months_asc_yymm[0], year_start_yymm)
+
+    by_country_monthly = {}  # cnty_name -> {ym: expDlr}
+    chunks = yymm_range_chunks(window_start, end_yymm)
+    for cnty_cd, cnty_name in CANDIDATE_COUNTRIES:
+        monthly = {}
+        for hs in hs_codes:
+            for chunk_start, chunk_end in chunks:
+                params = {
+                    "serviceKey": service_key,
+                    "strtYymm": chunk_start,
+                    "endYymm": chunk_end,
+                    "hsSgn": hs,
+                    "cntyCd": cnty_cd,
+                    "numOfRows": "999",
+                    "pageNo": "1",
+                }
+                items, _, failed = api_get(NITEMTRADE_URL, params, debug=debug)
+                time.sleep(REQUEST_DELAY_SEC)
+                if failed and debug:
+                    print(f"[DEBUG] 국가별비중 호출 실패(무시하고 계속): {cnty_name}/{hs}/{chunk_start}~{chunk_end}",
+                          file=sys.stderr)
+                if not items:
+                    continue
+                for row in items:
+                    year = row.get("year", "")
+                    ym = year.replace(".", "-") if year else None
+                    if not ym or len(ym) != 7:
+                        continue
+                    exp_dlr = int(row.get("expDlr") or 0)
+                    monthly[ym] = monthly.get(ym, 0) + exp_dlr
+        if monthly:
+            by_country_monthly[cnty_name] = monthly
+
+    def top5_plus_other(period_total, country_sums):
+        ranked = sorted(country_sums.items(), key=lambda kv: kv[1], reverse=True)
+        top5 = [(name, amt) for name, amt in ranked[:5] if amt > 0]
+        top5_sum = sum(amt for _, amt in top5)
+        other = max(period_total - top5_sum, 0)
+        rows = [
+            {"country": name, "expDlr": amt, "pct": round(amt / period_total * 100, 1) if period_total else 0.0}
+            for name, amt in top5
+        ]
+        if other > 0 or not rows:
+            rows.append({
+                "country": "기타", "expDlr": other,
+                "pct": round(other / period_total * 100, 1) if period_total else 0.0,
+            })
+        return rows
+
+    periods = []
+    by_period = {}
+    for ym in months_asc:
+        period_total = national_by_ym.get(ym, 0)
+        country_sums = {name: m.get(ym, 0) for name, m in by_country_monthly.items()}
+        periods.append(ym)
+        by_period[ym] = top5_plus_other(period_total, country_sums)
+
+    ytd_key = f"{end_year:04d}-YTD"
+    ytd_yms = [ym for ym in national_by_ym if ym.startswith(f"{end_year:04d}-") and ym <= f"{end_year:04d}-{end_month:02d}"]
+    ytd_total = sum(national_by_ym.get(ym, 0) for ym in ytd_yms)
+    ytd_country_sums = {}
+    for name, m in by_country_monthly.items():
+        ytd_country_sums[name] = sum(v for ym, v in m.items() if ym in ytd_yms)
+    periods.append(ytd_key)
+    by_period[ytd_key] = top5_plus_other(ytd_total, ytd_country_sums)
+
+    return {"periods": periods, "byPeriod": by_period}
+
+
 def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm, debug=False):
     """regions는 CATEGORIES의 "regions" 필드 그대로(예: ["경기 고양시", "서울 강남구"]) —
     "시도 단축명 시군구명" 형식, index.html EXPORT_CATEGORY_CONFIG의 regions와 동일한
@@ -573,6 +694,9 @@ def main():
             if prev:
                 categories_out.append(prev)
             continue
+        country_share_recent = fetch_country_share_recent(
+            service_key, cat["hsCodes"], monthly, end_yymm, debug=args.debug
+        )
         categories_out.append({
             "key": cat["key"],
             "label": cat["label"],
@@ -581,9 +705,11 @@ def main():
             "monthly": monthly,
             "byCountry": by_country,
             "byRegion": by_region,  # 월별, 이 카테고리가 지정한 시군구(regions)만 포함
+            "countryShareRecent": country_share_recent,  # "국가별 수출 비중" 요약(실제 상위5국+기타, 최근6개월+YTD)
         })
         print(f"[INFO] {cat['label']}: 월별 {len(monthly)}개월치, 국가별 {len(by_country)}개국, "
-              f"지역별 {len(by_region)}개 시군구 확보", file=sys.stderr)
+              f"지역별 {len(by_region)}개 시군구, 비중요약 {len(country_share_recent['periods'])}개 기간 확보",
+              file=sys.stderr)
 
     if not categories_out:
         print("[ERROR] 모든 카테고리 조회에 실패해 기존 export_data.json을 보존하고 종료합니다.", file=sys.stderr)

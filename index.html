@@ -489,8 +489,13 @@ tr:last-child td{border-bottom:none}
     <div class="note" id="export-chart-note" style="margin:-4px 0 8px"></div>
     <div class="chart-box"><canvas id="exportChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">국가별 수출 비중</h2><span class="note">최근 10년 누적 · 상위국 + 기타 · 수출금액(달러) 기준</span></div>
-    <div class="chart-box small"><canvas id="exportCountryChart"></canvas></div>
+    <div id="export-country-share-section">
+      <div class="sec-h"><h2 style="font-size:13px">국가별 수출 비중</h2>
+        <div class="toggle" id="export-country-share-toggle"></div>
+      </div>
+      <div class="note" id="export-country-share-note" style="margin:-4px 0 8px"></div>
+      <div class="chart-box small"><canvas id="exportCountryChart"></canvas></div>
+    </div>
 
     <div class="sec-h"><h2 style="font-size:13px">월별 데이터</h2>
       <button id="export-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
@@ -2165,6 +2170,7 @@ let EXPORT_DATA = { categories: [] };
 const EXPORT_STATE = { cat: '', gran: 'month', scope: 'all', scopeKey: null };
 let exportChartInstance = null;
 let exportCountryChartInstance = null;
+let exportCountrySharePeriod = null; // "YYYY-MM" 또는 "YYYY-YTD" — renderExportCountryChart()가 관리
 
 // ================================================================
 // [2026-08-21] 품목별 "전체/지역별/국가별" 하위 탭 — 화면 뼈대만 우선 구성.
@@ -2275,16 +2281,24 @@ function computeYoYSeries(agg, gran){
 // 있는 만큼만 표시된다(아래 exportDisplayFromLabel 참고).
 const EXPORT_BREAKDOWN_DISPLAY_MONTHS = 120;
 
+// 다른 곳(월별 표, 차트 x축 등)과 동일하게 "YYYY-MM" 그대로 표시 — "YYYY-YTD"만 "YYYY 누적"으로.
+function formatCountrySharePeriodLabel(period){
+  if(!period) return '';
+  if(period.endsWith('-YTD')) return `${period.slice(0, 4)} 누적`;
+  return period;
+}
+
+// scrape_export_data.py의 countryShareRecent(2026-08-31 신규, 주요 교역국 30개국을 실측해서
+// 뽑은 "진짜" 상위국 — 카테고리별로 미리 정해둔 소수 국가만 보던 byCountry와 달리 실제
+// 데이터 기준이라 정확하다)에서 가장 최근 개별월의 1위국을 가져온다.
 function topCountryForExport(cat){
-  if(!cat || !cat.byCountry) return null;
-  const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
-    name, total: rows.slice(-EXPORT_BREAKDOWN_DISPLAY_MONTHS).reduce((s, r) => s + (r.expDlr || 0), 0)
-  })).filter(c => c.total > 0);
-  if(!totals.length) return null;
-  const grand = totals.reduce((s, c) => s + c.total, 0);
-  totals.sort((a, b) => b.total - a.total);
-  const top = totals[0];
-  return { name: top.name, pct: grand ? (top.total / grand * 100) : 0 };
+  if(!cat || !cat.countryShareRecent) return null;
+  const periods = cat.countryShareRecent.periods || [];
+  if(periods.length < 2) return null;
+  const latestMonth = periods[periods.length - 2]; // periods = [월×6, YTD] — YTD 직전이 최신 개별월
+  const rows = cat.countryShareRecent.byPeriod[latestMonth];
+  if(!rows || !rows.length || rows[0].country === '기타') return null;
+  return { name: rows[0].country, pct: rows[0].pct, period: latestMonth };
 }
 
 function renderExportCategoryChips(){
@@ -2404,7 +2418,7 @@ function renderExportStatCards(){
   wrap.innerHTML = `
     <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">$${fmtUsdShort(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
     <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
-    ${top ? `<div class="stat-card"><div class="lbl">최대 수출국(최근10년)</div><div class="val">${top.name}</div><div class="delta">비중 ${top.pct.toFixed(0)}%</div></div>` : ''}
+    ${top ? `<div class="stat-card"><div class="lbl">최대 수출국(${formatCountrySharePeriodLabel(top.period)})</div><div class="val">${top.name}</div><div class="delta">비중 ${top.pct.toFixed(0)}%</div></div>` : ''}
   `;
 }
 
@@ -2502,17 +2516,83 @@ function renderExportChart(){
   });
 }
 
+// "국가별 수출 비중" — 카테고리별로 미리 정해둔 소수 국가(byCountry)가 아니라
+// countryShareRecent(주요 교역국 30개국 실측, scrape_export_data.py 참고)의 "진짜" 상위
+// 5개국+기타를 가로 막대로 보여준다. "전체" 스코프일 때만 의미가 있는 요약 차트라 국가별/
+// 지역별 드릴다운에 들어가면 섹션 자체를 숨긴다(2026-08-31 요청).
 function renderExportCountryChart(){
-  const cat = currentExportCategory();
+  const section = document.getElementById('export-country-share-section');
   if(exportCountryChartInstance){ exportCountryChartInstance.destroy(); exportCountryChartInstance = null; }
-  if(!cat || !cat.byCountry || !Object.keys(cat.byCountry).length) return;
-  const totals = Object.entries(cat.byCountry).map(([name, rows]) => ({
-    name, total: rows.slice(-EXPORT_BREAKDOWN_DISPLAY_MONTHS).reduce((s, r) => s + (r.expDlr || 0), 0)
-  })).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
-  const colors = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626', '#0891b2', '#8a919c', '#be185d'];
-  exportCountryChartInstance = mkBar('exportCountryChart', totals.map(t => t.name), [
-    { label: `${cat.label} 수출액(최근10년, $)`, data: totals.map(t => t.total), backgroundColor: totals.map((_, i) => colors[i % colors.length]) }
-  ]);
+  if(EXPORT_STATE.scope !== 'all'){
+    if(section) section.style.display = 'none';
+    return;
+  }
+  const cat = currentExportCategory();
+  const share = cat && cat.countryShareRecent;
+  if(!share || !share.periods || !share.periods.length){
+    if(section) section.style.display = 'none';
+    return;
+  }
+  if(section) section.style.display = '';
+
+  if(!share.periods.includes(exportCountrySharePeriod)){
+    // 기본값 = 가장 최근 개별월(periods = [월×6, YTD] 이므로 뒤에서 두 번째).
+    exportCountrySharePeriod = share.periods.length >= 2
+      ? share.periods[share.periods.length - 2]
+      : share.periods[share.periods.length - 1];
+  }
+
+  const toggleWrap = document.getElementById('export-country-share-toggle');
+  if(toggleWrap){
+    toggleWrap.innerHTML = share.periods.map(p =>
+      `<button data-period="${p}" class="${p === exportCountrySharePeriod ? 'active' : ''}">${formatCountrySharePeriodLabel(p)}</button>`
+    ).join('');
+    toggleWrap.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        exportCountrySharePeriod = btn.dataset.period;
+        renderExportCountryChart();
+      });
+    });
+  }
+
+  const rows = share.byPeriod[exportCountrySharePeriod] || [];
+  const note = document.getElementById('export-country-share-note');
+  if(note){
+    note.textContent = rows.length
+      ? `${formatCountrySharePeriodLabel(exportCountrySharePeriod)} · 주요 교역국 30개국 조사 기준 실제 상위 5개국 + 기타 · 수출금액 비중(%)`
+      : '이 기간의 데이터가 아직 없습니다.';
+  }
+  if(!rows.length) return;
+
+  const colors = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626'];
+  const bgColors = rows.map((r, i) => r.country === '기타' ? '#8a919c' : colors[i % colors.length]);
+
+  exportCountryChartInstance = new Chart(document.getElementById('exportCountryChart'), {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => r.country),
+      datasets: [{ label: `${cat.label} 수출 비중(%)`, data: rows.map(r => r.pct), backgroundColor: bgColors }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const r = rows[ctx.dataIndex];
+              return `${r.country}: ${r.pct.toFixed(1)}% ($${fmtUsdShort(r.expDlr)})`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: { grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v + '%' }, max: 100 },
+        y: { grid: { display: false }, ticks: { color: textColor() } },
+      },
+    },
+  });
 }
 
 // 월별 표 조회 기간 — 3개월/6개월/12개월 프리셋 버튼 + 항상 보이는 시작월/종료월 직접 선택
