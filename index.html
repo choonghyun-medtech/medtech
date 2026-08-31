@@ -468,7 +468,7 @@ tr:last-child td{border-bottom:none}
     <div class="note" id="export-chart-note" style="margin:-4px 0 8px"></div>
     <div class="chart-box"><canvas id="exportChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">국가별 수출 비중</h2><span class="note">최근 24개월 누적 · 상위국 + 기타 · 수출금액(달러) 기준</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 수출 비중</h2><span class="note">최근 10년 누적 · 상위국 + 기타 · 수출금액(달러) 기준</span></div>
     <div class="chart-box small"><canvas id="exportCountryChart"></canvas></div>
 
     <div class="sec-h"><h2 style="font-size:13px">월별 데이터</h2>
@@ -2162,10 +2162,12 @@ function computeYoYSeries(agg, gran){
   });
 }
 
-// 국가별 breakdown은 scrape_export_data.py가 최근 36개월만 롤링 수집한다(호출량 절약,
-// COUNTRY_BREAKDOWN_MONTHS) — 그중 뒤쪽 24개월만 "최근24개월" 카드/차트에 쓴다(앞 12개월은
-// exportDisplayFromLabel()의 YoY 기준선용으로만 존재, 2026-08-24).
-const EXPORT_BREAKDOWN_DISPLAY_MONTHS = 24;
+// 국가별 breakdown은 scrape_export_data.py가 최근 132개월(11년)만 롤링 수집한다(호출량 절약,
+// COUNTRY_BREAKDOWN_MONTHS) — 그중 뒤쪽 120개월(10년)만 "최근10년" 카드/차트에 쓴다(앞
+// 12개월은 exportDisplayFromLabel()의 YoY 기준선용으로만 존재). 2026-08-31 요청: 기존
+// 24개월(수집 36개월)에서 10년(수집 11년)으로 확장 — 아직 11년치가 다 안 쌓인 카테고리는
+// 있는 만큼만 표시된다(아래 exportDisplayFromLabel 참고).
+const EXPORT_BREAKDOWN_DISPLAY_MONTHS = 120;
 
 function topCountryForExport(cat){
   if(!cat || !cat.byCountry) return null;
@@ -2296,7 +2298,7 @@ function renderExportStatCards(){
   wrap.innerHTML = `
     <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">$${fmtUsdShort(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
     <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
-    ${top ? `<div class="stat-card"><div class="lbl">최대 수출국(최근24개월)</div><div class="val">${top.name}</div><div class="delta">비중 ${top.pct.toFixed(0)}%</div></div>` : ''}
+    ${top ? `<div class="stat-card"><div class="lbl">최대 수출국(최근10년)</div><div class="val">${top.name}</div><div class="delta">비중 ${top.pct.toFixed(0)}%</div></div>` : ''}
   `;
 }
 
@@ -2308,25 +2310,26 @@ function ymAddMonths(ym, months){
   return `${ny}-${String(nm).padStart(2, '0')}`;
 }
 
-// 차트에는 수집 시작월+1년부터만 그린다(2026-08-21 요청) — 수집 시작 직후 1년은 전년동기
-// 데이터가 없어 YoY 선이 끊겨서 보기 안 좋기 때문. YoY 자체는 반드시 monthly 전체(수집
-// 시작월부터)로 먼저 계산한 뒤에 화면 표시 구간만 잘라내야 한다 — 안 그러면 표시 구간
-// 첫 달의 전년동기 비교값을 못 구해 그 달의 YoY까지 같이 끊긴다.
+// 차트 표시 구간 = "최근 10년(EXPORT_BREAKDOWN_DISPLAY_MONTHS=120개월)"과 "수집 시작월+1년"
+// 중 더 늦은(=더 짧게 자르는) 쪽. YoY 자체는 반드시 monthly 전체(수집 시작월부터)로 먼저
+// 계산한 뒤에 화면 표시 구간만 잘라내야 한다 — 안 그러면 표시 구간 첫 달의 전년동기 비교값을
+// 못 구해 그 달의 YoY까지 같이 끊긴다.
 //
-// 컷오프를 고정 날짜(예: "2016-01")로 박아두지 않고 monthly[0](실제 수집된 가장 오래된
-// 월)+1년으로 동적 계산한다 — "전체"(scope=all)는 국내 총계라 START_YYMM(2015-01)부터
-// 쌓이지만, "국가별"/"지역별"은 호출량 절약을 위해 최근 N개월(COUNTRY_BREAKDOWN_MONTHS/
-// SIGUNGU_BREAKDOWN_MONTHS, scrape_export_data.py)만 롤링 수집하므로 수집 시작월이 계속
-// 바뀐다. 고정 날짜를 쓰면 이 두 범위는 컷오프 이전 구간이라 매번 통째로 안 보이거나
-// (수집 36개월인데 표시 컷오프가 2016-01처럼 아주 오래전이면 전부 보임 — 그러면 YoY가
-// 안 되는 첫 1년까지 같이 보여버림) 하는 문제가 있었다(2026-08-24, 국가별/지역별 YoY가
-// 최근 1년치만 보인다는 사용자 지적으로 발견 — 원인은 COUNTRY_BREAKDOWN_MONTHS/
-// SIGUNGU_BREAKDOWN_MONTHS가 24개월이라 처음 12개월엔 전년동기 비교 대상이 아예 수집돼
-// 있지 않았던 것. 36개월로 늘리고 이 동적 컷오프로 "수집 3년 → 표시 2년, 표시 구간
-// 전체에 YoY 보장"으로 맞췄다).
+// 두 컷오프를 각각 동적으로 계산해 더 늦은 쪽을 쓴다(2026-08-31 요청 — 기존엔 "수집
+// 시작월+1년"만 있어서 하한이 없었다: "전체"(scope=all) 같은 장기 시계열은 데이터가 쌓일수록
+// 표시 구간이 계속 늘어나 10년을 넘어가버렸다):
+//  · yoyFloor = monthly[0](실제 수집된 가장 오래된 월)+1년 — 이 시점 이전은 전년동기 비교
+//    대상이 없어 YoY가 항상 비므로 애초에 표시 후보에서 제외.
+//  · tenYearFloor = 가장 최근 달 - 119개월(10년 창) — 10년보다 많이 쌓인 시계열("전체"처럼
+//    11년 넘게 쌓인 경우)은 최근 10년만 보여주기 위한 상한.
+// "국가별"/"지역별"은 호출량 절약을 위해 최근 COUNTRY_BREAKDOWN_MONTHS/
+// SIGUNGU_BREAKDOWN_MONTHS(scrape_export_data.py, 11년=132개월)만 롤링 수집하므로 아직
+// 11년치가 안 쌓인 동안은 yoyFloor가 더 늦어 자연히 "있는 만큼만" 표시된다.
 function exportDisplayFromLabel(monthly, gran){
   if(!monthly || !monthly.length) return null;
-  const cutoffYm = ymAddMonths(monthly[0].ym, 12);
+  const yoyFloor = ymAddMonths(monthly[0].ym, 12);
+  const tenYearFloor = ymAddMonths(monthly[monthly.length - 1].ym, -(EXPORT_BREAKDOWN_DISPLAY_MONTHS - 1));
+  const cutoffYm = tenYearFloor > yoyFloor ? tenYearFloor : yoyFloor;
   if(gran === 'month') return cutoffYm;
   const [y, m] = cutoffYm.split('-').map(Number);
   if(gran === 'quarter') return `${y}Q${Math.ceil(m / 3)}`;
@@ -2402,7 +2405,7 @@ function renderExportCountryChart(){
   })).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
   const colors = ['#2563eb', '#7c3aed', '#16a34a', '#f59e0b', '#dc2626', '#0891b2', '#8a919c', '#be185d'];
   exportCountryChartInstance = mkBar('exportCountryChart', totals.map(t => t.name), [
-    { label: `${cat.label} 수출액(최근24개월, $)`, data: totals.map(t => t.total), backgroundColor: totals.map((_, i) => colors[i % colors.length]) }
+    { label: `${cat.label} 수출액(최근10년, $)`, data: totals.map(t => t.total), backgroundColor: totals.map((_, i) => colors[i % colors.length]) }
   ]);
 }
 

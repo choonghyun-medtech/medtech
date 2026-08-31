@@ -207,12 +207,15 @@ CATEGORIES = [
 # (index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음 — "셋 다 지금 업데이트된
 # 그대로 유지" 답변으로 확정).
 
-# 국가별은 최근 36개월만 롤링 수집(호출량 절약). 24개월이었을 때는 index.html이 표시 구간
-# 전체(최근 24개월)에 걸쳐 YoY를 그리려 해도 뒤쪽 12개월치는 전년동기 비교 대상 자체가 수집
-# 범위 밖이라 YoY가 안 나왔다(2026-08-24 사용자 지적) — 그래서 "수집 3년 → 표시 2년"이 되도록
-# 12개월 늘림. index.html의 EXPORT_BREAKDOWN_DISPLAY_MONTHS(24)와 exportDisplayFromLabel()가
-# 이 여유분(앞 12개월)을 YoY 기준선으로만 쓰고 화면엔 뒤 24개월만 보여준다.
-COUNTRY_BREAKDOWN_MONTHS = 36
+# 국가별은 최근 132개월(11년)만 롤링 수집(호출량 절약). index.html이 표시 구간 전체(최근
+# 10년=120개월)에 걸쳐 YoY를 그리려면 뒤쪽 12개월치도 전년동기 비교 대상이 수집 범위 안에
+# 있어야 하므로, "수집 11년 → 표시 10년"이 되도록 표시 기간(120개월)에 12개월 여유를 더했다
+# (2026-08-31 요청 — 기존 36개월/24개월 표시에서 확장. 이전에 24개월 표시였을 때도 같은
+# 이유로 수집을 36개월로 늘렸던 적이 있음, 2026-08-24). index.html의
+# EXPORT_BREAKDOWN_DISPLAY_MONTHS(120)와 exportDisplayFromLabel()가 이 여유분(앞 12개월)을
+# YoY 기준선으로만 쓰고 화면엔 뒤 120개월만 보여준다. 아직 132개월치가 안 쌓인 카테고리는
+# 있는 만큼만 쌓이다가 시간이 지나며 자연히 채워진다(그동안 삭제 없이 계속 롤링 백필됨).
+COUNTRY_BREAKDOWN_MONTHS = 132
 
 # 지역별(시군구) 브레이크다운 — 국내 지역 수출량으로 특정 기업의 실적을 추정하는 용도
 # (aesthetic-web의 "강릉=파마리서치·리쥬란" 프록시 방식과 동일한 아이디어).
@@ -245,7 +248,7 @@ SIDO_CD_BY_NAME = {
     "부산": "26",
     "강원": "51",
 }
-SIGUNGU_BREAKDOWN_MONTHS = 36  # 국가별과 동일한 이유로 24 -> 36개월로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
+SIGUNGU_BREAKDOWN_MONTHS = 132  # 국가별과 동일한 이유로 132개월(11년)로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
 
 
 def yymm_add_months(yymm: str, months: int) -> str:
