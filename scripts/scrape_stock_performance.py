@@ -11,7 +11,11 @@
 - 국내(KR) 종목의 주가 히스토리·외국인 지분율은 api.stock.naver.com 차트 API에서 가져온다
   (yfinance가 일부 KRX 종목에서 짧은 히스토리를 반환하는 문제 회피 + 외국인보유율 필드 제공).
   실패 시 yfinance 히스토리로 폴백한다.
-- 병렬 수집 ThreadPoolExecutor(max_workers=10), 실패 종목은 해당 값만 null 처리하고 계속 진행
+- 병렬 수집 ThreadPoolExecutor(max_workers=10), 실패 종목은 이전 실행에서 정상 수집된 데이터가
+  있으면 그걸 그대로 보존하고, 처음부터 한 번도 성공한 적 없는 종목만 null로 남긴다(다른
+  scrape_*.py 스크립트들과 동일한 "보강" 패턴, 2026-08-31 추가 — 이전엔 실패 시 무조건 null로
+  덮어써서, yfinance가 일시적으로 막히면 기존에 정상 저장돼 있던 해외 종목 데이터까지 통째로
+  날아가는 문제가 있었다. 로컬 네트워크에서 해외 107종목이 한꺼번에 실패하며 실제로 겪음).
 
 사용법:
     python scrape_stock_performance.py --out stock_performance.json
@@ -70,7 +74,7 @@ PERIOD_OFFSETS = {
 
 def daum_market_cap(ticker: str):
     """KR 종목의 한국거래소 시가총액을 Daum Finance API에서 가져온다 (원화, 절대값)."""
-    m = re.match(r"^(\d{6})\.(KS|KQ)$", ticker)
+    m = re.match(r"^([0-9A-Za-z]{6})\.(KS|KQ)$", ticker)
     if not m:
         return None
     code = m.group(1)
@@ -111,7 +115,7 @@ def fetch_naver_kr_series(ticker: str):
     반환: (close 시리즈(pd.Series, DatetimeIndex, 오름차순), foreign_ratio dict{date_str: float})
     실패 시 (None, None).
     """
-    m = re.match(r"^(\d{6})\.(KS|KQ)$", ticker)
+    m = re.match(r"^([0-9A-Za-z]{6})\.(KS|KQ)$", ticker)
     if not m:
         return None, None
     code = m.group(1)
@@ -246,6 +250,13 @@ def main():
     with open(args.tickers, encoding="utf-8") as f:
         items = json.load(f)
 
+    try:
+        with open(args.out, encoding="utf-8") as f:
+            existing = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        existing = {}
+    existing_by_ticker = {s.get("ticker"): s for s in existing.get("stocks", [])}
+
     print(f"fetching {len(items)} tickers with {args.max_workers} workers...")
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_workers) as ex:
@@ -253,8 +264,16 @@ def main():
         done = 0
         for fut in concurrent.futures.as_completed(futures):
             r = fut.result()
-            results.append(r)
             done += 1
+            if r["error"] is not None:
+                prev = existing_by_ticker.get(r["ticker"])
+                if prev is not None and prev.get("error") is None:
+                    print(f"[{done}/{len(items)}] {r['ticker']}: FAIL ({r['error']}) — 이전 정상 데이터 보존",
+                          file=sys.stderr)
+                    r = prev
+                    results.append(r)
+                    continue
+            results.append(r)
             status = "OK" if r["error"] is None else f"FAIL ({r['error']})"
             print(f"[{done}/{len(items)}] {r['ticker']}: {status}")
 

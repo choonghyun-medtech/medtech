@@ -111,6 +111,19 @@ th{color:var(--dim); font-weight:600; font-size:11.5px; text-transform:uppercase
 tr:last-child td{border-bottom:none}
 /* 리서치 보고서 표: 열별로 줄바꿈 여부/너비를 개별 지정 (전역 nowrap을 필요한 열만 풀어준다) */
 #rep-table-wrap td, #bio-table-wrap td{vertical-align:top}
+/* 외국인 지분율 Top10 표: 기본 table-layout:auto는 내용 길이에 따라 열 너비가 들쭉날쭉해져
+   "1개월 변화"/"외국인 순매수" 열은 붙어 보이고 오른쪽은 비어 보이는 문제가 있었다
+   (2026-08-31 지적) — 이 표만 고정 너비로 지정한다. */
+#foreign-rank-table-wrap table{table-layout:fixed}
+#foreign-rank-table-wrap th:nth-child(1), #foreign-rank-table-wrap td:nth-child(1){width:9%}
+#foreign-rank-table-wrap th:nth-child(2), #foreign-rank-table-wrap td:nth-child(2){width:25%}
+#foreign-rank-table-wrap th:nth-child(3), #foreign-rank-table-wrap td:nth-child(3){width:20%}
+#foreign-rank-table-wrap th:nth-child(4), #foreign-rank-table-wrap td:nth-child(4){width:20%}
+#foreign-rank-table-wrap th:nth-child(5), #foreign-rank-table-wrap td:nth-child(5){width:26%}
+/* 2026-08-31 후속 조정: 지분율/변화/순매수 열 모두 다른 표와 통일해 볼드체 없이 일반
+   굵기로 표시(색상만 상승/하락 구분 유지) — perf-up/down은 다른 표에서 볼드를 쓰므로
+   전역이 아니라 이 표에서만 덮어쓴다. */
+#foreign-rank-table-wrap td.perf-up, #foreign-rank-table-wrap td.perf-down, #foreign-rank-table-wrap td.perf-flat{font-weight:400}
 #rep-table-wrap th:nth-child(1), #rep-table-wrap td:nth-child(1){width:100px; white-space:nowrap}
 #rep-table-wrap th:nth-child(2), #rep-table-wrap td:nth-child(2){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
 #rep-table-wrap th:nth-child(3), #rep-table-wrap td:nth-child(3){white-space:normal}
@@ -354,7 +367,11 @@ tr:last-child td{border-bottom:none}
       <div class="na-msg">stock_performance.json 로딩 중...</div>
     </div>
 
-    <div class="sec-h"><h2>추적 종목</h2><span class="note">칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가</span></div>
+    <div class="sec-h"><h2>외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목 · stock_performance.json 기준</span></div>
+    <div id="foreign-rank-table-wrap"></div>
+
+    <div class="sec-h"><h2>추적 종목</h2><span class="note" id="tracked-scope-note">칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가</span></div>
+    <div class="note" style="margin:-4px 0 8px; font-size:10.5px; color:var(--dim)">국내 종목은 주가 추이·외국인 지분율 추이·투자자 수급 세 차트가 모두 표시되고, 해외 종목은 주가 추이만 표시됩니다.</div>
     <div style="position:relative;margin-bottom:8px;max-width:280px">
       <input id="stock-search-input" class="filter-select" style="width:100%" placeholder="종목명 또는 티커 검색..." autocomplete="off" />
       <div id="stock-search-results" class="card" style="display:none;position:absolute;top:36px;left:0;z-index:10;width:100%;max-height:240px;overflow-y:auto;padding:4px"></div>
@@ -371,21 +388,25 @@ tr:last-child td{border-bottom:none}
     <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가 · 실데이터(stock_performance.json 기준)</div>
     <div class="chart-box"><canvas id="priceChart"></canvas></div>
 
-    <div class="sec-h"><h2>외국인 지분율 추이 <span class="note">· 국내 종목만</span></h2>
-      <div class="toggle" id="foreign-period-toggle">
-        <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
+    <div id="foreign-ratio-section">
+      <div class="sec-h"><h2>외국인 지분율 추이 <span class="note">· 국내 종목만</span></h2>
+        <div class="toggle" id="foreign-period-toggle">
+          <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
+        </div>
       </div>
+      <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준)</div>
+      <div class="chart-box"><canvas id="foreignChart"></canvas></div>
     </div>
-    <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준)</div>
-    <div class="chart-box"><canvas id="foreignChart"></canvas></div>
 
-    <div class="sec-h"><h2>투자자 수급</h2>
-      <div class="toggle" id="flow-period-toggle">
-        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
+    <div id="investor-flow-section">
+      <div class="sec-h"><h2>투자자 수급 <span class="note">· 국내 종목만</span></h2>
+        <div class="toggle" id="flow-period-toggle">
+          <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
+        </div>
       </div>
+      <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
+      <div class="chart-box"><canvas id="flowChart"></canvas></div>
     </div>
-    <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
-    <div class="chart-box"><canvas id="flowChart"></canvas></div>
   </section>
 
   <!-- ================= FLOW MAP ================= -->
@@ -1317,15 +1338,27 @@ function renderPriceChart(ticker, months){
   }]);
 }
 
+// 외국인 지분율/투자자 수급은 국내(KR) 종목 전용 데이터라, 해외 종목을 조회할 땐 빈 차트나
+// 샘플 데이터를 보여주는 대신 섹션 자체를 숨긴다(2026-08-31 요청 — "주가 데이터" 탭에서
+// 종목마다 보이는 섹션이 오락가락하는 느낌을 준다는 지적에 따라, 데이터가 구조적으로 없는
+// 섹션은 아예 안 보이게 해 명확히 함). 티커 형식(.KS/.KQ 접미사)만으로 판별하므로
+// STOCK_PERF 로딩 여부와 무관하게 항상 정확하다.
+function isKrTicker(ticker){ return /\.(KS|KQ)$/i.test(ticker || ''); }
+
 function renderForeignRatioChart(ticker, months){
+  const section = document.getElementById('foreign-ratio-section');
+  if(!isKrTicker(ticker)){
+    if(section) section.style.display = 'none';
+    if(foreignChartInstance){ foreignChartInstance.destroy(); foreignChartInstance = null; }
+    return;
+  }
+  if(section) section.style.display = '';
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const note = document.getElementById('foreign-chart-note');
   const sliced = perf ? sliceSeriesByMonths(perf.foreign_ratio_history, months) : null;
   if(!sliced){
     if(foreignChartInstance){ foreignChartInstance.destroy(); foreignChartInstance=null; }
-    note.textContent = perf && perf.market!=='KR'
-      ? '외국인 지분율은 국내 종목만 제공됩니다.'
-      : '이 종목의 외국인 지분율 시계열이 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
+    note.textContent = '이 종목의 외국인 지분율 시계열이 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
     return;
   }
   const labels = sliced.dates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
@@ -1354,24 +1387,10 @@ document.querySelectorAll('#foreign-period-toggle button').forEach(b=>{
   });
 });
 
-// 투자자 수급 — 일별 순매수 누적(라인) · 국내 종목은 실데이터(investor_flow.json),
-// 해외 종목/데이터 없는 경우는 샘플로 표시(화면에 명시)
+// 투자자 수급 — 일별 순매수 누적(라인) · 국내 종목 실데이터(investor_flow.json) 전용
+// (해외 종목은 renderFlowChart 상단에서 섹션 자체를 숨김).
 let INVESTOR_FLOW = {};
 let selectedFlowMonths = 3;
-
-function genFlowData(days){
-  const labels = [];
-  const today = new Date();
-  for(let i=days-1;i>=0;i--){
-    const d = new Date(today); d.setDate(d.getDate()-i);
-    labels.push(`${d.getMonth()+1}/${d.getDate()}`);
-  }
-  function cumulative(volatility, upBias){
-    let sum = 0;
-    return Array.from({length:days}, ()=>{ sum += (Math.random()-upBias)*volatility; return Math.round(sum); });
-  }
-  return { labels, inst: cumulative(30,0.45), foreign: cumulative(25,0.42), retail: cumulative(20,0.55) };
-}
 
 function cumulativeSum(arr){
   let sum = 0;
@@ -1380,6 +1399,13 @@ function cumulativeSum(arr){
 
 let flowChartInstance = null;
 function renderFlowChart(ticker, months){
+  const section = document.getElementById('investor-flow-section');
+  if(!isKrTicker(ticker)){
+    if(section) section.style.display = 'none';
+    if(flowChartInstance){ flowChartInstance.destroy(); flowChartInstance = null; }
+    return;
+  }
+  if(section) section.style.display = '';
   const days = MONTHS_TO_TRADING_DAYS[months] || 65;
   const note = document.getElementById('flow-chart-note');
   const real = INVESTOR_FLOW[ticker];
@@ -1392,9 +1418,9 @@ function renderFlowChart(ticker, months){
     retail = cumulativeSum(real.retail_eok_est.slice(-days));
     note.textContent = `일별 순매수 누적 · 억원 · 실데이터(investor_flow.json, 네이버금융 기준) · 개인은 -(기관+외국인) 추정치 · ${dates[0]} ~ ${dates[dates.length-1]}`;
   }else{
-    const g = genFlowData(days);
-    labels = g.labels; inst = g.inst; foreign = g.foreign; retail = g.retail;
-    note.textContent = '일별 순매수 누적 · 억원 · 기관/외국인/개인 · 이 종목은 아직 실데이터가 없어 샘플로 표시 중';
+    note.textContent = '이 종목의 투자자 수급 데이터가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
+    if(flowChartInstance){ flowChartInstance.destroy(); flowChartInstance = null; }
+    return;
   }
   if(flowChartInstance){ flowChartInstance.destroy(); }
   flowChartInstance = mkLine('flowChart', labels, [
@@ -1424,6 +1450,7 @@ async function loadInvestorFlow(){
   }
   renderFlowChart(selectedStockTicker, selectedFlowMonths);
   if(typeof renderFlowMap === 'function') renderFlowMap();
+  if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
 }
 loadInvestorFlow();
 
@@ -1677,6 +1704,75 @@ function newsUrl(name){ return 'https://www.google.com/search?q=' + encodeURICom
 function fmtPct(v){ if(v==null) return '-'; const sign = v>0?'+':''; return sign + v.toFixed(1); }
 function pctClass(v){ if(v==null || v===0) return 'perf-flat'; return v>0 ? 'perf-up' : 'perf-down'; }
 
+// 외국인 지분율 Top10 — "커버리지 기업 외국인 지분율 순위도 보여지면 좋겠다"는 피드백 반영
+// (2026-08-31). 외국인 지분율만 있으면 심심하다는 지적에 따라 1개월 지분율 변화(%p)와
+// 외국인 순매수 금액(1개월, investor_flow.json)을 함께 보여준다 — 순매수 금액은 지분율
+// 변화(%p)의 "원인"(실제 매수세 때문인지, 발행주식수 변동 등 다른 이유인지)을 바로 옆에서
+// 설명해주는 짝이라 우선 채택. 전일 종가/1개월 수익률은 바로 위 "수익률 Top10/Bottom10"
+// 표와 중복되고 외국인 수급이라는 주제와 관련이 적어 넣지 않기로 함(사용자 확인).
+// 외국인 지분율은 국내(KR) 종목에만 존재하는 데이터라(해외 종목은 stock_performance.json에
+// foreign_ratio 필드 자체가 없음) 자동으로 국내 커버리지 종목만 대상이 된다. 이 표는
+// STOCK_PERF와 INVESTOR_FLOW 둘 다 필요하므로 두 로드 함수(loadStockPerformance/
+// loadInvestorFlow) 완료 시 각각 다시 호출해 재계산한다(수급 지도와 동일한 패턴).
+function computeForeignRatioTop10(){
+  return STOCK_PERF
+    .filter(s => s.market === 'KR' && s.foreign_ratio != null)
+    .map(s => {
+      const hist = s.foreign_ratio_history;
+      let changeM1 = null;
+      if(hist && hist.values && hist.values.length >= MONTHS_TO_TRADING_DAYS[1]){
+        const past = hist.values[hist.values.length - MONTHS_TO_TRADING_DAYS[1]];
+        if(past != null) changeM1 = s.foreign_ratio - past;
+      }
+      const flow = INVESTOR_FLOW[s.ticker];
+      let foreignNetBuyM1 = null;
+      if(flow && flow.foreign_eok && flow.foreign_eok.length){
+        foreignNetBuyM1 = flow.foreign_eok.slice(-MONTHS_TO_TRADING_DAYS[1])
+          .reduce((sum, v) => sum + (v == null ? 0 : v), 0);
+      }
+      return {
+        ticker: s.ticker, name: s.name, foreignRatio: s.foreign_ratio,
+        changeM1, foreignNetBuyM1,
+      };
+    })
+    .sort((a, b) => b.foreignRatio - a.foreignRatio)
+    .slice(0, 10);
+}
+
+function renderForeignRatioTop10(){
+  const wrap = document.getElementById('foreign-rank-table-wrap');
+  if(!wrap) return;
+  const note = document.getElementById('foreign-rank-note');
+  const krCount = STOCK_PERF.filter(s => s.market === 'KR').length;
+  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목) 중 지분율 상위 10개 · stock_performance.json 기준`;
+  const rows = computeForeignRatioTop10();
+  if(!rows.length){
+    wrap.innerHTML = '<div class="na-msg">아직 데이터가 없습니다.</div>';
+    return;
+  }
+  const body = rows.map((r, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><span class="foreign-rank-name-link" data-ticker="${r.ticker}" style="cursor:pointer">${escapeHtml(r.name)}</span></td>
+      <td>${r.foreignRatio.toFixed(2)}%</td>
+      <td class="${r.changeM1 == null ? '' : pctClass(r.changeM1)}">${r.changeM1 == null ? '-' : fmtPct(r.changeM1) + '%p'}</td>
+      <td class="${r.foreignNetBuyM1 == null ? '' : pctClass(r.foreignNetBuyM1)}">${r.foreignNetBuyM1 == null ? '-' : (r.foreignNetBuyM1 >= 0 ? '+' : '') + r.foreignNetBuyM1.toLocaleString(undefined, {maximumFractionDigits:1}) + '억원'}</td>
+    </tr>
+  `).join('');
+  wrap.innerHTML = `
+    <table><thead><tr><th>순위</th><th>종목</th><th>외국인 지분율</th><th>1개월 변화</th><th>외국인 순매수(1개월)</th></tr></thead><tbody>${body}</tbody></table>
+    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 아래 추적 종목 정보로 연결됩니다.</div>
+  `;
+  // 종목명 클릭 시 아래 "추적 종목" 파트가 그 종목으로 전환되도록 연결(2026-08-31 요청).
+  wrap.querySelectorAll('.foreign-rank-name-link').forEach(el => {
+    el.addEventListener('click', () => {
+      selectStock(el.dataset.ticker);
+      const target = document.getElementById('stock-tracked-chips');
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
 function populatePerfSectorFilter(){
   const sectors = [...new Set(STOCK_PERF.map(s=>s.sector))].sort();
   const sel = document.getElementById('perf-sector-filter');
@@ -1734,7 +1830,8 @@ function renderPerfTables(){
         <div class="perf-table-title bottom">Bottom 10</div>
         <div class="perf-table-box">${buildTable(bottom10)}</div>
       </div>
-    </div>`;
+    </div>
+    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 해당 기업 뉴스 검색(Google) 탭이 새로 열립니다.</div>`;
 }
 
 document.querySelectorAll('#perf-period-toggle button').forEach(b=>{
@@ -1761,13 +1858,14 @@ async function loadStockPerformance(){
     if(data.updated){
       const note = document.getElementById('perf-source-note');
       const dt = new Date(data.updated);
-      note.textContent = `글로벌 헬스케어 유니버스 · 로컬 통화 기준 · ${data.ok_count}/${data.count}종목 수집 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+      note.textContent = `글로벌 헬스케어 유니버스(${STOCK_PERF.length}종목) · 로컬 통화 기준 · ${data.ok_count}/${data.count}종목 수집 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
     }
     if(typeof renderStockStatCards === 'function') renderStockStatCards(selectedStockTicker);
     if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
     if(typeof renderForeignRatioChart === 'function') renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
     if(typeof renderFlowMap === 'function') renderFlowMap();
+    if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
   }catch(e){
     document.getElementById('perf-body').innerHTML =
       '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
@@ -1802,6 +1900,14 @@ function renderTrackedChips(){
   wrap.querySelectorAll('.chip').forEach(chip=>{
     chip.addEventListener('click', ()=> selectStock(chip.dataset.ticker));
   });
+  // 수익률/외국인 지분율 표와 동일하게 종목 집단 범위를 숫자로 표기(2026-08-31 요청) —
+  // 검색으로 추가 가능한 전체 유니버스는 TICKER_UNIVERSE(scripts/tickers.json) 기준.
+  const scopeNote = document.getElementById('tracked-scope-note');
+  if(scopeNote){
+    scopeNote.textContent = TICKER_UNIVERSE.length
+      ? `칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 전체 유니버스(${TICKER_UNIVERSE.length}종목)에서 추가`
+      : '칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가';
+  }
 }
 
 // 억원 값을 "1조 3,670억원" 형태로 표기 (1조 미만이면 "3,337억원").
