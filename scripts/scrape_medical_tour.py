@@ -32,12 +32,19 @@
        "1,234,567,890천원" 형식으로 보여준다(2026-08-25 사용자 요청 — 사이트 표기와 통일).
 
 - 조회 범위: "소비액·소비건수 추이"(monthly)와 "진료과목별 비율 추이"(deptAmt/deptCnt)는
-  범위가 다르다(2026-08-25 요청).
-    · monthly(전용 추이 qid) — 10개년(120개월) 요청. 실제 데이터는 2026-08-25 확인 기준
-      2018-01부터만 있어(그 이전은 API가 빈 응답) 결과적으로 약 8.5년치가 저장된다 —
-      데이터가 더 쌓이면 자동으로 늘어난다. index.html은 저장된 monthly 전체를 그린다.
-    · deptAmt/deptCnt(진료과목별 비율 qid) — 기존과 동일하게 이번 달 기준 과거 14개월만
-      요청(반영 시차 감안 여유분 포함). index.html은 이 중 최신 12개월만 그린다.
+  둘 다 최대 10개년(120개월)을 요청한다(2026-08-25 monthly 최초 확대 → 2026-08-31
+  deptAmt/deptCnt도 동일 범위로 확대, 피부과 탭 장기 추이 차트 신설 요청). 실제 데이터는
+  2026-08-25 확인 기준 2018-01부터만 있어(그 이전은 API가 빈 응답) 결과적으로 약 8.5년치가
+  저장된다 — 데이터가 더 쌓이면 자동으로 늘어난다.
+    · index.html의 "진료과목별 비율 추이"(전체 8개 과목 누적 막대) 차트는 저장된
+      deptAmt/deptCnt 중 최신 12개월만 그린다(현행 유지, 2026-08-25 요청 — 비율 차트만
+      1개년 유지).
+    · "피부과" 탭의 소비액/소비건수/ASP 차트는 deptAmt/deptCnt에서 dept === '피부과'만
+      뽑아 저장된 전체 기간(최대 10개년)을 그대로 그린다.
+  ⚠️ deptAmt/deptCnt의 amt는 monthly.amt와 단위가 다르다 — monthly.amt는 "천원"이지만
+  deptAmt.amt/deptCnt 쪽 qid(BY_TH_MEDIC_002_002_AMT 등, "진료과목별 비율" 전용)는 "원"
+  단위로 내려온다(2026-08-31 실측 확인 — 같은 달 deptAmt 8개 과목 합계가 monthly.amt*1000과
+  일치). index.html에서 deptAmt.amt를 표시할 때 이 차이를 놓치면 축 단위가 1000배 어긋난다.
 
 - 인증 불필요 · 무료. 이 단계도 "보강" 단계라, 호출이 전부 실패하면 기존 medical_tour.json을
   그대로 보존하고 경고만 남긴 채 0으로 종료한다(export_data.json 스크립트와 동일한 패턴).
@@ -58,7 +65,7 @@ REQUEST_TIMEOUT = 30
 REQUEST_RETRIES = 3
 REQUEST_RETRY_BACKOFF_SEC = 3
 REQUEST_DELAY_SEC = 0.2
-LOOKBACK_MONTHS_RATIO = 14  # 진료과목별 비율(deptAmt/deptCnt) 조회 범위 — 반영 시차 감안 여유분 포함, index.html에서 최신 12개월만 표시
+LOOKBACK_MONTHS_RATIO = 120  # 진료과목별 비율(deptAmt/deptCnt) 조회 범위 — 10개년(2026-08-31 확대, 피부과 탭 장기 추이용). index.html의 진료과목별 비율 차트는 이 중 최신 12개월만 표시, 피부과 탭은 전체 기간 표시
 LOOKBACK_MONTHS_TREND = 120  # 소비액·소비건수 추이(monthly) 조회 범위 — 10개년(2026-08-25 요청). 실제 데이터는 2018-01부터만 있음
 
 # key/label/natCd — natCd="000"은 전체(글로벌). 나머지는 selectComNatList.do로 확인한 코드
@@ -117,16 +124,19 @@ def api_post(qid, nat_cd, base_ym1, base_ym2, tab_div, debug=False):
 
 
 def fetch_tab(tab, ratio_ym1, trend_ym1, base_ym2, debug=False):
-    """진료과목별 비율(AMT/CNT) qid 두 번(ratio_ym1~base_ym2, 최근 1개년 남짓) + "전체 추이"
+    """진료과목별 비율(AMT/CNT) qid 두 번(ratio_ym1~base_ym2, 10개년) + "전체 추이"
     전용 qid(소비액/소비건수) 두 번(trend_ym1~base_ym2, 10개년), 총 네 번 호출한다. 전체
     (natCd=000)는 tabDiv=2 + 002_002(비율)/002_001(전용) qid, 국가별은 tabDiv=3 +
     003_001(비율)/003_003(전용) qid — 응답 필드명이 서로 달라(MCLS_AMT_RATE vs RATE_AMT 등)
     아래에서 흡수한다. 월별 총액·총건수(monthly)는 반드시 전용 qid에서만 뽑는다(모듈
     docstring의 ⚠️ 참고 — 진료과목 비율 qid의 합계 필드는 총건수는 근사치이고 총액은 단위가
-    다르다). 진료과목별 비율(dept_amt/dept_cnt)은 비율 qid에서 그대로 뽑는다.
+    다르다: 비율 qid는 "원", 전용 qid는 "천원"). 진료과목별 비율(dept_amt/dept_cnt)은
+    비율 qid에서 그대로 뽑는다(amt/cnt는 "원" 단위 그대로 저장 — index.html에서 백만원
+    환산 시 1,000,000으로 나눠야 한다).
 
-    ⚠️ monthly와 deptAmt/deptCnt는 조회 범위가 서로 다르므로(10년 vs 1년) 겹치는 최근
-    구간이라도 두 qid를 각각 따로 호출해야 한다 — 하나로 합쳐 쓸 수 없다."""
+    ratio_ym1과 trend_ym1은 2026-08-31부터 동일한 10개년 범위를 쓰지만(둘 다
+    LOOKBACK_MONTHS=120), qid 자체가 다르고 응답 실패 여부도 따로 판단해야 하므로 여전히
+    두 번씩 따로 호출한다."""
     is_all = tab["natCd"] == "000"
     tab_div = "2" if is_all else "3"
     qid_amt = "BY_TH_MEDIC_002_002_AMT" if is_all else "BY_TH_MEDIC_003_001_AMT"

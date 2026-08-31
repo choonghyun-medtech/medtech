@@ -62,7 +62,28 @@ h1{font-size:22px; margin:2px 0 2px}
   border:1px solid var(--border); background:var(--card); color:var(--sub);
   padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
 }
-.medtour-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+/* 국가별 하위 탭은 위 "의료소비 전체/피부과" 상위 탭보다 옅은 파란색으로 구분한다
+   (2026-08-31 요청) — .chip.active와 동일한 패턴(연한 배경 + accent색 글자/테두리)을 재사용. */
+.medtour-tab.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+/* 의료 소비 추이 섹션의 "의료소비 전체/피부과" 상위 서브탭 — 위 .medtour-tab과 같은
+   시각 스타일을 재사용하되, 클릭 핸들러가 섞이지 않도록 별도 클래스로 분리
+   (2026-08-31, 피부과 전용 탭 신설 요청). */
+.medtour-section-tab{
+  border:1px solid var(--border); background:var(--card); color:var(--sub);
+  padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.medtour-section-tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+/* "방한 외국인 · 의료관광객 데이터" 섹션 안에서 "의료관광객 소비 데이터"와 "방한 외국인
+   데이터" 두 데이터 묶음을 시각적으로 확실히 구분하기 위한 그룹 제목 — 옆의 .sec-h h2
+   (13px, 차트 단위 소제목)보다 크고 굵게, 왼쪽에 강조색 바를 붙여 한눈에 구간 전환이
+   보이도록 한다(2026-08-31 요청). */
+.medtour-group-h{
+  display:flex; align-items:center; gap:8px;
+  font-size:16px; font-weight:800; color:var(--text);
+  margin:32px 0 14px; padding-bottom:8px; border-bottom:2px solid var(--border);
+}
+.medtour-group-h:first-of-type{margin-top:0}
+.medtour-group-h::before{content:''; flex:none; width:4px; height:16px; background:var(--accent); border-radius:2px}
 .view{display:none}
 .view.active{display:block}
 .sec-h{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 8px}
@@ -521,26 +542,42 @@ tr:last-child td{border-bottom:none}
       <div class="stat-card" id="medtour-stat-card"></div>
     </div>
 
+    <div class="medtour-group-h">의료관광객 소비 데이터</div>
     <div class="sec-h"><h2 style="font-size:13px">외국인 의료 소비액 및 소비건수 추이</h2><span class="note" id="medtour-trend-note">월별 · 한국관광 데이터랩 · medical_tour.json 자동 갱신</span></div>
-    <div class="tabs" id="medtour-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
-    <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액</h2></div>
-    <div class="chart-box"><canvas id="medTourAmtChart"></canvas></div>
-    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
-    <div class="chart-box"><canvas id="medTourCntChart"></canvas></div>
-    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP</h2></div>
-    <div class="chart-box"><canvas id="medTourAspChart"></canvas></div>
+    <div class="tabs" id="medtour-section-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
 
-    <div class="perf-grid">
-      <div>
-        <div class="sec-h"><h2 style="font-size:13px">소비액 진료과목별 비율 추이</h2></div>
-        <div class="chart-box small"><canvas id="medTourDeptAmtChart"></canvas></div>
-      </div>
-      <div>
-        <div class="sec-h"><h2 style="font-size:13px">소비건수 진료과목별 비율 추이</h2></div>
-        <div class="chart-box small"><canvas id="medTourDeptCntChart"></canvas></div>
+    <div id="medtour-section-all">
+      <div class="tabs" id="medtour-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+      <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액</h2></div>
+      <div class="chart-box"><canvas id="medTourAmtChart"></canvas></div>
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
+      <div class="chart-box"><canvas id="medTourCntChart"></canvas></div>
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP</h2></div>
+      <div class="chart-box"><canvas id="medTourAspChart"></canvas></div>
+
+      <div class="perf-grid">
+        <div>
+          <div class="sec-h"><h2 style="font-size:13px">소비액 진료과목별 비율 추이</h2></div>
+          <div class="chart-box small"><canvas id="medTourDeptAmtChart"></canvas></div>
+        </div>
+        <div>
+          <div class="sec-h"><h2 style="font-size:13px">소비건수 진료과목별 비율 추이</h2></div>
+          <div class="chart-box small"><canvas id="medTourDeptCntChart"></canvas></div>
+        </div>
       </div>
     </div>
 
+    <div id="medtour-section-derma" style="display:none">
+      <div class="tabs" id="medtour-derma-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+      <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액(피부과)</h2></div>
+      <div class="chart-box"><canvas id="medTourDermaAmtChart"></canvas></div>
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수(피부과)</h2></div>
+      <div class="chart-box"><canvas id="medTourDermaCntChart"></canvas></div>
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP(피부과)</h2></div>
+      <div class="chart-box"><canvas id="medTourDermaAspChart"></canvas></div>
+    </div>
+
+    <div class="medtour-group-h">방한 외국인 데이터</div>
     <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note" id="visitor-trend-note">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</span></div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
 
@@ -2626,12 +2663,18 @@ loadExportData();
 //     (2026-08-25 요청 — 추이 차트만 10개년으로 확대, 비율 차트는 현행 유지).
 //  3) 전체/중국/일본/미국/태국 5개 탭 — 탭 전환 시 위 세 차트가 함께 바뀐다.
 let MEDICAL_TOUR_DATA = { tabs: [] };
-const MEDTOUR_STATE = { tab: 'all' };
+// section: 'all'(의료소비 전체) / 'derma'(피부과) — 피부과는 국가 탭을 별도로
+// 유지한다(2026-08-31, 피부과 전용 탭 신설 요청).
+const MEDTOUR_STATE = { tab: 'all', section: 'all', dermaTab: 'all' };
 let medTourAmtChartInstance = null;
 let medTourCntChartInstance = null;
 let medTourAspChartInstance = null;
 let medTourDeptAmtChartInstance = null;
 let medTourDeptCntChartInstance = null;
+let medTourDermaAmtChartInstance = null;
+let medTourDermaCntChartInstance = null;
+let medTourDermaAspChartInstance = null;
+const MEDTOUR_SECTIONS = [ { key: 'all', label: '의료소비 전체' }, { key: 'derma', label: '피부과' } ];
 
 // 8개 진료과목 고정 팔레트(데이터에 실제로 등장하는 이름 기준) — 대시보드 다른 곳에서 쓰는
 // 팔레트를 재사용해 전체 색감을 통일. 목록에 없는 새 과목이 나타나면 이름 해시로
@@ -2648,6 +2691,25 @@ function medtourDeptColor(name){
 
 function currentMedtourTab(){
   return MEDICAL_TOUR_DATA.tabs.find(t => t.key === MEDTOUR_STATE.tab) || MEDICAL_TOUR_DATA.tabs[0] || null;
+}
+function currentMedtourDermaTab(){
+  return MEDICAL_TOUR_DATA.tabs.find(t => t.key === MEDTOUR_STATE.dermaTab) || MEDICAL_TOUR_DATA.tabs[0] || null;
+}
+
+function renderMedtourSectionTabs(){
+  const wrap = document.getElementById('medtour-section-tabs');
+  if(!wrap) return;
+  wrap.innerHTML = MEDTOUR_SECTIONS.map(s =>
+    `<button class="medtour-section-tab${s.key === MEDTOUR_STATE.section ? ' active' : ''}" data-key="${s.key}">${s.label}</button>`
+  ).join('');
+  wrap.querySelectorAll('.medtour-section-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      MEDTOUR_STATE.section = btn.dataset.key;
+      renderMedtourSectionTabs();
+      document.getElementById('medtour-section-all').style.display = MEDTOUR_STATE.section === 'all' ? '' : 'none';
+      document.getElementById('medtour-section-derma').style.display = MEDTOUR_STATE.section === 'derma' ? '' : 'none';
+    });
+  });
 }
 
 // medical_tour.json의 monthly[].amt는 데이터랩 사이트 표시(callBackChart_03_01/chart_11,
@@ -2675,6 +2737,23 @@ function renderMedtourTabs(){
       MEDTOUR_STATE.tab = btn.dataset.key;
       renderMedtourTabs();
       renderMedtourAll();
+    });
+  });
+}
+
+function renderMedtourDermaTabs(){
+  const wrap = document.getElementById('medtour-derma-tabs');
+  if(!wrap) return;
+  if(!MEDICAL_TOUR_DATA.tabs.length){ wrap.innerHTML = ''; return; }
+  if(!MEDICAL_TOUR_DATA.tabs.find(t => t.key === MEDTOUR_STATE.dermaTab)) MEDTOUR_STATE.dermaTab = MEDICAL_TOUR_DATA.tabs[0].key;
+  wrap.innerHTML = MEDICAL_TOUR_DATA.tabs.map(t =>
+    `<button class="medtour-tab${t.key === MEDTOUR_STATE.dermaTab ? ' active' : ''}" data-key="${t.key}">${escapeHtml(t.label)}</button>`
+  ).join('');
+  wrap.querySelectorAll('.medtour-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      MEDTOUR_STATE.dermaTab = btn.dataset.key;
+      renderMedtourDermaTabs();
+      renderMedtourDermaTrendChart();
     });
   });
 }
@@ -2852,6 +2931,153 @@ function renderMedtourTrendChart(){
   });
 }
 
+// 피부과 탭 전용 — deptAmt/deptCnt(scrape_medical_tour.py가 2026-08-31부터 10개년치로
+// 확대 수집)에서 dept === '피부과'만 뽑아 월별 amt/cnt 시계열로 합친다.
+// ⚠️ deptAmt/deptCnt의 amt는 monthly.amt("천원" 단위)와 달리 "원" 단위로 내려온다
+// (scrape_medical_tour.py 모듈 docstring 참고 — 같은 달 8개 과목 합계가 monthly.amt*1000과
+// 일치함을 실측 확인). 백만원 환산 시 1,000,000으로 나눠야 하며, 1,000으로만 나누면 축
+// 눈금이 1,000배 부풀어 보인다(2026-08-31 사용자 지적으로 발견).
+function buildMedtourDermaRows(tab){
+  if(!tab) return [];
+  const amtByYm = new Map((tab.deptAmt || []).filter(r => r.dept === '피부과').map(r => [r.ym, r.amt]));
+  const cntByYm = new Map((tab.deptCnt || []).filter(r => r.dept === '피부과').map(r => [r.ym, r.cnt]));
+  const months = [...new Set([...amtByYm.keys(), ...cntByYm.keys()])].sort();
+  return months.map(ym => ({ ym, amt: amtByYm.get(ym) ?? null, cnt: cntByYm.get(ym) ?? null }));
+}
+
+function renderMedtourDermaTrendChart(){
+  if(medTourDermaAmtChartInstance){ medTourDermaAmtChartInstance.destroy(); medTourDermaAmtChartInstance = null; }
+  if(medTourDermaCntChartInstance){ medTourDermaCntChartInstance.destroy(); medTourDermaCntChartInstance = null; }
+  if(medTourDermaAspChartInstance){ medTourDermaAspChartInstance.destroy(); medTourDermaAspChartInstance = null; }
+  const tab = currentMedtourDermaTab();
+  const rows = buildMedtourDermaRows(tab);
+  if(!rows.length) return;
+
+  // 전체 추이 차트와 동일하게, YoY 비교가 가능한 시점(데이터 시작 다음 해 1월)부터만
+  // 표시한다(2026-08-31 요청 — 피부과 소비액/소비건수 차트에도 YoY 선 추가).
+  const [firstY, firstM] = rows[0].ym.split('-').map(Number);
+  const displayStartYm = `${firstY + 1}-${String(firstM).padStart(2, '0')}`;
+  const displayRows = rows.filter(r => r.ym >= displayStartYm);
+  if(!displayRows.length) return;
+
+  const yoySeries = (valueOf) => {
+    const byYm = new Map(rows.map(r => [r.ym, valueOf(r)]));
+    return displayRows.map(r => {
+      const prevVal = byYm.get(ymMinusYear(r.ym));
+      const curVal = byYm.get(r.ym);
+      if(prevVal == null || !prevVal || curVal == null) return null;
+      return (curVal - prevVal) / prevVal * 100;
+    });
+  };
+
+  medTourDermaAmtChartInstance = new Chart(document.getElementById('medTourDermaAmtChart'), {
+    data: {
+      labels: displayRows.map(r => r.ym),
+      datasets: [
+        {
+          type: 'bar', label: '피부과 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1e6),
+          backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.amt),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '소비액(백만원)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  medTourDermaCntChartInstance = new Chart(document.getElementById('medTourDermaCntChart'), {
+    data: {
+      labels: displayRows.map(r => r.ym),
+      datasets: [
+        {
+          type: 'bar', label: '피부과 소비건수(건)', data: displayRows.map(r => r.cnt),
+          backgroundColor: '#16a34a', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.cnt),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : fmtCnt(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '소비건수(건)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 원) / 소비건수(cnt) / 10000.
+  const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null);
+  medTourDermaAspChartInstance = new Chart(document.getElementById('medTourDermaAspChart'), {
+    type: 'bar',
+    data: {
+      labels: displayRows.map(r => r.ym),
+      datasets: [{ label: 'ASP(만원)', data: asp, backgroundColor: '#7c3aed' }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원` } },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: { grid: { color: gridColor() }, ticks: { color: textColor() }, title: { display: true, text: 'ASP(만원)', color: textColor() } },
+      },
+    },
+  });
+}
+
 // deptRows({ym, dept, ratio, rank}[])를 months(x축 순서) 기준으로 과목별 시계열 데이터셋으로
 // 피벗한다. 과목 순서는 가장 최근 달의 비중 순위(rank)를 기준으로 정렬해 데이터랩 원 사이트의
 // 누적 막대와 같은 방식(비중 큰 과목이 아래쪽부터)으로 보이게 한다.
@@ -2921,6 +3147,7 @@ function renderMedtourAll(){
   renderMedtourTrendChart();
   renderMedtourDeptCharts();
   renderMedtourPenetrationChart();
+  renderMedtourDermaTrendChart();
 }
 
 async function loadMedicalTourData(){
@@ -2931,7 +3158,9 @@ async function loadMedicalTourData(){
   }catch(e){
     MEDICAL_TOUR_DATA = { tabs: [] };
   }
+  renderMedtourSectionTabs();
   renderMedtourTabs();
+  renderMedtourDermaTabs();
   renderMedtourAll();
 }
 loadMedicalTourData();
