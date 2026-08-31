@@ -100,7 +100,7 @@ h1{font-size:22px; margin:2px 0 2px}
 .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:6px}
 .stat-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px}
 .stat-card .lbl{font-size:11.5px; color:var(--dim); margin-bottom:4px}
-.stat-card .val{font-size:18px; font-weight:700}
+.stat-card .val{font-size:18px; font-weight:700; word-break:keep-all; overflow-wrap:break-word}
 .stat-card .delta{font-size:12px; margin-top:2px}
 .up{color:var(--red)} .down{color:var(--blue)}
 .chart-box{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:6px; position:relative; height:280px}
@@ -270,6 +270,7 @@ tr:last-child td{border-bottom:none}
   <div class="tabs">
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
     <button class="tab" data-view="stock">주가 데이터</button>
+    <button class="tab" data-view="flowmap">수급 지도</button>
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
     <button class="tab" data-view="export">수출 데이터</button>
     <button class="tab" data-view="medtour">의료관광 데이터</button>
@@ -385,6 +386,30 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
     <div class="chart-box"><canvas id="flowChart"></canvas></div>
+  </section>
+
+  <!-- ================= FLOW MAP ================= -->
+  <section class="view" id="view-flowmap">
+    <div class="sec-h"><h2>수급 지도 · 찬집/빈집</h2>
+      <div class="toggle" id="flowmap-period-toggle">
+        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
+      </div>
+    </div>
+    <div class="note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · investor_flow.json + stock_performance.json 자동 갱신</div>
+
+    <div class="cards">
+      <div class="stat-card" id="flowmap-stat-fill_buy"></div>
+      <div class="stat-card" id="flowmap-stat-fill_sell"></div>
+      <div class="stat-card" id="flowmap-stat-empty_buy"></div>
+      <div class="stat-card" id="flowmap-stat-empty_sell"></div>
+    </div>
+
+    <div class="sec-h" style="margin:10px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600" id="flowmap-axis-label"></h2><span class="note" id="flowmap-note"></span></div>
+    <div class="chart-box" style="height:540px"><canvas id="flowMapChart"></canvas></div>
+    <div class="note" style="margin:-2px 0 8px; font-size:10.5px; color:var(--dim)">※ 원점 근처에 몰린 종목은 이름표가 겹쳐 생략. 점에 올리면 뜨고, 아래 표에는 전부 포함됨.</div>
+
+    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">종목별 수급 현황</h2></div>
+    <div id="flowmap-table-wrap"></div>
   </section>
 
   <!-- ================= CALENDAR ================= -->
@@ -1398,8 +1423,230 @@ async function loadInvestorFlow(){
     INVESTOR_FLOW = {};
   }
   renderFlowChart(selectedStockTicker, selectedFlowMonths);
+  if(typeof renderFlowMap === 'function') renderFlowMap();
 }
 loadInvestorFlow();
+
+// ==================================================================
+// 수급 지도 · 찬집/빈집 — investor_flow.json(일별 기관+외국인 순매매대금)과
+// stock_performance.json(시가총액)을 조합해 국내 종목별 "수급 강도"를 산점도로 보여준다.
+// newsbot-3uj.pages.dev/coverage/coverage의 "수급 지도" 탭 컨셉을 참고해 우리 데이터로
+// 자체 구성(2026-08-31) — 가로축=중기 누적 순매수/시가총액(얼마나 쌓였나), 세로축=최근
+// 단기 순매수/시가총액(지금 담는 중인지 비우는 중인지). investor_flow.json과
+// stock_performance.json은 각자 독립적으로 fetch되므로(loadInvestorFlow/
+// loadStockPerformance) 어느 쪽이 먼저 끝나든 이 함수를 다시 호출해 재계산한다 — 아직 한쪽이
+// 안 채워졌으면 rows가 비어(둘 다 있는 종목만 채택) 빈 상태로 그렸다가 나머지 도착 시 다시 채워진다.
+// 기간별(1/3/6/12개월) 가로축(중기 누적)·세로축(최근 단기) 거래일수 — MONTHS_TO_TRADING_DAYS와
+// 동일한 개월→거래일 환산을 가로축에 쓰고, 세로축은 2026-08-31 요청대로 1개월만 5거래일(약
+// 1주일), 나머지는 20거래일(약 1개월)로 고정한다.
+const FLOWMAP_PERIODS = {
+  1: { midDays: MONTHS_TO_TRADING_DAYS[1], shortDays: 5 },
+  3: { midDays: MONTHS_TO_TRADING_DAYS[3], shortDays: 20 },
+  6: { midDays: MONTHS_TO_TRADING_DAYS[6], shortDays: 20 },
+  12: { midDays: MONTHS_TO_TRADING_DAYS[12], shortDays: 20 },
+};
+let flowMapSelectedMonths = 3;
+
+// 사분면 4구분 — 가로축(중기 누적, "찬집"=쌓여있음/"빈집"=비어있음) x 세로축(최근 단기,
+// "담는중"=최근에도 유입/"비우는중"=최근 유출)의 조합. 점 색깔·표 색깔·범례 모두 이 4구분
+// 기준으로 통일한다(2026-08-31 요청 — 이전엔 섹터별 색상이었으나 수급 상태 색상으로 변경).
+const FLOWMAP_QUADRANTS = [
+  { key: 'fill_buy', label: '찬집 · 담는 중', color: '#16a34a', test: (x, y) => x >= 0 && y >= 0 },
+  { key: 'fill_sell', label: '찬집 · 비우기 시작', color: '#f59e0b', test: (x, y) => x >= 0 && y < 0 },
+  { key: 'empty_buy', label: '빈집 · 담기 시작', color: '#0891b2', test: (x, y) => x < 0 && y >= 0 },
+  { key: 'empty_sell', label: '빈집 · 비우는 중', color: '#dc2626', test: (x, y) => x < 0 && y < 0 },
+];
+function classifyFlowMapQuadrant(x, y){
+  return FLOWMAP_QUADRANTS.find(q => q.test(x, y)) || FLOWMAP_QUADRANTS[3];
+}
+
+function computeFlowMapRows(months){
+  const period = FLOWMAP_PERIODS[months] || FLOWMAP_PERIODS[3];
+  const rows = [];
+  for(const s of STOCK_PERF){
+    if(s.market !== 'KR') continue;
+    const flow = INVESTOR_FLOW[s.ticker];
+    const cap = s.market_cap_krw_eok;
+    if(!flow || !flow.dates || !flow.dates.length || !cap) continue;
+    const net = flow.dates.map((_, i) => {
+      const a = flow.inst_eok[i], b = flow.foreign_eok[i];
+      return (a == null || b == null) ? null : a + b;
+    });
+    const sumLast = (n) => net.slice(-n).reduce((acc, v) => acc + (v == null ? 0 : v), 0);
+    const midSum = sumLast(period.midDays);
+    const shortSum = sumLast(period.shortDays);
+    const x = midSum / cap * 100, y = shortSum / cap * 100;
+    rows.push({
+      ticker: s.ticker, name: s.name, sector: s.sector,
+      x, y, midSum, shortSum, cap, lastDate: flow.dates[flow.dates.length - 1],
+      quadrant: classifyFlowMapQuadrant(x, y),
+    });
+  }
+  return rows;
+}
+
+// 사분면 배경 음영 + 기준선(0) + 사분면 라벨 + 점 옆 종목명 라벨 — 별도 플러그인 등록 없이
+// Chart.js 생성자의 inline plugins 배열로 이번 차트에만 적용한다.
+const flowMapQuadrantPlugin = {
+  id: 'flowmapQuadrant',
+  beforeDraw(chart){
+    const { ctx, chartArea, scales } = chart;
+    if(!chartArea) return;
+    const xZero = scales.x.getPixelForValue(0);
+    const yZero = scales.y.getPixelForValue(0);
+    ctx.save();
+    ctx.fillStyle = 'rgba(37, 99, 235, 0.06)';
+    ctx.fillRect(xZero, chartArea.top, chartArea.right - xZero, yZero - chartArea.top);
+    ctx.fillStyle = 'rgba(220, 38, 38, 0.06)';
+    ctx.fillRect(chartArea.left, yZero, xZero - chartArea.left, chartArea.bottom - yZero);
+    ctx.strokeStyle = gridColor();
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(xZero, chartArea.top); ctx.lineTo(xZero, chartArea.bottom); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(chartArea.left, yZero); ctx.lineTo(chartArea.right, yZero); ctx.stroke();
+    ctx.font = '11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.globalAlpha = 0.6;
+    ctx.fillStyle = textColor();
+    ctx.textAlign = 'right'; ctx.fillText('찬집 · 담는 중', chartArea.right - 6, chartArea.top + 14);
+    ctx.textAlign = 'left';  ctx.fillText('빈집 · 담기 시작', chartArea.left + 6, chartArea.top + 14);
+    ctx.textAlign = 'left';  ctx.fillText('빈집 · 비우는 중', chartArea.left + 6, chartArea.bottom - 8);
+    ctx.textAlign = 'right'; ctx.fillText('찬집 · 비우기 시작', chartArea.right - 6, chartArea.bottom - 8);
+    ctx.restore();
+  },
+  // 원점 근처에 종목이 몰리면 이름표가 서로 겹쳐 읽을 수 없게 되므로, 이미 그려진 이름표와
+  // 픽셀 박스가 겹치는 라벨은 생략한다(점 자체는 그대로 그려짐 — 겹친 종목은 hover 툴팁이나
+  // 아래 표에서 확인). 그려지는 순서(데이터셋 순서 = FLOWMAP_QUADRANTS 순서, 그 안에서는
+  // 원본 종목 순서)상 먼저 오는 쪽이 우선권을 갖는다(2026-08-31 요청).
+  afterDatasetsDraw(chart){
+    const { ctx } = chart;
+    ctx.save();
+    ctx.font = '9px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.fillStyle = textColor();
+    ctx.globalAlpha = 0.75;
+    ctx.textAlign = 'left';
+    const placed = [];
+    chart.data.datasets.forEach((ds, dsIndex) => {
+      const meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach((point, i) => {
+        const name = ds.data[i].name;
+        const w = ctx.measureText(name).width;
+        const rect = { x: point.x + 5, y: point.y - 7, w: w + 2, h: 11 };
+        const overlaps = placed.some(p =>
+          rect.x < p.x + p.w && p.x < rect.x + rect.w && rect.y < p.y + p.h && p.y < rect.y + rect.h
+        );
+        if(overlaps) return;
+        placed.push(rect);
+        ctx.fillText(name, point.x + 6, point.y + 3);
+      });
+    });
+    ctx.restore();
+  },
+};
+
+let flowMapChartInstance = null;
+function renderFlowMapChart(rows, period){
+  if(flowMapChartInstance){ flowMapChartInstance.destroy(); flowMapChartInstance = null; }
+  const note = document.getElementById('flowmap-note');
+  const axisLabel = document.getElementById('flowmap-axis-label');
+  if(axisLabel){
+    axisLabel.textContent = `가로축=중기 누적(최근 ${period.midDays}거래일) · 세로축=최근 단기(최근 ${period.shortDays}거래일)`;
+  }
+  if(!rows.length){
+    if(note) note.textContent = '아직 데이터가 없습니다.';
+    return;
+  }
+  if(note) note.textContent = `${rows.length}종목 · 기준일 ${rows[0].lastDate} · 네이버금융/자체 시가총액 추정 기준`;
+
+  // 종목 색은 섹터가 아니라 사분면(찬집/빈집 x 담는중/비우는중) 4구분으로 고정한다 —
+  // 아래 종목별 수급 현황 표와 동일한 색·라벨을 쓴다(2026-08-31 요청). 데이터가 0개인
+  // 구분도 범례에 항상 표시되도록 FLOWMAP_QUADRANTS 순서 그대로 데이터셋을 만든다.
+  const datasets = FLOWMAP_QUADRANTS.map(q => ({
+    label: q.label,
+    data: rows.filter(r => r.quadrant.key === q.key).map(r => ({ x: r.x, y: r.y, name: r.name, ticker: r.ticker })),
+    backgroundColor: q.color,
+    borderColor: 'rgba(255,255,255,.7)', borderWidth: 1,
+    pointRadius: 5, pointHoverRadius: 7,
+  }));
+
+  flowMapChartInstance = new Chart(document.getElementById('flowMapChart'), {
+    type: 'scatter',
+    data: { datasets },
+    plugins: [flowMapQuadrantPlugin],
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.raw.name}: 중기 ${ctx.raw.x.toFixed(1)}% · 단기 ${ctx.raw.y.toFixed(1)}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v.toFixed(0) + '%' },
+          title: { display: true, text: `중기 누적(최근 ${period.midDays}거래일) 순매수/시총(%)`, color: textColor() },
+        },
+        y: {
+          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v.toFixed(0) + '%' },
+          title: { display: true, text: `최근 단기(최근 ${period.shortDays}거래일) 순매수/시총(%)`, color: textColor() },
+        },
+      },
+    },
+  });
+}
+
+// 상단 카드는 "가장 강한 종목 1개"가 아니라 사분면별 종목 수 카운트로 표시한다
+// (2026-08-31 요청 — 긴 종목명이 카드 폭에서 어색하게 줄바꿈되는 문제도 함께 해소됨).
+function renderFlowMapStatCards(rows){
+  const cards = FLOWMAP_QUADRANTS.map(q => document.getElementById('flowmap-stat-' + q.key));
+  if(cards.some(c => !c)) return;
+  FLOWMAP_QUADRANTS.forEach((q, i) => {
+    const count = rows.filter(r => r.quadrant.key === q.key).length;
+    cards[i].innerHTML = `
+      <div class="lbl">${q.label}</div>
+      <div class="val" style="color:${q.color}; word-break:normal">${count}종목</div>
+    `;
+  });
+}
+
+function renderFlowMapTable(rows){
+  const wrap = document.getElementById('flowmap-table-wrap');
+  if(!wrap) return;
+  if(!rows.length){
+    wrap.innerHTML = '<div class="na-msg">아직 데이터가 없습니다.</div>';
+    return;
+  }
+  const sorted = [...rows].sort((a, b) => (b.x + b.y) - (a.x + a.y));
+  const body = sorted.map(r => `
+    <tr>
+      <td>${escapeHtml(r.name)}</td>
+      <td>${escapeHtml(r.sector)}</td>
+      <td>${r.x.toFixed(1)}%</td>
+      <td>${r.y.toFixed(1)}%</td>
+      <td>
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${r.quadrant.color};margin-right:6px"></span>
+        <span style="color:${r.quadrant.color}">${r.quadrant.label}</span>
+      </td>
+    </tr>
+  `).join('');
+  wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>중기(%)</th><th>단기(%)</th><th>구분</th></tr></thead><tbody>${body}</tbody></table>`;
+}
+
+function renderFlowMap(){
+  const period = FLOWMAP_PERIODS[flowMapSelectedMonths] || FLOWMAP_PERIODS[3];
+  const rows = computeFlowMapRows(flowMapSelectedMonths);
+  renderFlowMapStatCards(rows);
+  renderFlowMapChart(rows, period);
+  renderFlowMapTable(rows);
+}
+document.querySelectorAll('#flowmap-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#flowmap-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    flowMapSelectedMonths = parseInt(b.dataset.months, 10);
+    renderFlowMap();
+  });
+});
 
 // ==================================================================
 // 수익률 Top10 / Bottom10 — 실데이터 (stock_performance.json fetch)
@@ -1520,6 +1767,7 @@ async function loadStockPerformance(){
     if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
     if(typeof renderForeignRatioChart === 'function') renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
+    if(typeof renderFlowMap === 'function') renderFlowMap();
   }catch(e){
     document.getElementById('perf-body').innerHTML =
       '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
