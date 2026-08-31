@@ -229,7 +229,7 @@ def main():
     result = {}
     ok = 0
     for item in kr_items:
-        m = re.match(r"^(\d{6})\.(KS|KQ)$", item["ticker"])
+        m = re.match(r"^([0-9A-Za-z]{6})\.(KS|KQ)$", item["ticker"])
         if not m:
             continue
         code = m.group(1)
