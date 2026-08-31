@@ -1,10 +1,18 @@
 {
- "updated": "2026-08-30T21:11:27Z",
+ "updated": "2026-08-31T21:11:23Z",
  "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
  "domestic": [
   {
    "cat": "Digital Health",
    "items": [
+    {
+     "co": "씨어스",
+     "ctx": "뉴스",
+     "t": "[핀셋+] [대웅제약] 씨어스 성공 공식 재가동…의료기기 4사에 연속 출자",
+     "src": "dealsite.co.kr",
+     "date": "2026-08-31",
+     "url": "https://dealsite.co.kr/articles/167937"
+    },
     {
      "co": "메쥬",
      "ctx": "뉴스",
@@ -14,44 +22,36 @@
      "url": "https://www.etoday.co.kr/news/view/2619631"
     },
     {
-     "co": "인바디",
+     "co": "메디아나",
      "ctx": "뉴스",
-     "t": "네이버, 의료AI 확장…'실시간 진료기록' 개발 추진",
+     "t": "메디아나, 하반기 ECG 매출 반영 '성장 지속'",
      "src": "dailymedi.com",
      "date": "2026-08-31",
-     "url": "https://www.dailymedi.com/news/news_view.php?wr_id=939952"
+     "url": "https://www.dailymedi.com/news/news_view.php?wr_id=939875"
     },
     {
-     "co": "인바디",
+     "co": "메디아나",
      "ctx": "뉴스",
-     "t": "‘30살’ 인바디, 시니어 건강관리 솔루션 강화 [서울바이오헬스대상]",
-     "src": "seoul.co.kr",
+     "t": "셀바스헬스케어-충남대 산학협력 MOU…",
+     "src": "the-stock.kr",
      "date": "2026-08-31",
-     "url": "https://www.seoul.co.kr/news/economy/industry/2026/08/31/20260831014004?wlog_tag3=naver"
+     "url": "https://www.the-stock.kr/news/articleView.html?idxno=33272"
     },
     {
-     "co": "스카이랩스",
+     "co": "메디아나",
      "ctx": "뉴스",
-     "t": "위축된 IPO 투심 속…‘공모가 하단 밑’ 스카이랩스, 코스닥 상장 [이번...",
-     "src": "sedaily.com",
+     "t": "셀바스헬스케어-충남대학교, 산학협력 업무협약 체결",
+     "src": "bokuennews.com",
      "date": "2026-08-31",
-     "url": "https://www.sedaily.com/article/20084862?ref=naver"
+     "url": "http://www.bokuennews.com/news/article.html?no=283344"
     },
     {
-     "co": "스카이랩스",
+     "co": "아이센스",
      "ctx": "뉴스",
-     "t": "[주간IPO] '반지형 혈압계' 개발사 스카이랩스, 4일 코스닥 상장",
-     "src": "newspim.com",
+     "t": "[HIT알공] 부광약품, 한국유니온제약 회생 드디어 끝마쳐",
+     "src": "hitnews.co.kr",
      "date": "2026-08-31",
-     "url": "https://www.newspim.com/news/view/20260828000877"
-    },
-    {
-     "co": "스카이랩스",
-     "ctx": "뉴스",
-     "t": "[IPO 워치] 스카이랩스 코스닥 입성…수요예측 2곳",
-     "src": "news2day.co.kr",
-     "date": "2026-08-31",
-     "url": "https://www.news2day.co.kr/article/20260828500193"
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78786"
     }
    ]
   },
@@ -59,58 +59,66 @@
    "cat": "Aesthetics",
    "items": [
     {
-     "co": "파마리서치",
-     "ctx": "뉴스",
-     "t": "파마리서치, 리쥬란 앞세워 글로벌 공략 속도 [서울바이오헬스대상]",
-     "src": "seoul.co.kr",
-     "date": "2026-08-31",
-     "url": "https://www.seoul.co.kr/news/economy/industry/2026/08/31/20260831015004?wlog_tag3=naver"
-    },
-    {
      "co": "에이피알",
      "ctx": "뉴스",
-     "t": "K뷰티 주문 폭증에 설비증설 속도전⋯ODM업계 투자 반년 새 ‘두 배’",
+     "t": "K뷰티 3사, 글로벌 유통망 선점 '쩐의 전쟁'…반년간 9000억 썼다",
      "src": "etoday.co.kr",
+     "date": "2026-09-01",
+     "url": "https://www.etoday.co.kr/news/view/2620054"
+    },
+    {
+     "co": "클래시스",
+     "ctx": "뉴스",
+     "t": "윤준오 클래시스 대표, 태국서 '쿼드세이' 띄우며 글로벌 공략 시동",
+     "src": "전자신문",
      "date": "2026-08-31",
-     "url": "https://www.etoday.co.kr/news/view/2619525"
+     "url": "https://www.etnews.com/20260831000272"
     },
     {
-     "co": "리센스메디컬",
+     "co": "클래시스",
      "ctx": "뉴스",
-     "t": "‘케이뱅크 대어 낚은’ 삼성증권, IPO 공모액 1위…건수는 ‘코스닥 집...",
-     "src": "etoday.co.kr",
+     "t": "클래시스, 태국서 마이크로니들 RF '쿼드세이' 출시",
+     "src": "bokuennews.com",
      "date": "2026-08-31",
-     "url": "https://www.etoday.co.kr/news/view/2619631"
+     "url": "http://www.bokuennews.com/news/article.html?no=283342"
     },
     {
-     "co": "클래시스, 시지메드텍, 한스바이오메드, 엘앤씨바이오, 리센스메디컬",
+     "co": "클래시스",
      "ctx": "뉴스",
-     "t": "해외 실적 폭발과 K-뷰티 의료기기 돌풍… 건강관리장비주 매수세 몰렸...",
-     "src": "pinpointnews.co.kr",
-     "date": "2026-08-30",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=481858"
+     "t": "[뷰티업계 이모저모] 페리페라, 가을 색조 신제품 5종 출시 外",
+     "src": "health.chosun.com",
+     "date": "2026-08-31",
+     "url": "https://health.chosun.com/site/data/html_dir/2026/08/31/2026083101262.html"
     },
     {
-     "co": "파마리서치",
+     "co": "휴젤, 메디톡스",
      "ctx": "뉴스",
-     "t": "[1% 초고수의 주간 선택] '삼양식품' 사고 '현대해상' 팔았다",
-     "src": "ebn.co.kr",
-     "date": "2026-08-30",
-     "url": "https://www.ebn.co.kr/news/articleView.html?idxno=1722174"
+     "t": "'K-톡신' 상반기 매출 4000억 돌파에도…수출규제 16년째 '꽁꽁'",
+     "src": "newsworks.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.newsworks.co.kr/news/articleView.html?idxno=852141"
     },
     {
-     "co": "에이피알",
+     "co": "휴젤",
      "ctx": "뉴스",
-     "t": "화장품 ODM 3사…2분기 나란히 역대급 실적",
-     "src": "apparelnews.co.kr",
-     "date": "2026-08-30",
-     "url": "http://www.apparelnews.co.kr/news/news_view/?idx=227251"
+     "t": "청담루비의원 김소은·미호의원 박신혜 원장, 중국 광저우서 보툴리눔 ...",
+     "src": "mdtoday.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.mdtoday.co.kr/news/articleView.html?idxno=610340"
     }
    ]
   },
   {
    "cat": "Robotics",
    "items": [
+    {
+     "co": "리브스메드",
+     "ctx": "뉴스",
+     "t": "[더벨]NHN, 리브스메드 지분 전량 처분 '10년 투자 회수 마무리'",
+     "src": "thebell.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202608261408563480107668"
+    },
     {
      "co": "큐렉소",
      "ctx": "뉴스",
@@ -125,35 +133,50 @@
    "cat": "Humanoid",
    "items": [
     {
-     "co": "현대차그룹",
+     "co": "레인보우로보틱스",
      "ctx": "뉴스",
-     "t": "[이슈 메이커] 中 본토 증시 1호 상장 휴머노이드 기업 유니트리 창업자...",
-     "src": "economychosun.com",
-     "date": "2026-08-31",
-     "url": "https://economychosun.com/site/data/html_dir/2026/08/24/2026082400013.html"
+     "t": "교실부터 취업·자립까지…삼성, ‘교육 사다리’ 놓는다 [CSR 필름 리와...",
+     "src": "etoday.co.kr",
+     "date": "2026-09-01",
+     "url": "https://www.etoday.co.kr/news/view/2618504"
     },
     {
      "co": "현대차그룹",
      "ctx": "뉴스",
-     "t": "현대차 美공장 로봇 1400대 '인간 2명당 1대'…2028년 휴머노이드 투입",
-     "src": "news1.kr",
-     "date": "2026-08-30",
-     "url": "https://www.news1.kr/world/usa-canada/6273939"
+     "t": "휴머노이드 1위 中…비결은 ‘메가 M&A’",
+     "src": "sedaily.com",
+     "date": "2026-08-31",
+     "url": "https://www.sedaily.com/article/20085413?ref=naver"
+    },
+    {
+     "co": "현대차그룹",
+     "ctx": "뉴스",
+     "t": "'전기 충격' 장갑에 이어…현대차 로봇개로 이민자 단속?",
+     "src": "news.sbs.co.kr",
+     "date": "2026-08-31",
+     "url": "https://news.sbs.co.kr/news/endPage.do?news_id=N1008730130&plink=ORI&cooper=NAVER"
+    },
+    {
+     "co": "레인보우로보틱스",
+     "ctx": "뉴스",
+     "t": "[26.8.31 증시 인싸잇] ‘3대 수급’ 다 팔았는데…삼전닉스 자사주가 코...",
+     "src": "mediawatch.kr",
+     "date": "2026-08-31",
+     "url": "https://www.mediawatch.kr/news/article.html?no=260847"
+    },
+    {
+     "co": "레인보우로보틱스",
+     "ctx": "뉴스",
+     "t": "['클릭' 증시] 삼전닉스 자사주 매입에 잭슨홀 '매파' 연설 딛고 반등",
+     "src": "00news.co.kr",
+     "date": "2026-08-31",
+     "url": "http://www.00news.co.kr/news/articleView.html?idxno=106239"
     }
    ]
   },
   {
    "cat": "산업용·서비스 로봇",
-   "items": [
-    {
-     "co": "두산로보틱스",
-     "ctx": "뉴스",
-     "t": "[모두가 행복한 경기교육 대전환] 수원삼일공고의 미래혁신",
-     "src": "kihoilbo.co.kr",
-     "date": "2026-08-30",
-     "url": "https://www.kihoilbo.co.kr/news/articleView.html?idxno=3033029"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "로보틱스 밸류체인",
@@ -161,16 +184,64 @@
     {
      "co": "로보티즈",
      "ctx": "뉴스",
-     "t": "[DD 주간브리핑] \"6G·AIDC부터 AI 쇼핑까지\"... 국회, AI 인프라·플랫폼...",
+     "t": "韓 AI·로봇 12개사 홍콩행… 투자 유치·아시아 진출 모색",
      "src": "ddaily.co.kr",
-     "date": "2026-08-30",
-     "url": "https://www.ddaily.co.kr/page/view/2026083000131487647"
+     "date": "2026-08-31",
+     "url": "https://www.ddaily.co.kr/page/view/2026083112491981288"
+    },
+    {
+     "co": "에스비비테크",
+     "ctx": "뉴스",
+     "t": "[분석_스마트팩토리 ⑫에스비비테크] 류재완·송진웅 체제 에스비비테크...",
+     "src": "newsworker.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.newsworker.co.kr/news/articleView.html?idxno=501682"
+    },
+    {
+     "co": "에스비비테크",
+     "ctx": "뉴스",
+     "t": "\"에스비비테크, 휴머노이드 부품 대기업 캡티브 시장 진입한다\"",
+     "src": "irobotnews.com",
+     "date": "2026-08-31",
+     "url": "https://www.irobotnews.com/news/articleView.html?idxno=48203"
+    },
+    {
+     "co": "에스비비테크",
+     "ctx": "뉴스",
+     "t": "[AM리더스클럽33] 에스비비테크 류재완 대표, \"국산화 넘어 양산체계 고...",
+     "src": "industrynews.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.industrynews.co.kr/news/articleView.html?idxno=85220"
+    },
+    {
+     "co": "에스피지",
+     "ctx": "뉴스",
+     "t": "로봇 상장기업 2026년 8월 브랜드평판...레인보우로보틱스, 두산, LIG D&A...",
+     "src": "energy-news.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.energy-news.co.kr/news/articleView.html?idxno=227767"
+    },
+    {
+     "co": "에스피지",
+     "ctx": "뉴스",
+     "t": "로봇 상장기업 브랜드평판 2026년 8월 빅데이터 분석결과…1위 레인보우...",
+     "src": "cbci.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.cbci.co.kr/news/articleView.html?idxno=602411"
     }
    ]
   },
   {
    "cat": "Therapeutics",
    "items": [
+    {
+     "co": "시지바이오",
+     "ctx": "뉴스",
+     "t": "시지바이오, 노보시스 임상근거 확대…주상골 불유합서 7명 전원 골유합",
+     "src": "thepublic.kr",
+     "date": "2026-08-31",
+     "url": "https://www.thepublic.kr/news/articleView.html?idxno=316916"
+    },
     {
      "co": "로킷헬스케어",
      "ctx": "뉴스",
@@ -182,10 +253,10 @@
     {
      "co": "시지바이오",
      "ctx": "뉴스",
-     "t": "시지바이오 \"노보시스, 주상골 불유합 예비 임상서 환자 7명 전원 골유합...",
-     "src": "bizwnews.com",
-     "date": "2026-08-30",
-     "url": "http://www.bizwnews.com/news/articleView.html?idxno=144640"
+     "t": "시지바이오, '노보시스' 적용 주상골 불유합 수술…환자 7명 모두 골유합",
+     "src": "thepublic.kr",
+     "date": "2026-08-29",
+     "url": "https://www.thepublic.kr/news/articleView.html?idxno=316624"
     }
    ]
   },
@@ -193,12 +264,44 @@
    "cat": "IVD",
    "items": [
     {
-     "co": "씨젠, 바디텍메드",
+     "co": "씨젠",
      "ctx": "뉴스",
-     "t": "해외 수요 폭발한 씨젠…독보적 진단 기술로 다시 날아오른다",
+     "t": "코스닥 제약지수 2.49% ↓, JW신약 9.52% ↑",
+     "src": "newsmp.com",
+     "date": "2026-08-31",
+     "url": "http://www.newsmp.com/news/articleView.html?idxno=257820"
+    },
+    {
+     "co": "씨젠",
+     "ctx": "뉴스",
+     "t": "[주식] 온코닉테라퓨틱스, '네수파립' 美 특허 등록에 22% 상승",
+     "src": "hitnews.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78781"
+    },
+    {
+     "co": "씨젠",
+     "ctx": "뉴스",
+     "t": "[거래소 기관] 매수 1순위 제주반도체…알테오젠은 매도 집중",
      "src": "pinpointnews.co.kr",
-     "date": "2026-08-30",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=481834"
+     "date": "2026-08-31",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=482214"
+    },
+    {
+     "co": "에스디바이오센서",
+     "ctx": "뉴스",
+     "t": "에스디바이오센서, '수익성 회복' 진단 플랫폼 키운다",
+     "src": "sidae.com",
+     "date": "2026-08-31",
+     "url": "https://www.sidae.com/article/2026083109075433950"
+    },
+    {
+     "co": "바디텍메드",
+     "ctx": "뉴스",
+     "t": "[데이터 뉴스룸] 제약業 2연 연속 매출 상승 바람 훈풍…삼성바이오로직...",
+     "src": "greened.kr",
+     "date": "2026-08-31",
+     "url": "https://www.greened.kr/news/articleView.html?idxno=348850"
     },
     {
      "co": "에스디바이오센서",
@@ -213,6 +316,14 @@
   {
    "cat": "Bio-Processing",
    "items": [
+    {
+     "co": "토모큐브",
+     "ctx": "뉴스",
+     "t": "약국 뿐인가? BD·금융·마케팅 현직자가 말한 '또 다른 길'",
+     "src": "hitnews.co.kr",
+     "date": "2026-08-31",
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78744"
+    },
     {
      "co": "토모큐브",
      "ctx": "뉴스",
@@ -243,6 +354,30 @@
    "cat": "Dental",
    "items": [
     {
+     "co": "그래피",
+     "ctx": "뉴스",
+     "t": "[미리보는 이데일리 신문]AI ‘샌드박스’ 신청 쑥 복합규제에 지정은 ...",
+     "src": "이데일리",
+     "date": "2026-08-31",
+     "url": "https://www.edaily.co.kr/News/Read?newsId=04818326645552896&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article"
+    },
+    {
+     "co": "그래피",
+     "ctx": "뉴스",
+     "t": "[리포트] 2026 JAAO 속 그래피...SMA로 확인한 '투명교정의 미래'",
+     "src": "paxetv.com",
+     "date": "2026-08-31",
+     "url": "http://www.paxetv.com/news/articleView.html?idxno=280576"
+    },
+    {
+     "co": "그래피",
+     "ctx": "뉴스",
+     "t": "인비절라인도 눈돌린 ‘3D 직접출력’…그래피, 형상기억으로 승부[BIO ...",
+     "src": "이데일리",
+     "date": "2026-08-31",
+     "url": "https://www.edaily.co.kr/News/Read?newsId=01826966645552896&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article"
+    },
+    {
      "co": "바텍, 디오, 덴티움",
      "ctx": "뉴스",
      "t": "해외 실적 폭발과 K-뷰티 의료기기 돌풍… 건강관리장비주 매수세 몰렸...",
@@ -258,52 +393,52 @@
    "cat": "MedTech",
    "items": [
     {
-     "co": "Abbott",
+     "co": "Boston Scientific",
      "ctx": "News",
-     "t": "Abbott Laboratories (ABT) Could Be 6% Below Fair Value Following Libre Duo FDA Approval",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPSkdhZFREZ2hqTXpUbmNTem1Xendfek1rZkpMa0tuckNYR0VXb1dHT1JoRzdEbzJhMXZBa0xRTUJyUFVoNnQwQXg4bkZiWDUxaDZWc19SbVktYzkzNzRBMjJONHFKaG8tWnRlXzUtRWRVWlV0QjFGRklUeTdkanE3WVJVMDlOaUhzZDRWMU9YT2YwUWlfWDRhYmJLS3NJbG5CQkFhMjNjTjNuYzJBLTBrNlRjdlJvWjhpR1VwSU5SNGcwRHZYZ3NQNWlGSlUzM2R4TWRubGdvS0PSAdgBQVVfeXFMT0pHYWRURGdoak16VG5jU3ptV3p3X3pNa2ZKTGtLbnJDWEdFV29XR09SaEc3RG8yYTF2QWtMUU1CclBVaDZ0MEF4OG5GYlg1MWg2VnNfUm1ZLWM5Mzc0QTIyTjRxSmhvLVp0ZV81LUVkVVpVdEIxRkZJVHk3ZGpxN1lSVTA5TmlIc2Q0VjFPWE9mMFFpX1g0YWJiS0tzSWxuQkJBYTIzY04zbmMyQS0wazZUY3ZSb1o4aUdVcElOUjRnMER2WGdzUDVpRkpVMzNkeE1kbmxnb0tD?oc=5"
+     "t": "Boston Scientific discontinues angiographic catheters",
+     "src": "medtechdive.com",
+     "date": "2026-08-31",
+     "url": "https://www.medtechdive.com/news/boston-scientific-discontinues-angiographic-catheters/829186/"
+    },
+    {
+     "co": "Edwards Lifesciences",
+     "ctx": "News",
+     "t": "Edwards Lifesciences strategy VP will leave next year",
+     "src": "MassDevice",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOOW5BX2s0NWtjQTgzOFdCSjlNcGVFd3lxbEJoUEItUzdFQ1MwWVpYbGZkLTlDVkhGVERmWlliTTZJZ2p5N3Q3bm1wajFRWHowbk1kdnRpbE5MN0xGSGVndE1kb21rbExycmNyRlFaQnlydFcyNmJqa3JyR041eUp4U1BZWHV4NEpu?oc=5"
     },
     {
      "co": "Abbott",
      "ctx": "News",
-     "t": "Abbott Vishing Hack: ShinyHunters Leak 10.9M Emails [2026]",
-     "src": "tech-insider.org",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBTX0Q3ZE9iN3BrdEV3MVNwXzRCMXZaQ2U4OUcxci15OGJVVk13cU9ULWptTnlYNzFKWVc3cFZGOEJfa0h2SnBpOTJJNDIzZXFfN3ljYTUtdlBNODJwQkI4VVl0RTNGVWhxbWtDLTNKZWgzNDg?oc=5"
+     "t": "What Is Abbott Laboratories (ABT) Telling Investors With Its New Infant Formula?",
+     "src": "Yahoo Finance",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQNkdLeWlsWkNVSlF3ME9YV2luYS1Va0VISjZUUmJLNTA0REt4eE1ub2dMb1FmRHJONk9RcVB4a1lteG9jX3hDUTF5R05EUWo0ZnZJbGlLdUJnSnVieUxqUm82a1pfdkw5anNTM2pERm1seVBSaUtmalRGRWRpRFNqclF4eGFGWWtaMUxHd2ZVR1BsbVBscW5FVVBMaERkMVBoalhmYQ?oc=5"
+    },
+    {
+     "co": "Abbott",
+     "ctx": "News",
+     "t": "How Abbott Is Leaning Into RFK Jr.'s MAHA Movement",
+     "src": "Investor's Business Daily",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPN3k2dE43cUx3VmVaUTFGN21ycEdZdTY0cFZFZU9fRXNtNGJ3TFUtWmM0c1R1Sjltbk1CQ05obmpTYVFkamxQeHpuU1prTzZTQ2pLQVM1TGo2QVRLZ3R6bEZ4cGk2RjRjSElHUU9CR3h1OVhLTmNMWVBxbmZPZGJuVDR3THJSbXZCQXJ3aVFlZi03emRHbF9ETi11MA?oc=5"
+    },
+    {
+     "co": "Abbott",
+     "ctx": "News",
+     "t": "Abbott Targets Wary Parents With Liquid Whole Milk Formula",
+     "src": "Bloomberg.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPRThSUW9wQ2tDVlduSmttcWFCQ1llZWROV1dDU3FteFgwY3BqSW1SVE1FczdWX3pETmlrN2lBV3d0Y2c5b2NLb0k2RGNvcXN3X1h4Y1VVbFNMVGQ0NV9KYmdBbDlMN2F3RVl3SC13eTBrNVpwNFVqQzdsajk1MTNCVEtvMlBGWHZOYklMRVhOQ09SUndGdWZIckc5aWNNSG91U01IMkx6dVVyMDkyaEE?oc=5"
     },
     {
      "co": "Medtronic",
      "ctx": "News",
-     "t": "Medtronic (MDT) Stock Still Looks Like A Bargain After 23% Returns",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQMWlYZHg3SjB6T3ZHZllmRVBhOWJwbV9QN1RlOTZvQlpIdDhYdWhlRy1Uelc1YjY4dDJmV3VFUDBBTzNlSU45NHllNHI4TFFjQUV0al9nWHQySnJnbGh5ejNBZ3liQjhYX09TSVRIVzJSdjhqT1czTHBWZ29nMks1RGExQlJFdlZZWXdXa0NZUHZJWHgtN0ZGS3RoR3M4ckRBS1BSaWNKejZEaUVIbXVLRmJRaENsV2JhaHFPSzllRWJtX2ZKWEHSAcsBQVVfeXFMTkJiZldQZW1RYjNobTlrS1ZNTW1BcmNhbFAzUXJEQzhTMlZ2bzJNbDBtaVdwcllfcFFELVlnZHBFdzlXN2hWbnlpaEk1Q2N6LUstWWdkczIyU0ptUHFacTBXMmJaZWZmR3ByNDJreldER0JWczBIZ2VCX0FUWi1Xa283emh0NTZic0t6bkhWZk5RTHgzdUdjUC03UnBJVGJ3VDZlVGhQcWk3RE52WW02T3hQSlY4LVJpU0oyMWZXcnVGWWxtMHNfTkdwRTg?oc=5"
-    },
-    {
-     "co": "Stryker",
-     "ctx": "News",
-     "t": "Stryker (SYK) Draws Fresh Valuation Focus, Is A 15% Upside Enough?",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNWU1NY3VPYlNvbkRUNkxrTTNYZlZMaU02VkFWZkQwU3RfMTVqUnBGSllEWFhyT2pDNW5vOW5RZ190RUVKT2Z3ZVo1UVl1bzg4WXhLQnNNV3FVV2ZSZUFfbFFxd1UzbzZzQ3loUGVNRUl4WDF1N09HQThyR3VRVTVQaVRPOW1jYXNmT0YwNlBRM3VRMTRQN1ZPdXJ1bWdoUFNobnk4bFBfbjVzZWlNeW1QM0tqOEcwaENUZW0zVVJhcnJ6RnRPS3lNWtIByAFBVV95cUxNWU1NY3VPYlNvbkRUNkxrTTNYZlZMaU02VkFWZkQwU3RfMTVqUnBGSllEWFhyT2pDNW5vOW5RZ190RUVKT2Z3ZVo1UVl1bzg4WXhLQnNNV3FVV2ZSZUFfbFFxd1UzbzZzQ3loUGVNRUl4WDF1N09HQThyR3VRVTVQaVRPOW1jYXNmT0YwNlBRM3VRMTRQN1ZPdXJ1bWdoUFNobnk4bFBfbjVzZWlNeW1QM0tqOEcwaENUZW0zVVJhcnJ6RnRPS3lNWg?oc=5"
-    },
-    {
-     "co": "Stryker",
-     "ctx": "News",
-     "t": "Stryker Corporation $SYK Stake Raised by Nichols & Pratt Advisers LLP MA",
-     "src": "MarketBeat",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPdFFxellsLVJhdnRyaTBxSk1jeGwyS0ZTMkxBVlYzTlExNWxreHdiNDVBd0xwcDVQbTNNLWdqVDVwODA0X1BvSldtcS1hYmNiWVFwekdFLVJoZWxoc1pIU3RpTVVpcEkwck9zT1lnTUlpLTd2QXFqTl9VcmVrN2ZNUDdaSmk4aDdKYlk4V1JudURXdGl2RlRoY1FSV0NiRExUTVJaQ3YzdlpQanpGXzA0WnRKay03M2x0OE5Bc0NhcW1HeG5KalYydHNR?oc=5"
-    },
-    {
-     "co": "Stryker",
-     "ctx": "News",
-     "t": "Stryker Corporation $SYK Shares Sold by Hollencrest Capital Management",
-     "src": "MarketBeat",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOWE81NjI2V1hoM2dHN2VkWkNNby1QanVSenl0cmtZdkhpWWhnZ0F5QnJNRlV6NzFzdF9BcG5JWVBGOFVRblI2bkM1MVlmSUlNT09BOEdTVy1LVFozaFBzeXIzakYzN3NUVzJaQnp5OGNOQk1LMVVsVUhmdHctVDdMUHpsc19LQXJxU1RGU21uWlpGQk12eWNYWDJ5cmNta3BnRlVDSXVjZ2U1djN6NGJ0RTNfeUQ1OHJ5cEdXdEd0dXJkZGgtU29wTjlR?oc=5"
+     "t": "How Will Medtronic Stock React To Its Upcoming Earnings?",
+     "src": "trefis.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPamYxeWxzYUpUUVZOb19fRWE0M0E4Q3lfemVlMUg0VE5qUF9zczd5cFB5ODRZc2hXd25WY0ZvSGJ1U2x2Qk9vRk5ZYk0wVXJ1UGtDc2NoOTdpVWpmZms5aDM2aEFLTk9yTG42UHVSWlhnQ2dFbl9ZZXRObWtHaTAxMWVRczVkMjI5b2RUNHg5eEQ5RkdzRklFVmkyd3hvUmF0dmZicm5KR3owVUNLTTFObEpRZkZiYjg5?oc=5"
     }
    ]
   },
@@ -313,10 +448,42 @@
     {
      "co": "Intuitive Surgical",
      "ctx": "News",
-     "t": "Intuitive Surgical stock holds above $372 as investors weigh recent valuation resets",
-     "src": "AD HOC NEWS",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQejVTSnlxeDZxLVJUOUVFZXVOMW5fblk4UUtCSm92RHhGdDdDeGlIbWhKYUw1cEp5VTd2LVEwV0dqeDF4bFhadDdoemhRUEJyVkVKSjhmOFJhLTNLUlhWdXhLRkRsMER6OUhsM1J1VkloVUljMzJ4U3E5Tk5RZUwxZkZiSkpnZ0RYcWE3ZWMteE9CRlAwamFiZk0wX2w5OHRuMjFpSEU5M3QyUHZPWG9UZG45cFZfVXBoWS1sTUVyclJoZzdvVEw3TQ?oc=5"
+     "t": "Intuitive Surgical Vs. SS Innovations: Why You Should Buy The Lesser-Known Indian Competitor",
+     "src": "Seeking Alpha",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPYTJtcEN2MzdiYVZoaXlueTMyNEZmcGZaQzBIdWMyWU84cWtqYVRPTEplSUtFSm5WSDRndXZMeERqbWlMSEl6cEw4R1dhSnhETklxYlJJTUNRQ1o3aEVfQU9NODlrYlJZS1BtVkVzU2JrdU50aTJsWTFjZU04TUZfWjJhWlA0MFN5cDd2UllvLS16T3dxZmpuYld1Qy1zU1JiNGl4VHBZZkZ6WThGY3FxdTZucEgtUEdrU1RnTUsxVkk?oc=5"
+    },
+    {
+     "co": "Intuitive Surgical",
+     "ctx": "News",
+     "t": "Intuitive Surgical stock holds at $372 as da Vinci platform expands in robotic surgery",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQYnAwUG1TbnFvRVF0Wm1ralNaYlQzNUFHeXFQdVZBaWQ1RGFseG5ZZEtGalhDeUxEbEtJVVdFV19SQUtMejhqdllzeUItWFdESXlVNjZLYzVwQlY3VE13NHptbkhPaVQxcXVLMnRJTWJfVktBejVhZm16N1loVk9uZ2NMOEI3ZE5kTjRpaG0xWVJWLWdQdVdhM0pCX0k3UkNiYmtrb00tSmVmTy1GeWZPT3h6SmM5QW5VeFlkR0xfZ3BiU0lsQ2FZbUFTNGM?oc=5"
+    },
+    {
+     "co": "Intuitive Surgical",
+     "ctx": "News",
+     "t": "What Is Shaping Interest in Intuitive Surgical? (NASDAQ:ISRG)",
+     "src": "Kalkine Media",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxORHpIQTIzNjFZM2hBYzFyN0N5X2tYNVZGMTFqNFV1eFR1dFR5cWJYbHFZMVBjM3YzdmpSVzI2SVkyVDJhd2lpczVXVGhKSmljQUZVM200UWtjTGVOT1hSYUp6T1ZadzhFQ21wd2lSTDZGQ3lkQ3BYMmVtOHA4SU9RQ2Z0dzZoN21OS0lTTVZoWksxUXpfRVhpOEd6cll1TlNLMHdYc1FB?oc=5"
+    },
+    {
+     "co": "Intuitive Surgical",
+     "ctx": "News",
+     "t": "Intuitive Surgical stock trades around $372 as investors digest recent performance",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxObDdNcVBiMjhNNFdIaThkZmtjZnVDeXVjbDRoRXpxa29hWEx5el9MTzB0SHJJaXNJTG5CY3VuaEZqc0FUa2tfSXhORkRHNXFPbV8wbHcxcWlCd2l1aktsWmVVc2M1aS1vdU5WYV9TYW82RVphQlFJMmZuRzYxb1prd1Etd2JlYVlEdC1PWGk1ZngtS19IQ3NWWlR6bW82bnJud0dxNXBpWkhLQXhCOWtaa01WYlpvSTRnbjZnZEhuTGItdExsYUx2TzJkSWM?oc=5"
+    },
+    {
+     "co": "Intuitive Surgical",
+     "ctx": "News",
+     "t": "Intuitive Surgical Stock vs Tokenized ISRGx: What Buyers Actually Own",
+     "src": "CryptoDaily",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1pTnJPck9xS0NFdmtPRV92OXNfZm9KNUZuME93WDctY2ExUzYtR2EyRjMzUFAxU2p2aWJfbHFaUjBNT0Y1Z194V0Y4amNNMEt4MDNkY2Ewdk14UFZwTHdNWDZqanFGOFZKUXNMN0YzNVdkVWJUS3hmbDNB?oc=5"
     },
     {
      "co": "Intuitive Surgical",
@@ -325,38 +492,6 @@
      "src": "simplywall.st",
      "date": "2026-08-29",
      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPeE1jN0ZUYjRfclMzSC13OWVkVE5iTXRxZWxtMklleGpoR0tjelAzc0lpT1laRV92RXg0UmNOQ2JuTWFmTFpPY1FIWDRkMHhsdUZJUlVHTnpHQzFhSm9JTlI3SFBQX2ZtekRPZG04NThLby00cnI0LXFJdUZPUTlpcHVfOVJDckpJLVVOVlFlX2FxYlI5Qm1LZ0VaX3l3S0NKc0x5VDJMbWdQd3JFSjZ4SngzZEhTcUNIdkgtVVNOdk55MGlIa1ZORzlfUDA0V0dHUHY0d1c3RHJFbEnSAdsBQVVfeXFMT3hNYzdGVGI0X3JTM0gtdzllZFROYk10cWVsbTJJZXhqaEdLY3pQM3NJaU9ZWkVfdkV4NFJjTkNibk1hZkxaT2NRSFg0ZDB4bHVGSVJVR056R0MxYUpvSU5SN0hQUF9mbXpET2RtODU4S28tNHJyNC1xSXVGT1E5aXB1XzlSQ3JKSS1VTlZRZV9hcWJSOUJtS2dFWl95d0tDSnNMeVQyTG1nUHdyRUo2eEp4M2RIU3FDSHZILVVTTnZOeTBpSGtWTkc5X1AwNFdHR1B2NHdXN0RyRWxJ?oc=5"
-    },
-    {
-     "co": "Edge Medical",
-     "ctx": "News",
-     "t": "Farnworth firm's technology supports cutting-edge medical research",
-     "src": "Yahoo News UK",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNQ2M3S01aanRPeW9objhtVms0enhUb1F1SnVka2hNSlRsWmo3NkxkbFFDOTBkSGRpRVc4Y1JXeWQ5TkxKc3B0R3hKbnh3UllOV0xhQ1N0NjVSNFVJZk5EbUl5QmZWLURrWkNvMmpSa0NFX1R3dlY2akFRN0JrTXh0X0Y2YXh3LVphRjE0LQ?oc=5"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Intuitive Surgical's Record Cash Flow Gives It an Innovation Advantage",
-     "src": "TradingView",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNVHJna2Y2QWFUQzVNRkNMMHU0WnJsbThiczM0V0NVM3ozc1lBbV83b280OWdEcDQyYW02V2c0QnZxckZRVFFuX3FMQmI4SkFYMXl1d1JtUEt4UEs1THJ6UGpuc2p1aWcyXzVzSWNINVh6b2psMjlzd3dpdGhLVkh3Z0F3d1VQZTZNWG5kTUppQkV2S1BQVS0zdHFEWUJqMExyZnlIdkVnbzZiTFB3N1F3Nl9ycnhZYzNuc0VrVzRvb2NEQVBl?oc=5"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Is Intuitive Surgical (ISRG) Below Fair Value After Strong Revenue And Procedure Growth?",
-     "src": "Yahoo Finance",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxONmdySW1Xc0hYWDd1aWFIWU9SQU1wc0xlVnM4Q2RlZUtJaDFsdjZCckpGY2psdGNNZ3BPYmNnWWJ2Z0hWQjc0dVRXZUhsSERkNHJ3dkhzZThTZGpLX1NPQm9MalFLR09NQ0I0MkRYRzhXQ1ptVHBacWlrNjFQNEplUkJsS0ZmZXBMWWs1dG5hOHZ2WWFWMW9vcElnWThoV0V6?oc=5"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Intuitive Surgical stock finds support as Q2 2026 robotics growth reinforces recurring revenue",
-     "src": "Ad-hoc-news.de",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPQWt1My1fakR0Zlk5QUFLOUJMZ0dKdDBfRjZnU2VEQWI1SHZCeGxkZ25LT09naDlQVFlLRTdaTXFlSFQtbC0ycTVMLVEyOEd0MlozZ2ROMkQ0OTlwbDlvNEd1emViSmtFUDdKWktsTTAxcDdHYjU3cWZNYnpFMXI3Uk9ScVFFbWo1T0J0NndTeGNCZ2F4OElsNS1xQU5IT3RyMkpHX2E0eHlEUWRGck8wWDJTb3V0Q3lQQnhNMXVoVTlfMGRUNEI4?oc=5"
     }
    ]
   },
@@ -364,52 +499,52 @@
    "cat": "IVD",
    "items": [
     {
-     "co": "Thermo Fisher",
+     "co": "Natera",
      "ctx": "News",
-     "t": "Thermo Fisher Is Up 23% in a Year. Is It Too Late to Buy at $622?",
-     "src": "TIKR.com",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxObXJueVNGc0lpdUVlMkF0OWkyNjVoNmJzSGdyUnZJVWU3Xzg3OHRmWkFDeUg2dWJkUm9TbkFPSENReWFiWmRuRW5ienBUMjlhTlJrYmlzU09pUHFJYVg3M0UxdTd4SW9RbzBSVnY5TFQ4RVFJVElDcVpNNXZWUFBQMDFzUHoxZUVqVkktT1lzU1k?oc=5"
+     "t": "Natera teams with Angiex on cancer drug trial monitoring",
+     "src": "fiercebiotech.com",
+     "date": "2026-08-31",
+     "url": "https://www.fiercebiotech.com/medtech/natera-teams-angiex-advance-its-signatera-cancer-dx-tool"
     },
     {
      "co": "Thermo Fisher",
      "ctx": "News",
-     "t": "Thermo Fisher Scientific (TMO) Launches New Research Tools As Fair Value Debate Tightens",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxOQzZrTGt0NkxSS19SY0ltbzZBVjVaQ1RGZnhLdXNXWjlfQUZfeW16SzRZclVSaVNaZEt5bHdVRHRXbExqZVZHTjhBRzRydF9sYTRkdlJLc1hpaE5lcjRRWUtibjQ2YXdBT0ZlcTVpZ3l1MTNtM09BcE9FQm1VYk0zZWQ5N0RWeUJNa1NxWmh6OUNhdENjdzVUZHEyOXNadjB5NEVEVkNwblNrNjZfdHhRYWxfYVkwZmgxZ01BOVZqalNtRHpwX0dVdGRlTk12VjdLUmpIRTJwREU0SnByUFVXWHhRN0dGY1JOX0HSAe8BQVVfeXFMTzc1ODR4MGEtdVZ6S2Y2WVVYdGdrRGFlWU8zNVVib3p5YnVEODkyNEF2YWQ3VXNBNldsNVdzTzFPTHRvSU9Kb01yY0hzOVh2Si0zc2w4RUg2YUlPUFh0ZmlvSnpRUXdoekwwcGp6ZkdIdU8td3JrY0t4eGphMHgya3J6OXl0cWI0bTd2NTNWQkZJQXI4emFSdWtiQ3Zfd3g5akdDaHpCOFNVbTB5amVzc1VobUdfWldCNFlhTWxLV1JaQVVYUFVGSExsUTRhM0V3cFBfdkJoeVRtaExXdVpsb3NqaGlDdG1uVmQzbTBONTQ?oc=5"
+     "t": "Thermo Fisher Strengthens China Focus as Biopharma Innovation Gains Global Momentum",
+     "src": "biopharmaapac.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPVVQtU0JYTEtwOERWSHZrSmFjZEFUSjZBTXItZTNzMTBvVGItUE55US15WllZb0VQb0FpYXdWbW5JMUpSS1hhQll1Nm8waUZuM0NWdTlxOUloMWlud3gxeHgwMGliNTR4WnRvQnRrd3hfajF5dGVaandqeUlCNnVGal9Cd3VsR1UyZjBEa19lVXV0WDNqQ3ZuNGxFTEdkOW4xZ09mWk5VVWNIbkdxVDN5cTVTYU9IUUpDVDd1bzd4NXp0R2dYcVE?oc=5"
     },
     {
-     "co": "Guardant Health",
+     "co": "Thermo Fisher",
      "ctx": "News",
-     "t": "Does Guardant Health’s (GH) Patent Appeal Reshape Its Competitive Moat More Than Its Royalty Bill?",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOYVlFYnRieXotM1FwSTRZamtFc2pBSE05bk11eWpWSGhGV0NkemxpdXNfUF94OXA4ZFktRFlpeFFxSUVpcHVWUlhKX3EwM0NDVmNOYVM4OUJjMnRjV3R0NFNnRXFLZy1LNW5oT3ZMalpueGFFMi10eGtDZTF1SWxzOWRyNHIzQlFVcGlMai11OXhVNE1MaEljekJfNlZoV29FU2RlRW42aGxCMnJDVTlOb0t6MkhnZXBkSXBtV0FOUjJLVFhkUGZ1R2lGX3RESHfSAdQBQVVfeXFMTS1ORmVWTnV4QVBVQmlGdVJHblM4SkNIQ1NvZktqSWhSakxzMVZWVW41ZUdDTUNHMHpjUURCV1dXM09nT3NTRFB3S1o2QzVFR1VVWGxxcTA2M3Q4UnJGTGtQVElLOUtTQ1M1U2lZLUFNaFcydjNrSDFqRXJzandqRzZkaHZsUHEzUDJLZHlOeTBscGdlZWJBOTJyNEtZczVaclZ6c2pzMUpnTTNvU1lOckgybUlBU0JWTnpiSWFkZG5xd3ZBNWNyOXdKN2M5VVE5WGlXU2I?oc=5"
+     "t": "Thermo Fisher (NYSE: TMO) executive to sell 4,133 shares",
+     "src": "Stock Titan",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQMUw2Q1M0N2Y3MjNjRlF1Z2ZrVHpfeWJUWFNCNVdpQzY0QjFnWWdFSnlCektNV2lzOE4ySEtFdFVTQ295SGJ4Si1pNnk3RndHT2ZJd3djbU4yekhYa3ZHN1U2N1pWdUJyaDBmbTNZenZ2cFNuSVQxMkVFUm94T2JoRlh6TGctemQzamNQdHRKa2xUYVdtazdhei0tSDRkV2VLZGE4U0VxSQ?oc=5"
     },
     {
-     "co": "Tempus AI",
+     "co": "Thermo Fisher",
      "ctx": "News",
-     "t": "Tempus AI Stock (TEM) Opinions on Moderna Merck Cancer Vaccine News",
-     "src": "Quiver Quantitative",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPRzF5U2pmOTVhNkZKTld6bmhJM3c5dWctOUdra3JtRUt4eXNVRFV1NzlLMmk4bXRfaXFWRXJGTl93VEdhZzJIZGJIczdnUnQ3alpfRy14ai1QRFR4ZWtKejl1Zzc5Ry15M2R4S3g4TTFzT3YwS1hvOFhKaTY3NGtUOG5MdDJJd0p6V2tueVlHaW1fRDNDcXJtZWJuaFZ5U1REUXBqaGk3OA?oc=5"
+     "t": "Is Thermo Fisher Scientific Stock Outperforming the Nasdaq?",
+     "src": "Barchart.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPSDJnRlJqMHVtdGFFUlRaZU9ENXpEbWtCMDg0b0hZRldTSHhuWndvWkZpS2FhOEh6UnkxT2Z3SHpwS3J2Y09QS2ZONmRNNmViOXVjVWpGdm9PRFVHMVk2UEZxWHdPNENlVGZfUWZsbS10enAxalNFaFk2UGxlSnBNZVdlbnhTbXN6ZzVBSUpEb2NWd0ZMN2ZmXzBHNmdGdi00OWUwaw?oc=5"
     },
     {
-     "co": "Tempus AI",
+     "co": "Thermo Fisher",
      "ctx": "News",
-     "t": "Tempus AI (TEM) Could Be 18% Below Fair Value As FDA Clearance Lands",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNS2VSZFFTeF96cml1M3IyaXVheTA1NmZ6Z0lHMTNZS0Z2WGxkS2pfRjNKYzFVU2FqUS1zbkNBZGlreHE3TUJPTGhiT1RWYlI1cXdwSGQ0LWRJMWs3U2ZkeXY2UnNKcDdTTTkzZ0FWTERSVEFENkxrNWlFMnk0M0Q3d1N5Z3FNaG8xWlBRMlE3RGZoQnBMWVRrSFJUT0VuOWdvdzRGbVZDR2R1TURaQ0VHeGdFbC1BOExicHZKVzIyOW9OY1lMdkw2UHRJUlE5SUFYTzNZMVYyVnnSAd4BQVVfeXFMTU8tNFdZMEpXVm1zZkFyU2ZHY1JoR2xjUkJUcWJUQlhvQVFOM0RQYllXZ3hUdWd2UXRDdEFWWDd0OW5fT3FZOEtNLUtDN2hNSkp2aDcwRGZSbzViUU9DNXZSR2FSVEFsS3Q0Y19fbGlMdnhSMkZrTlYzVTlWMHg5WTN5ZFdiZ3VldHdiT1A1M2o5Z01DaXBGZ0p1N1lQWm9PSl9LekR0WmJyakdSTDNRRzN5R0FSMHpNWUNyWThaUFBMOTc4RW5SRmFWVng5bV8zVXpqNGdPRjd4QUQ1Z2pn?oc=5"
+     "t": "Trends & Strategies in the $2.9 Billion Biological Computing Market, 2026-2035 - Featuring Profiles of Microsoft, IBM, and Thermo Fisher Scientific",
+     "src": "Yahoo Finance",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOVXJMb0E5QklQdUZyQW9WSjRFTURWaWRaMVFRV1ZPQ1ozQnpUU0RiNmZ6UW5VeF9NOGZvcDZNNy1QMHlsVm13MzlwaHF5S1YtTUcyZlRlU2ZGcE9hb3JKRXVOUE1kWkF3MDd6dEhMT2NUcFExUUtRV1l5M0d5UGptZUpRQlpYd01iYi1NT184VGxXY1JsVmVSTQ?oc=5"
     },
     {
-     "co": "Tempus AI",
+     "co": "Natera",
      "ctx": "News",
-     "t": "Live Tempus AI Inc (Derivatives) Price Today: TEM to USD, Market Cap & Charts",
-     "src": "CryptoDaily",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9QWER3cF9feEs3Q2NmakJ6NE83c2hsUkpzSFVzdXo2eW5SRkRIc282T2MyWi1WTzJKTkFoT2x3NkYtUUNlWm9rQ3E2cE1HY0pvN3JlX3hicTh2X2Q3eW5GSU5wVGFUeHJu?oc=5"
+     "t": "Natera, Inc. Dividends – LSX:A14VPJ",
+     "src": "TradingView",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTFAzejRnbVBERGVBYjJPbWpPelJkeGQyMk05b0ptcnU5Y0h5UmhLaHRaU2I3Vy1aU0dlbWFSR0VwdXdZLW9ZVzlmRWg3U0szdVluT3dRZkNWdzdleTFNWXB1Q002TzZFZlZqeDJlVTBmUlJsanBSTVZF?oc=5"
     }
    ]
   },
@@ -417,52 +552,52 @@
    "cat": "Digital Health",
    "items": [
     {
-     "co": "Teladoc",
+     "co": "Dexcom",
      "ctx": "News",
-     "t": "🤩 TDOC | Why Cathie Wood Buys Teladoc Over Tesla Stock Laetitia Casta (Ty2L8xNmuz)",
-     "src": "Mshale",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBjaVhMODlWTDhmRkg4WE4tSkc5TWtBQlV3N0ozUmFlMXRWbFJwa0w5bEpmVU5tbzZBSERMbm55bHBIQXlnNmYtVi1NS1ZMVVRZaHRGSG85Qkh0Z3c?oc=5"
+     "t": "Here's How Much a $1000 Investment in DexCom Made 10 Years Ago Would Be Worth Today",
+     "src": "Yahoo Finance",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNd2hKZHBQNUJrRS1sY0U0c2pfNl8wTUZBanpwczh5dEVteUo0RkVDd004enk5N0ZrWEFaWWlfZjlGUGlBNTRMSjk3czZMVW5KRE5MeFMzczF1R1liY3FOMWtuUF9KcU00UFd1eVhQalJGb0FYdERPV0xTNExLc3lkSm9TeTVkVVJiNnFfTzZQZnREUlU3YXZHMU1PcnFKclE?oc=5"
+    },
+    {
+     "co": "Dexcom",
+     "ctx": "News",
+     "t": "Dexcom stock holds steady as CGM growth supports recent earnings",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPN1pSMlQtalE5OHMxdUVFX1pSUGtRVl9TTUNEamdUSUIza1VVN0hqajFqRmI2a0tlay1mQXBYaXFmenMwd3FiZUxUYkpOZ2hhdkgzd05MZGlMQzNLemhmcmNZLXE2cGEtU3IwTnpnVUtWZ2hoejV2Ulh2cmJYVzBkcEZRNTlIM0Z5Z1VWZlg0QTdwU09lb0VLZXhjbDZKR0tURVpqRk5vY2U1X0R3a241a0dYN1UxUlg2OGNVZ1NpdC12Q0tlTFE?oc=5"
     },
     {
      "co": "Hims & Hers",
      "ctx": "News",
-     "t": "Hims & Hers Health Options Spot-On: On August 27th, 90,868 Contracts Were Traded, With 878.98K Open Interest",
-     "src": "Moomoo",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOaW82bnZzRnBsSmtNbXRHQXJxNnV2U3gyY29JbWJYcXZiRnRqdVN0bEFXOXNlRTY1REhqMVpjcFhNVUlycmlxTV8xMGhWQUdsdDhrUUVOajlla3E5NTBoclREQzZSeWNNcEJfNmNiNzVIQVJGMFk3b2hBbENwZHI5QU1NNHVscTFydjRqVnV6cFVpMFdYelB5YTJvYw?oc=5"
+     "t": "Hims & Hers offers GLP-1 weight-loss drugs, men's health treatments in Australia",
+     "src": "reuters.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNZ0pNenQtRDFUckp6SldZT0U1OEJlMGdlM0RwTjZWODZLQW01WnJoaWNFNzM1dllKN1hGRG1DbldtOU9fRy1MeVRqTXd3X1VIWTRSSUF4azNlSDhldlZXYnNCa0tBNm91eUJkdk1kMW1VUWZ6RV9sMzhQSkU0RU10QVk1N0ZPYktUVEIwTEhSMFJDdS1aRHVXcmp4ZjFSZFRmbXlfQndnYk9vSmRwUUo3YTdDdlEtQk8zYk4wTzFacnZJWXBJUHB4SHFibzJyaGZpd01FMkY2QzNYeTV0ZHc?oc=5"
     },
     {
      "co": "Hims & Hers",
      "ctx": "News",
-     "t": "Kaplan Fox is Investigating Potential Securities Law Violations Against Hims & Hers Health, Inc. (NYSE: HIMS)",
-     "src": "NewMediaWire",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxQNWt2WS14ZmVkWk9hZ1dna0E0QXE2VlpfV2JQUDJzZG5MWWZkTE5qRW04eGlMRldqUkFYNmRTTzdGRDdPRWxOLVB0ZEIyVFNMUWg0TThZSVV3aHB3YW9RZy1TeERGVUk1X3ZwdW96amRnTkVNWXRJV2RVdHdzQ2JuUlkxel9JVmxZX2h3by1aT25KZTRTbWdZUi1OMGNzb1ZhV0ZJcGIyRWhFQkduZzl3NnM2LWFWY3FGekJNUWdwSUlIWHl6LTN3T0tXVVpnY3R6RFhoekJFM2kzUk5J?oc=5"
+     "t": "Market Shocks Are Not Where Hims & Hers Health Stock Has Fallen Furthest",
+     "src": "trefis.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOVzZQVzZFOS1lNG9FcGlpdjgzREMtalZMeHg3Q0RxenN3YjBEQ1JTa28waEE1NVFxS1pBd1VQbWQtV1FCWFJnTTV1UjRnbXh5ajZVc2VEa0xIenNlOHZ3U3VQZzNiM3RTcWxRQndZZm5FZXBLcU1hZDVaa1RZaTZUUHZaYXpzcmRjWWh3dktBUmhvLTIxbk9JSGhYTWdzWUF5Qm9KQ3diNC1uNGdwNFhidV9lZkxtcHdubnNpVHF3V0RReTJOM3JWME1jZw?oc=5"
     },
     {
-     "co": "Dexcom",
+     "co": "Hims & Hers",
      "ctx": "News",
-     "t": "DexCom (NASDAQ: DXCM) officer may sell 2,565 shares on Aug. 27, 2026",
-     "src": "Stock Titan",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOdjkxSkJKZWl2QmVzMXpJUXlaeUh0ZHJJdHZPZ0Fkek9CNXBMVjNITlE5V1J1dEUtRXFzZXFrbzF0S2NsbGxqWnlNNHBtb2pCcUJCS3pWTFJMbUFlMHZnQTVObmtZT1JRYm1QbUxCTXFnQUo2ZFNxaklVQTUyMkc3SmVHSjJWQTNzTEZqb0lIbEI?oc=5"
+     "t": "The FTC Sued Hims & Hers Over Health Data. Now Its Board Faces a Probe Over Billing and Subscriptions",
+     "src": "inc.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNTjJ4RTcya1hWa2o3N1VJVUU5dlF3bHlrNEVsc0ZRalZDUkI0M2JkN0MxcXNzTHloRDZoclY5am92WlpDZGVlakhMX0xNbkxrNTFYdHhEQ1ZrVjE5QlRfckpKUU4tVE9EYUZ5Y25pMU1QaUR5U3N2dTZ3RmVSM0czSGg2ZVJiTFRnaVNxV01BcUp1Vjg0dGdvSy1ZelJTNGNVclcwVUh1TkpqMG1IZkNVZnh4NTZJUnBSOGs4?oc=5"
     },
     {
-     "co": "Dexcom",
+     "co": "Hims & Hers",
      "ctx": "News",
-     "t": "DexCom (NASDAQ:DXCM): An Affordable Growth Play With Strong Momentum and Fair Valuation",
-     "src": "ChartMill",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQeHdpczhGdUZkV2FYSlFhRGNMajVPRVRxRzk3cHNDVUpTUEUzeEZHaXF3NThYSmRJdURlZXhiSzNsaTJDaGI5SXRaSGZiUXdsZTA3VDZxalBIVVhpV2dnakVZNlRldHZRYW1yZjQzRk1oTHM4WkxGeUdMaDN0aWowQmdyMWVsQVBqY1ZsSFRKQkRNbFNqSW56TXdySFpiYUpOa21TQ0ZyT21acE92RjlrMUdKZkZtYlpIRVk3azhvY1lRMmwycmRiQkE4UXFjWThM?oc=5"
-    },
-    {
-     "co": "Dexcom",
-     "ctx": "News",
-     "t": "DexCom (DXCM) Stock Still Looks Undervalued Against Fair Value",
-     "src": "simplywall.st",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOaF9Gcmp4LWIzdFFZaVliQ1lWRm9BOWo3NVo5eWtBd1RPYTQ3aEJBcVhXTlNzTjB1b0R5bXRVcWdDeTBVX3NlR0hCaXFEVC1ORHNicFZfbGdnOWktWHdoZW9DRHFfczNSREZQMHJSU2FmS25IdUhKMEIxWHlrMlZ2UnNXVVU4eV9jUHdvd2U3dGxXR0ljVjJOcnZXaml4SG9YUi0za19jakV2RHVxdFRSSnNVTnN3NGVpS3k1N2Q1NjIzdTMtNk5laVlLZ9IBywFBVV95cUxOaF9Gcmp4LWIzdFFZaVliQ1lWRm9BOWo3NVo5eWtBd1RPYTQ3aEJBcVhXTlNzTjB1b0R5bXRVcWdDeTBVX3NlR0hCaXFEVC1ORHNicFZfbGdnOWktWHdoZW9DRHFfczNSREZQMHJSU2FmS25IdUhKMEIxWHlrMlZ2UnNXVVU4eV9jUHdvd2U3dGxXR0ljVjJOcnZXaml4SG9YUi0za19jakV2RHVxdFRSSnNVTnN3NGVpS3k1N2Q1NjIzdTMtNk5laVlLZw?oc=5"
+     "t": "Hims & Hers: The Amazon Of Personalized Healthcare Is Emerging (NYSE:HIMS)",
+     "src": "Seeking Alpha",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOczR4SDVwSDJUMGNYdEhsV001SXVsMDZtRU5JUEcyaWlRaC1CQ3ZHU2czb2F4WXRoY0ppZm9Rd21XN1ZjMmVvLU0yS1F5YmM1Szc1V20wV1F5Nmk2MEhzdmRnQUdRRVJsSGt6R3FuMUNORm92RlNxaG5xcmdIZkVDUXZ5UXdvNEgwNFBfb2FYR3NOc2xi?oc=5"
     }
    ]
   },
@@ -472,50 +607,50 @@
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "How Is UnitedHealth Group's Stock Performance Compared to Other Healthcare Plan Stocks?",
-     "src": "Yahoo Finance",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQMmxTMnBLRXZwZEhzejFOYmQ4YVRlVkJHVHhWbFZTSGx6azljdFpJSWR3WFJHeGI0LXVfRkYzc1hFQlpOWDA2WlJsMTJEWTZtWUl0MThLV0dGU0lNT3htdS1aNnBQS0JWZVE4czEwWGFOWUdKWFBrZ1lSQ3ZOM0RSM0dNT0szUlZRVk9KUFVtOEVNS29fQ3ctTHBKcEVjVFFTNklfMnZ2M0UxYTZ6SzhVUw?oc=5"
+     "t": "UnitedHealth Beat Q2 by 30%. Six Weeks Later the Stock Gave It All Back",
+     "src": "TIKR.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNb2p2Z3RNN1NmcDJpdm9vNzRweHlJTE1sZE5kMVRJZmlVbGk0ZnZBNFRCTDAwdDBGZENUQmtLZnNWTmxDR0JtU290UkpMMDN2SUV5d2t4aW52RXpxODhxU2g1QnVMZGNuWkstejhQTkh3Z00tQlZBajFvdHlFWTQ0Nk4zbTZYRGNLQnI2VzRhVXpNOHprMlJLYXZVNA?oc=5"
     },
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "UnitedHealth Group stock holds steady as Q2 2026 beat and higher EPS guidance support valuation",
-     "src": "AD HOC NEWS",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQMVR4SFF0cUNpMWstakVBYWF4dU1pRm5lb1MzRnhJSVZaN3dQQW1iM3RnZHNtOUM1NFNVTXRJUnY4OGxjUVVFeldkODF6blVIMF9icFFKRmxJNnpXOXdodzlOQmhkRXVFa1VTWE5ZdjRjU3RBYkpUNERFVWtlMHRtc3hGZDEzVUhGLWN5WDh2dGxmQ2dnanJFZWR0N1lSSi1KNmZsS0pHc0pfV0JWRnkwdEVVUGgxUjJ4amV1V0tRS1lzbmV4WVhUVlo5VQ?oc=5"
+     "t": "Is UnitedHealth Group (NYSE:UNH) the Managed-Care Bellwether as Approvals Sweep Healthcare?",
+     "src": "Kalkine Media",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQLUkxV3BMYkY0UXNYMnNqRTJuZ242TTRzSHl6S1JETS05S0pDVmhyZnVMNjhYZkJMbm9Nb2Q5YUFDYk9sbjVra25lMFdDd1N4d254MHlvcUtZQmM2QUVITzZKTl9UdnpaQmZ4MFdkMFU1NGpzdHFYMFJWUVV6YXFtWklLb2dyTmpDSU15eHBKcG5McUpSTVU3VUYxWmJDWGRhNGkwVVdxV3hDN3hiUUN5X0g1amNaYmRFYm1IUWdHNEtJVVoyNDN4M3JHdlpFdw?oc=5"
     },
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "UnitedHealth Group (UNH), Why Is The Market Paying Closer Attention Now?",
-     "src": "simplywall.st",
-     "date": "2026-08-29",
-     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOZXZRWldzUjRKakFWazZhUU1ZSWpCM3lhOFljTmYycklveVFZUWxJMkxXMzVscmhLbS1pRG5Va3NKWUJseWVpbVRDeFpfVno3ZmVUR1UtOWZkdmIyOXpBUjBJWDRqUURFV1dZbU9Tck0xcFVQM3Z2SmRGU0xzclJUbGNSU1dtYU4tUnVfb1hyYWxIVl9xYnAxTnM0NmlZQjVmU2lLM3h2a1NQc3V5MEZETGZPOGJIUTR6c3N5cHhIX2JuSEx3MTN0ZFN6MXhheHYyTHfSAdcBQVVfeXFMTjZySndsckhRczJMeFZBUkNkUHk4R05mMlV0akNHWlo0VjZXMkotampocC1tdHlZN0hFLW90dFRpTFhIUWpHZzVKYXE3YmxueTAwM2FNNUVIbWFmYWs4VDhWNThUU2JSSTZ4YlBFWFRWU1haZ2l4Rm5EQjkxTzVQSTFTVmxtRmhuVFdqUDZqMVpvbWtLT2RPeFhKU09TM2lMRGgybXNtNmI0cUlROV9vNU5uczcyUExKNlBCT1lGRS1KcDItQkRVbWN4cllteU1ZaWtZUnV2WVE?oc=5"
+     "t": "UnitedHealth Group stock holds firm as Q2 2026 beat and higher EPS guidance support valuation",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOenUxcWN3ekE2cXFXaC05c3IwTTY1NDBIN05IZ1ZFVVRpbkl3REFNODdaTlN6WkNqa29LeU1OOTNXb2NoNUlvZGNuTHJqWllJTjQxdExpUEdiaUdDVEtqQkhtbl9UYWg4M0dRTmk4U0hEMFEwM05XbE9DdjBaaXhpLVczc1piRTd1dzlWUnhzMnEtbG90UzZGbEZfc1ozQVpoNDhlc2FaU21DVXM1Sy1wMUhhSlVyMHJLN253UUdYbDRTTklwMjUzaA?oc=5"
     },
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "UnitedHealth, Ardagh Metal Packaging, Nvidia, and Invesco ETF Feature in CNBC's 'Halftime Report Final Trades'",
-     "src": "scanx.trade",
-     "date": "2026-08-29",
-     "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxPZWI0TFprWU1BN0pBZmhZeEVHVWpGZ1phdzdpT0g2V2ltbi1JNldheWIzWU9vbzBRak5tbUpFc2tsMnFlc1BOdzNXbmpReEhrV2Vsb2hIUXdQZTF6cXlYNEdONTBXOGMxSEZmZVRXQ2hOclpYX3RLa21nMzFIOXJCTkdEaGY5ZjA5b0V3MGFHZkwtMHFCclBJMEVPT3hlUl9PaGVCMmhpc3lhcF9PVDB1em1hb05wQVhBeUtwVHpTTEVuUEI0eUJpU0NSTjZsSlBSa2hEakZIeTRkaUV4X3pfQTZaMXNoaFA1MWcwWGcwTWxvZmhfcTJ3S2t5WXhqQQ?oc=5"
+     "t": "Why UnitedHealth (UNH) Is The Perfect Fundamental & Technical Trade Right Now Crime (dHkB2RUuAq)",
+     "src": "Mshale",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5mUDFteHpZREVfWEVFUjZCVEI1TzlZWTVPb2EzS19MT3E4ZnpsRE43RGJNbDQxZlpSWVFyajN1bGtOY0J1UVdjR2lhcFhIdkZuMUlGU2JZVlRrUQ?oc=5"
     },
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "UnitedHealth stock returns 14.89% annually over 15 years",
-     "src": "scanx.trade",
-     "date": "2026-08-29",
-     "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOa1VNQUU0OVBGTXRkSF9rSXdlSHAxQzJleDd0b3NoQ1lnY002MV9wUjRrbWYzTXo1OEtSeXBWcTN2NkQ1SnFrOUQxOUpZTEN1X1ZSM3ViTnZyZWhmV1pLZXpxcGNCN2VuVG9JT0RKb0hlV2tZTVlSSEpjbzRBd2pEWS1iWkpfTWw1TlY4VXpaa085Mnk0NVY1VnY5empfQV8xMFFadk5Cam1iWDZ5akR1MVpNR3I2NnJmSEdV?oc=5"
+     "t": "Futures Contracts for BTIC on UnitedHealth Group Futures",
+     "src": "TradingView",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBXSXY3Mlg0enhSTER4d3FXLWw4QjR4SWNCX011ZGVUUWtkcWtuSW50R3B5MzFkMGxwQWVKU19QdUE0OTZ3eWZRX0xZV2dIQjJheTF0VlMwOEczX3RNRnpnRHNCSGdIejh0X1E?oc=5"
     },
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "UnitedHealth Group stock holds in $390s as investors weigh guidance and institutional buying",
-     "src": "Ad-hoc-news.de",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPZFJfNUJsdHZDN2xDaFFqWmFtMjlmY0NUOXg3dklaV21VRHhRQVNaMlluZGJqbTQ3dXRiZ1M2djBrQmtWMG1JUE0wTDdPVzFRckQ3ejI0Z21jaTlYZGtOcDdHSm9meHJ1U0RCTUl2blBua1d5Y1Aya2dSTmZEZlJLcEZrTGpyaml4ZzVVcVprUklfWk5ER1U5MUVvU3VDVjJ5alpLeGxGNVpfLTVBSWJQRU52LVBMMWIwcFFTY25yay1aeElvYUVmTGdLbXVPQQ?oc=5"
+     "t": "Baker McKenzie adds UnitedHealth counsel",
+     "src": "Global Competition Review",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNaWVnN1Y2QmlHX0FWaWd1S2xrWjhDRHBHeVl2cUJyVl9yZXpZeWJ5eVBaU25rcXM0ckhOcnFTX2kyUldVN0dNZ29MTHVOVUYwN3VWaUZUNlRPNTBRM3pCWmVmMmNmYVFnTzVBUWU0VFpPOVFoR25xZVUzMzJQZ1JKMnBreDhyVVJOYmNwTHlXWVAxRFFZOEx3?oc=5"
     }
    ]
   },
@@ -525,34 +660,50 @@
     {
      "co": "Align Technology",
      "ctx": "News",
-     "t": "Are Wall Street Analysts Bullish on Align Technology Stock?",
-     "src": "Barchart.com",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxORTd3SmM0X1dlZFV2THBKUzl1MjY0M1gtT0VqTFAxQTVGM2t1OTk3UFJSdFV4UVJfTnlxaG1JX1JoUk5sMzN2MnY1NXdLVGtlQVJONGZFS2ZFVTNtRUZuRTFhczBmRGswb2ItVkg2SjhqYkpyNG5RS0F0amNCUWs4blctSk1LTlpINllkZzZqck85T2pYUEFVOWFNNXJfM0lNSFRFUA?oc=5"
+     "t": "Quentin Blackford to Join Align Technology Board of Directors",
+     "src": "News-Press NOW",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxQemxnRW5KZ19KOFlPcV8xbGl3TW9PUndzS01NejhRdXY4cmx2WGdIYUlualFzSU9oVVRxZFRqbVBiQzQ2N25nVWNCU045eThJVFJCWlJ1cWx2b0liRTJsSWJ2Nlk2ay1uWTBJUHJzMnhtM0tNNVl1dHB2NE5SM1BGd0pva1NJcHR0amtTOEpQcDc4a0s5R1V5bm1QSzhGX0JlcV9ROWZjblRidTJ6SmRoVmV4TzR4VUJwNVVybW9qc2xBb2ZzQmNxOUpuYWtfaGtub0kxWU9ieldvbkZEUmU1MklzYm03Sk1TTTJpX281UHFBdmlGZ0x0dWtFeGE?oc=5"
     },
     {
      "co": "Align Technology",
      "ctx": "News",
-     "t": "Align Technology, Inc. (ALGN) Latest Stock News & Headlines",
-     "src": "Yahoo Finance",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE9Ya3M2UGhDTl9GS2ZNdGwwQTNrLURMX2lEcmliWWNqR0lkbzI1eVhUdTlPX1VwQmtxOXY3WUtMRE9uRXZURmpsYWdrYVFsV1gyYkloMQ?oc=5"
+     "t": "Align Technology Names New Board Chairman",
+     "src": "Medical Product Outsourcing",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQamdWMU9YRkNELThhX2JrRl9RU0J5eXpVdFRmcmlfMF9ub1Vlbk5weG1JdzZ2REVtZDh1MXF0Ynk2b1dnYlBWSnA5RFEzVXpidUIwSkVLODdyR05JY21STE9lUEpoakl0cVlnSFY2V2M0UUFhSmNGZXlNa19JVlVOOFpRdzNTS0E?oc=5"
     },
     {
      "co": "Align Technology",
      "ctx": "News",
-     "t": "Align Technology gift is a game-changer for ASU football",
-     "src": "AZ Big Media",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPNjUta21zM0JCNkYwekRnZndheml5bEFmRnV5YkZGYVBVS25TVWdJeE1HU2lIdVA0YkEtQzZ2WGx0Wms1Q19CQk1aMTdpcElBOGNhWjhVdVB4Y1YwMGZITHpGYkxPT1NVUk43YWlnREZkR2JoaWN5WXcyZUJKMTk3WFcwd2ZPTHI5UUcxMUxHYkdDOU1DYURuZTBYRG4?oc=5"
+     "t": "Align Technology stock holds steady as analyst targets highlight upside potential",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQQldzdXZ2M1piSlBZbkRhWFBxeVJWaHo0UVBMd3lPd2EtNVFWYTFMX3F0dFV4Vm5rNXpNbzVVSlFaeTBKYTVnNXBsOU5vWWprUUxRRFl4UGUyc1lqZ0prUTdPN0ltOG5hckNsNWlJV3hFQ0tsQjQ5ak51OENVS2dpVWJSVTNZaVVuUU4yWUlHVEs3VjZ6OFZhMmtjSFdQMjNwdnBkb3p1VmQ1WkE1UzV1RjdqZVV3NEVpNW5NeGVSc3ZTODczNDl4Yld3?oc=5"
     },
     {
      "co": "Align Technology",
      "ctx": "News",
-     "t": "Align Technology stock steadies as record Q2 revenue meets cautious scanner outlook",
-     "src": "Ad-hoc-news.de",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPdEx4UEhVQ1lvMFJfRUJxSkdWdVRneVBJVkZITXA4alEtUXRSdGctb0EwWUVDX2JpX2hyZTRjRU56aWg3eU5KcmNQNlUwd0k3LWoyaERYV2xDeUo5aHg2ejA4OVFQWnY0ckEyMS0zcXNDSEY4dm13MXVvMXIzUWgtN0tUaGdTZnNsZ2ZOZTQ4YUZSTV9hUnVqd1kxREFqbXNnc1JvRVlQUW9QSmp6U09QS1AxSDhNWmRURF92dzR6UjFGQ3pFT2VacWx3?oc=5"
+     "t": "Align Technology stock holds steady as Juarez asset sale boosts 2026 earnings quality",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOMnZxa3YzMUdMM1c5S1gta3JVYXJyOENYWnlPNGVMaXIzUDQ3WEdMVTI4aUJnd2xKYU5WdDFYZHVpQ3BKR0JPd1BSalEycWRMWC1CSDM2dTlueTlXdHppZEM5MXpqZ1R2cW9ZcnpSenV5NEtMUEVsWDAxYmVDcGFiZ3JYTDFuS3BxUHB5RDBobWdfNmJ6bTAzb3g4aHZSOUxoWktEMUVnQXdNaEdaUERBTzlneVE2aVYwZ0h6RF8xamgwRnlKX29sSjJKbw?oc=5"
+    },
+    {
+     "co": "Straumann",
+     "ctx": "News",
+     "t": "Straumann stock edges higher as half-year 2026 earnings and global dental demand support valuation",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPdzhZbUNMcHZlcWNUQV9jVDZRZHhyWXNvZkRnSGJERmtBRVpzZk5BeTVfNElCdXB0UGlVYWhEN3hpMjJjckt2R0MzbEd2aUN6N01PRUNWaWVhMmZCZ2lkRHY3alVKM3JkN0d0ZXRvVmtfTDRscGJiX3R3LUNaZVRxU0RkS0cyRERuWV93OGRDaEdack0xOTM2dEVaUnpXWXAyTk4xYWdKc3NvdldQVzFldnJ0c0tBZ2YycW9vTURteUlGZkxYOGhJR0ZKeDJpUm5RWVE?oc=5"
+    },
+    {
+     "co": "Align Technology",
+     "ctx": "News",
+     "t": "Align Technology stock holds after Q2 earnings beat as institutions add exposure",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-29",
+     "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNR2Ztdl90a01xT1BwUjc0SllONDRHVTRKZ3k3c1RZQ3NKckJ6X3JuaDJxNzBjeW4tVTVaZDhfOWdQNjRydFdheE9wVVF2MmYzaVJwd0VDQ0xQQnJvS0dYUkxWZ2o4czB6RFcwOVlKdWZvQUdnZmJ1MUZjWHRyWVYzNDNjZHVTaEtLaExuLWpQNm1pZGRYMGpMMm5GZUlOckZyMVJhVHhRQ2JGN1ctekdSZlk0b2xxM0tYZzFQNDV2X3U5U0x5MFBQaW1lTW00dnM?oc=5"
     }
    ]
   },
@@ -562,50 +713,50 @@
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "Tesla \"Ambassador\" Melts Down Over \"Horrible\" Robotaxi Ride, Says He Had to Call an Uber After Total Self-Driving Failure",
-     "src": "Futurism",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNaTF3S1I1V2N2UzRnMUJtNnhkbEsyOTF2MVc5NmRWR3VPbVYxNDUtRF9sdXpMN3NmcmxHTDhVTmxEZkt4M2JhUHRxOHY3dV96S0JSd2JTNmQ5OVBpalpORXJ3eXZQbU5ad0xiUnk3OXd5R1JOaDZhLXljdlBOTUdUZUxoVXNLb3U1MXNyVmhUR1dsNm1h?oc=5"
+     "t": "Peter Cullen, Iconic Voice Of Optimus Prime, Eeyore, Toonami, And More, Dies At 85",
+     "src": "Cartoon Brew",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQTUVJZ2tmV1pWdEV3ZG12a0ZGdjJXSTlsTXlMQUZzdXdIcmRBSWgtR29hajhPZ3dzaXZ0eHVOdkJ3emQ3X1N5SU5sckJJUWdTRUZMc2dNeF9rWmZNWkpKZmZyR2VXR091SzBjenN0NjB6SkZXZDE4TklSZ1l4NDQweTZFSUVnZGZ3QnRld1AzSnpKYy1CTTAwcE82MlJpZw?oc=5"
     },
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "See How Tesla Tore Down The Model S Factory To Build Robots Instead",
-     "src": "InsideEVs",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9xTkhlWGc5ZzJDSG9WR3QwS3RNN3pGSkR3UVlpM0Z5UFFVUGRhWVBBam96UzVkRGtLNE8zM3NJU20wb1QycWIwTXhKVWdpS3hFN1cwUU9pTTNETThtX0VOWWNpRlMwYU43c0xSdVkyVXBYakhhRVFSOUNjOE9SUQ?oc=5"
+     "t": "Tesla Expands Austin Robotaxi Area Three Days Before Cybercab Launch",
+     "src": "eletric-vehicles.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPQzBJajVlczhaamVaYkt2MkwxUkxBX0xSeHN0MldPYkMzeDRGSWp4T3NNNmhiR0ZrcW96U2FienZISXotR3BVNzhXYzBNeldtZlBJbVdYSG9LSUVjdzQ5R01nckVmd3B0MnRWckVaTXp2eFlHV3J2LVAxaktGSElJQ3RkSU5iVzVnX3JtdFVxdWRyb2pfdzZyWnA1SlNfejVuZHVaQWNWYw?oc=5"
     },
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "Tesla robotaxi quotes rider 66 minutes to go 2.3 miles",
-     "src": "Chron",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1oNDRZeVJWeUlYRWFFVkVLWnBtRFloeG13UXFTUTJ3dXI3ZnFicUZVU3gzS3BLSjVaYXBVVzhjdkRhS3R0ZHUwTXJIdFUtU3V2NEJaQ29qa1ZNRkJackg5d3V2U1h1TzFYbTF5Uk5YWUxUbnpGR0ZPaFcybWQ?oc=5"
+     "t": "Tesla Has At Least 195 Unsupervised Robotaxi Before Cybercab Day",
+     "src": "nextbigfuture.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOVDBlMXpCRHVsQVhVbUNXS2QzbUJvT1h6cHZQVVZBVHdUbFA3UEtsMWRKcEdTNVpjNUJxVUNnYmtJZENjVDFFenRVLV9zVElzYm1vTXBPTTZBZExTWjljeWxiYW50dlNIRVljQmtSWFhCSG5mNUVEbktUVFBQaW95ZmFMRHdTa2FEU0c3ZDUyLUlJRXl3aVVRQk5DZ3k1c2Z5R0RtcnpjUmFxVDQ?oc=5"
     },
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "Bumblebee's Optimus Prime in The Daily LITG 30th August 2026",
-     "src": "Bleeding Cool News",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQamRXYjdZelFPTEFiZ2NFblFfM3puanRnM3VOblhZenMtNDhzX1h0U1B3dnJSLThib2xNUDQwSlN1WElKWVBSVlhXTnN1NDlnbXg3NkhhLUp2Y1E1YlFPTlFHWUlQckJMRXRraTNVOEduRXlWR3NldUxBaTVOTC1zRDYzeFd0blJXWjl1em9mV0kxdmRpc0U3MlFwSFN6aTQ?oc=5"
+     "t": "Tesla expands driverless Robotaxi geofence in Austin",
+     "src": "Teslarati",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQOUpTUzRWWjBZdjZ1WXVpc1ZGLTIwYUFaUjB4QmE4Rk9uS252MmFMOWlKcHluUzdTbnBqLUNaTGczU1VUamxkUzZpcDY5WUVBT05uSUJCY1k4Q2JLQlNfYkh4TGhxcVpBUE5Oel9hc3R0TlNKZjNucFI1alJqLVR1Y2xB?oc=5"
     },
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "Tesla (TSLA) Eyes 1 Million Optimus Robots And 1 GW Solar For Louisiana Base",
-     "src": "simplywall.st",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOLWk1V1V2c2RKeU84SzdBOHh1MHBWYVdDaWNTQWlHSlZSU1ZCQjZ0b29JRVBfX25STVZCWUhZVGdSVE5MeGxhY0FzZG1NYXZWXzI3VHpPWkpDY2ZyQl9YaVRYdmZhRjA1YVhkZ0hNS3RVMmh1aWFzckVOZHp2bWVsV1pnU0tjZGVPam5ZZmZSMm9UME1lMllkV0VCS1NzMnhkWG5XWXB1enRDRXBwYVlWUTNJNFNxck4zZThrWkNQdkxOS19l0gHKAUFVX3lxTE1wWnNhV1Q4OXd2bFpraWtPeWhuOWpwTlVGMkVuRW53OE01ZGVHdkNkNjlCdzRCYVBFVmpfbGxhZ1NOTTRUX0JEWUZBdkJ3aW1KQ3FTVzJNOWcteHFDWFpJQWRYZDkzVHdzNlFVSHpJcTJTMzJJWWdtYlJmdWhpX001RXZ4a2xTUWdUQTVBT1c1TjdqWEdpcWNmdlE1TVZwRVpJNWJGeUl4RGZXbHFNVW92XzQtSERmZ3N3dkg2aXN6SXBZMTgtcHkxQkE?oc=5"
+     "t": "Tesla Stock Rallies As Robotaxi And Optimus Bets Advance",
+     "src": "timothysykes.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1IeFpjV1R1VkFVRjZzbTBhYzFjLWQ1QlVWbzhjYVNDb1BjLUV6MGdVaHM4d081enNXbjc4SjRHR01XYXNfeHJRVU15a2VsT0tOLVY4VVpfaUg2b1VYR0o3Zm0wTEJ4alNqbXhKMk4xRHZFd1Eza1E?oc=5"
     },
     {
      "co": "Tesla",
      "ctx": "News",
-     "t": "Tesla may eat the ticket for robotaxi traffic violations in China with new responsibility law",
-     "src": "Notebookcheck",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPMGY3U0F1eTgyVDNydGpnWFJURUxfcURyczNmQ0pySXVva2s0dGZNaHplSVhUNmNjV0xrOUZDa0M2VUJaZkFBeVhtV1NRc0JDVVgzUUQ0elFSY2FCNmdPUE5NMlY2SnpJa0NXX3hUc3lHZ1hiTEMyMHFVNmtQT3gzRVFvbTFYLWFKanY1REo2OGd1V1RJZmR0SVc4Mkc1SWExQ3c4TFpNRkNaaXg3dHhoeUJZVnpDV281LUlvYlVGTnd0RWZMTV9HUnIwMGRmY1AzZWNrRA?oc=5"
+     "t": "Tesla Starts Adding Cybercabs to Robotaxi Fleet",
+     "src": "Not a Tesla App",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNekRYNmNYTWt2YjNRblRyZGNSb0tkb3l6RlRscG5sVVI0QkFOODk5cGlHREk5OVZzYm9fOFZIM3lKd0NaaGdTV1U4cGtXb0xzWlN2d3JucHRNUVVVa0ZDZkNJd1dGTGlOSXVWM1QybFBDbmxVaXZMcDlGMFV4MXVtVTVZYTVFQzdHYml3d3VDWQ?oc=5"
     }
    ]
   },
@@ -615,50 +766,50 @@
     {
      "co": "ABB",
      "ctx": "News",
-     "t": "ABB and Nüvü exoplanet camera readout system for NASA flagship telescope launched into orbit",
+     "t": "Is your SF6-free update really an upgrade?",
+     "src": "new.abb.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPSTlhTkZVUVE0dGN1ME4tSXIzcEV2U19wQkQtd2lCd05VSmdKTmRCQmtGYTYxcjhwdDVyWVpDTjBiWEJHS0ZmYjJqOHAwN1pUS1ZLTzJYNGZtVzNfcUpSRURFQ3huSC1uNFQyZXpqdnZkT2VneFZBemlNSUhiU2FhMHVmbHp5VE0?oc=5"
+    },
+    {
+     "co": "ABB",
+     "ctx": "News",
+     "t": "ABB (SWX:ABBN) In Focus Following Roman Telescope Launch As Valuation Looks Fully Valued",
      "src": "Yahoo Finance",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPUTJrUHRUNlNRb1k5eUlwU0pUdkxKOU1qWGJyam1lVlhnUk1SQzc4UWs4NU5wUkluOWp2dG1zcmIxTmFqOTZoQ1V2b3g4QVk3ejFEbFhEYVBkcllMYWlwWWRmX1ZFaW5mQl9wdFN1X0EwQVhCTVBwTDgwaWhLMkU5Qk5OZnc0MFZyRDVZQVF3?oc=5"
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQcmxxY0lSUVRMQ0FRQ3l2ZEphbUVIUTVhbDEwWThodmMxLThDOGdBZmNNTEdRc295eEtaSDBHN3BTTVgwVUl1WnFhQ0VOck1WRFAzRHlicHFOUDNqV1VjaktkOWpaaG5aRWFTU1JTaEhuVE41SlJwUDlWSjZsTkVsUVlMS1I3Mm1CUG11LWVBNURfRUd5anMxVw?oc=5"
     },
     {
      "co": "ABB",
      "ctx": "News",
-     "t": "ABB stock trades steadily as investors digest recent cash flow trends",
-     "src": "AD HOC NEWS",
-     "date": "2026-08-30",
-     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOLThlRi1QWndoU0pRRkU2X21Tb2VRYmJkOGZfYlJGRENoOUFxU2U1XzhJTGFqbU1ySVJtWHZxQUpjdV9MSE1tbkxib1g4WWVlcktEZlBFd0FFQjM2UlVFdTVnc0JsRDJDWHc2eWliZDV0d1FLRkpqdGQ1UUp6clVSekpsYm9HNFk5R3I4ZXRXLUFETzlwUFRLdUtybThyVTBGaUVLZ3Z3MkpkZ2VGczRKMzJKZ1dXeF9zQThucWNwaktrUHlrUHNLTUFOQ0Q?oc=5"
+     "t": "NASA's Nancy Grace Roman Space Telescope is equipped with cameras developed and built by ABB",
+     "src": "marketscreener.com",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPbWE1Q1laeklSOEp3dEIwbk85R09nZkxUVG42WDdMelpIWndHMnF3QXNhc2plajZnUW9GWkpCTXhsSnFWdWRXcEFWbjlwOXktT0xCQUFmN0plSWo3RkVFSzA3SF83aXJGQXI3c2ZMUXR1UFJ5VU9USklZdWhGNklWWlJCWk1kcktmZTVmbzU5SjVHTlo2X0FHVVRpdnNMNi1GNDNVZ2hHOVQ2LWNiR0gwUVRWcVFrTnRkM1JLZlBqbE4wYWNmeHU4bHZFTmtsS1ozWFBzTHRMX29ZM0czWUE?oc=5"
     },
     {
      "co": "ABB",
      "ctx": "News",
-     "t": "ABB stock holds steady as half year sales reach CHF 16.8 billion",
-     "src": "Ad-hoc-news.de",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQYW94MFBjeHNjQ3JGcHV2OTRudlZGSGJBbE5vYnVHeENvMWZKLTVVdzd6U1JhdnZLN0ZWaHVYa2t4dnloQ2JJWDRnMlN6QmswWGdBcFVfblRXUHRMTm9XYUp3N1JzcTJKdHVVZGZZVDU3U1YzU253emxpMU1DVjZVTlVsTThYcjF5a3pyaVoyMUk2THhELUhiYnNsQzlKOVZiWGJMSk4yXzJnUWNvNWJWN3hxMFhkWmRuMUJtaUpQWVdVOEVqZUE?oc=5"
+     "t": "ABB stock steady as India growth and dividend support the story",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPYzhFQTItOXRmVEh0Z3UtT2ozNFpUcmx6NkZVZ0gyZWNkMHBpM3I5TXRELWhSekl5VWxRNkFST2htc3I1R094S1lvOE5sRE8tcnRoeFI0Z1NCd0lKcEd4NjBrbWpTODZKV283Q09BakdPdWZJdjk1STdLUWZfNlNER1pZbGdjZGtqaF9wSGRzVkYya0Q5ZDRTSmhzOUFIcG5lVHBmc3Y5LWV0ZUR6cloycVo5SE1RUW5GdVVKOXRKZ3VTLVo3?oc=5"
     },
     {
      "co": "ABB",
      "ctx": "News",
-     "t": "Aussie Broadband (ASX:ABB): Head & Shoulders Breakdown Signals Further Downside Risk",
-     "src": "Kalkine",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOSVlubUFnb2JMeUF3SXp6WVZNV000bTNtVHBCZUNJOGNlRHpEankyVHdRTkpWUW1xMkVFelNnSU5PanpJRlpoMVRvUzREc2JrdmxIenljZU01SVVQQUVHX0c1OGs4TUNkQ2RRLVh1b2drXzN6YVBOQXpndDZmdjRJaFpuYjd3SFJKOHh0WXhRTVUxOVBud3BSOUxaYWpHa2NlRWkzUkEzV1BJSjhCUkIzTzJDcTM?oc=5"
+     "t": "Is Aussie Broadband (ASX:ABB) in Communication Stocks Focus?",
+     "src": "Kalkine Media",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPWVF6M0ZRdUNDTFJNU3pjWWFiTXQwUGhvQ2ZhUXBiQ1hoZ1hURS1jQWhtc09vTjRkWlB0YUNiTVJnbDdraWFqWmExcW9yQzQyWWtCSGVjR1pzMUlfZXBVa0k0S2N5MUxFbndkbGRCWTJLbWFRTnBOOW9uZDlTMFA1bHhJYm9sTWJsWkdfSElBRVI0Y3FLRDI5M1VpckNWbXlmN1JNSVFqd04?oc=5"
     },
     {
-     "co": "Universal Robots",
+     "co": "ABB",
      "ctx": "News",
-     "t": "Teradyne, Inc. Tokenized Stock (Robinhood) Analytics",
-     "src": "CryptoRank",
-     "date": "2026-08-28",
-     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNZk9UV0w0NmxOTnBSYkl0bjNia2o1d2RxY0lPYWRUZzlXREttMmdTcHZUOExONkIxUk1adHBFSUpZZVV1MTQtVTFsSnBZWTFidXZzN1JfNFNvbHZ2Nm00YWVZODdfVm05cnB1cG9mNjNuVlU2QTlHZmx6ZE1TRmpfUU53?oc=5"
-    },
-    {
-     "co": "Universal Robots",
-     "ctx": "News",
-     "t": "Teradyne Robotics ramps up fight against cobot copycats",
-     "src": "therobotreport.com",
-     "date": "2026-08-27",
-     "url": "https://www.therobotreport.com/teradyne-robotics-sues-another-chinese-cobot-maker/"
+     "t": "ABB stock steady as India unit posts strong Q2 2026 growth",
+     "src": "ad-hoc-news.de",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQc1d0RTBSWGhHTERoZjludEhqVEI5R0JOUC10V1d3NWk3Yk9KTGhPaW1uLW54QV92TEEtdEhjdHV4THNOS0lJM3VXYXNRRW5WV3FsbURyU3lqWWpsVzRXTzhLZkt1Tk5wdmpFSTRHYmhnNTBWM3NzSTZUd2xmOEl0Q1FndHVBdkV4cFlBWlVESGtvUDNSdDY0SlRwNUlhckZ2Zk1kb1hUQnBMQXAydWpKckNhVHBEeWJHdEtfUVpn?oc=5"
     }
    ]
   },
@@ -666,12 +817,12 @@
    "cat": "로보틱스 밸류체인",
    "items": [
     {
-     "co": "Harmonic Drive Systems",
+     "co": "Schaeffler",
      "ctx": "News",
-     "t": "Harmonic Drive Systems Swings Back to Profit and Lifts FY2027 Outlook",
-     "src": "TipRanks",
-     "date": "2026-08-27",
-     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPWXpWMGJfbVByTGV6WWUtZU5hWWI4c3NvR3gwSl9kamRyczNyQjZjOHBiam55endkclBKSjVpc2Q1dnBXUVlkZV9EWGVnbndMajV5bzItaVoyN1c2NGtVSFVaLWdQaDhJa3ZRS3lPaW1MdzBFWmJwMGRqX25YU01wNWxYUF80Y2dGS21fTXQ4RXJNYnkxVFRUVWR2alBrRnZmRXZENlVFcUJ1djFHNjBwOGI0THhhZUg0Y2IycGd3?oc=5"
+     "t": "Schaeffler joins JINGDONG Industrials-led alliance for robot component development",
+     "src": "Gasgoo",
+     "date": "2026-08-31",
+     "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOZ0FQN3pCU1FOa3RqbnhGbmhNc051a3ludnlzeF9EVHZkZEtvSF9HTjVpNzg5c1VQbHltS1g2dklmVDgwSFl6TDFTWDZrRmptNlhtYnRxcDZDaEZ4Nncwcnpka1gzaS1mOGtPYTZDQXRJREpLU3Y4UEJyUVQyNTMzMnI4RTBpbUgxYWx6MjJwLVQ5Z3UtVmVmNXAzaWFmVHhPZl9kWnR3enpnQThkamF2NWNOc0R5azRCblRnMkE1Qnl2blRGbENnN1Z6OXc1Z3l5Sy1JcnNhY3R0UjZW?oc=5"
     }
    ]
   }
