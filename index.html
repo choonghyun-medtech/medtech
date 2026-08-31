@@ -504,6 +504,9 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2 style="font-size:13px">국가별 방한 외국인</h2><span class="note" id="visitor-country-note">월별 스택 · 만명 · 기타 = 중국·일본·대만·미국 제외 전체</span></div>
     <div class="chart-box"><canvas id="visitorCountryChart"></canvas></div>
 
+    <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광 소비 침투율</h2><span class="note" id="medtour-penetration-note">월별 · 의료관광객/방한객 · medical_tour.json + visitor_stats.json 자동 갱신</span></div>
+    <div class="chart-box"><canvas id="medTourPenetrationChart"></canvas></div>
+
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
     <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
   </section>
@@ -1791,6 +1794,7 @@ async function loadVisitorStatsData(){
   renderVisitorStatCard();
   renderVisitorTrendChart();
   renderVisitorCountryChart();
+  if(typeof renderMedtourPenetrationChart === 'function') renderMedtourPenetrationChart();
 }
 loadVisitorStatsData();
 
@@ -2593,6 +2597,7 @@ function renderMedtourAll(){
   renderMedtourStatCard();
   renderMedtourTrendChart();
   renderMedtourDeptCharts();
+  renderMedtourPenetrationChart();
 }
 
 async function loadMedicalTourData(){
@@ -2607,6 +2612,98 @@ async function loadMedicalTourData(){
   renderMedtourAll();
 }
 loadMedicalTourData();
+
+// 국가별 의료관광 침투율 추이 — "방한 외국인 대비 의료관광객 비율"(medical_tour.json의
+// 국가별 소비건수를 의료관광객 수 프록시로, visitor_stats.json의 국가별 방한객 수를
+// 분모로 사용). 두 파일을 각각 독립적으로 fetch하므로(loadMedicalTourData/
+// loadVisitorStatsData), 어느 쪽이 먼저 끝나든 이 함수를 다시 불러 재계산한다 — 아직 한쪽이
+// 안 채워졌으면 rows가 비어(교집합 월이 없어) 빈 상태로 그렸다가, 나머지가 도착하면 다시
+// 채워진다. 국가 기준(2026-08-31 요청): medical_tour.json은 태국이 있고 visitor_stats.json은
+// 대만이 있어 5개국 기준이 서로 안 맞으므로, 우선 공통으로 안정적인 중국/일본/미국만 쓰고
+// 전체 대 전체 비율(굵은 점선)을 기준선으로 같이 그려 국가별 아웃퍼폼/언더퍼폼을 비교한다.
+const MEDTOUR_PENETRATION_MONTHS = 24;
+const PENETRATION_GROUPS = [
+  { label: '전체', medKey: 'all', visLabel: null, color: '#8a919c', dashed: true },
+  { label: '중국', medKey: 'china', visLabel: '중국', color: '#2563eb' },
+  { label: '일본', medKey: 'japan', visLabel: '일본', color: '#16a34a' },
+  { label: '미국', medKey: 'usa', visLabel: '미국', color: '#f59e0b' },
+  // 대만은 medical_tour.json 쪽에 분자(소비건수) 데이터가 없었다가 2026-08-31에
+  // scrape_medical_tour.py TABS에 추가됨(natCd=158) — visitor_stats.json엔 이미 대만
+  // 방한객 데이터가 있어(분모) 짝을 맞출 수 있다. VISITOR_COUNTRY_GROUPS의 대만 색상과
+  // 동일하게 맞춘다.
+  { label: '대만', medKey: 'taiwan', visLabel: '대만', color: '#7c3aed' },
+];
+let medTourPenetrationChartInstance = null;
+
+function computeMedtourPenetrationRows(){
+  const medByKey = {};
+  for(const t of MEDICAL_TOUR_DATA.tabs || []) medByKey[t.key] = new Map((t.monthly || []).map(r => [r.ym, r.cnt]));
+  const visTotal = new Map((VISITOR_STATS_DATA.monthly || []).map(r => [r.ym, r.visitors]));
+  const visCountry = new Map((VISITOR_STATS_DATA.countryMonthly || []).map(r => [r.ym, r.countries]));
+
+  const medAll = medByKey['all'];
+  if(!medAll || !medAll.size || !visTotal.size) return [];
+
+  const months = [...medAll.keys()].filter(ym => visTotal.has(ym)).sort();
+  const lastMonths = months.slice(-MEDTOUR_PENETRATION_MONTHS);
+
+  return lastMonths.map(ym => {
+    const row = { ym };
+    for(const g of PENETRATION_GROUPS){
+      const medMap = medByKey[g.medKey];
+      const medCnt = medMap ? medMap.get(ym) : null;
+      const visCnt = g.visLabel == null ? visTotal.get(ym) : (visCountry.get(ym) || {})[g.visLabel];
+      row[g.label] = (medCnt != null && visCnt) ? (medCnt / visCnt * 100) : null;
+    }
+    return row;
+  });
+}
+
+function renderMedtourPenetrationChart(){
+  if(medTourPenetrationChartInstance){ medTourPenetrationChartInstance.destroy(); medTourPenetrationChartInstance = null; }
+  const note = document.getElementById('medtour-penetration-note');
+  const rows = computeMedtourPenetrationRows();
+  if(!rows.length){
+    if(note) note.textContent = '월별 · 의료관광객/방한객 · 아직 데이터가 없습니다.';
+    return;
+  }
+  if(note) note.textContent = `월별(최근 ${rows.length}개월) · 의료관광객(소비건수)/방한객 × 100 · 전체=점선(기준선) · 한국관광 데이터랩`;
+  medTourPenetrationChartInstance = new Chart(document.getElementById('medTourPenetrationChart'), {
+    type: 'line',
+    data: {
+      labels: rows.map(r => r.ym),
+      datasets: PENETRATION_GROUPS.map(g => ({
+        label: g.label,
+        data: rows.map(r => r[g.label]),
+        borderColor: g.color, backgroundColor: g.color,
+        borderDash: g.dashed ? [5, 3] : undefined,
+        borderWidth: g.dashed ? 3.5 : 3,
+        spanGaps: true, tension: 0.25, pointRadius: 0, pointHoverRadius: 4,
+      })),
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(2) + '%'}` },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          // 세로축 눈금선을 20%p 간격으로만 그어 그리드가 너무 촘촘해 보이지 않게 한다
+          // (2026-08-31 요청). 축 라벨은 정수%로 반올림해 보여주되(예: 100%), 데이터/툴팁의
+          // 소수점 둘째자리 정밀도는 그대로 유지한다.
+          grid: { color: gridColor() }, ticks: { color: textColor(), stepSize: 20, callback: v => Math.round(v) + '%' },
+          title: { display: true, text: '의료관광객/방한객(%)', color: textColor() },
+        },
+      },
+    },
+  });
+}
 
 // ==================================================================
 // 리서치 보고서 — 실데이터 (미래에셋증권 · 김충현, CFA 발간분)

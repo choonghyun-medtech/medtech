@@ -62,13 +62,16 @@ LOOKBACK_MONTHS_RATIO = 14  # 진료과목별 비율(deptAmt/deptCnt) 조회 범
 LOOKBACK_MONTHS_TREND = 120  # 소비액·소비건수 추이(monthly) 조회 범위 — 10개년(2026-08-25 요청). 실제 데이터는 2018-01부터만 있음
 
 # key/label/natCd — natCd="000"은 전체(글로벌). 나머지는 selectComNatList.do로 확인한 코드
-# (2026-08-25): 중국=156, 일본=392, 미국=840, 태국=764.
+# (2026-08-25): 중국=156, 일본=392, 미국=840, 태국=764. 대만=158(scrape_visitor_stats.py의
+# TOP_COUNTRIES와 동일 체계) — 2026-08-31 "국가별 의료관광 소비 침투율" 차트에서 대만 방한객
+# 데이터(visitor_stats.json)와 짝지을 분자 데이터가 필요해 추가.
 TABS = [
     {"key": "all", "label": "전체", "natCd": "000"},
     {"key": "china", "label": "중국", "natCd": "156"},
     {"key": "japan", "label": "일본", "natCd": "392"},
     {"key": "usa", "label": "미국", "natCd": "840"},
     {"key": "thailand", "label": "태국", "natCd": "764"},
+    {"key": "taiwan", "label": "대만", "natCd": "158"},
 ]
 
 HEADERS = {
