@@ -304,10 +304,8 @@ tr:last-child td{border-bottom:none}
   <div class="tabs">
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
     <button class="tab" data-view="stock">주가 데이터</button>
-    <button class="tab" data-view="flowmap">수급 지도</button>
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
-    <button class="tab" data-view="export">수출 데이터</button>
-    <button class="tab" data-view="medtour">의료관광 데이터</button>
+    <button class="tab" data-view="industry">산업 데이터</button>
     <button class="tab" data-view="reports">리서치 보고서</button>
   </div>
 
@@ -355,6 +353,14 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= STOCK ================= -->
   <section class="view" id="view-stock">
+    <div class="tabs" id="stock-subtabs" style="margin-bottom:14px">
+      <button class="region-tab active" data-sub="perf">주가 Performance</button>
+      <button class="region-tab" data-sub="global">글로벌 대시보드</button>
+      <button class="region-tab" data-sub="flowmap">수급 판독기</button>
+    </div>
+
+    <!-- ---- 주가 Performance ---- -->
+    <div id="stock-sub-perf">
     <div class="sec-h"><h2>수익률 Top10 / Bottom10</h2><span class="note" id="perf-source-note">글로벌 헬스케어 유니버스 · 로컬 통화 기준</span></div>
     <div class="toggle" id="perf-period-toggle">
       <button data-p="d1" class="active">1일</button>
@@ -379,6 +385,9 @@ tr:last-child td{border-bottom:none}
         <option value="all">지역 전체</option>
         <option value="KR">한국</option>
         <option value="GLOBAL">글로벌</option>
+        <option value="US">미국</option>
+        <option value="CN">중국</option>
+        <option value="JP">일본</option>
       </select>
       <select id="perf-sector-filter" class="filter-select">
         <option value="all">섹터 전체</option>
@@ -428,10 +437,17 @@ tr:last-child td{border-bottom:none}
       <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
       <div class="chart-box"><canvas id="flowChart"></canvas></div>
     </div>
-  </section>
+    </div>
+    <!-- /주가 Performance -->
 
-  <!-- ================= FLOW MAP ================= -->
-  <section class="view" id="view-flowmap">
+    <!-- ---- 글로벌 대시보드 (준비 중) ---- -->
+    <div id="stock-sub-global" style="display:none">
+      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note">한국, 미국, 중국, 일본 4개 지역 주요 Medtech 및 로보틱스 기업들 시총 및 밸류에이션 실적</span></div>
+      <div class="card">준비 중입니다 — 추후 콘텐츠가 채워질 예정입니다.</div>
+    </div>
+
+    <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
+    <div id="stock-sub-flowmap" style="display:none">
     <div class="sec-h"><h2>수급 지도 · 찬집/빈집</h2>
       <div class="toggle" id="flowmap-period-toggle">
         <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
@@ -452,6 +468,8 @@ tr:last-child td{border-bottom:none}
 
     <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">종목별 수급 현황</h2></div>
     <div id="flowmap-table-wrap"></div>
+    </div>
+    <!-- /수급 판독기 -->
   </section>
 
   <!-- ================= CALENDAR ================= -->
@@ -487,8 +505,16 @@ tr:last-child td{border-bottom:none}
     <div class="up-list" id="cal-up-list"><div class="card">일정을 불러오는 중...</div></div>
   </section>
 
-  <!-- ================= EXPORT DATA ================= -->
-  <section class="view" id="view-export">
+  <!-- ================= INDUSTRY DATA ================= -->
+  <section class="view" id="view-industry">
+    <div class="tabs" id="industry-subtabs" style="margin-bottom:14px">
+      <button class="region-tab active" data-sub="export">수출 데이터</button>
+      <button class="region-tab" data-sub="medtour">의료관광 데이터</button>
+      <button class="region-tab" data-sub="procedure">진료행위 통계</button>
+    </div>
+
+    <!-- ---- 수출 데이터 ---- -->
+    <div id="industry-sub-export">
     <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
     <div class="chips" id="export-cat-chips"></div>
     <div class="note" id="export-companies-note" style="margin:-2px 0 10px"></div>
@@ -532,10 +558,11 @@ tr:last-child td{border-bottom:none}
 
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
     <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
-  </section>
+    </div>
+    <!-- /수출 데이터 -->
 
-  <!-- ================= MEDICAL TOURISM DATA ================= -->
-  <section class="view" id="view-medtour">
+    <!-- ---- 의료관광 데이터 ---- -->
+    <div id="industry-sub-medtour" style="display:none">
     <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 실데이터 연동</span></div>
     <div class="cards">
       <div class="stat-card" id="visitor-stat-card"></div>
@@ -589,6 +616,14 @@ tr:last-child td{border-bottom:none}
 
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
     <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
+    </div>
+    <!-- /의료관광 데이터 -->
+
+    <!-- ---- 진료행위 통계 (준비 중) ---- -->
+    <div id="industry-sub-procedure" style="display:none">
+      <div class="sec-h"><h2>진료행위 통계</h2></div>
+      <div class="card">준비 중입니다 — 추후 콘텐츠가 채워질 예정입니다.</div>
+    </div>
   </section>
 
   <!-- ================= REPORTS ================= -->
@@ -655,6 +690,25 @@ document.querySelectorAll('.tab').forEach(btn=>{
     }
   });
 });
+
+// ---- 상위 탭 안의 하위 탭(주가 데이터 → 주가 Performance/글로벌 대시보드/수급 판독기,
+// 산업 데이터 → 수출 데이터/의료관광 데이터/진료행위 통계) — 뉴스 탭의 .region-tab 패턴을
+// 그대로 재사용해 클릭 시 data-sub 값과 짝지어지는 "#{prefix}-sub-{key}" 블록만 보여준다.
+function setupSubtabs(tabsId, prefix){
+  const tabs = document.getElementById(tabsId);
+  if(!tabs) return;
+  tabs.querySelectorAll('.region-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabs.querySelectorAll('.region-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      tabs.parentElement.querySelectorAll(':scope > [id^="'+prefix+'-sub-"]').forEach(el=>{
+        el.style.display = el.id === prefix+'-sub-'+btn.dataset.sub ? '' : 'none';
+      });
+    });
+  });
+}
+setupSubtabs('stock-subtabs', 'stock');
+setupSubtabs('industry-subtabs', 'industry');
 
 // ---- chip toggle (visual only, mockup) ----
 document.querySelectorAll('.chips').forEach(group=>{
@@ -1732,6 +1786,7 @@ function regionFilterPass(market, filterVal){
   if(filterVal==='all') return true;
   if(filterVal==='KR') return market==='KR';
   if(filterVal==='GLOBAL') return market!=='KR';
+  if(filterVal==='US' || filterVal==='CN' || filterVal==='JP') return market===filterVal;
   return true;
 }
 function newsUrl(name){ return 'https://www.google.com/search?q=' + encodeURIComponent(name) + '&tbm=nws'; }
@@ -2903,18 +2958,20 @@ function renderMedtourTrendChart(){
   // ASP(건당 평균 소비액, 만원) = 소비액(amt, 천원) / 소비건수(cnt) / 10.
   const asp = displayRows.map(r => r.cnt ? r.amt / r.cnt / 10 : null);
   medTourAspChartInstance = new Chart(document.getElementById('medTourAspChart'), {
-    type: 'bar',
+    type: 'line',
     data: {
       labels: displayRows.map(r => r.ym),
       datasets: [
-        { label: 'ASP(만원)', data: asp, backgroundColor: '#7c3aed' },
+        { label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true },
       ],
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
+          mode: 'index', intersect: false,
           callbacks: {
             label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원`,
           },
@@ -3059,16 +3116,17 @@ function renderMedtourDermaTrendChart(){
   // ASP(건당 평균 소비액, 만원) = 소비액(amt, 원) / 소비건수(cnt) / 10000.
   const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null);
   medTourDermaAspChartInstance = new Chart(document.getElementById('medTourDermaAspChart'), {
-    type: 'bar',
+    type: 'line',
     data: {
       labels: displayRows.map(r => r.ym),
-      datasets: [{ label: 'ASP(만원)', data: asp, backgroundColor: '#7c3aed' }],
+      datasets: [{ label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true }],
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원` } },
+        tooltip: { mode: 'index', intersect: false, callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원` } },
       },
       scales: {
         x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
