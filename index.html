@@ -96,17 +96,15 @@ h1{font-size:22px; margin:2px 0 2px}
   padding:5px 12px; border-radius:16px; font-size:12px; cursor:pointer; font-weight:500;
 }
 .chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
-/* 수출 데이터 품목 칩 — 기존 .chip은 한 줄 텍스트 전용이라, HS코드를 작은 글씨로 함께
-   보여주기 위한 2줄 버전(참고 사이트 "03 관세청 수출데이터" 탭의 칩 형태와 동일한 패턴,
-   2026-08-21). */
+/* 수출 데이터 품목 칩 — 항목명만 한 줄로 표시(2026-09-02: 톡신처럼 HS코드가 여러 개라
+   칩 안에 같이 적으면 그 칩만 유독 길어지는 문제가 있어, HS코드는 칩 밖으로 빼서
+   아래 export-hs-note/export-companies-note 줄에 텍스트로 표시하는 방식으로 변경). */
 .export-chip{
   border:1px solid var(--border); background:var(--bg2); color:var(--sub);
   padding:6px 12px; border-radius:10px; cursor:pointer; line-height:1.35;
+  font-size:12.5px; font-weight:700;
 }
 .export-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
-.export-chip-label{font-size:12.5px; font-weight:700}
-.export-chip-hs{font-size:10.5px; color:var(--dim); margin-top:1px}
-.export-chip.active .export-chip-hs{color:var(--accent)}
 .toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
 .toggle button{
   border:none; background:var(--card); color:var(--sub); padding:6px 12px; font-size:12px; cursor:pointer;
@@ -119,6 +117,11 @@ h1{font-size:22px; margin:2px 0 2px}
   padding:14px 16px; margin-bottom:10px;
 }
 .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-bottom:6px}
+/* 의료관광 데이터 상단 요약 카드 4개 — "피부과 소비액 비중(2026-07)"처럼 라벨이 길어서
+   기본 160px 폭에선 날짜가 줄바꿈됐다. 이 그리드만 폭을 넓혀 한 줄에 들어오게 한다
+   (2026-09-02, 다른 곳의 .cards는 그대로 둔다 — 전역으로 넓히면 다른 섹션 레이아웃이
+   불필요하게 바뀌므로 이 그리드에만 id로 범위를 좁혔다). */
+#medtour-overview-cards{grid-template-columns:repeat(auto-fill,minmax(205px,1fr))}
 .stat-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px}
 .stat-card .lbl{font-size:11.5px; color:var(--dim); margin-bottom:4px}
 .stat-card .val{font-size:18px; font-weight:700; word-break:keep-all; overflow-wrap:break-word}
@@ -517,7 +520,8 @@ tr:last-child td{border-bottom:none}
     <div id="industry-sub-export">
     <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
     <div class="chips" id="export-cat-chips"></div>
-    <div class="note" id="export-companies-note" style="margin:-2px 0 10px"></div>
+    <div class="note" id="export-hs-note" style="margin:8px 0 2px"></div>
+    <div class="note" id="export-companies-note" style="margin:0 0 10px"></div>
 
     <!-- 품목별 "전체/지역별/국가별" 하위 탭 (2026-08-21 추가) — 참고 사이트 03 관세청
          수출데이터 탭과 동일한 패턴: 품목 칩 선택 → 범위 탭(전체 고정 + 해당 품목에
@@ -564,17 +568,25 @@ tr:last-child td{border-bottom:none}
     <!-- ---- 의료관광 데이터 ---- -->
     <div id="industry-sub-medtour" style="display:none">
     <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 실데이터 연동</span></div>
-    <div class="cards">
-      <div class="stat-card" id="visitor-stat-card"></div>
-      <div class="stat-card" id="medtour-stat-card"></div>
+    <div class="cards" id="medtour-overview-cards">
+      <div class="stat-card" id="medtour-visitors-card"></div>
+      <div class="stat-card" id="medtour-derma-cnt-card"></div>
+      <div class="stat-card" id="medtour-derma-amt-card"></div>
+      <div class="stat-card" id="medtour-derma-ratio-card"></div>
     </div>
 
     <div class="medtour-group-h">의료관광객 소비 데이터</div>
-    <div class="sec-h"><h2 style="font-size:13px">외국인 의료 소비액 및 소비건수 추이</h2><span class="note" id="medtour-trend-note">월별 · 한국관광 데이터랩 · medical_tour.json 자동 갱신</span></div>
     <div class="tabs" id="medtour-section-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
 
     <div id="medtour-section-all">
       <div class="tabs" id="medtour-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+      <div class="sec-h" style="margin:0 0 6px">
+        <h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액 및 소비건수 추이</h2>
+        <div class="toggle" id="medtour-trend-period-toggle">
+          <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+        </div>
+      </div>
+      <div class="note" id="medtour-trend-note" style="margin:-4px 0 8px">월별 · 한국관광 데이터랩 · medical_tour.json 자동 갱신</div>
       <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액</h2></div>
       <div class="chart-box"><canvas id="medTourAmtChart"></canvas></div>
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
@@ -596,7 +608,13 @@ tr:last-child td{border-bottom:none}
 
     <div id="medtour-section-derma" style="display:none">
       <div class="tabs" id="medtour-derma-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
-      <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액(피부과)</h2></div>
+      <div class="sec-h" style="margin:0 0 6px">
+        <h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액(피부과)</h2>
+        <div class="toggle" id="medtour-derma-trend-period-toggle">
+          <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+        </div>
+      </div>
+      <div class="note" id="medtour-derma-trend-note" style="margin:-4px 0 8px"></div>
       <div class="chart-box"><canvas id="medTourDermaAmtChart"></canvas></div>
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수(피부과)</h2></div>
       <div class="chart-box"><canvas id="medTourDermaCntChart"></canvas></div>
@@ -605,10 +623,20 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div class="medtour-group-h">방한 외국인 데이터</div>
-    <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2><span class="note" id="visitor-trend-note">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">방한 외국인 월별 추이</h2>
+      <div class="toggle" id="visitor-trend-period-toggle">
+        <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+      </div>
+    </div>
+    <div class="note" id="visitor-trend-note" style="margin:-4px 0 8px">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">국가별 방한 외국인</h2><span class="note" id="visitor-country-note">월별 스택 · 만명 · 기타 = 중국·일본·대만·미국 제외 전체</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 방한 외국인</h2>
+      <div class="toggle" id="visitor-country-period-toggle">
+        <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+      </div>
+    </div>
+    <div class="note" id="visitor-country-note" style="margin:-4px 0 8px">월별 스택 · 만명 · 기타 = 중국·일본·대만·미국 제외 전체</div>
     <div class="chart-box"><canvas id="visitorCountryChart"></canvas></div>
 
     <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광 소비 침투율</h2><span class="note" id="medtour-penetration-note">월별 · 의료관광객/방한객 · medical_tour.json + visitor_stats.json 자동 갱신</span></div>
@@ -2107,6 +2135,8 @@ loadTickerUniverse();
 let VISITOR_STATS_DATA = { monthly: [], countryMonthly: [] };
 let visitorTrendChartInstance = null;
 let visitorCountryChartInstance = null;
+// 월/분기/연 토글(2026-09-02) — 방한 외국인 월별 추이 / 국가별 방한 외국인 두 차트 전용.
+const VISITOR_CHART_STATE = { trendGran: 'month', countryGran: 'month' };
 
 // countryMonthly는 scrape_visitor_stats.py가 이미 "고정 4개국 + 기타" 형태로 집계해서
 // 저장해두므로(원본 국가별 원시 데이터가 아니라), 여기서는 그리는 순서와 색상만 정한다.
@@ -2127,37 +2157,24 @@ function fmtManmyeong(v){ return (v / 10000).toFixed(1) + '만명'; }
 // 한 자리까지 그대로 보여준다(2026-08-25 요청).
 function fmtManmyeongAxis(v){ return Math.round(v / 10000) + '만명'; }
 
-function renderVisitorStatCard(){
-  const card = document.getElementById('visitor-stat-card');
-  if(!card) return;
-  const m = VISITOR_STATS_DATA.monthly;
-  if(!m || !m.length){
-    card.innerHTML = `<div class="lbl">이번달 방한객</div><div class="val">-</div>`;
-    return;
-  }
-  const last = m[m.length - 1];
-  const yoy = m.find(r => r.ym === `${Number(last.ym.slice(0,4)) - 1}-${last.ym.slice(5)}`);
-  const yoyPct = yoy && yoy.visitors ? (last.visitors - yoy.visitors) / yoy.visitors * 100 : null;
-  card.innerHTML = `
-    <div class="lbl">이번달 방한객(${last.ym})</div>
-    <div class="val">${fmtManmyeong(last.visitors)}</div>
-    ${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : ''}
-  `;
-}
 
 function renderVisitorTrendChart(){
   if(visitorTrendChartInstance){ visitorTrendChartInstance.destroy(); visitorTrendChartInstance = null; }
-  const rows = VISITOR_STATS_DATA.monthly;
+  const monthlyRows = VISITOR_STATS_DATA.monthly;
   const note = document.getElementById('visitor-trend-note');
-  if(!rows || !rows.length){
+  if(!monthlyRows || !monthlyRows.length){
     if(note) note.textContent = '만명 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
     return;
   }
-  if(note) note.textContent = `월별(최근 ${rows.length}개월, 10년치) · 한국관광 데이터랩 · getTempleteData.do 자동 갱신`;
+  const gran = VISITOR_CHART_STATE.trendGran;
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
+  const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
+  const rows = aggregateMonthlyRows(monthlyRows, gran, ['visitors']);
+  if(note) note.textContent = `${granLabel}(최근 ${rows.length}${unitLabel}, 10년치 수집분 기준) · 한국관광 데이터랩 · getTempleteData.do 자동 갱신`;
   visitorTrendChartInstance = new Chart(document.getElementById('visitorChart'), {
     type: 'line',
     data: {
-      labels: rows.map(r => r.ym),
+      labels: rows.map(r => r.label),
       datasets: [{
         label: '방한 외국인', data: rows.map(r => r.visitors),
         borderColor: '#7c3aed', backgroundColor: 'rgba(124, 58, 237, 0.15)', fill: true,
@@ -2184,16 +2201,41 @@ function renderVisitorTrendChart(){
   });
 }
 
+// aggregateMonthlyRows는 값 필드가 평평한(flat) 숫자 필드일 때 쓰는데, countryMonthly는
+// {ym, countries:{국가명: 인원, ...}} 형태로 국가별 값이 중첩 객체 안에 있어 전용 집계
+// 함수가 필요하다(2026-09-02, 국가별 방한 외국인 차트에 월/분기/연 토글 추가).
+function aggregateVisitorCountryRows(rows, gran){
+  if(!rows || !rows.length) return [];
+  if(gran === 'month') return rows.map(r => ({ label: r.ym, countries: r.countries || {} }));
+  const map = new Map();
+  rows.forEach(r => {
+    const [y, mo] = r.ym.split('-').map(Number);
+    const key = gran === 'quarter' ? `${y}Q${Math.ceil(mo / 3)}` : String(y);
+    const acc = map.get(key) || {};
+    Object.entries(r.countries || {}).forEach(([name, val]) => {
+      acc[name] = (acc[name] || 0) + (val || 0);
+    });
+    map.set(key, acc);
+  });
+  return Array.from(map.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, countries]) => ({ label, countries }));
+}
+
 function renderVisitorCountryChart(){
   if(visitorCountryChartInstance){ visitorCountryChartInstance.destroy(); visitorCountryChartInstance = null; }
-  const rows = VISITOR_STATS_DATA.countryMonthly;
+  const monthlyRows = VISITOR_STATS_DATA.countryMonthly;
   const note = document.getElementById('visitor-country-note');
-  if(!rows || !rows.length){
+  if(!monthlyRows || !monthlyRows.length){
     if(note) note.textContent = '월별 스택 · 만명 · 아직 데이터가 없습니다.';
     return;
   }
-  if(note) note.textContent = `월별 스택(최근 ${rows.length}개월, 10년치) · 만명 · 기타 = 중국·일본·대만·미국 제외 전체`;
-  const labels = rows.map(r => r.ym);
+  const gran = VISITOR_CHART_STATE.countryGran;
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
+  const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
+  const rows = aggregateVisitorCountryRows(monthlyRows, gran);
+  if(note) note.textContent = `${granLabel} 스택(최근 ${rows.length}${unitLabel}, 10년치 수집분 기준) · 만명 · 기타 = 중국·일본·대만·미국 제외 전체`;
+  const labels = rows.map(r => r.label);
   const datasets = VISITOR_COUNTRY_GROUPS.map(g => ({
     label: g.label,
     backgroundColor: g.color,
@@ -2234,7 +2276,7 @@ async function loadVisitorStatsData(){
   }catch(e){
     VISITOR_STATS_DATA = { monthly: [], countryMonthly: [] };
   }
-  renderVisitorStatCard();
+  if(typeof renderMedtourOverviewCards === 'function') renderMedtourOverviewCards();
   renderVisitorTrendChart();
   renderVisitorCountryChart();
   if(typeof renderMedtourPenetrationChart === 'function') renderMedtourPenetrationChart();
@@ -2368,6 +2410,39 @@ function computeYoYSeries(agg, gran){
   });
 }
 
+// 위 aggregateExportMonthly/computeYoYSeries의 일반화 버전 — 수출 데이터는 값 필드가
+// expDlr 하나뿐이라 전용 함수를 계속 쓰지만, 의료관광(amt+cnt 두 필드를 같이 월/분기/연
+// 단위로 합산)처럼 값 필드가 여러 개거나 이름이 다른 곳에서는 이 두 함수를 쓴다
+// (2026-09-02, 의료관광 소비액/소비건수 차트에 월/분기/연 토글 추가).
+function aggregateMonthlyRows(rows, gran, keys){
+  if(!rows || !rows.length) return [];
+  if(gran === 'month') return rows.map(r => { const o = { label: r.ym }; keys.forEach(k => o[k] = r[k]); return o; });
+  const map = new Map();
+  rows.forEach(r => {
+    const [y, mo] = r.ym.split('-').map(Number);
+    const key = gran === 'quarter' ? `${y}Q${Math.ceil(mo / 3)}` : String(y);
+    const acc = map.get(key) || Object.fromEntries(keys.map(k => [k, null]));
+    keys.forEach(k => {
+      if(r[k] == null) return; // 결측치는 합산에서 제외(그 구간에 실제 값이 하나도 없으면 null 유지)
+      acc[k] = (acc[k] || 0) + r[k];
+    });
+    map.set(key, acc);
+  });
+  return Array.from(map.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, vals]) => ({ label, ...vals }));
+}
+
+function computeYoYSeriesFor(agg, gran, key){
+  const byLabel = new Map(agg.map(a => [a.label, a[key]]));
+  return agg.map(a => {
+    const prevLabel = prevYearLabel(a.label, gran);
+    const prevVal = prevLabel != null ? byLabel.get(prevLabel) : null;
+    if(prevVal == null || !prevVal || a[key] == null) return null;
+    return (a[key] - prevVal) / prevVal * 100;
+  });
+}
+
 // 국가별 breakdown은 scrape_export_data.py가 최근 132개월(11년)만 롤링 수집한다(호출량 절약,
 // COUNTRY_BREAKDOWN_MONTHS) — 그중 뒤쪽 120개월(10년)만 "최근10년" 카드/차트에 쓴다(앞
 // 12개월은 exportDisplayFromLabel()의 YoY 기준선용으로만 존재). 2026-08-31 요청: 기존
@@ -2377,15 +2452,13 @@ const EXPORT_BREAKDOWN_DISPLAY_MONTHS = 120;
 
 function renderExportCategoryChips(){
   const wrap = document.getElementById('export-cat-chips');
+  const hsNote = document.getElementById('export-hs-note');
   const companiesNote = document.getElementById('export-companies-note');
   // EXPORT_DATA.categories(실제 수집 결과)가 아니라 EXPORT_CATEGORY_CONFIG(정적 설정)를
   // 기준으로 그린다 — 새로 지정한 8개 품목·범위 중 상당수는 아직 실데이터가 없어도 칩과
   // 하위 탭 구조 자체는 항상 보여야 하기 때문(2026-08-21).
   wrap.innerHTML = EXPORT_CATEGORY_CONFIG.map(c =>
-    `<div class="export-chip${c.key === EXPORT_STATE.cat ? ' active' : ''}" data-key="${c.key}">
-       <div class="export-chip-label">${escapeHtml(c.label)}</div>
-       <div class="export-chip-hs">HS ${escapeHtml(c.hsCodes.join(', '))}</div>
-     </div>`
+    `<div class="export-chip${c.key === EXPORT_STATE.cat ? ' active' : ''}" data-key="${c.key}">${escapeHtml(c.label)}</div>`
   ).join('');
   wrap.querySelectorAll('.export-chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -2398,6 +2471,9 @@ function renderExportCategoryChips(){
     });
   });
   const cfg = currentExportCategoryConfig();
+  // HS코드는 칩 안이 아니라 칩 바로 아래 줄에 텍스트로 표시(2026-09-02) — 톡신처럼
+  // 코드가 여러 개라도 이 note 줄은 자연히 줄바꿈되므로 칩 크기에는 영향을 안 준다.
+  if(hsNote) hsNote.textContent = cfg ? `HS ${cfg.hsCodes.join(', ')}` : '';
   if(companiesNote) companiesNote.textContent = cfg && cfg.companies ? `관련 종목: ${cfg.companies}` : '';
 }
 
@@ -2732,7 +2808,7 @@ loadExportData();
 let MEDICAL_TOUR_DATA = { tabs: [] };
 // section: 'all'(의료소비 전체) / 'derma'(피부과) — 피부과는 국가 탭을 별도로
 // 유지한다(2026-08-31, 피부과 전용 탭 신설 요청).
-const MEDTOUR_STATE = { tab: 'all', section: 'all', dermaTab: 'all' };
+const MEDTOUR_STATE = { tab: 'all', section: 'all', dermaTab: 'all', trendGran: 'month', dermaTrendGran: 'month' };
 let medTourAmtChartInstance = null;
 let medTourCntChartInstance = null;
 let medTourAspChartInstance = null;
@@ -2825,23 +2901,96 @@ function renderMedtourDermaTabs(){
   });
 }
 
-function renderMedtourStatCard(){
-  const card = document.getElementById('medtour-stat-card');
-  if(!card) return;
-  const tab = currentMedtourTab();
-  const m = tab && tab.monthly && tab.monthly.length ? tab.monthly : null;
-  if(!m){
-    card.innerHTML = `<div class="lbl">의료 소비액</div><div class="val">-</div>`;
-    return;
+// 상위 요약 카드 4개(방한객 / 피부과 소비건수 / 피부과 소비액 / 전체 소비액 중 피부과
+// 비중) — visitor_stats.json(VISITOR_STATS_DATA)과 medical_tour.json(MEDICAL_TOUR_DATA)을
+// 둘 다 써야 해서, 두 파일을 각각 독립적으로 fetch하는 loadVisitorStatsData()/
+// loadMedicalTourData() 양쪽에서 다시 불러 재계산한다(어느 쪽이 먼저 끝나든 그 시점까지
+// 확보된 데이터로 그렸다가, 나머지가 도착하면 다시 채워짐 — 침투율 차트와 동일 패턴,
+// 2026-09-02). 카드는 사용자가 선택한 국가 탭(MEDTOUR_STATE.tab)과 무관하게 항상
+// "전체"(natCd 000) 기준 스냅샷을 보여준다 — 페이지 최상단 요약이라 탭 전환에 따라
+// 흔들리면 안 되기 때문.
+function medtourMoM(rows, key){
+  if(!rows.length) return null;
+  const last = rows[rows.length - 1];
+  const prev = rows.length > 1 ? rows[rows.length - 2] : null;
+  if(!prev || !prev[key] || last[key] == null) return null;
+  return (last[key] - prev[key]) / prev[key] * 100;
+}
+function medtourYoY(rows, key){
+  if(!rows.length) return null;
+  const last = rows[rows.length - 1];
+  const yoy = rows.find(r => r.ym === ymMinusYear(last.ym));
+  if(!yoy || !yoy[key] || last[key] == null) return null;
+  return (last[key] - yoy[key]) / yoy[key] * 100;
+}
+function medtourDeltaHtml(pct, suffix){
+  if(pct == null) return '';
+  return `<div class="delta ${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}${suffix}</div>`;
+}
+
+function renderMedtourOverviewCards(){
+  const visitorsCard = document.getElementById('medtour-visitors-card');
+  const dermaCntCard = document.getElementById('medtour-derma-cnt-card');
+  const dermaAmtCard = document.getElementById('medtour-derma-amt-card');
+  const dermaRatioCard = document.getElementById('medtour-derma-ratio-card');
+  if(!visitorsCard || !dermaCntCard || !dermaAmtCard || !dermaRatioCard) return;
+
+  const vm = VISITOR_STATS_DATA.monthly || [];
+  if(vm.length){
+    const last = vm[vm.length - 1];
+    visitorsCard.innerHTML = `
+      <div class="lbl">방한객(${last.ym})</div>
+      <div class="val">${fmtManmyeong(last.visitors)}</div>
+      ${medtourDeltaHtml(medtourYoY(vm, 'visitors'), '% YoY')}
+      ${medtourDeltaHtml(medtourMoM(vm, 'visitors'), '% MoM')}
+    `;
+  }else{
+    visitorsCard.innerHTML = `<div class="lbl">방한객</div><div class="val">-</div>`;
   }
-  const last = m[m.length - 1];
-  const prev = m.length > 1 ? m[m.length - 2] : null;
-  const momPct = prev && prev.amt ? (last.amt - prev.amt) / prev.amt * 100 : null;
-  card.innerHTML = `
-    <div class="lbl">${tab.label} 의료 소비액(${last.ym})</div>
-    <div class="val">${fmtMillionWonRounded(last.amt)}</div>
-    ${momPct != null ? `<div class="delta ${momPct >= 0 ? 'up' : 'down'}">${momPct >= 0 ? '▲' : '▼'} ${Math.abs(momPct).toFixed(1)}% MoM</div>` : ''}
-  `;
+
+  const allTab = (MEDICAL_TOUR_DATA.tabs || []).find(t => t.key === 'all');
+  const dermaRows = buildMedtourDermaRows(allTab); // {ym, amt(원 단위), cnt}[]
+  if(dermaRows.length){
+    const lastRow = dermaRows[dermaRows.length - 1];
+    dermaCntCard.innerHTML = `
+      <div class="lbl">피부과 소비건수(${lastRow.ym})</div>
+      <div class="val">${fmtCnt(lastRow.cnt)}</div>
+      ${medtourDeltaHtml(medtourYoY(dermaRows, 'cnt'), '% YoY')}
+      ${medtourDeltaHtml(medtourMoM(dermaRows, 'cnt'), '% MoM')}
+    `;
+    dermaAmtCard.innerHTML = `
+      <div class="lbl">피부과 소비액(${lastRow.ym})</div>
+      <div class="val">${lastRow.amt == null ? '-' : fmtMillionWonRounded(lastRow.amt / 1000)}</div>
+      ${medtourDeltaHtml(medtourYoY(dermaRows, 'amt'), '% YoY')}
+      ${medtourDeltaHtml(medtourMoM(dermaRows, 'amt'), '% MoM')}
+    `;
+  }else{
+    dermaCntCard.innerHTML = `<div class="lbl">피부과 소비건수</div><div class="val">-</div>`;
+    dermaAmtCard.innerHTML = `<div class="lbl">피부과 소비액</div><div class="val">-</div>`;
+  }
+
+  // 피부과 소비액 비중(= 전체 의료소비액 중 피부과 비중) — deptAmt의 ratio 필드(이미 %로
+  // 계산돼 내려옴)를 그대로 쓴다.
+  // 이미 %인 값의 증감이라 YoY/MoM은 상대변화율(%)이 아니라 %p(퍼센트포인트) 차이로 표시.
+  const ratioRows = ((allTab && allTab.deptAmt) || [])
+    .filter(r => r.dept === '피부과')
+    .map(r => ({ ym: r.ym, ratio: r.ratio }))
+    .sort((a, b) => a.ym.localeCompare(b.ym));
+  if(ratioRows.length){
+    const last = ratioRows[ratioRows.length - 1];
+    const prevMoM = ratioRows.length > 1 ? ratioRows[ratioRows.length - 2] : null;
+    const prevYoY = ratioRows.find(r => r.ym === ymMinusYear(last.ym));
+    const momPp = prevMoM && prevMoM.ratio != null && last.ratio != null ? last.ratio - prevMoM.ratio : null;
+    const yoyPp = prevYoY && prevYoY.ratio != null && last.ratio != null ? last.ratio - prevYoY.ratio : null;
+    dermaRatioCard.innerHTML = `
+      <div class="lbl">피부과 소비액 비중(${last.ym})</div>
+      <div class="val">${last.ratio == null ? '-' : last.ratio.toFixed(1) + '%'}</div>
+      ${medtourDeltaHtml(yoyPp, '%p YoY')}
+      ${medtourDeltaHtml(momPp, '%p MoM')}
+    `;
+  }else{
+    dermaRatioCard.innerHTML = `<div class="lbl">피부과 소비액 비중</div><div class="val">-</div>`;
+  }
 }
 
 function renderMedtourTrendChart(){
@@ -2854,43 +3003,39 @@ function renderMedtourTrendChart(){
     if(note) note.textContent = '월별 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
     return;
   }
-  const rows = tab.monthly; // 10개년 전체(scrape_medical_tour.py가 수집한 범위 그대로) — YoY 계산의 lookback용으로 그대로 둔다.
+  // 월/분기/연 토글(2026-09-02) — 원본 월별(tab.monthly)을 aggregateMonthlyRows()로 선택한
+  // 단위로 합산한 뒤(label 필드: 월이면 "YYYY-MM", 분기면 "YYYYQ#", 연이면 "YYYY"), YoY
+  // 비교가 가능한 지점(전년동기가 집계 결과 안에 있는 지점)부터만 차트에 표시한다.
+  const gran = MEDTOUR_STATE.trendGran;
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
+  const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
+  const rows = aggregateMonthlyRows(tab.monthly, gran, ['amt', 'cnt']);
 
-  // YoY 비교가 가능한 시점(데이터 시작 다음 해 1월)부터만 차트에 표시 — 그 이전 구간은 전년
-  // 동월 데이터가 없어 YoY가 비어버려 보기 불편하다는 요청(2026-08-27). ASP 차트는 YoY 선이
-  // 없지만 통일성을 위해 같은 시작점을 쓴다. 원본 데이터(rows)는 그대로 두고 표시용으로만 자른다.
-  const [firstY, firstM] = rows[0].ym.split('-').map(Number);
-  const displayStartYm = `${firstY + 1}-${String(firstM).padStart(2, '0')}`;
-  const displayRows = rows.filter(r => r.ym >= displayStartYm);
+  const byLabel = new Map(rows.map(r => [r.label, r]));
+  const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `월별(${displayRows[0].ym} ~ ${displayRows[displayRows.length-1].ym}, ${displayRows.length}개월) · ${tab.label} · YoY 비교를 위해 ${displayStartYm}부터 표시(데이터 자체는 ${rows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
-      : '월별 · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.';
+      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${tab.label} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${tab.monthly[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
 
-  // 같은 달 전년 대비 YoY(%) — 값이 amt/cnt로 다르므로 Map을 만들어 공용으로 계산.
-  // lookback은 전체 rows에서 찾고, 실제 반환값은 displayRows 순서에 맞춘다.
-  const yoySeries = (valueOf) => {
-    const byYm = new Map(rows.map(r => [r.ym, valueOf(r)]));
-    return displayRows.map(r => {
-      const prevVal = byYm.get(ymMinusYear(r.ym));
-      const curVal = byYm.get(r.ym);
-      if(prevVal == null || !prevVal || curVal == null) return null;
-      return (curVal - prevVal) / prevVal * 100;
-    });
-  };
+  // 같은 구간(월/분기/연) 전년 대비 YoY(%) — 값이 amt/cnt로 다르므로 각각 계산해 label로 매핑.
+  const amtYoYFull = computeYoYSeriesFor(rows, gran, 'amt');
+  const amtYoYByLabel = new Map(rows.map((r, i) => [r.label, amtYoYFull[i]]));
+  const cntYoYFull = computeYoYSeriesFor(rows, gran, 'cnt');
+  const cntYoYByLabel = new Map(rows.map((r, i) => [r.label, cntYoYFull[i]]));
 
   medTourAmtChartInstance = new Chart(document.getElementById('medTourAmtChart'), {
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [
         {
-          type: 'bar', label: '의료 소비액(백만원)', data: displayRows.map(r => r.amt / 1000),
+          type: 'bar', label: '의료 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1000),
           backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
         },
         {
-          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.amt),
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => amtYoYByLabel.get(r.label)),
           borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
           spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
         },
@@ -2906,7 +3051,7 @@ function renderMedtourTrendChart(){
           callbacks: {
             label: (ctx) => ctx.dataset.yAxisID === 'y1'
               ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
-              : `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
+              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
           },
         },
       },
@@ -2926,14 +3071,14 @@ function renderMedtourTrendChart(){
 
   medTourCntChartInstance = new Chart(document.getElementById('medTourCntChart'), {
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [
         {
           type: 'bar', label: '의료 소비건수(건)', data: displayRows.map(r => r.cnt),
           backgroundColor: '#16a34a', yAxisID: 'y', order: 2,
         },
         {
-          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.cnt),
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => cntYoYByLabel.get(r.label)),
           borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
           spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
         },
@@ -2949,7 +3094,7 @@ function renderMedtourTrendChart(){
           callbacks: {
             label: (ctx) => ctx.dataset.yAxisID === 'y1'
               ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
-              : `${ctx.dataset.label}: ${fmtCnt(ctx.parsed.y)}`,
+              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : fmtCnt(ctx.parsed.y)}`,
           },
         },
       },
@@ -2967,12 +3112,13 @@ function renderMedtourTrendChart(){
     },
   });
 
-  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 천원) / 소비건수(cnt) / 10.
-  const asp = displayRows.map(r => r.cnt ? r.amt / r.cnt / 10 : null);
+  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 천원) / 소비건수(cnt) / 10 — 분기/연 단위일
+  // 때는 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다.
+  const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10 : null);
   medTourAspChartInstance = new Chart(document.getElementById('medTourAspChart'), {
     type: 'line',
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [
         { label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true },
       ],
@@ -3019,38 +3165,64 @@ function renderMedtourDermaTrendChart(){
   if(medTourDermaCntChartInstance){ medTourDermaCntChartInstance.destroy(); medTourDermaCntChartInstance = null; }
   if(medTourDermaAspChartInstance){ medTourDermaAspChartInstance.destroy(); medTourDermaAspChartInstance = null; }
   const tab = currentMedtourDermaTab();
-  const rows = buildMedtourDermaRows(tab);
-  if(!rows.length) return;
+  const note = document.getElementById('medtour-derma-trend-note');
+  const monthlyRows = buildMedtourDermaRows(tab); // {ym, amt(원 단위), cnt}[]
+  if(!monthlyRows.length){
+    if(note) note.textContent = '월별 · 한국관광 데이터랩 · 아직 데이터가 없습니다.';
+    return;
+  }
 
-  // 전체 추이 차트와 동일하게, YoY 비교가 가능한 시점(데이터 시작 다음 해 1월)부터만
-  // 표시한다(2026-08-31 요청 — 피부과 소비액/소비건수 차트에도 YoY 선 추가).
-  const [firstY, firstM] = rows[0].ym.split('-').map(Number);
-  const displayStartYm = `${firstY + 1}-${String(firstM).padStart(2, '0')}`;
-  const displayRows = rows.filter(r => r.ym >= displayStartYm);
+  // 월/분기/연 토글(2026-09-02) — 위 renderMedtourTrendChart와 동일한 방식.
+  const gran = MEDTOUR_STATE.dermaTrendGran;
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
+  const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
+  const rows = aggregateMonthlyRows(monthlyRows, gran, ['amt', 'cnt']);
+
+  // 전체 추이 차트와 동일하게, YoY 비교가 가능한 구간부터만 표시한다(2026-08-31 요청 —
+  // 피부과 소비액/소비건수 차트에도 YoY 선 추가).
+  const byLabel = new Map(rows.map(r => [r.label, r]));
+  const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
+  if(note){
+    note.textContent = displayRows.length
+      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${tab ? tab.label : ''} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${monthlyRows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
+  }
   if(!displayRows.length) return;
 
-  const yoySeries = (valueOf) => {
-    const byYm = new Map(rows.map(r => [r.ym, valueOf(r)]));
-    return displayRows.map(r => {
-      const prevVal = byYm.get(ymMinusYear(r.ym));
-      const curVal = byYm.get(r.ym);
-      if(prevVal == null || !prevVal || curVal == null) return null;
-      return (curVal - prevVal) / prevVal * 100;
-    });
-  };
+  const amtYoYFull = computeYoYSeriesFor(rows, gran, 'amt');
+  const amtYoYByLabel = new Map(rows.map((r, i) => [r.label, amtYoYFull[i]]));
+  const cntYoYFull = computeYoYSeriesFor(rows, gran, 'cnt');
+  const cntYoYByLabel = new Map(rows.map((r, i) => [r.label, cntYoYFull[i]]));
+
+  // 피부과 소비액 비중(%) = 피부과 소비액(원) / 해당 국가탭 전체 의료 소비액(천원→원 환산).
+  // 기존 deptAmt.ratio를 그대로 쓰지 않고 매번 다시 계산하는 이유: 월/분기/연 토글로
+  // amt가 이미 구간 합산된 상태라, 비중도 "합산된 피부과 amt ÷ 합산된 전체 amt"로 다시
+  // 구해야 정확하다(월별 ratio를 그대로 평균 내면 분기/연 단위에서 틀어짐).
+  const totalRows = aggregateMonthlyRows(tab.monthly || [], gran, ['amt']);
+  const totalAmtByLabel = new Map(totalRows.map(r => [r.label, r.amt]));
+  const ratioByLabel = new Map(rows.map(r => {
+    const totalAmt = totalAmtByLabel.get(r.label); // 천원 단위
+    const ratio = (r.amt != null && totalAmt) ? (r.amt / (totalAmt * 1000)) * 100 : null;
+    return [r.label, ratio];
+  }));
 
   medTourDermaAmtChartInstance = new Chart(document.getElementById('medTourDermaAmtChart'), {
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [
         {
           type: 'bar', label: '피부과 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1e6),
-          backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
+          backgroundColor: '#2563eb', yAxisID: 'y', order: 3,
         },
         {
-          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.amt),
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => amtYoYByLabel.get(r.label)),
           borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
           spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
+        {
+          type: 'line', label: '피부과 비중(%)', data: displayRows.map(r => ratioByLabel.get(r.label)),
+          borderColor: '#0d9488', backgroundColor: '#0d9488', yAxisID: 'y2',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 2,
         },
       ],
     },
@@ -3062,9 +3234,9 @@ function renderMedtourDermaTrendChart(){
         tooltip: {
           mode: 'index', intersect: false,
           callbacks: {
-            label: (ctx) => ctx.dataset.yAxisID === 'y1'
-              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
-              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`,
+            label: (ctx) => ctx.dataset.yAxisID === 'y'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3})}백만원`
+              : `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`,
           },
         },
       },
@@ -3078,20 +3250,24 @@ function renderMedtourDermaTrendChart(){
           position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
           title: { display: true, text: 'YoY(%)', color: textColor() },
         },
+        y2: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: '피부과 비중(%)', color: textColor() },
+        },
       },
     },
   });
 
   medTourDermaCntChartInstance = new Chart(document.getElementById('medTourDermaCntChart'), {
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [
         {
           type: 'bar', label: '피부과 소비건수(건)', data: displayRows.map(r => r.cnt),
           backgroundColor: '#16a34a', yAxisID: 'y', order: 2,
         },
         {
-          type: 'line', label: 'YoY(%)', data: yoySeries(r => r.cnt),
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => cntYoYByLabel.get(r.label)),
           borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
           spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
         },
@@ -3125,12 +3301,13 @@ function renderMedtourDermaTrendChart(){
     },
   });
 
-  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 원) / 소비건수(cnt) / 10000.
+  // ASP(건당 평균 소비액, 만원) = 소비액(amt, 원) / 소비건수(cnt) / 10000 — 분기/연 단위일
+  // 때도 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다.
   const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null);
   medTourDermaAspChartInstance = new Chart(document.getElementById('medTourDermaAspChart'), {
     type: 'line',
     data: {
-      labels: displayRows.map(r => r.ym),
+      labels: displayRows.map(r => r.label),
       datasets: [{ label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true }],
     },
     options: {
@@ -3213,7 +3390,7 @@ function renderMedtourDeptCharts(){
 }
 
 function renderMedtourAll(){
-  renderMedtourStatCard();
+  renderMedtourOverviewCards();
   renderMedtourTrendChart();
   renderMedtourDeptCharts();
   renderMedtourPenetrationChart();
@@ -3234,6 +3411,39 @@ async function loadMedicalTourData(){
   renderMedtourAll();
 }
 loadMedicalTourData();
+
+document.querySelectorAll('#medtour-trend-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#medtour-trend-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    MEDTOUR_STATE.trendGran = b.dataset.gran;
+    renderMedtourTrendChart();
+  });
+});
+document.querySelectorAll('#medtour-derma-trend-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#medtour-derma-trend-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    MEDTOUR_STATE.dermaTrendGran = b.dataset.gran;
+    renderMedtourDermaTrendChart();
+  });
+});
+document.querySelectorAll('#visitor-trend-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#visitor-trend-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    VISITOR_CHART_STATE.trendGran = b.dataset.gran;
+    renderVisitorTrendChart();
+  });
+});
+document.querySelectorAll('#visitor-country-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#visitor-country-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    VISITOR_CHART_STATE.countryGran = b.dataset.gran;
+    renderVisitorCountryChart();
+  });
+});
 
 // 국가별 의료관광 침투율 추이 — "방한 외국인 대비 의료관광객 비율"(medical_tour.json의
 // 국가별 소비건수를 의료관광객 수 프록시로, visitor_stats.json의 국가별 방한객 수를
