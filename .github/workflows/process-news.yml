@@ -1,0 +1,80 @@
+name: Process news (AI)
+
+# 2026-09-03: collect-news.yml에서 분리(그쪽 파일 상단 설명 참고). Gemini를 쓰는 "AI 처리"
+# (기사 2줄 요약 → 히스토리 아카이빙 → 카테고리별 월간 브리핑)만 담당한다. collect-news.yml이
+# 끝나면 workflow_run으로 자동으로 이어서 실행되고(최신 news.json을 대상으로 처리하기 위해),
+# Gemini 하루 쿼터 초과 등으로 이 단계만 실패했을 때는 수집을 다시 안 돌리고 이 워크플로만
+# Actions 탭에서 수동 실행(workflow_dispatch)하면 된다 — 그때는 마지막으로 커밋된 news.json을
+# 그대로 대상으로 재시도한다.
+
+on:
+  workflow_run:
+    workflows: ["Collect news"]
+    types: [completed]
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 — 수집 없이 AI 처리만 재시도할 때 사용
+
+permissions:
+  contents: write
+
+jobs:
+  process-news:
+    runs-on: ubuntu-latest
+    # workflow_run으로 트리거된 경우엔 collect-news가 성공했을 때만 진행(실패한 수집 결과로
+    # AI 처리를 돌리지 않기 위함). 수동 실행(workflow_dispatch)은 조건 없이 항상 진행.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main  # collect-news가 이미 커밋해둔 최신 news.json을 확실히 받기 위해 명시
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install google-genai anthropic
+
+      - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/summarize_news.py --out news.json
+
+      - name: Archive today's news into news_history.jsonl (뉴스 탭 내 '뉴스 아카이브'/'월간 브리핑' 섹션용 누적)
+        if: always()  # 요약이 실패해도 news.json 자체는 있으니 아카이빙은 계속 시도
+        run: python scripts/archive_news_snapshot.py --news news.json --history news_history.jsonl
+
+      - name: Analyze news flow trend (카테고리별 최근 30일 흐름 종합, Gemini 무료 티어 우선)
+        if: always()  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/analyze_news_trend.py --history news_history.jsonl --out news_trend.json
+
+      - name: Commit changes if any
+        if: always()  # 셋 중 하나만 성공해도 그 결과는 커밋되도록
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news.json news_history.jsonl
+          if [ -f news_trend.json ]; then git add news_trend.json; fi
+          if git diff --cached --quiet -- news.json news_history.jsonl news_trend.json 2>/dev/null; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: 뉴스 AI 요약/월간 브리핑 갱신 ($(date -u +%Y-%m-%d))"
+            # collect-news.yml이나 다른 워크플로가 그 사이 먼저 push했으면 rebase 후 재시도
+            for i in 1 2 3 4 5; do
+              if git push; then
+                echo "푸시 성공"
+                exit 0
+              fi
+              echo "푸시 실패, 재시도 $i/5 (원격 변경사항 반영 후 재시도)"
+              git fetch origin main
+              git rebase origin/main || { echo "리베이스 충돌, 수동 확인 필요"; exit 1; }
+              sleep $((RANDOM % 6 + 2))
+            done
+            echo "5회 재시도에도 푸시 실패"
+            exit 1
+          fi

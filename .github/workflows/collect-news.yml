@@ -1,4 +1,13 @@
-name: Update news
+name: Collect news
+
+# 2026-09-03: 원래 update-news.yml 하나로 "수집 + Gemini 요약/브리핑"을 다 처리했는데,
+# Gemini 쪽이 하루 쿼터(20회) 초과로 실패할 때마다 재시도하려면 이미 잘 되는 수집(스크래핑)
+# 까지 통째로 다시 돌려야 해서 비효율적이었다(사용자 피드백). 그래서 Gemini를 전혀 쓰지 않는
+# "수집" 단계만 이 워크플로로 분리했다 — 실패할 일이 거의 없고 빠르다. Gemini를 쓰는
+# "AI 처리"(요약/아카이빙/월간 브리핑)는 process-news.yml로 분리해서, 이 워크플로가 끝나면
+# workflow_run으로 자동으로 이어서 실행되게 했다(그래야 항상 최신 news.json을 대상으로 돈다).
+# AI 처리만 재시도하고 싶으면 수집을 다시 안 돌리고 process-news.yml만 수동 실행(workflow_dispatch)
+# 하면 된다.
 
 on:
   schedule:
@@ -13,7 +22,7 @@ permissions:
   contents: write
 
 jobs:
-  update-news:
+  collect-news:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,7 +34,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests feedparser google-genai anthropic
+        run: pip install requests feedparser
 
       - name: Fetch domestic news (Naver API)
         env:
@@ -41,37 +50,17 @@ jobs:
         if: always()  # RSS 결과는 이미 저장된 상태 — 이 단계가 실패해도 RSS 결과 그대로 유지
         run: python scripts/scrape_news_global_gsearch.py --out news.json
 
-      - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
-        if: always()  # 요약 생성이 실패해도 기사 목록 자체는 이미 저장된 상태를 유지
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/summarize_news.py --out news.json
-
-      - name: Archive today's news into news_history.jsonl (뉴스 탭 내 '뉴스 플로우' 섹션용 누적)
-        if: always()  # news.json이 이미 저장된 상태라면 요약 성공 여부와 무관하게 아카이빙
-        run: python scripts/archive_news_snapshot.py --news news.json --history news_history.jsonl
-
-      - name: Analyze news flow trend (카테고리별 최근 7일/30일 흐름 종합, Gemini 무료 티어 우선)
-        if: always()  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/analyze_news_trend.py --history news_history.jsonl --out news_trend.json
-
       - name: Commit changes if any
-        if: always()  # 넷 중 하나만 성공해도 그 결과는 커밋되도록
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add news.json news_history.jsonl
-          if [ -f news_trend.json ]; then git add news_trend.json; fi
-          if git diff --cached --quiet -- news.json news_history.jsonl news_trend.json 2>/dev/null; then
+          git add news.json
+          if git diff --cached --quiet -- news.json; then
             echo "변경 없음, 커밋 건너뜀"
           else
-            git commit -m "chore: news.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "chore: news.json 자동 수집 ($(date -u +%Y-%m-%d))"
             # 다른 워크플로가 그 사이 먼저 push해서 main이 앞서 있으면 rebase 후 재시도
-            # (여러 update-*.yml이 각자 다른 파일만 건드리므로 실제 충돌은 거의 없다).
             for i in 1 2 3 4 5; do
               if git push; then
                 echo "푸시 성공"
