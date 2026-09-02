@@ -314,44 +314,61 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= NEWS ================= -->
   <section class="view active" id="view-news">
-    <div class="mock-flag" id="news-mock-flag">ⓘ news.json 로딩 중...</div>
-
+    <!-- 검색/카테고리/기업/국내·해외 — 오늘의 클리핑·뉴스 플로우 두 하위 탭이 공통으로 쓰는 필터 -->
     <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
-      <input id="news-search-input" class="filter-select" style="flex:1;min-width:160px" placeholder="기업명, 키워드로 검색..." autocomplete="off" />
+      <input id="news-search-input" class="filter-select" style="flex:0 1 320px;min-width:160px" placeholder="기업명, 키워드로 검색..." autocomplete="off" />
       <select id="news-category-select" class="filter-select"><option value="">전체 카테고리</option></select>
       <select id="news-company-select" class="filter-select"><option value="">전체 기업</option></select>
-      <div class="toggle" id="news-period-toggle">
-        <button data-days="0">오늘</button>
-        <button data-days="7">최근 7일</button>
-        <button data-days="30">최근 30일</button>
-        <button data-days="all" class="active">전체</button>
+      <div class="toggle" id="news-region-tabs">
+        <button class="region-tab active" data-region="domestic">국내 뉴스</button>
+        <button class="region-tab" data-region="global">해외 뉴스</button>
       </div>
-      <input id="news-date-from" type="date" class="filter-select" title="시작일" />
-      <span class="note">~</span>
-      <input id="news-date-to" type="date" class="filter-select" title="종료일" />
       <a href="#" id="news-reset-link" class="note" style="text-decoration:underline">초기화</a>
     </div>
-    <div class="note" id="news-filter-summary" style="margin-bottom:10px"></div>
 
-    <div class="tabs" id="news-region-tabs" style="margin-bottom:14px">
-      <button class="region-tab active" data-region="domestic">국내 뉴스</button>
-      <button class="region-tab" data-region="global">해외 뉴스</button>
+    <!-- 오늘의 클리핑 / 뉴스 플로우 하위 탭 — 클리핑 분량이 많을 때 플로우를 보려고 한참
+         스크롤해야 하는 문제 때문에 분리(2026-09-02 사용자 요청). 다른 탭들(stock-subtabs,
+         industry-subtabs)과 동일하게 setupSubtabs()로 처리하므로 .region-tab 클래스를 쓴다. -->
+    <div class="tabs" id="news-subtabs">
+      <button class="region-tab active" data-sub="clipping">오늘의 클리핑</button>
+      <button class="region-tab" data-sub="flow">🕐 뉴스 플로우</button>
     </div>
 
-    <div id="news-domestic-block">
-      <div class="sec-h"><h2>오늘의 클리핑 · 국내</h2><span class="note">네이버뉴스 기준 · 카테고리별 트래킹 기업</span></div>
-      <div id="news-domestic-wrap"></div>
+    <div id="news-sub-clipping">
+      <div class="mock-flag" id="news-mock-flag">ⓘ news.json 로딩 중...</div>
+      <div class="note" id="news-filter-summary" style="margin-bottom:10px"></div>
+
+      <div id="news-domestic-block">
+        <div class="sec-h"><h2>오늘의 클리핑 · 국내</h2><span class="note">네이버뉴스 기준 · 카테고리별 트래킹 기업</span></div>
+        <div id="news-domestic-wrap"></div>
+      </div>
+
+      <div id="news-global-block" style="display:none">
+        <div class="sec-h"><h2>오늘의 클리핑 · 해외</h2><span class="note">medtech·헬스케어·로보틱스 매체 RSS 기준 · 카테고리별 트래킹 기업</span></div>
+        <div id="news-global-wrap"></div>
+      </div>
     </div>
 
-    <div id="news-global-block" style="display:none">
-      <div class="sec-h"><h2>Global MedTech/Robotics News</h2><span class="note">medtech·헬스케어·로보틱스 매체 RSS 기준 · 카테고리별 트래킹 기업</span></div>
-      <div id="news-global-wrap"></div>
-    </div>
+    <div id="news-sub-flow" style="display:none">
+      <div class="sec-h"><h2>🕐 뉴스 플로우</h2><span class="note">카테고리·기업을 하나 선택하면 최근 7일/30일 흐름을 AI가 글로 종합 · 아래에서 기간을 골라 그동안 누적된 기사도 확인 가능</span></div>
+      <div id="news-flow-trend-wrap"></div>
 
-    <div class="sec-h" style="margin-top:22px"><h2>🕐 뉴스 플로우</h2><span class="note">위 검색·카테고리·기업·기간 필터 기준 · news_history.jsonl 누적 데이터로 시간 흐름을 봅니다(당일부터 매일 자동 누적)</span></div>
-    <div id="news-flow-trend-wrap"></div>
-    <div class="note" id="news-flow-summary" style="margin-bottom:8px"></div>
-    <div id="news-flow-wrap"></div>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 10px">
+        <div class="toggle" id="news-period-toggle">
+          <button data-days="0">오늘</button>
+          <button data-days="7" class="active">최근 7일</button>
+          <button data-days="30">최근 30일</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap">
+          <input id="news-date-from" type="date" class="filter-select" title="시작일" />
+          <span class="note">~</span>
+          <input id="news-date-to" type="date" class="filter-select" title="종료일" />
+        </div>
+        <a href="#" id="news-flow-reset-link" class="note" style="text-decoration:underline">기간 초기화</a>
+      </div>
+      <div class="note" id="news-flow-summary" style="margin-bottom:8px"></div>
+      <div id="news-flow-wrap"></div>
+    </div>
   </section>
 
   <!-- ================= STOCK ================= -->
@@ -737,6 +754,7 @@ function setupSubtabs(tabsId, prefix){
 }
 setupSubtabs('stock-subtabs', 'stock');
 setupSubtabs('industry-subtabs', 'industry');
+setupSubtabs('news-subtabs', 'news');
 
 // ---- chip toggle (visual only, mockup) ----
 document.querySelectorAll('.chips').forEach(group=>{
@@ -762,6 +780,11 @@ document.querySelectorAll('.toggle').forEach(group=>{
 // news.json 자체는 대화창 리서치 결과로 수동 갱신되는 단계 — 실제 뉴스와 실제 기사 URL임.
 let NEWS_DOMESTIC = [];
 let NEWS_GLOBAL = [];
+// news_history.jsonl(누적 클리핑)과 news_trend.json(AI 분석) — 뉴스 플로우 섹션에서 쓴다.
+// loadNews()가 호출하는 renderNewsFlow()가 이 값들을 참조하므로, loadNews() 호출보다
+// 반드시 먼저 선언돼 있어야 한다(TDZ로 인한 ReferenceError 방지).
+let NEWS_HISTORY = [];
+let NEWS_TREND = [];
 
 function escapeHtml(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -888,14 +911,15 @@ function newsItemCompanies(it){
   return String(it.co || '').split(',').map(s=>s.trim()).filter(Boolean);
 }
 
+// 오늘의 클리핑은 "새로 수집된 뉴스 전부"를 보여주는 곳이라 기간 필터를 적용하지 않는다
+// (news.json 자체가 매일 새로 덮어써지는 최신 스냅샷이라 기간 필터를 걸 의미가 없음 —
+// 기간별로 걸러 보려면 누적 데이터를 쓰는 아래 뉴스 플로우를 사용). 2026-09-02 사용자 요청.
 function filterNewsGroups(groups){
   const q = NEWS_STATE.q.trim().toLowerCase();
   return groups.map(g=>{
     if(NEWS_STATE.category && g.cat !== NEWS_STATE.category) return { cat: g.cat, items: [] };
     const items = g.items.filter(it=>{
       if(NEWS_STATE.company && !newsItemCompanies(it).includes(NEWS_STATE.company)) return false;
-      if(NEWS_STATE.from && it.date && it.date < NEWS_STATE.from) return false;
-      if(NEWS_STATE.to && it.date && it.date > NEWS_STATE.to) return false;
       if(q){
         const hay = `${it.co} ${it.ctx} ${it.t} ${it.src} ${it.summary||''}`.toLowerCase();
         if(hay.indexOf(q) === -1) return false;
@@ -914,34 +938,34 @@ function applyNewsFilters(){
 
   const total = fDomestic.reduce((s,g)=>s+g.items.length,0) + fGlobal.reduce((s,g)=>s+g.items.length,0);
   const summary = document.getElementById('news-filter-summary');
-  if(summary){
-    const rangeLabel = (NEWS_STATE.from || NEWS_STATE.to)
-      ? ` · ${NEWS_STATE.from||'처음'} ~ ${NEWS_STATE.to||'오늘'}`
-      : '';
-    summary.textContent = `총 ${total}건 표시${rangeLabel}`;
-  }
+  if(summary) summary.textContent = `총 ${total}건 표시`;
 
   // 뉴스 플로우 섹션도 같은 필터(NEWS_STATE) 기준으로 같이 갱신 — renderNewsFlow는 파일 뒤쪽에
   // 정의돼 있지만 function 선언이라 호이스팅되어 여기서 호출 가능하다.
   if(typeof renderNewsFlow === 'function') renderNewsFlow();
 }
 
-function setNewsPeriod(days){
+// 뉴스 플로우 전용 기간 필터(오늘/7일/30일) — 오늘의 클리핑에는 더 이상 적용되지 않는다.
+// skipRender=true는 페이지 최초 로드 시 기본값(최근 7일)만 세팅하고 렌더는 건너뛴다 — 이 시점엔
+// 아직 NEWS_HISTORY/NEWS_TREND(파일 뒤쪽에서 let으로 선언됨)가 초기화 전이라, 여기서 바로
+// applyNewsFilters()→renderNewsFlow()를 부르면 TDZ ReferenceError로 전체 스크립트가 멎는다.
+// 실제 렌더는 로드 완료 후 loadNews()/loadNewsHistory()/loadNewsTrend()가 각자 알아서 부른다.
+function setNewsPeriod(days, skipRender){
   const today = new Date(); // 실제 오늘 날짜 기준(이전엔 '2026-08-18'로 고정돼 있던 버그 수정)
   const fromInput = document.getElementById('news-date-from');
   const toInput = document.getElementById('news-date-to');
-  if(days === null){ // 전체
-    NEWS_STATE.from = null; NEWS_STATE.to = null;
-    if(fromInput) fromInput.value = '';
-    if(toInput) toInput.value = '';
-  } else {
-    const from = new Date(today); from.setDate(from.getDate() - days);
-    NEWS_STATE.from = from.toISOString().slice(0,10);
-    NEWS_STATE.to = today.toISOString().slice(0,10);
-    if(fromInput) fromInput.value = NEWS_STATE.from;
-    if(toInput) toInput.value = NEWS_STATE.to;
+  const from = new Date(today); from.setDate(from.getDate() - days);
+  NEWS_STATE.from = from.toISOString().slice(0,10);
+  NEWS_STATE.to = today.toISOString().slice(0,10);
+  if(fromInput) fromInput.value = NEWS_STATE.from;
+  if(toInput) toInput.value = NEWS_STATE.to;
+  const periodToggle = document.getElementById('news-period-toggle');
+  if(periodToggle){
+    periodToggle.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('active', Number(b.dataset.days) === days);
+    });
   }
-  applyNewsFilters();
+  if(!skipRender) applyNewsFilters();
 }
 
 (function initNewsFilters(){
@@ -977,10 +1001,7 @@ function setNewsPeriod(days){
   const periodToggle = document.getElementById('news-period-toggle');
   if(periodToggle){
     periodToggle.querySelectorAll('button').forEach(b=>{
-      b.addEventListener('click', ()=>{
-        const days = b.dataset.days === 'all' ? null : Number(b.dataset.days);
-        setNewsPeriod(days);
-      });
+      b.addEventListener('click', ()=> setNewsPeriod(Number(b.dataset.days)));
     });
   }
 
@@ -999,19 +1020,20 @@ function setNewsPeriod(days){
   const resetLink = document.getElementById('news-reset-link');
   if(resetLink) resetLink.addEventListener('click', (e)=>{
     e.preventDefault();
-    NEWS_STATE.q=''; NEWS_STATE.company=''; NEWS_STATE.category=''; NEWS_STATE.from=null; NEWS_STATE.to=null;
+    NEWS_STATE.q=''; NEWS_STATE.company=''; NEWS_STATE.category='';
     if(searchInput) searchInput.value='';
     if(companySelect) companySelect.value='';
     if(categorySelect) categorySelect.value='';
-    if(fromInput) fromInput.value='';
-    if(toInput) toInput.value='';
-    if(periodToggle){
-      periodToggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-      const allBtn = periodToggle.querySelector('[data-days="all"]');
-      if(allBtn) allBtn.classList.add('active');
-    }
     applyNewsFilters();
   });
+
+  const flowResetLink = document.getElementById('news-flow-reset-link');
+  if(flowResetLink) flowResetLink.addEventListener('click', (e)=>{
+    e.preventDefault();
+    setNewsPeriod(7); // 뉴스 플로우 기본 기간(최근 7일)으로 되돌림
+  });
+
+  setNewsPeriod(7, true); // 뉴스 플로우 기본 기간(최근 7일) 상태만 세팅, 렌더는 데이터 로드 후 각 loadXxx()가 담당
 })();
 
 async function loadNews(){
@@ -1293,13 +1315,15 @@ function mkBar(id, labels, datasets, opts={}){
 // update-news 워크플로에서 매일 누적 적재하는 news_history.jsonl을 쓴다(그래야 "최근 7일/30일"
 // 같은 기간 필터가 실제로 의미가 있다 — news.json 자체는 매일 덮어써져서 하루치만 남는다).
 // jsonl 한 줄 = {"date","region","cat","co","t","url","ctx"?,"summary"?}
-let NEWS_HISTORY = [];
-// news_trend.json — scripts/analyze_news_trend.py가 news_history.jsonl을 카테고리별로 모아
-// LLM으로 "최근 N일간 이 카테고리에서 어떤 흐름이 두드러졌는지" 종합해 둔 결과.
-// {scope:"category", key:"Aesthetics", period_days:7|30, text:"...", n_articles:N}[]
-// 건수 집계가 아니라 실제 기사 내용을 근거로 한 서술형 종합이라, 카테고리 하나를 선택했을
-// 때만 의미가 있어(여러 카테고리를 합쳐 놓으면 종합 문장이 뒤섞여 의미가 없음) 그 경우에만 보여준다.
-let NEWS_TREND = [];
+// (NEWS_HISTORY/NEWS_TREND 변수 선언은 로드 순서 문제로 파일 앞쪽 NEWS_DOMESTIC 근처로
+// 옮겼다 — loadNews()가 부르는 renderNewsFlow()가 이 값들을 참조하는데, loadNews() 호출이
+// 이 지점보다 앞에 있어서 여기서 선언하면 TDZ ReferenceError가 난다.)
+// news_trend.json — scripts/analyze_news_trend.py가 news_history.jsonl을 카테고리·기업별로
+// 모아 LLM으로 "최근 N일간 어떤 흐름이 두드러졌는지" 종합해 둔 결과.
+// {scope:"category"|"company", key, region, period_days:7|30, text:"...", n_articles:N}[]
+// 건수 집계가 아니라 실제 기사 내용을 근거로 한 서술형 종합이라, 카테고리·기업을 하나
+// 선택했을 때만 의미가 있어(여러 개를 합쳐 놓으면 종합 문장이 뒤섞여 의미가 없음) 그
+// 경우에만 보여준다.
 
 function parseJsonl(text){
   const out = [];
@@ -1329,40 +1353,51 @@ function filterNewsHistory(){
   });
 }
 
-// 카테고리를 하나 선택했을 때만 그 카테고리의 AI 트렌드 종합(news_trend.json)을 보여준다.
-// 기업 단위 트렌드는 아직 생성하지 않으므로(analyze_news_trend.py 주석 참고), 기업만
-// 선택하고 카테고리는 "전체"인 경우엔 안내 문구만 보여준다.
-function renderNewsFlowTrend(){
-  const wrap = document.getElementById('news-flow-trend-wrap');
-  if(!wrap) return;
-  const cat = NEWS_STATE.category;
-  if(!cat){
-    wrap.innerHTML = '<div class="note" style="margin-bottom:10px">카테고리를 하나 선택하면 AI가 최근 기사 내용을 종합한 트렌드 요약을 보여줍니다(건수 집계가 아니라 실제 내용 기반).</div>';
-    return;
-  }
-  const matches = NEWS_TREND.filter(t=>t.scope==='category' && t.key===cat).slice().sort((a,b)=>a.period_days-b.period_days);
+// 카테고리·기업을 하나 선택했을 때만 그 대상의 AI 트렌드 종합(news_trend.json)을 보여준다.
+// 기사를 다시 나열하지 않고(오늘의 클리핑 섹션과 중복이라 의미가 없음), 시계열 관점의
+// 서술형 분석 글만 보여주는 게 이 섹션의 목적(2026-09-02 사용자 요청).
+function renderTrendCards(scope, key, label){
+  const matches = NEWS_TREND
+    .filter(t=>t.scope===scope && t.key===key && t.region===NEWS_STATE.region)
+    .slice().sort((a,b)=>a.period_days-b.period_days);
   if(matches.length === 0){
-    wrap.innerHTML = `<div class="note" style="margin-bottom:10px">"${escapeHtml(cat)}" 카테고리는 아직 AI 트렌드 종합이 없습니다(최근 기사가 3건 미만이거나, update-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
-    return;
+    return `<div class="note" style="margin-bottom:10px">"${escapeHtml(key)}" ${label}은(는) 아직 AI 분석이 없습니다(최근 기사가 3건 미만이거나, update-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
   }
-  wrap.innerHTML = matches.map(t=>`
+  return matches.map(t=>`
     <div class="card" style="margin-bottom:10px;border-left:3px solid var(--accent)">
-      <div class="note" style="margin-bottom:4px">🧭 최근 ${t.period_days}일 AI 트렌드 종합 · ${escapeHtml(t.key)} · 기사 ${t.n_articles}건 근거</div>
+      <div class="note" style="margin-bottom:4px">🧭 최근 ${t.period_days}일 AI 분석 · ${escapeHtml(t.key)} · 기사 ${t.n_articles}건 근거</div>
       <div style="font-size:13px;line-height:1.6">${escapeHtml(t.text)}</div>
     </div>
   `).join('');
 }
 
-function renderNewsFlow(){
-  renderNewsFlowTrend();
-  const filtered = filterNewsHistory();
+function renderNewsFlowTrend(){
+  const wrap = document.getElementById('news-flow-trend-wrap');
+  if(!wrap) return;
+  const cat = NEWS_STATE.category;
+  const co = NEWS_STATE.company;
+
+  if(!cat && !co){
+    wrap.innerHTML = '<div class="note" style="margin-bottom:10px">카테고리 또는 기업을 하나 선택하면, 그 대상의 최근 기간(7일/30일) 동안의 흐름을 AI가 실제 기사 내용을 근거로 글로 종합해 보여줍니다.</div>';
+    return;
+  }
+
+  let html = '';
+  if(co) html += renderTrendCards('company', co, '기업');
+  if(cat) html += renderTrendCards('category', cat, '카테고리');
+  wrap.innerHTML = html;
+}
+
+// 선택한 기간(오늘/7일/30일 또는 직접 지정한 날짜 범위) 동안 누적된 기사를 날짜별로 나열한다.
+// AI 분석 카드가 "종합"이라면 이건 그 근거가 된 실제 기사 원문을 확인하는 용도(2026-09-02
+// 사용자 요청 — 기간 토글/날짜 선택을 오늘의 클리핑에서 뉴스 플로우로 옮기면서, 기존에
+// 뉴스 플로우에 있던 헤드라인 나열 형태를 여기로 그대로 복원).
+function renderNewsFlowList(filtered){
   const wrap = document.getElementById('news-flow-wrap');
-  const summary = document.getElementById('news-flow-summary');
   if(!wrap) return;
 
   if(filtered.length === 0){
-    wrap.innerHTML = '<div class="note" style="padding:8px 0">조건에 맞는 뉴스 흐름이 없습니다 (오늘부터 매일 자동으로 쌓이니, 데이터가 누적되면 채워집니다).</div>';
-    if(summary) summary.textContent = '';
+    wrap.innerHTML = '<div class="note" style="padding:8px 0">조건에 맞는 누적 클리핑이 없습니다.</div>';
     return;
   }
 
@@ -1375,7 +1410,6 @@ function renderNewsFlow(){
     const items = byDate[d];
     html += `<div class="news-cat-h">${d} <span class="note">(${items.length}건)</span></div><div class="card" style="padding:0 16px">`;
     items.forEach(r=>{
-      const regionTag = r.region === 'global' ? 'Global' : '국내';
       const ctxTag = r.ctx ? `<span class="news-ctx">[${escapeHtml(r.ctx)}]</span> ` : '';
       const titleHtml = r.url
         ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
@@ -1383,18 +1417,26 @@ function renderNewsFlow(){
       const summaryHtml = r.summary
         ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}</div>` : '';
       html += `<div class="news-item">
-        <div class="t"><span class="news-co">${escapeHtml(r.co||'')}</span><span class="note" style="margin-right:4px">${regionTag}·${escapeHtml(r.cat||'')}</span>${ctxTag}${titleHtml}</div>
+        <div class="t"><span class="news-co">${escapeHtml(r.co||'')}</span><span class="note" style="margin-right:4px">${escapeHtml(r.cat||'')}</span>${ctxTag}${titleHtml}</div>
         ${summaryHtml}
       </div>`;
     });
     html += `</div>`;
   });
   wrap.innerHTML = html;
+}
 
-  if(summary){
-    const rangeLabel = (NEWS_STATE.from || NEWS_STATE.to) ? ` · ${NEWS_STATE.from||'처음'} ~ ${NEWS_STATE.to||'오늘'}` : '';
-    summary.textContent = `총 ${filtered.length}건${rangeLabel}`;
-  }
+function renderNewsFlow(){
+  renderNewsFlowTrend();
+  const filtered = filterNewsHistory();
+  renderNewsFlowList(filtered);
+
+  const summary = document.getElementById('news-flow-summary');
+  if(!summary) return;
+  const rangeLabel = (NEWS_STATE.from || NEWS_STATE.to) ? ` · ${NEWS_STATE.from||'처음'} ~ ${NEWS_STATE.to||'오늘'}` : '';
+  summary.textContent = filtered.length > 0
+    ? `이 기간 누적 클리핑 ${filtered.length}건${rangeLabel}`
+    : '조건에 맞는 누적 클리핑이 아직 없습니다.';
 }
 
 async function loadNewsHistory(){

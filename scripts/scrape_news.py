@@ -31,11 +31,13 @@
   규칙을 반영해, 제목이 유사한 기사는 하나만 남기고(TRUSTED_SOURCE_DOMAINS에 있는 매체를
   우선) 나머지는 버린다.
 - 수집 결과가 0건이면 기존 news.json을 그대로 보존하고 실패로 종료한다(빈 데이터로 덮어쓰지 않음).
-- 콘텐츠 품질 필터(2026-08-28 추가/강화, 사용자 상세 기준 반영): 회사명이 매칭돼도 passes_content_filter()가
-  아래 순서로 최종 판단한다 (구현/키워드는 코드 상단 "콘텐츠 품질 필터" 섹션 참고).
-  1) 기사 유형 배제 — 특징주/상한가 종목/테마주/장마감 종목/증시브리핑/마감시황 같은 단순 종목 나열
-     칼럼, "목표주가 하향 순위" 같은 랭킹형 기사, 해시태그 남발·"무조건 사"·주식추천/급등주/추천주/
-     리딩방/눌림목/단타/세력 등 홍보성·추천 콘텐츠는 통째로 제외.
+- 콘텐츠 품질 필터(2026-08-28 추가/강화, 2026-09-02 EXCLUDE_KEYWORDS 추가, 사용자 상세 기준 반영):
+  회사명이 매칭돼도 passes_content_filter()가 아래 순서로 최종 판단한다 (구현/키워드는 코드 상단
+  "콘텐츠 품질 필터" 섹션 참고).
+  1) 기사 유형 배제 — "공매도 브리핑"/"MVP 상위 20선"/"오늘의 메모"/"브랜드평판" 같은 특정 코너물
+     (EXCLUDE_KEYWORDS), 특징주/상한가 종목/테마주/장마감 종목/증시브리핑/마감시황 같은 단순 종목
+     나열 칼럼, "목표주가 하향 순위" 같은 랭킹형 기사, 해시태그 남발·"무조건 사"·주식추천/급등주/
+     추천주/리딩방/눌림목/단타/세력 등 홍보성·추천 콘텐츠는 통째로 제외.
   2) 포함 카테고리 화이트리스트 — 계약/인허가/실적·IR/주총·거버넌스/신제품·기술/해외 진출/M&A·투자
      중 하나 이상 매칭돼야 채택.
   3) 카테고리에 하나도 안 걸리면, "주가 등락"(강세/급등/상한가/신고가 등)을 다루는 기사에 한해
@@ -199,6 +201,10 @@ RANKING_TITLE_PATTERNS = [
 PROMO_KEYWORDS = ["무조건 사", "지금 사야", "주식추천", "급등주", "추천주", "리딩방", "눌림목", "단타", "세력"]
 PROMO_PHRASE_PATTERNS = [re.compile(r"무조건\s*사"), re.compile(r"지금\s*사야")]
 
+# 1-d) 특정 코너/포맷 기사 — 회사명이 우연히 목록에 끼어도 기사 자체가 코너물이라 통째로 제외
+#      (2026-09-02 사용자 요청).
+EXCLUDE_KEYWORDS = ["공매도 브리핑", "MVP 상위 20선", "오늘의 메모", "브랜드평판"]
+
 # 2) 포함 카테고리 화이트리스트
 # 2026-08-28: 키워드가 너무 좁아 "공략"(해외 진출)/"상용화"(신제품·기술)/"목표 달성"(실적·IR)처럼
 # 의미상 명백히 해당 카테고리인데 정확한 단어가 없어 걸러지던 사례를 보완(사용자 피드백,
@@ -223,11 +229,13 @@ REASON_SIGNAL_KEYWORDS = ["때문", "영향", "덕분", "전망", "분석", "호
 
 def is_excluded_article_type(title: str, desc: str) -> bool:
     """단순 종목 나열/시황 칼럼, 랭킹형, 홍보성/추천 콘텐츠인지 판별(회사명 매칭과 무관하게 제외)."""
+    hay = f"{title} {desc}"
+    if any(kw in hay for kw in EXCLUDE_KEYWORDS):
+        return True
     if any(p in title for p in LIST_COLUMN_PATTERNS):
         return True
     if any(p.search(title) for p in RANKING_TITLE_PATTERNS):
         return True
-    hay = f"{title} {desc}"
     if hay.count("#") >= 3:
         return True
     if any(kw in hay for kw in PROMO_KEYWORDS):
@@ -411,7 +419,16 @@ def merge_cross_company_duplicates(items):
     """서로 다른 회사 검색에서 각각 채택됐지만 실은 같은 기사(예: "K바이오 M&A 지형도" 같은
     업종 전체를 다루는 기사가 클래시스 검색에서도, 휴젤 검색에서도 걸리는 경우)를 하나로 합친다.
     URL이 같으면 무조건 동일 기사, URL이 달라도 제목이 유사하면(신디케이션 등) 동일 기사로 보고
-    co 필드를 "클래시스, 휴젤"처럼 콤마로 합쳐서 하나의 항목으로 표시한다."""
+    co 필드를 "클래시스, 휴젤"처럼 콤마로 합쳐서 하나의 항목으로 표시한다.
+
+    2026-09-02: 반드시 카테고리 구분 없이 "전체 기사"에 대해 한 번에 호출해야 한다 — 카테고리별로
+    나눈 뒤에 호출하면(예전 버그) 서로 다른 카테고리 회사가 함께 언급된 기사(예: Aesthetics의
+    "엘앤씨바이오"와 Therapeutics의 "시지바이오"가 같이 나오는 기사)가 두 카테고리 모두에
+    중복으로 남는다 — 사용자가 "기사 개수가 너무 많다"고 보고해서 확인해보니 실제로 같은
+    URL이 서로 다른 카테고리에 두 번씩 들어가 있었다(엘앤씨바이오 특허 기사가 Aesthetics·
+    Therapeutics 둘 다에, 유한양행 공급계약 기사가 Aesthetics·Robotics·Therapeutics 셋 다에
+    중복 노출). merge 결과 항목은 먼저 발견된(=회사 순회 순서상 앞선) 항목의 카테고리를 그대로
+    유지한다."""
     merged = []
     for it in items:
         dup_idx = next(
@@ -452,7 +469,7 @@ def main():
     cutoff_hours = recency_hours_for_today(datetime.datetime.now(datetime.timezone.utc).astimezone().date())
     print(f"[INFO] 오늘 기준 수집 윈도우: 최근 {cutoff_hours}시간 이내", file=sys.stderr)
 
-    by_category = {cat: [] for cat in CATEGORY_ORDER}
+    all_items = []
     ok_companies = 0
     debug_budget = 3
     for company, category in NEWS_COMPANY_CATEGORY.items():
@@ -464,7 +481,9 @@ def main():
             continue
         if items:
             ok_companies += 1
-            by_category.setdefault(category, []).extend(items)
+            for it in items:
+                it["cat"] = category
+            all_items.extend(items)
             print(f"{company} ({category}): {len(items)}건")
         else:
             print(f"[INFO] {company}: 최근 {cutoff_hours}시간 내 관련 기사 없음", file=sys.stderr)
@@ -473,10 +492,17 @@ def main():
         print("[ERROR] 수집된 회사가 0개라 기존 news.json을 보존하고 종료합니다.", file=sys.stderr)
         sys.exit(1)
 
+    # 카테고리로 나누기 전에 전체 기사를 대상으로 한 번에 중복 제거 — 서로 다른 카테고리의
+    # 회사가 같이 언급된 기사가 양쪽 카테고리에 중복으로 남는 것을 방지한다(위 함수 docstring 참고).
+    all_items = merge_cross_company_duplicates(all_items)
+
+    by_category = {cat: [] for cat in CATEGORY_ORDER}
+    for it in all_items:
+        by_category.setdefault(it.pop("cat"), []).append(it)
+
     domestic = []
     for cat in CATEGORY_ORDER:
         items = sorted(by_category.get(cat, []), key=lambda x: x["date"], reverse=True)
-        items = merge_cross_company_duplicates(items)
         domestic.append({"cat": cat, "items": items[:MAX_ITEMS_PER_CATEGORY]})
 
     payload = {
