@@ -2270,19 +2270,31 @@ let exportChartInstance = null;
 //  - 홈뷰터(home_device, HS 8543702020)는 새 8개 목록에 없어 칩에서 빠짐
 //  - 체외진단 PCR(HS 3822192020), 면역진단(HS 3822191000)은 이번에 신규 추가된 품목
 //    이라 관련 상장사(companies)를 아직 확인하지 못해 빈 값으로 둠 — 추후 채울 것.
+// [2026-09-02] 유럽(EU)은 관세청 품목별 국가별 수출입실적 API가 국가 단위 cntyCd(ISO
+// 국가코드)만 지원해 EU 전체를 묶는 단일 코드가 없다 — 그래서 countries에 '유럽'이 있는
+// 카테고리는 칩(하위 탭)만 우선 노출하고 실제 데이터 수집은 보류한다(다른 국가와 동일하게
+// "아직 이 범위의 데이터가 수집되지 않았습니다" 안내만 뜬다). 미국/중국/일본은 기존
+// 카테고리와 동일한 방식(cntyCd US/CN/JP)으로 추후 스크래퍼에 반영 가능.
+// [2026-09-02] 톡신 HS코드: 2022-01-01 시행된 HS 개정으로 코드가 바뀌었다 — 2021-12
+// 이전은 구코드 3002903090 단독, 2022-01부터는 신코드 3002491000 + 3002909000 합산
+// (export_data.json은 scripts/scrape_export_data.py의 hsCodesByPeriod로 기간을 나눠 수집한
+// 뒤 이미 하나의 월별 시계열로 합쳐서 내려주므로, 이 hsCodes 배열은 칩 부제목 표시용일 뿐
+// 프론트에서 별도로 기간을 나눌 필요는 없다).
 const EXPORT_CATEGORY_CONFIG = [
-  { key: 'toxin', label: '톡신', hsCodes: ['3002491000'], companies: '휴젤·메디톡스·대웅제약·휴온스글로벌',
-    countries: ['미국', '중국', '브라질', '태국', '일본'], regions: [] },
+  { key: 'toxin', label: '톡신', hsCodes: ['3002903090', '3002491000', '3002909000'], companies: '휴젤·메디톡스·대웅제약·휴온스글로벌',
+    countries: ['미국', '중국', '브라질', '태국', '일본'], regions: ['경기 화성시', '강원 춘천시'] },
   { key: 'device_medical', label: '미용기기', hsCodes: ['901890'], companies: '클래시스·루트로닉·원텍·레이저옵텍',
     countries: ['미국', '브라질', '태국', '중국', '일본'], regions: ['경기 고양시', '서울 강남구', '서울 금천구', '대전 유성구'] },
   { key: 'implant_dental', label: '임플란트', hsCodes: ['902129'], companies: '오스템임플란트·덴티움',
     countries: ['러시아 연방', '중국', '미국'], regions: ['서울 강서구', '경기 수원시', '부산 해운대구'] },
   { key: 'filler', label: '필러', hsCodes: ['3304999000'], companies: '휴젤·파마리서치·휴메딕스',
-    countries: [], regions: ['강원 강릉시'] },
+    countries: [], regions: ['강원 강릉시', '강원 춘천시'] },
   { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '제노레이(추가 종목 확인 필요)',
-    countries: ['중국'], regions: ['경기 화성시', '경기 성남시'] },
+    countries: ['중국', '미국', '유럽'], regions: ['경기 화성시', '경기 성남시'] },
   { key: 'hemostat', label: '지혈재', hsCodes: ['3006104000'], companies: '넥스트바이오메디컬',
-    countries: [], regions: [] },
+    countries: ['미국', '유럽', '일본'], regions: ['인천 연수구'] },
+  { key: 'body_composition', label: '체성분 분석기', hsCodes: ['9018198000'], companies: '인바디',
+    countries: ['미국', '중국', '유럽'], regions: ['서울 강남구'] },
   { key: 'pcr_diagnostic', label: '체외진단 PCR', hsCodes: ['3822192020'], companies: '',
     countries: [], regions: ['서울 송파구'] },
   { key: 'immuno_diagnostic', label: '면역진단', hsCodes: ['3822191000'], companies: '',

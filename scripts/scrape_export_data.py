@@ -59,8 +59,11 @@
   달라지거나(회사별로 일부 다른 코드를 쓸 수 있음) 다른 품목이 같은 코드에 섞여 잡힐
   가능성이 있다. 특히 "의료용 미용기기"(HS 9018.90)는 미용기기 외 다른 의료기기도
   일부 섞여 잡힐 수 있는 넓은 코드라 진폭이 과장될 수 있다는 점에 유의.
-    · 톡신(보툴리눔) : 3002491000 (2026-08-21: index.html EXPORT_CATEGORY_CONFIG 기준으로
-      단일 코드 확정 — 이전엔 3002909000도 합산했으나 사용자가 제외 확인)
+    · 톡신(보툴리눔) : 2026-09-02 재확인 — HS 개정(2022-01-01 시행)으로 코드가 바뀜.
+      2021-12 이전은 구코드 3002903090 단독, 2022-01부터는 신코드 3002491000 +
+      3002909000 합산(CATEGORIES의 hsCodesByPeriod 참고). (2026-08-21엔 신코드 중
+      3002491000 하나만 쓰기로 확정했었으나, 사용자가 실제로는 구코드/신코드 두 벌을
+      기간별로 이어붙여야 한다고 정정)
     · 미용기기(의료용) : 901890 (6자리 — 클래시스/원텍/루트로닉/레이저옵텍 등)
     · 임플란트(치과) : 902129 (6자리, 2026-08-21 확정 — 이전 10자리 9021290000에서
       상위 6자리로 넓힘. 오스템/덴티움 등 — 정형외과용 인공관절(9021.31)과는 다른
@@ -71,6 +74,7 @@
       상위 6자리로 넓힘. 제노레이 덴탈 CBCT, 다른 종목은 미확인)
     · 체외진단 PCR : 3822192020 (2026-08-21 신규 추가 — index.html 스펙, 상장사 미확인)
     · 면역진단 : 3822191000 (2026-08-21 신규 추가 — index.html 스펙, 상장사 미확인)
+    · 체성분 분석기 : 9018198000 (2026-09-02 신규 추가 — 인바디)
   홈뷰터(가정용 미용기기, HS 8543702020)는 2026-08-21에 사용자 확인으로 카테고리
   목록에서 제외됨(index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음).
   각 카테고리는 여러 HS코드를 합산할 수 있어 CATEGORIES 딕셔너리 값이 리스트다.
@@ -126,12 +130,27 @@ CATEGORIES = [
     {
         "key": "toxin",
         "label": "톡신(보툴리눔)",
-        # 기존엔 3002491000 + 3002909000 두 코드 합산이었으나, 사용자 확정 스펙은
-        # 3002491000 하나만(2026-08-21 사용자 확인).
-        "hsCodes": ["3002491000"],
+        # [2026-09-02] HS 2022 개정(2022-01-01 시행)으로 코드가 바뀌었다 — 이전엔 3002491000
+        # 하나만 썼는데(2026-08-21 확인), 실제론 이 코드가 2020~2021년 2개 연도 연속으로
+        # 신고 실적 0건이었고(fetch_national_series의 조기 중단 로직이 실측으로 확인,
+        # export_data.json에 2022-01부터만 데이터가 쌓여있던 것도 같은 증거) 이는 신코드가
+        # 2022-01-01부터 새로 생겼다는 뜻 — HS 2022 5차 개정 시행일과 정확히 일치한다.
+        # 그래서 2021-12 이전은 구코드(3002903090) 하나로, 2022-01부터는 신코드
+        # 2개(3002491000+3002909000) 합산으로 기간을 나눠 조회한다(hsCodesByPeriod).
+        # 구코드와 신코드를 전체 기간에 그냥 다 합치지 않는 이유: 3002909000("기타의 기타"
+        # 잔여 코드)는 2022년 개정 이전에도 존재했을 수 있는 코드라, 개정 이전 구간까지
+        # 합치면 톡신과 무관한 다른 품목의 신고 실적이 섞여 들어올 위험이 있다.
+        # hsCodes는 output 메타데이터 표시용(칩 부제목 "HS ...")으로 3개 코드를 모두 나열.
+        "hsCodes": ["3002903090", "3002491000", "3002909000"],
+        "hsCodesByPeriod": [
+            {"hsCodes": ["3002903090"], "until": "202112"},
+            {"hsCodes": ["3002491000", "3002909000"], "from": "202201"},
+        ],
         "companies": "휴젤·메디톡스·대웅제약·휴온스글로벌",
         "countries": [("US", "미국"), ("CN", "중국"), ("BR", "브라질"), ("TH", "태국"), ("JP", "일본")],
-        "regions": [],
+        # 2026-09-02 index.html EXPORT_CATEGORY_CONFIG 기준 추가(경기=41, 강원=51 이미
+        # SIDO_CD_BY_NAME에 등록돼 있어 바로 실데이터 수집 가능).
+        "regions": ["경기 화성시", "강원 춘천시"],
     },
     {
         "key": "device_medical",
@@ -157,7 +176,8 @@ CATEGORIES = [
         "hsCodes": ["3304999000"],
         "companies": "휴젤·파마리서치·휴메딕스",
         "countries": [],
-        "regions": ["강원 강릉시"],
+        # 2026-09-02: 강원 춘천시 추가(index.html 기준, 강원=51 SIDO_CD_BY_NAME에 이미 등록됨).
+        "regions": ["강원 강릉시", "강원 춘천시"],
     },
     {
         # 출처: moneyrecipe.blog 위 게시물의 "헬스케어·의료기기" 표 — "넥스트바이오메디컬
@@ -166,8 +186,13 @@ CATEGORIES = [
         "label": "지혈제(지혈재)",
         "hsCodes": ["3006104000"],
         "companies": "넥스트바이오메디컬",
-        "countries": [],
-        "regions": [],
+        # 2026-09-02: 유럽은 관세청 API가 국가 단위 cntyCd만 지원해(EU 전체를 묶는 코드
+        # 없음) 제외 — index.html 칩만 노출, 실데이터는 미수집.
+        "countries": [("US", "미국"), ("JP", "일본")],
+        # 인천 연수시(SIDO_CD_BY_NAME에 신규 등록한 "인천"=28 사용, 아래 SIDO_CD_BY_NAME
+        # 주석 참고 — 서울/부산/대전/경기가 일반 행정표준코드와 일치하는 패턴에 근거한
+        # 추정치라 관세청조회코드_v1.3.xlsx로 재확인 전까지는 데이터가 비어 있을 수 있음).
+        "regions": ["인천 연수구"],
     },
     {
         # 출처: 위 게시물 "헬스케어·의료기기" 표 — "제노레이 덴탈 CBCT 9022.12.0000"
@@ -180,8 +205,19 @@ CATEGORIES = [
         "label": "치과영상장비",
         "hsCodes": ["902213"],
         "companies": "제노레이(추가 종목 확인 필요)",
-        "countries": [("CN", "중국")],
+        # 2026-09-02: 미국 추가(index.html 기준). 유럽은 위 hemostat과 동일한 이유로 제외.
+        "countries": [("CN", "중국"), ("US", "미국")],
         "regions": ["경기 화성시", "경기 성남시"],
+    },
+    {
+        # 2026-09-02 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준). 유럽은 hemostat과
+        # 동일한 이유로 국가 목록에서 제외.
+        "key": "body_composition",
+        "label": "체성분 분석기",
+        "hsCodes": ["9018198000"],
+        "companies": "인바디",
+        "countries": [("US", "미국"), ("CN", "중국")],
+        "regions": ["서울 강남구"],
     },
     {
         # 2026-08-21 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준). HS코드는
@@ -247,6 +283,12 @@ SIDO_CD_BY_NAME = {
     "대전": "30",
     "부산": "26",
     "강원": "51",
+    # [2026-09-02] "인천"=28은 관세청조회코드_v1.3.xlsx로 직접 확인한 값이 아니라, 위
+    # 5개 중 서울/부산/대전/경기가 일반 행정표준코드와 그대로 일치하는 패턴에 근거해
+    # 유추한 값(일반 행정표준코드도 인천=28). 강원은 예외적으로 표준코드(42)가 아닌
+    # 51이었으므로 인천도 표준코드와 다를 가능성이 있다 — 지혈재 지역별(인천 연수구)
+    # 데이터가 계속 비어 있으면 이 코드부터 의심할 것.
+    "인천": "28",
 }
 SIGUNGU_BREAKDOWN_MONTHS = 132  # 국가별과 동일한 이유로 132개월(11년)로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
 
@@ -266,6 +308,56 @@ def yymm_range_chunks(start_yymm: str, end_yymm: str):
         chunks.append((cur, chunk_end))
         cur = yymm_add_months(chunk_end, 1)
     return chunks
+
+
+def resolve_hs_segments(cat, start_yymm, end_yymm):
+    """카테고리의 "hsCodesByPeriod"(HS코드가 개정으로 바뀐 톡신처럼 기간별로 다른 HS코드를
+    써야 하는 경우에만 지정)를 요청 구간 [start_yymm, end_yymm]에 맞춰 (hs_codes, seg_start,
+    seg_end) 튜플 리스트로 변환한다. hsCodesByPeriod가 없는 카테고리는 기존과 동일하게
+    카테고리 전체 hsCodes를 요청 구간 그대로 하나의 세그먼트로 돌려준다.
+
+    각 period는 {"hsCodes": [...], "until": "yymm"} 또는 {"hsCodes": [...], "from": "yymm"}
+    형태(until만 있으면 그 이전 전부, from만 있으면 그 이후 전부) — 서로 겹치지 않아야
+    한다(겹치면 해당 구간은 두 HS코드 세트가 각각 조회돼 합산 결과가 중복될 수 있음)."""
+    periods = cat.get("hsCodesByPeriod")
+    if not periods:
+        return [(cat["hsCodes"], start_yymm, end_yymm)]
+    segments = []
+    for p in periods:
+        seg_start = max(start_yymm, p.get("from") or start_yymm)
+        seg_end = min(end_yymm, p.get("until") or end_yymm)
+        if seg_start > seg_end:
+            continue
+        segments.append((p["hsCodes"], seg_start, seg_end))
+    return segments
+
+
+def merge_monthly_lists(*lists):
+    """fetch_national_series 결과(ym 기준 정렬된 리스트) 여러 개를 ym별로 합산해 하나로
+    합친다. hsCodesByPeriod의 세그먼트는 기간이 겹치지 않게 설계하지만, 혹시 겹치더라도
+    안전하게 합산하도록 만들었다."""
+    merged = {}
+    for lst in lists:
+        for row in lst:
+            slot = merged.setdefault(row["ym"], {"expDlr": 0, "expWgt": 0})
+            slot["expDlr"] += row.get("expDlr", 0)
+            slot["expWgt"] += row.get("expWgt", 0)
+    return sorted(({"ym": ym, **v} for ym, v in merged.items()), key=lambda r: r["ym"])
+
+
+def merge_breakdown_dicts(*dicts):
+    """fetch_country_breakdown/fetch_sigungu_breakdown 결과(국가·지역명 -> ym별 리스트)
+    여러 개를 이름별·ym별로 합산해 하나로 합친다(merge_monthly_lists의 국가/지역별 버전)."""
+    merged = {}
+    for d in dicts:
+        for name, rows in d.items():
+            acc = merged.setdefault(name, {})
+            for row in rows:
+                acc[row["ym"]] = acc.get(row["ym"], 0) + row["expDlr"]
+    return {
+        name: sorted(({"ym": ym, "expDlr": v} for ym, v in ym_map.items()), key=lambda r: r["ym"])
+        for name, ym_map in merged.items()
+    }
 
 
 def api_get(url, params, debug=False):
@@ -553,19 +645,26 @@ def main():
 
     categories_out = []
     for cat in CATEGORIES:
-        print(f"[INFO] {cat['label']} 조회 시작 (HS {cat['hsCodes']})", file=sys.stderr)
-        monthly = fetch_national_series(service_key, cat["hsCodes"], args.start_yymm, end_yymm, debug=args.debug)
+        national_segs = resolve_hs_segments(cat, args.start_yymm, end_yymm)
+        print(f"[INFO] {cat['label']} 조회 시작 (세그먼트: "
+              + ", ".join(f"HS{hs}/{s}~{e}" for hs, s, e in national_segs) + ")", file=sys.stderr)
+        monthly = merge_monthly_lists(*[
+            fetch_national_series(service_key, hs, s, e, debug=args.debug) for hs, s, e in national_segs
+        ])
         by_country = (
-            fetch_country_breakdown(
-                service_key, cat["hsCodes"], cat.get("countries", []), country_start_yymm, end_yymm,
-                debug=args.debug,
-            )
+            merge_breakdown_dicts(*[
+                fetch_country_breakdown(
+                    service_key, hs, cat.get("countries", []), s, e, debug=args.debug,
+                )
+                for hs, s, e in resolve_hs_segments(cat, country_start_yymm, end_yymm)
+            ])
             if cat.get("countries")
             else {}
         )
-        by_region = fetch_sigungu_breakdown(
-            service_key, cat["hsCodes"], cat.get("regions", []), sigungu_start_yymm, end_yymm, debug=args.debug
-        )
+        by_region = merge_breakdown_dicts(*[
+            fetch_sigungu_breakdown(service_key, hs, cat.get("regions", []), s, e, debug=args.debug)
+            for hs, s, e in resolve_hs_segments(cat, sigungu_start_yymm, end_yymm)
+        ])
         if not monthly:
             print(f"[WARN] {cat['label']}: 전국 시계열을 하나도 못 가져왔습니다(API 실패 또는 "
                   f"HS코드 문제 가능성) — 이 카테고리는 이전 데이터를 유지합니다.", file=sys.stderr)
