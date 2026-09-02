@@ -326,12 +326,14 @@ tr:last-child td{border-bottom:none}
       <a href="#" id="news-reset-link" class="note" style="text-decoration:underline">초기화</a>
     </div>
 
-    <!-- 오늘의 클리핑 / 뉴스 플로우 하위 탭 — 클리핑 분량이 많을 때 플로우를 보려고 한참
-         스크롤해야 하는 문제 때문에 분리(2026-09-02 사용자 요청). 다른 탭들(stock-subtabs,
-         industry-subtabs)과 동일하게 setupSubtabs()로 처리하므로 .region-tab 클래스를 쓴다. -->
+    <!-- 오늘의 클리핑 / 뉴스 아카이브 / 월간 브리핑 하위 탭 — 클리핑 분량이 많을 때 다른
+         섹션을 보려고 한참 스크롤해야 하는 문제 때문에 3개로 분리(2026-09-02 사용자 요청).
+         다른 탭들(stock-subtabs, industry-subtabs)과 동일하게 setupSubtabs()로 처리하므로
+         .region-tab 클래스를 쓴다. -->
     <div class="tabs" id="news-subtabs">
       <button class="region-tab active" data-sub="clipping">오늘의 클리핑</button>
-      <button class="region-tab" data-sub="flow">🕐 뉴스 플로우</button>
+      <button class="region-tab" data-sub="archive">뉴스 아카이브</button>
+      <button class="region-tab" data-sub="briefing">월간 브리핑</button>
     </div>
 
     <div id="news-sub-clipping">
@@ -349,11 +351,10 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <div id="news-sub-flow" style="display:none">
-      <div class="sec-h"><h2>🕐 뉴스 플로우</h2><span class="note">카테고리·기업을 하나 선택하면 최근 7일/30일 흐름을 AI가 글로 종합 · 아래에서 기간을 골라 그동안 누적된 기사도 확인 가능</span></div>
-      <div id="news-flow-trend-wrap"></div>
+    <div id="news-sub-archive" style="display:none">
+      <div class="sec-h"><h2>뉴스 아카이브</h2><span class="note">위 검색·카테고리·기업·국내해외 필터 기준 · 아래에서 기간을 골라 그동안 누적된 기사를 원문으로 조회합니다</span></div>
 
-      <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 10px">
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">
         <div class="toggle" id="news-period-toggle">
           <button data-days="0">오늘</button>
           <button data-days="7" class="active">최근 7일</button>
@@ -368,6 +369,11 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="note" id="news-flow-summary" style="margin-bottom:8px"></div>
       <div id="news-flow-wrap"></div>
+    </div>
+
+    <div id="news-sub-briefing" style="display:none">
+      <div class="sec-h"><h2>월간 브리핑</h2><span class="note">최근 30일간 카테고리별 흐름을 AI가 글로 종합 · 국내/해외 토글 기준, 카테고리를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
+      <div id="news-briefing-wrap"></div>
     </div>
   </section>
 
@@ -985,6 +991,7 @@ function setNewsPeriod(days, skipRender){
         if(domesticBlock) domesticBlock.style.display = region === 'domestic' ? '' : 'none';
         if(globalBlock) globalBlock.style.display = region === 'global' ? '' : 'none';
         if(typeof renderNewsFlow === 'function') renderNewsFlow();
+        if(typeof renderMonthlyBriefing === 'function') renderMonthlyBriefing();
       });
     });
   }
@@ -1353,45 +1360,47 @@ function filterNewsHistory(){
   });
 }
 
-// 카테고리·기업을 하나 선택했을 때만 그 대상의 AI 트렌드 종합(news_trend.json)을 보여준다.
-// 기사를 다시 나열하지 않고(오늘의 클리핑 섹션과 중복이라 의미가 없음), 시계열 관점의
-// 서술형 분석 글만 보여주는 게 이 섹션의 목적(2026-09-02 사용자 요청).
-function renderTrendCards(scope, key, label){
-  const matches = NEWS_TREND
-    .filter(t=>t.scope===scope && t.key===key && t.region===NEWS_STATE.region)
-    .slice().sort((a,b)=>a.period_days-b.period_days);
-  if(matches.length === 0){
-    return `<div class="note" style="margin-bottom:10px">"${escapeHtml(key)}" ${label}은(는) 아직 AI 분석이 없습니다(최근 기사가 3건 미만이거나, update-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
+// AI가 "- 불릿\n- 불릿" 형식으로 준 text를 <ul><li> 목록으로 바꾼다(2026-09-03, 가독성을
+// 위해 문장 나열 대신 개조식 불릿으로 바꿔달라는 사용자 요청). 혹시 구버전 news_trend.json이
+// 캐시돼 있어 줄바꿈 없는 문단 형태로 남아있는 경우에도 깨지지 않도록, 줄이 하나뿐이면
+// 문단 그대로 보여준다.
+function renderBriefingBullets(text){
+  const lines = String(text || '').split('\n').map(l=>l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+  if(lines.length <= 1){
+    return `<div style="font-size:13px;line-height:1.7">${escapeHtml(text || '')}</div>`;
   }
-  return matches.map(t=>`
-    <div class="card" style="margin-bottom:10px;border-left:3px solid var(--accent)">
-      <div class="note" style="margin-bottom:4px">🧭 최근 ${t.period_days}일 AI 분석 · ${escapeHtml(t.key)} · 기사 ${t.n_articles}건 근거</div>
-      <div style="font-size:13px;line-height:1.6">${escapeHtml(t.text)}</div>
+  return `<ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">${
+    lines.map(l=>`<li>${escapeHtml(l)}</li>`).join('')
+  }</ul>`;
+}
+
+// 월간 브리핑 — 카테고리를 따로 선택하지 않아도 현재 국내/해외 토글 기준 카테고리별
+// AI 월간 분석(news_trend.json, scope="category")을 전부 한 페이지에 보여준다(2026-09-02
+// 사용자 요청 — 기업 단위 분석은 호출량이 너무 많아 빼고 카테고리만 유지하기로 함).
+function renderMonthlyBriefing(){
+  const wrap = document.getElementById('news-briefing-wrap');
+  if(!wrap) return;
+  const matches = NEWS_TREND
+    .filter(t=>t.scope==='category' && t.region===NEWS_STATE.region)
+    .slice().sort((a,b)=> a.key.localeCompare(b.key));
+  if(matches.length === 0){
+    wrap.innerHTML = '<div class="note" style="padding:8px 0">아직 월간 브리핑이 없습니다(최근 30일 기사가 카테고리당 3건 미만이거나, update-news 워크플로가 아직 안 돌았을 수 있습니다).</div>';
+    return;
+  }
+  wrap.innerHTML = matches.map(t=>`
+    <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <span style="font-size:15px;font-weight:800;color:var(--accent);letter-spacing:-0.2px">🧭 ${escapeHtml(t.key)}</span>
+        <span class="note">최근 ${t.period_days}일 AI 분석 · 기사 ${t.n_articles}건 근거</span>
+      </div>
+      ${renderBriefingBullets(t.text)}
     </div>
   `).join('');
 }
 
-function renderNewsFlowTrend(){
-  const wrap = document.getElementById('news-flow-trend-wrap');
-  if(!wrap) return;
-  const cat = NEWS_STATE.category;
-  const co = NEWS_STATE.company;
-
-  if(!cat && !co){
-    wrap.innerHTML = '<div class="note" style="margin-bottom:10px">카테고리 또는 기업을 하나 선택하면, 그 대상의 최근 기간(7일/30일) 동안의 흐름을 AI가 실제 기사 내용을 근거로 글로 종합해 보여줍니다.</div>';
-    return;
-  }
-
-  let html = '';
-  if(co) html += renderTrendCards('company', co, '기업');
-  if(cat) html += renderTrendCards('category', cat, '카테고리');
-  wrap.innerHTML = html;
-}
-
 // 선택한 기간(오늘/7일/30일 또는 직접 지정한 날짜 범위) 동안 누적된 기사를 날짜별로 나열한다.
-// AI 분석 카드가 "종합"이라면 이건 그 근거가 된 실제 기사 원문을 확인하는 용도(2026-09-02
-// 사용자 요청 — 기간 토글/날짜 선택을 오늘의 클리핑에서 뉴스 플로우로 옮기면서, 기존에
-// 뉴스 플로우에 있던 헤드라인 나열 형태를 여기로 그대로 복원).
+// 월간 브리핑이 "종합"이라면 이건 그 근거가 된 실제 기사 원문을 확인하는 용도(뉴스 아카이브
+// 서브탭 — 2026-09-02 사용자 요청으로 뉴스 플로우를 아카이브/브리핑 두 탭으로 분리).
 function renderNewsFlowList(filtered){
   const wrap = document.getElementById('news-flow-wrap');
   if(!wrap) return;
@@ -1427,7 +1436,6 @@ function renderNewsFlowList(filtered){
 }
 
 function renderNewsFlow(){
-  renderNewsFlowTrend();
   const filtered = filterNewsHistory();
   renderNewsFlowList(filtered);
 
@@ -1459,9 +1467,9 @@ async function loadNewsTrend(){
     const data = await res.json();
     NEWS_TREND = data.trends || [];
   }catch(e){
-    NEWS_TREND = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderNewsFlowTrend가 안내 문구를 보여줌
+    NEWS_TREND = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderMonthlyBriefing이 안내 문구를 보여줌
   }
-  renderNewsFlowTrend();
+  renderMonthlyBriefing();
 }
 loadNewsTrend();
 

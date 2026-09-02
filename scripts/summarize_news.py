@@ -31,6 +31,7 @@ import json
 import os
 import re
 import sys
+import time
 
 MAX_ITEMS_PER_CALL = 20  # 한 번의 API 호출에 담는 기사 수 상한(과금/타임아웃 방지, 응답 잘림 위험 감소)
 
@@ -39,6 +40,31 @@ GEMINI_MODEL = "gemini-3.6-flash"  # gemini-2.5-flash가 신규 API 키에는 40
 # 확인된 안정(stable) 모델. 추후 또 막히면 https://ai.google.dev/gemini-api/docs/pricing 에서
 # "Free Tier"가 표시되는 최신 stable 모델로 교체하면 된다.
 ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
+
+# 2026-09-02: 실제 워크플로 로그에서 확인된 Gemini 무료 티어 제한 —
+# "Quota exceeded ... limit: 5, model: gemini-3.6-flash" (분당 5회, 프로젝트·모델 단위).
+# 요약/트렌드 스크립트 둘 다 호출 사이 간격 없이 연속으로 쏴서 두 번째 호출부터 바로
+# 429가 나던 게 실제 원인이었다 — 그래서 Gemini 호출마다 이만큼 쉬어서 페이싱한다.
+# Anthropic(유료)은 이 제한이 훨씬 커서 불필요하게 느려지지 않도록 건너뛴다.
+GEMINI_MIN_INTERVAL_SECONDS = 13  # 60/5=12초보다 여유있게
+
+
+def gemini_pace(provider):
+    """Gemini 호출 하나 끝날 때마다 불러서 다음 호출까지 최소 간격을 보장한다."""
+    if provider is not None and getattr(provider, "name", None) == "gemini":
+        time.sleep(GEMINI_MIN_INTERVAL_SECONDS)
+
+
+def gemini_backoff_seconds(error, default=30):
+    """429 응답 메시지에 담긴 'retry in 29.99...s' 안내를 최대한 파싱해 그만큼(+여유 2초) 쉰다.
+    파싱 실패하면 기본값만큼 쉰다."""
+    m = re.search(r"retry in ([\d.]+)s", str(error))
+    if m:
+        try:
+            return float(m.group(1)) + 2
+        except ValueError:
+            pass
+    return default
 
 DOMESTIC_CTX_EXAMPLES = (
     "정기주주총회, IR행사, 학회발표, 리포트, 공시, 인터뷰, 실적, 수주, 계약, "
@@ -138,28 +164,43 @@ class GeminiProvider:
         self._genai = genai
         self.client = genai.Client(api_key=api_key)
 
-    def call(self, system, user_content, max_tokens):
+    def _generate(self, system, user_content, max_tokens, thinking_budget):
         from google.genai import types
+        config_kwargs = dict(
+            system_instruction=system,
+            # gemini-3.x는 구글 공식 마이그레이션 가이드가 temperature를 1.0(기본값)에서
+            # 낮추지 말라고 권고한다("looping or degraded performance" 우려) — 예전
+            # gemini-2.5용으로 넣어뒀던 temperature=0을 그대로 뒀더니 일부 배치에서
+            # JSON이 이상하게 잘리는 문제가 있었는데, 이게 원인 중 하나로 보여 제거했다.
+            max_output_tokens=max_tokens,
+            response_mime_type="application/json",
+        )
+        if thinking_budget is not None:
+            # gemini-3.x 계열은 기본으로 "thinking"(내부 추론)을 켜고 도는데, 이 추론
+            # 토큰도 max_output_tokens 예산을 같이 잡아먹는다. 이 작업은 정해진 스키마로
+            # 요약만 뽑는 단순 작업이라 추론이 전혀 필요 없어서, thinking_budget=0으로
+            # 완전히 꺼서 예산을 전부 실제 응답(JSON)에 쓰게 한다 — 일부 기사만 요약이
+            # 빠지던 문제(응답이 중간에 잘리던 문제)의 주된 원인으로 추정.
+            config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=thinking_budget)
         resp = self.client.models.generate_content(
             model=GEMINI_MODEL,
             contents=user_content,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                # gemini-3.x는 구글 공식 마이그레이션 가이드가 temperature를 1.0(기본값)에서
-                # 낮추지 말라고 권고한다("looping or degraded performance" 우려) — 예전
-                # gemini-2.5용으로 넣어뒀던 temperature=0을 그대로 뒀더니 일부 배치에서
-                # JSON이 이상하게 잘리는 문제가 있었는데, 이게 원인 중 하나로 보여 제거했다.
-                max_output_tokens=max_tokens,
-                response_mime_type="application/json",
-                # gemini-3.x 계열은 기본으로 "thinking"(내부 추론)을 켜고 도는데, 이 추론
-                # 토큰도 max_output_tokens 예산을 같이 잡아먹는다. 이 작업은 정해진 스키마로
-                # 요약만 뽑는 단순 작업이라 추론이 전혀 필요 없어서, thinking_budget=0으로
-                # 완전히 꺼서 예산을 전부 실제 응답(JSON)에 쓰게 한다 — 일부 기사만 요약이
-                # 빠지던 문제(응답이 중간에 잘리던 문제)의 주된 원인으로 추정.
-                thinking_config=types.ThinkingConfig(thinking_budget=0),
-            ),
+            config=types.GenerateContentConfig(**config_kwargs),
         )
         return resp.text
+
+    def call(self, system, user_content, max_tokens):
+        try:
+            return self._generate(system, user_content, max_tokens, thinking_budget=0)
+        except Exception as e:
+            # 2026-09-02: 실제 워크플로 로그에서 thinking_budget=0을 준 첫 호출부터 바로
+            # "400 INVALID_ARGUMENT"가 나는 게 확인됐다 — gemini-3.6-flash가 이 값을 거부하는
+            # 것으로 추정. thinking_config 자체를 빼고(모델 기본 사고 예산 사용) 한 번 더
+            # 시도한다 — 429(쿼터)처럼 재시도해도 소용없는 에러는 그대로 올려서 상위 재시도
+            # 로직(요약 배치/트렌드 생성 쪽의 2회 재시도)이 처리하게 둔다.
+            if "400" in str(e) or "INVALID_ARGUMENT" in str(e):
+                return self._generate(system, user_content, max_tokens, thinking_budget=None)
+            raise
 
 
 class AnthropicProvider:
@@ -233,7 +274,14 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
             except Exception as e:
                 tag = "재시도도 " if attempt else ""
                 print(f"[WARN] {provider.name} 요약 API 호출 {tag}실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
+                # Gemini 무료 티어는 분당 5회 제한이라 429가 나면 일반 페이싱보다 더 오래 쉬어야
+                # 다음 시도가 또 429로 낭비되지 않는다(2026-09-02 실제 로그로 확인된 원인).
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                    time.sleep(gemini_backoff_seconds(e))
+                else:
+                    gemini_pace(provider)
                 continue
+            gemini_pace(provider)
             results = parse_json_array(raw)
             if results is None or not isinstance(results, list):
                 tag = "재시도도 " if attempt else ""

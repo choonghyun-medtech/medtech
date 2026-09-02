@@ -1,5 +1,30 @@
 {
- "generated_at": "2026-09-02T08:25:30Z",
- "source": "news_history.jsonl 기반 카테고리·기업별 자동 종합 (gemini)",
- "trends": []
+ "generated_at": "2026-09-03T00:00:00Z",
+ "source": "news_history.jsonl 기반 카테고리별 월간 자동 종합 (gemini) [로컬 미리보기용 예시 — 실제 배포본은 update-news 워크플로가 Gemini로 생성]",
+ "trends": [
+  {
+   "scope": "category",
+   "key": "Aesthetics",
+   "region": "domestic",
+   "period_days": 30,
+   "text": "- K뷰티 기업들의 해외 채널 확대가 이번 달 가장 두드러진 흐름으로 나타남. 휴젤은 '웰라쥬'를 앞세워 미국 세포라에 입점했고, 파마리서치도 '리쥬란코스메틱'을 싱가포르 세포라에 입점시키며 유통망 확대를 이어감\n- 클래시스는 태국에서 마이크로니들 RF '쿼드세이' 출시하며 동남아 공략\n- 에이피알은 연매출 3조원 가능성 거론될 정도로 미국·유럽 실적 호조\n- 휴젤·메디톡스 등 톡신 업체는 상반기 매출 4000억원 돌파에도 16년째 수출규제 지속",
+   "n_articles": 42
+  },
+  {
+   "scope": "category",
+   "key": "Humanoid",
+   "region": "domestic",
+   "period_days": 30,
+   "text": "- 중국 유니트리 상장에 따른 로봇산업 재평가 흐름이 국내로 확산\n- 현대차그룹은 보스턴다이내믹스 '아틀라스' 양산·수익화 준비와 중국발 경쟁 압박('차이나 쇼크') 동시 부각\n- 레인보우로보틱스는 K-제조 피지컬AI 선점 경쟁, 국가적 지원 필요성 거론\n- 에스비비테크 등 부품사는 대기업 휴머노이드향 감속기 공급 확대로 실적 개선\n- 중국 경쟁사 부상 위기감과 국내 공급망 확대 기대 공존",
+   "n_articles": 20
+  },
+  {
+   "scope": "category",
+   "key": "MedTech",
+   "region": "global",
+   "period_days": 30,
+   "text": "- Abbott의 FDA 인허가 이슈 두드러짐 — 듀얼 분석물(포도당·케톤) 웨어러블 센서 미 FDA 승인 획득\n- Abbott, 조제분유 관련 소송 6억7000만달러(약 8900만달러 추가)에 합의하며 규제·법적 리스크 부각\n- Boston Scientific은 사이버공격으로 주문·배송 시스템 마비되는 사고 발생\n- Stryker는 내부자 지분 매도 동향 주목받음\n- 대형 MedTech 기업들 신제품 인허가와 규제·보안 리스크가 함께 부각된 한 달",
+   "n_articles": 28
+  }
+ ]
 }
