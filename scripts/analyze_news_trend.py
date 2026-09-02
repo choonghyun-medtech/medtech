@@ -43,7 +43,13 @@ import re
 import sys
 import time
 
-from summarize_news import build_provider, gemini_backoff_seconds, gemini_pace
+from summarize_news import (
+    DailyQuotaExhausted,
+    build_provider,
+    gemini_backoff_seconds,
+    gemini_pace,
+    is_daily_quota_exhausted,
+)
 
 PERIOD_DAYS = 30  # 월간 분석만 생성(2026-09-02, 7일치는 뺐다 — 위 docstring 참고)
 MIN_ARTICLES = 3  # 이보다 적으면 트렌드 생성을 건너뜀(근거 부족)
@@ -136,12 +142,15 @@ def generate_trends_batch(provider, region, cat_items, debug=False):
         try:
             raw = provider.call(TREND_SYSTEM, user_content, max_tokens=max_tokens)
         except Exception as e:
+            if is_daily_quota_exhausted(e):
+                print(f"[WARN] 일별 쿼터 소진 확인({tag}) — 재시도해도 못 풀리므로 남은 "
+                      f"지역도 전부 건너뜁니다: {e}", file=sys.stderr)
+                raise DailyQuotaExhausted(str(e)) from e
             retry = "재시도도 " if attempt else ""
             print(f"[WARN] 트렌드 생성 API 호출 {retry}실패({tag}): {e}", file=sys.stderr)
             # Gemini 무료 티어는 분당 제한 외에 "하루 20회"짜리 일별 쿼터도 있다(2026-09-03
-            # 실제 로그로 확인 — quotaId가 PerDay로 찍힘). 429가 일별 쿼터 초과라면 아무리
-            # 오래 기다려도 이 실행 안에서는 못 풀리므로, 카테고리를 지역당 호출 1번으로
-            # 묶어 호출 횟수 자체를 줄이는 쪽으로 대응했다(이 함수의 존재 이유).
+            # 실제 로그로 확인 — quotaId가 PerDay로 찍힘). 위에서 그 경우는 먼저 걸러내고,
+            # 여기 남는 건 분당 제한/일시적 오류라 페이싱만으로 대응한다.
             if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                 time.sleep(gemini_backoff_seconds(e))
             else:
@@ -204,7 +213,12 @@ def main():
         if not cat_items:
             continue
 
-        results = generate_trends_batch(provider, region, cat_items, debug=args.debug)
+        try:
+            results = generate_trends_batch(provider, region, cat_items, debug=args.debug)
+        except DailyQuotaExhausted:
+            print("[WARN] 일별 쿼터가 이미 소진된 상태라 남은 지역의 트렌드 생성을 전부 "
+                  "건너뜁니다(어차피 똑같이 실패하므로 시간 낭비 방지).", file=sys.stderr)
+            break
         for cat, items in cat_items.items():
             text = results.get(cat)
             if not text:

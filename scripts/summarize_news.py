@@ -66,6 +66,21 @@ def gemini_backoff_seconds(error, default=30):
             pass
     return default
 
+
+class DailyQuotaExhausted(Exception):
+    """Gemini 무료 티어의 '하루' 단위 쿼터(예: limit 20, quotaId에 PerDay가 붙음)가 소진됐음을
+    나타낸다. 분당 제한과 달리 몇 초~몇 십 초 기다린다고 풀리지 않고 하루(태평양시 기준으로
+    보임) 지나야 풀리므로, 이게 확인되면 재시도/페이싱 없이 바로 포기하고 남은 배치·호출도
+    전부 건너뛴다 — 2026-09-03, 실제로 이걸 구분 안 해서 이미 소진된 상태로 워크플로가
+    9분 넘게 의미 없는 재시도·대기를 반복한 사례가 있었다."""
+    pass
+
+
+def is_daily_quota_exhausted(error):
+    """429 에러 메시지에 'PerDay'가 있으면 일별 쿼터 초과(분당 제한과 다름)로 판단한다."""
+    return "PerDay" in str(error)
+
+
 DOMESTIC_CTX_EXAMPLES = (
     "정기주주총회, IR행사, 학회발표, 리포트, 공시, 인터뷰, 실적, 수주, 계약, "
     "파트너십, 인허가, 임상, 신제품, 해외진출, M&A, 투자유치, 주가"
@@ -272,6 +287,10 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
             try:
                 raw = provider.call(system, user_content, max_tokens)
             except Exception as e:
+                if is_daily_quota_exhausted(e):
+                    print(f"[WARN] {provider.name} 일별 쿼터 소진 확인(항목 {start}~{start+len(chunk)-1}) — "
+                          f"재시도해도 못 풀리므로 이 실행의 남은 요약을 전부 건너뜁니다: {e}", file=sys.stderr)
+                    raise DailyQuotaExhausted(str(e)) from e
                 tag = "재시도도 " if attempt else ""
                 print(f"[WARN] {provider.name} 요약 API 호출 {tag}실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
                 # Gemini 무료 티어는 분당 5회 제한이라 429가 나면 일반 페이싱보다 더 오래 쉬어야
@@ -365,15 +384,24 @@ def main():
 
     provider = build_provider()
     if provider is not None:
+        quota_exhausted = False
         try:
             summarize_domestic(provider, domestic_items, debug=args.debug)
+        except DailyQuotaExhausted:
+            quota_exhausted = True
         except Exception as e:
             print(f"[WARN] 국내 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
 
-        try:
-            summarize_global(provider, global_items, debug=args.debug)
-        except Exception as e:
-            print(f"[WARN] 해외 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
+        if quota_exhausted:
+            print("[WARN] 일별 쿼터가 이미 소진된 상태라 해외 요약도 건너뜁니다(어차피 똑같이 "
+                  "실패하므로 시간 낭비 방지).", file=sys.stderr)
+        else:
+            try:
+                summarize_global(provider, global_items, debug=args.debug)
+            except DailyQuotaExhausted:
+                pass
+            except Exception as e:
+                print(f"[WARN] 해외 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
 
     # desc는 요약 생성용 내부 필드였으므로(요약이 생성됐든 안 됐든) 화면 노출용
     # 최종 파일에는 남기지 않는다.
