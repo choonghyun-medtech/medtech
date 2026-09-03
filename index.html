@@ -249,9 +249,23 @@ tr:last-child td{border-bottom:none}
 }
 .day .ev-more:hover, .day .ev-collapse:hover{text-decoration:underline}
 .dot{width:6px; height:6px; border-radius:50%}
-.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
+.legend{display:flex; gap:8px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
 .legend span{display:flex; align-items:center; gap:5px}
 .legend .dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+.cal-legend-chip{
+  cursor:pointer; display:inline-flex; align-items:center; padding:5px 12px;
+  border-radius:14px; font-weight:700; font-size:11.5px; border:1px solid transparent;
+  transition:opacity .15s, transform .1s, box-shadow .1s; user-select:none;
+}
+.cal-legend-chip:hover{transform:translateY(-1px); box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.cal-legend-chip:active{transform:translateY(0); box-shadow:none}
+.cal-legend-chip.ir{background:rgba(37,99,235,.12); color:var(--blue)}
+.cal-legend-chip.earn{background:rgba(101,163,13,.18); color:var(--lime)}
+.cal-legend-chip.disc{background:rgba(124,58,237,.12); color:var(--purple)}
+.cal-legend-chip.agm{background:rgba(22,163,74,.12); color:var(--green)}
+.cal-legend-chip.listing{background:rgba(220,38,38,.12); color:var(--red)}
+.cal-legend-chip.exright{background:rgba(13,148,136,.15); color:var(--teal)}
+.cal-legend-chip.off{opacity:1; background:transparent!important; color:var(--dim)!important; border-color:var(--border); box-shadow:none; transform:none}
 .up-list{display:flex; flex-direction:column}
 .up-row{display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px}
 .up-row:last-child{border-bottom:none}
@@ -501,15 +515,20 @@ tr:last-child td{border-bottom:none}
   <!-- ================= CALENDAR ================= -->
   <section class="view" id="view-calendar">
     <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note" id="cal-source-note">실적발표 · IR · 공시 · 주총 · calendar_events.json 자동 갱신</span></div>
-    <!-- 국내/해외 구분 탭 — 뉴스 탭의 .region-tab 패턴 재사용(2026-08-28) -->
-    <div class="tabs" id="cal-region-tabs" style="margin-bottom:14px">
-      <button class="region-tab active" data-region="all">전체</button>
-      <button class="region-tab" data-region="domestic">국내</button>
-      <button class="region-tab" data-region="global">해외</button>
-    </div>
 
-    <!-- 캘린더보다 위쪽에 두는 "다가오는 일정" 카드 — 오늘 이후 최대 5건, 국내/해외 탭
-         선택에 맞춰 필터링(2026-08-28) -->
+    <!-- 검색 + 국내/해외 필터 — 뉴스 탭 필터 줄 패턴 재사용(2026-09-03, 기업명/키워드 검색 추가) -->
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
+      <input id="cal-search-input" class="filter-select" style="flex:0 1 320px;min-width:160px" placeholder="기업명, 키워드로 검색..." autocomplete="off" />
+      <div class="toggle" id="cal-region-tabs">
+        <button class="region-tab active" data-region="all">전체</button>
+        <button class="region-tab" data-region="domestic">국내</button>
+        <button class="region-tab" data-region="global">해외</button>
+      </div>
+      <a href="#" id="cal-reset-link" class="note" style="text-decoration:underline">초기화</a>
+    </div>
+    <div class="note" id="cal-filter-summary" style="margin-bottom:10px"></div>
+
+    <!-- 캘린더보다 위쪽에 두는 "다가오는 일정" 카드 — 오늘 이후 최대 5건, 위 필터에 맞춰 필터링(2026-08-28) -->
     <div class="sec-h"><h2>다가오는 일정</h2><span class="note" id="cal-next-note">오늘 이후 · 최대 6건</span></div>
     <div class="cal-next-grid" id="cal-next-grid"><div class="card">일정을 불러오는 중...</div></div>
 
@@ -518,17 +537,20 @@ tr:last-child td{border-bottom:none}
       <div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div>
     </div>
     <div class="grid" style="margin-top:5px" id="cal-grid"></div>
-    <div class="legend">
-      <span><i class="dot" style="background:var(--blue)"></i> IR·기업설명회</span>
-      <span><i class="dot" style="background:var(--lime)"></i> 실적발표·잠정실적</span>
-      <span><i class="dot" style="background:var(--purple)"></i> 공시(정기보고서 등)</span>
-      <span><i class="dot" style="background:var(--green)"></i> 주총·기준일</span>
-      <span><i class="dot" style="background:var(--red)"></i> 신주상장</span>
-      <span><i class="dot" style="background:var(--teal)"></i> 권리락</span>
+    <!-- 범례를 클릭 가능한 토글 칩으로 사용 — 종류별로 켜고 꺼서 묶어 볼 수 있게(2026-09-03 사용자 요청).
+         기본은 전체 켜짐. data-type은 CAL_TYPE_META 키와 일치해야 한다. -->
+    <div class="legend" id="cal-legend">
+      <span class="cal-legend-chip ir" data-type="ir">IR·기업설명회</span>
+      <span class="cal-legend-chip earn" data-type="earn">실적발표·잠정실적</span>
+      <span class="cal-legend-chip disc" data-type="disc">공시(정기보고서 등)</span>
+      <span class="cal-legend-chip agm" data-type="agm">주총·기준일</span>
+      <span class="cal-legend-chip listing" data-type="listing">신주상장</span>
+      <span class="cal-legend-chip exright" data-type="exright">권리락</span>
     </div>
 
     <div class="sec-h"><h2>이번달 일정</h2><span class="note" id="cal-upcoming-note">이번달 기준</span></div>
     <div class="up-list" id="cal-up-list"><div class="card">일정을 불러오는 중...</div></div>
+    <div id="cal-up-pager" class="rep-pager"></div>
   </section>
 
   <!-- ================= INDUSTRY DATA ================= -->
@@ -1088,13 +1110,34 @@ const CAL_TYPE_META = {
 let CAL_DATA = {domestic:[], global:[]};
 const today0 = new Date();
 // expandedDates: "+N건"을 눌러 펼쳐놓은 날짜(YYYY-MM-DD) 집합. 달을 넘기면 초기화한다.
-const CAL_STATE = { year: today0.getFullYear(), month: today0.getMonth(), region: 'all', expandedDates: new Set() };
+// q: 기업명/키워드 검색어. types: 범례 토글로 켜져 있는 종류(CAL_TYPE_META 키) 집합 —
+// 기본은 전체 켜짐(2026-09-03, 검색·종류별 필터 추가).
+const CAL_STATE = {
+  year: today0.getFullYear(), month: today0.getMonth(), region: 'all',
+  expandedDates: new Set(), q: '', types: new Set(Object.keys(CAL_TYPE_META)),
+};
 const CAL_DAY_MAX = 5; // 하루 칸에 기본으로 보여줄 최대 일정 수(2026-08-28, 3->5 확대)
+const CAL_UP_PAGE_SIZE = 10; // "이번달 일정" 목록 페이지당 건수(리서치 보고서 탭과 동일, 2026-09-03)
+let calUpPage = 1;
 
 function calEventsForRegion(){
   if(CAL_STATE.region === 'domestic') return CAL_DATA.domestic;
   if(CAL_STATE.region === 'global') return CAL_DATA.global;
   return CAL_DATA.domestic.concat(CAL_DATA.global);
+}
+
+// 검색어(기업명/티커/제목) + 범례에서 켜둔 종류로 필터링. 캘린더 그리드·다가오는 일정·
+// 이번달 일정 목록이 전부 이 결과를 공유한다.
+function calFilterEvents(events){
+  const q = CAL_STATE.q.trim().toLowerCase();
+  return events.filter(ev=>{
+    if(!CAL_STATE.types.has(ev.type)) return false;
+    if(q){
+      const hay = `${ev.company||''} ${ev.ticker||''} ${ev.title||''}`.toLowerCase();
+      if(hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  });
 }
 
 function calFmtDate(d){
@@ -1121,7 +1164,9 @@ function renderCalendar(){
   const {year, month} = CAL_STATE;
   monthLabel.textContent = `${year}년 ${month+1}월`;
 
-  const events = calEventsForRegion();
+  const events = calFilterEvents(calEventsForRegion());
+  const summary = document.getElementById('cal-filter-summary');
+  if(summary) summary.textContent = `총 ${events.length}건 표시`;
   const byDate = {};
   events.forEach(ev=>{
     (byDate[ev.date] = byDate[ev.date] || []).push(ev);
@@ -1187,7 +1232,9 @@ function renderCalNextUp(events){
   }).join('');
 }
 
-// 캘린더 하단 표 — "이번달 일정"(현재 보고 있는 달 전체, 과거/미래 무관, 2026-08-28)
+// 캘린더 하단 표 — "이번달 일정"(현재 보고 있는 달 전체, 과거/미래 무관, 2026-08-28).
+// 일정이 많은 달은 계속 나열되면 보기 불편해서, 리서치 보고서 탭과 동일하게 10건씩
+// 페이지로 나눈다(2026-09-03 사용자 요청, renderPager 재사용).
 function renderCalMonthList(events){
   const list = document.getElementById('cal-up-list');
   const note = document.getElementById('cal-upcoming-note');
@@ -1197,18 +1244,28 @@ function renderCalMonthList(events){
   const monthEvents = events
     .filter(ev => ev.date && ev.date.startsWith(prefix))
     .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
-  if(note) note.textContent = `${year}년 ${month+1}월 · ${monthEvents.length}건`;
+
   if(monthEvents.length === 0){
+    if(note) note.textContent = `${year}년 ${month+1}월 · 0건`;
     list.innerHTML = '<div class="card">이번달 일정이 없습니다.</div>';
+    renderPager('cal-up-pager', 1, 1, ()=>{});
     return;
   }
-  list.innerHTML = monthEvents.map(ev=>{
+
+  const totalPages = Math.max(1, Math.ceil(monthEvents.length / CAL_UP_PAGE_SIZE));
+  if(calUpPage > totalPages) calUpPage = totalPages;
+  const start = (calUpPage - 1) * CAL_UP_PAGE_SIZE;
+  const pageEvents = monthEvents.slice(start, start + CAL_UP_PAGE_SIZE);
+
+  if(note) note.textContent = `${year}년 ${month+1}월 · ${monthEvents.length}건 · ${calUpPage}/${totalPages}페이지`;
+  list.innerHTML = pageEvents.map(ev=>{
     const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
     const d = new Date(ev.date+'T00:00:00');
     const co = ev.company || ev.ticker || '';
     const link = ev.source_url ? ` <a href="${ev.source_url}" target="_blank" rel="noopener" style="color:var(--dim); font-size:11px">출처↗</a>` : '';
     return `<div class="up-row"><span class="d">${calFmtDate(d)}</span><span class="badge ${meta.cls}">${meta.label}</span><span>${co} ${ev.title||''}${link}</span></div>`;
   }).join('');
+  renderPager('cal-up-pager', calUpPage, totalPages, (p)=>{ calUpPage = p; renderCalMonthList(events); });
 }
 
 function calChangeMonth(delta){
@@ -1218,7 +1275,16 @@ function calChangeMonth(delta){
   if(m > 11){ m = 0; y += 1; }
   CAL_STATE.month = m; CAL_STATE.year = y;
   CAL_STATE.expandedDates.clear();
+  calUpPage = 1;
   renderCalendar();
+}
+
+function updateCalLegendChips(){
+  const legend = document.getElementById('cal-legend');
+  if(!legend) return;
+  legend.querySelectorAll('.cal-legend-chip').forEach(chip=>{
+    chip.classList.toggle('off', !CAL_STATE.types.has(chip.dataset.type));
+  });
 }
 
 (function initCalendarControls(){
@@ -1233,6 +1299,7 @@ function calChangeMonth(delta){
         tabs.querySelectorAll('.region-tab').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         CAL_STATE.region = btn.dataset.region;
+        calUpPage = 1;
         renderCalendar();
       });
     });
@@ -1247,6 +1314,50 @@ function calChangeMonth(delta){
       else if(collapse){ CAL_STATE.expandedDates.delete(collapse.dataset.date); renderCalendar(); }
     });
   }
+
+  const searchInput = document.getElementById('cal-search-input');
+  if(searchInput) searchInput.addEventListener('input', ()=>{
+    CAL_STATE.q = searchInput.value;
+    calUpPage = 1;
+    renderCalendar();
+  });
+
+  // 범례 칩 클릭 — 해당 종류만 켜고 끔(전부 꺼지지 않도록 마지막 하나는 못 끄게 막는다,
+  // 안 그러면 "0개 표시"라는 혼란스러운 빈 화면이 됨).
+  const legend = document.getElementById('cal-legend');
+  if(legend){
+    legend.querySelectorAll('.cal-legend-chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const type = chip.dataset.type;
+        if(CAL_STATE.types.has(type)){
+          if(CAL_STATE.types.size <= 1) return; // 최소 1개는 켜져 있어야 함
+          CAL_STATE.types.delete(type);
+        } else {
+          CAL_STATE.types.add(type);
+        }
+        updateCalLegendChips();
+        calUpPage = 1;
+        renderCalendar();
+      });
+    });
+  }
+
+  const resetLink = document.getElementById('cal-reset-link');
+  if(resetLink) resetLink.addEventListener('click', (e)=>{
+    e.preventDefault();
+    CAL_STATE.q = '';
+    CAL_STATE.region = 'all';
+    CAL_STATE.types = new Set(Object.keys(CAL_TYPE_META));
+    if(searchInput) searchInput.value = '';
+    if(tabs){
+      tabs.querySelectorAll('.region-tab').forEach(b=>b.classList.remove('active'));
+      const allBtn = tabs.querySelector('[data-region="all"]');
+      if(allBtn) allBtn.classList.add('active');
+    }
+    updateCalLegendChips();
+    calUpPage = 1;
+    renderCalendar();
+  });
 })();
 
 async function loadCalendar(){
