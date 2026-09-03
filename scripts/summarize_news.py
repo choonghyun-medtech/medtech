@@ -33,7 +33,11 @@ import re
 import sys
 import time
 
-MAX_ITEMS_PER_CALL = 20  # 한 번의 API 호출에 담는 기사 수 상한(과금/타임아웃 방지, 응답 잘림 위험 감소)
+MAX_ITEMS_PER_CALL = 50  # 한 번의 API 호출에 담는 기사 수 상한.
+# 2026-09-03: Gemini 무료 티어의 실제 하루 호출 한도가 gemini-3.6-flash 기준 20회(RPD)로
+# 확인됨(워크플로 로그: "GenerateRequestsPerDayPerProjectPerModelFreeTier", quotaValue 20).
+# 20으로 배치를 쪼개면 기사 60~70건짜리 하루치 뉴스만으로도 배치 5개(재시도 포함 최대 10회)를
+# 써서 실행 한 번에 하루 한도 절반 이상을 소진해버렸다 — 배치를 키워 호출 수 자체를 줄인다.
 
 GEMINI_MODEL = "gemini-3.6-flash"  # gemini-2.5-flash가 신규 API 키에는 404(단종)로 막혀 교체.
 # 2026-08-20 기준 ai.google.dev/gemini-api/docs/models 공식 문서에서 무료 티어(Free of charge)로
