@@ -2641,7 +2641,13 @@ function renderVisitorCountryChart(){
           // "OO: 0.0만명"으로 뜨면 실제로 0명인 것처럼 오해될 수 있어, 툴팁 목록에서
           // 아예 빼버린다(2026-08-27 요청) — "기타"만 그 달의 실제 합계를 그대로 보여준다.
           filter: (item) => item.parsed.y !== 0,
-          callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtManmyeong(ctx.parsed.y)}` },
+          // 인원수만으로는 비중 감이 안 와서, 그 기간 방한 외국인 합계(막대 전체 = 5개
+          // 그룹 스택 합) 대비 비중(%)을 같이 보여준다(2026-09-03 요청).
+          callbacks: { label: (ctx) => {
+            const total = Object.values(rows[ctx.dataIndex].countries).reduce((s, v) => s + (v || 0), 0);
+            const pct = total ? (ctx.parsed.y / total * 100).toFixed(1) : '0.0';
+            return `${ctx.dataset.label}: ${fmtManmyeong(ctx.parsed.y)}(${pct}%)`;
+          } },
         },
       },
       scales: {
