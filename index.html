@@ -708,10 +708,45 @@ tr:last-child td{border-bottom:none}
     </div>
     <!-- /의료관광 데이터 -->
 
-    <!-- ---- 진료행위 통계 (준비 중) ---- -->
+    <!-- ---- 진료행위 통계 ---- -->
     <div id="industry-sub-procedure" style="display:none">
-      <div class="sec-h"><h2>진료행위 통계</h2></div>
-      <div class="card">준비 중입니다 — 추후 콘텐츠가 채워질 예정입니다.</div>
+      <div class="sec-h"><h2>진료행위 통계</h2><span class="note">건강보험심사평가원 보건의료빅데이터개방시스템(opendata.hira.or.kr) · hira_procedure.json 자동 갱신(매월 3일)</span></div>
+      <div class="tabs" id="hira-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
+
+      <div class="sec-h" style="margin:0 0 6px">
+        <h2 style="font-size:12px; color:var(--dim); font-weight:600" id="hira-usage-title">총사용량 추이</h2>
+        <div class="toggle" id="hira-period-toggle">
+          <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+        </div>
+      </div>
+      <div class="note" id="hira-note" style="margin:-4px 0 8px"></div>
+      <div class="chart-box"><canvas id="hiraUsageChart"></canvas></div>
+
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600" id="hira-amount-title">진료금액 추이</h2></div>
+      <div class="chart-box"><canvas id="hiraAmountChart"></canvas></div>
+
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">총사용량 · 진료금액</h2></div>
+      <div class="chart-box"><canvas id="hiraComboChart"></canvas></div>
+
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">월별 데이터</h2>
+        <button id="hira-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
+        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+          <div class="toggle" id="hira-range-toggle">
+            <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
+          </div>
+          <div id="hira-range-custom" style="display:flex; flex-direction:column; gap:6px">
+            <label style="font-size:11px; color:var(--dim)">시작월
+              <input type="month" id="hira-range-start" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+            <label style="font-size:11px; color:var(--dim)">종료월
+              <input type="month" id="hira-range-end" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+          </div>
+        </div>
+        <div id="hira-table-wrap" style="flex:1; min-width:220px"></div>
+      </div>
     </div>
   </section>
 
@@ -3742,6 +3777,320 @@ document.querySelectorAll('#visitor-country-period-toggle button').forEach(b => 
     b.classList.add('active');
     VISITOR_CHART_STATE.countryGran = b.dataset.gran;
     renderVisitorCountryChart();
+  });
+});
+
+// ================= 진료행위 통계 (HIRA 보건의료빅데이터개방시스템) =================
+// scripts/scrape_hira_procedure.py가 opendata.hira.or.kr의 "진료행위(검사/수술 등) 통계"
+// 화면 검색폼을 그대로 재현해 EX871(심전도 감시[원격심박기술에 의한 감시][1일당], 입원)·
+// E6547(24시간혈압측정검사[1일당], 외래) 두 코드의 월별 총사용량(회)·진료금액(천원)을
+// hira_procedure.json으로 저장한 것을 읽는다(2023-01부터, 진료년월 자료 특성상 약 8개월
+// 후행 — 2026-09 기준 최신 2026-01). 코드 하나당 총사용량 추이(+YoY) / 진료금액 추이(+YoY) /
+// 총사용량·진료금액 동시 비교 3개 차트를 그리며, 월/분기/연 토글 하나가 세 차트를 함께
+// 제어한다(방한 외국인·의료관광객 데이터 섹션의 추이 토글과 동일 패턴).
+let HIRA_DATA = { codes: [] };
+const HIRA_STATE = { tab: 'EX871', gran: 'month' };
+let hiraUsageChartInstance = null;
+let hiraAmountChartInstance = null;
+let hiraComboChartInstance = null;
+
+function currentHiraCode(){
+  return HIRA_DATA.codes.find(c => c.code === HIRA_STATE.tab) || HIRA_DATA.codes[0] || null;
+}
+
+function renderHiraTabs(){
+  const wrap = document.getElementById('hira-tabs');
+  if(!wrap) return;
+  if(!HIRA_DATA.codes.length){ wrap.innerHTML = ''; return; }
+  if(!HIRA_DATA.codes.find(c => c.code === HIRA_STATE.tab)) HIRA_STATE.tab = HIRA_DATA.codes[0].code;
+  wrap.innerHTML = HIRA_DATA.codes.map(c =>
+    `<button class="medtour-tab${c.code === HIRA_STATE.tab ? ' active' : ''}" data-key="${c.code}">${escapeHtml(c.code)}(${escapeHtml(c.admission)})</button>`
+  ).join('');
+  wrap.querySelectorAll('.medtour-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      HIRA_STATE.tab = btn.dataset.key;
+      renderHiraTabs();
+      renderHiraCharts();
+      renderHiraTable();
+    });
+  });
+}
+
+function fmtHiraUsage(v){ return v == null ? '-' : Math.round(v).toLocaleString() + '건'; }
+function fmtHiraAmount(v){ return v == null ? '-' : (v / 1000).toLocaleString(undefined, {maximumFractionDigits:1}) + '백만원'; }
+
+function renderHiraCharts(){
+  if(hiraUsageChartInstance){ hiraUsageChartInstance.destroy(); hiraUsageChartInstance = null; }
+  if(hiraAmountChartInstance){ hiraAmountChartInstance.destroy(); hiraAmountChartInstance = null; }
+  if(hiraComboChartInstance){ hiraComboChartInstance.destroy(); hiraComboChartInstance = null; }
+
+  const code = currentHiraCode();
+  const note = document.getElementById('hira-note');
+  const usageTitle = document.getElementById('hira-usage-title');
+  const amountTitle = document.getElementById('hira-amount-title');
+  if(!code || !code.monthly || !code.monthly.length){
+    if(note) note.textContent = '건강보험심사평가원 · 아직 데이터가 없습니다.';
+    return;
+  }
+  if(usageTitle) usageTitle.textContent = `총사용량 추이(${code.admission})`;
+  if(amountTitle) amountTitle.textContent = `진료금액 추이(${code.admission})`;
+
+  const gran = HIRA_STATE.gran;
+  const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
+  const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
+  const rows = aggregateMonthlyRows(code.monthly, gran, ['usage', 'amount']);
+
+  const byLabel = new Map(rows.map(r => [r.label, r]));
+  const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
+  if(note){
+    note.textContent = displayRows.length
+      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${code.code} ${code.name}(${code.admission}) · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${code.monthly[0].ym}부터 수집) · 건강보험심사평가원`
+      : `${granLabel} · 건강보험심사평가원 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
+  }
+  if(!displayRows.length) return;
+
+  const usageYoYFull = computeYoYSeriesFor(rows, gran, 'usage');
+  const usageYoYByLabel = new Map(rows.map((r, i) => [r.label, usageYoYFull[i]]));
+  const amountYoYFull = computeYoYSeriesFor(rows, gran, 'amount');
+  const amountYoYByLabel = new Map(rows.map((r, i) => [r.label, amountYoYFull[i]]));
+
+  hiraUsageChartInstance = new Chart(document.getElementById('hiraUsageChart'), {
+    data: {
+      labels: displayRows.map(r => r.label),
+      datasets: [
+        {
+          type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
+          backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => usageYoYByLabel.get(r.label)),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${fmtHiraUsage(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '총사용량(건)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  hiraAmountChartInstance = new Chart(document.getElementById('hiraAmountChart'), {
+    data: {
+      labels: displayRows.map(r => r.label),
+      datasets: [
+        {
+          type: 'bar', label: '진료금액(백만원)', data: displayRows.map(r => r.amount == null ? null : r.amount / 1000),
+          backgroundColor: '#16a34a', yAxisID: 'y', order: 2,
+        },
+        {
+          type: 'line', label: 'YoY(%)', data: displayRows.map(r => amountYoYByLabel.get(r.label)),
+          borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1',
+          spanGaps: true, tension: 0.25, pointRadius: 2, order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toFixed(1) + '%'}`
+              : `${ctx.dataset.label}: ${fmtHiraAmount(ctx.parsed.y == null ? null : ctx.parsed.y * 1000)}`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '진료금액(백만원)', color: textColor() },
+        },
+        y1: {
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
+          title: { display: true, text: 'YoY(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  // 총사용량(건)과 진료금액(백만원)은 단위가 전혀 다른 두 값이라 굳이 막대+선을 섞기보다,
+  // 둘 다 막대로 통일해 같은 x축 라벨 위에 나란히(그룹) 배치하는 편이 서로 비교하기 쉽고
+  // 눈에도 잘 띈다(2026-09-03 사용자 피드백 — 파랑 막대+초록 선 조합이 잘 안 보인다는 지적
+  // 및 "통일시키는 게 낫나" 제안 반영). 색상은 위 두 차트와 동일하게 유지(총사용량=파랑,
+  // 진료금액=초록)해 세 차트 간 색 의미가 흔들리지 않게 한다.
+  hiraComboChartInstance = new Chart(document.getElementById('hiraComboChart'), {
+    data: {
+      labels: displayRows.map(r => r.label),
+      datasets: [
+        {
+          type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
+          backgroundColor: '#2563eb', yAxisID: 'y',
+        },
+        {
+          type: 'bar', label: '진료금액(백만원)', data: displayRows.map(r => r.amount == null ? null : r.amount / 1000),
+          backgroundColor: '#16a34a', yAxisID: 'y1',
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            label: (ctx) => ctx.dataset.yAxisID === 'y1'
+              ? `${ctx.dataset.label}: ${fmtHiraAmount(ctx.parsed.y == null ? null : ctx.parsed.y * 1000)}`
+              : `${ctx.dataset.label}: ${fmtHiraUsage(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+        y: {
+          position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
+          title: { display: true, text: '총사용량(건)', color: textColor() },
+        },
+        y1: {
+          // 축 이름에 이미 단위(백만원)가 있으니 눈금 숫자에는 단위를 또 붙이지 않는다
+          // (2026-09-03 사용자 피드백).
+          position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v.toLocaleString(undefined,{maximumFractionDigits:1}) },
+          title: { display: true, text: '진료금액(백만원)', color: textColor() },
+        },
+      },
+    },
+  });
+}
+
+// 월별 데이터 표 + "데이터 복사하기" — 수출 데이터 섹션(export-table-copy 등)과 동일한
+// 패턴: 3/6/12개월 프리셋 + 항상 보이는 시작월/종료월 직접 선택, 선택된 기간의 원본
+// 월별 행(기간·진료금액·총사용량)을 탭 구분 텍스트로 클립보드에 복사한다. 위 세 차트의
+// 월/분기/연 토글(HIRA_STATE.gran)과는 무관하게 항상 월별 원본(code.monthly) 기준이며,
+// 진료금액은 raw 데이터 단위(천원, hira_procedure.json의 unit.amount)를 그대로 쓴다 —
+// 차트처럼 백만원으로 반올림하면 엑셀에 붙여넣을 때 정밀도가 떨어지기 때문.
+let HIRA_TABLE_RANGE = { mode: '6m', start: null, end: null };
+
+function hiraTableFilteredRows(monthly){
+  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+  if(HIRA_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
+  if(HIRA_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
+  if(HIRA_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
+  const { start, end } = HIRA_TABLE_RANGE;
+  if(!start || !end) return sorted.slice(-6);
+  return sorted.filter(r => r.ym >= start && r.ym <= end);
+}
+
+function renderHiraTable(){
+  const wrap = document.getElementById('hira-table-wrap');
+  if(!wrap) return;
+  const code = currentHiraCode();
+  const monthly = code && code.monthly;
+  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
+  const rows = hiraTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
+  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
+  const rowHtml = r => `<tr><td>${r.ym}</td><td>${(r.amount || 0).toLocaleString()}</td><td>${(r.usage || 0).toLocaleString()}</td></tr>`;
+  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>진료금액(천원)</th><th>총사용량(건)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
+}
+
+async function copyHiraTable(){
+  const code = currentHiraCode();
+  const monthly = code && code.monthly;
+  if(!monthly || !monthly.length) return;
+  const rows = hiraTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
+  const lines = ['기간\t진료금액(천원)\t총사용량(건)', ...rows.map(r => `${ymToLastDay(r.ym)}\t${r.amount || 0}\t${r.usage || 0}`)];
+  const text = lines.join('\n');
+  const btn = document.getElementById('hira-table-copy');
+  try{
+    await navigator.clipboard.writeText(text);
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }catch(e){
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }
+}
+document.getElementById('hira-table-copy')?.addEventListener('click', copyHiraTable);
+
+(() => {
+  const toggle = document.getElementById('hira-range-toggle');
+  const startInput = document.getElementById('hira-range-start');
+  const endInput = document.getElementById('hira-range-end');
+  if(!toggle || !startInput || !endInput) return;
+  toggle.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      HIRA_TABLE_RANGE.mode = btn.dataset.range;
+      const code = currentHiraCode();
+      const monthly = code && code.monthly;
+      if(monthly && monthly.length){
+        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
+        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
+        endInput.value = sorted[sorted.length - 1].ym;
+        HIRA_TABLE_RANGE.start = startInput.value;
+        HIRA_TABLE_RANGE.end = endInput.value;
+      }
+      renderHiraTable();
+    });
+  });
+  const onCustomChange = () => {
+    HIRA_TABLE_RANGE.mode = 'custom';
+    HIRA_TABLE_RANGE.start = startInput.value || null;
+    HIRA_TABLE_RANGE.end = endInput.value || null;
+    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    renderHiraTable();
+  };
+  startInput.addEventListener('change', onCustomChange);
+  endInput.addEventListener('change', onCustomChange);
+})();
+
+async function loadHiraProcedureData(){
+  try{
+    const res = await fetch('hira_procedure.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('no hira_procedure.json yet');
+    HIRA_DATA = await res.json();
+  }catch(e){
+    HIRA_DATA = { codes: [] };
+  }
+  renderHiraTabs();
+  renderHiraCharts();
+  renderHiraTable();
+}
+loadHiraProcedureData();
+
+document.querySelectorAll('#hira-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#hira-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    HIRA_STATE.gran = b.dataset.gran;
+    renderHiraCharts();
   });
 });
 
