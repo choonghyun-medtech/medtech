@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-해외 팔로업 기업(scripts/calendar_ir_sources.json, 18개사)의 분기 실적발표 일정을
+해외 팔로업 기업(scripts/calendar_ir_sources.json, 18개사)의 주요 IR 일정을
 수집해 calendar_events.json의 "global" 항목으로 저장한다.
 
 수집 방식은 두 갈래다.
@@ -16,14 +16,23 @@
    페이지에 공식 공지한 날짜가 아니라 Yahoo/제3 데이터공급업체의 추정치였고,
    실제로 회사 공식 공지와 어긋나는 경우가 있어 신뢰할 수 없다고 판단해 걷어냈다
    (yfinance 응답 자체에 확정/추정을 구분하는 필드도 없음). 18개사 IR 페이지를
-   전부 직접 테스트해본 결과 대부분(16개)이 봇 차단(403)이거나 응답 자체가 없어
-   (타임아웃) 단순 크롤링이 불가능했고, 딱 2곳(Medtronic, Boston Scientific)만
-   막힘 없이 접근 가능하면서 미래 확정 일정을 그대로 내려준다는 걸 확인했다:
+   전부 직접 테스트해본 결과 대부분이 봇 차단(403)이거나 응답 자체가 없어
+   (타임아웃) 단순 크롤링이 불가능했고, 지금까지 3곳(Medtronic, Boston
+   Scientific, UnitedHealth Group)만 막힘 없이 접근 가능하면서 미래 확정
+   일정을 그대로 내려준다는 걸 확인했다:
      - Medtronic: 페이지 뒤의 JSON API(index.php?ajax=ajax&op=list)를 그대로 호출
      - Boston Scientific: events-and-presentations 페이지 안 <table>에 바로 있음
-   나머지 16개사는 회사가 공식 발표하기 전까지는 미래 일정을 아예 채우지 않는다
+     - UnitedHealth Group: investors.html "Events" 박스 <h4>에 다음 일정 1건이
+       "{월 일}: {제목}" 형식으로 서버 렌더링됨(연도 미표기 → 오늘 기준 추정)
+   나머지 회사는 회사가 공식 발표하기 전까지는 미래 일정을 아예 채우지 않는다
    (추정치를 넣느니 비워두는 쪽을 사용자가 명시적으로 선택함, 2026-08-28).
    추후 나머지 회사들의 크롤링 방법을 찾으면 여기에 scraper를 추가하면 된다.
+   [2026-09-03 방침 변경] 위 3곳(scraper 연결된 회사)에서 크롤링한 미래 일정은
+   원래 "실적발표"로 볼 만한 제목만 채택했으나, 국내 스크래퍼(scrape_calendar_
+   domestic.py)가 주총/배당/증자 등도 함께 캘린더에 넣는 것과 기준을 맞추기 위해
+   GLOBAL_CATEGORY_RULES로 확장했다 — 실적발표(earn) 외에 주주총회(agm), 배당/
+   액면분할(exright), 투자자 컨퍼런스(ir)도 제목 키워드로 분류해 채택한다. 과거
+   실적일정(yfinance, fetch_past_earnings)은 이 분류와 무관하게 그대로 earn 고정.
 - 유료 LLM 웹서치는 쓰지 않는다(비용 지침).
 - source_url/source_name은 실제 수집 경로(yfinance/JSON API 등)가 아니라 사용자
   요청대로 해당 기업의 공식 IR 페이지로 표기한다 — 이용자가 원문을 확인하러 갈
@@ -51,9 +60,26 @@ IR_SOURCES_FILE = "scripts/calendar_ir_sources.json"
 DAYS_BACK = 120   # 과거 백필(7월 데이터 확인 등)에 충분한 여유
 DAYS_FORWARD = 400  # 미래 확정 이벤트(회사 IR 직접 크롤링분)에 적용하는 여유 범위
 
-# 회사 IR 페이지에서 긁은 이벤트 제목 중 "실적발표"로 볼 것만 채택한다(컨퍼런스
-# 발표 참석 등 다른 IR 이벤트는 제외) — 대소문자 무관.
-EARNINGS_TITLE_RE = re.compile(r"earnings|(?:quarter|quarterly).{0,20}(?:results|financial)", re.I)
+# 회사 IR 페이지에서 긁은 이벤트 제목을 국내 스크래퍼(scrape_calendar_domestic.py의
+# CATEGORY_RULES)와 같은 기준으로 분류한다. 여기 안 걸리는 제목(M&A/자사주 매입
+# 발표 등 예정된 "일정"이 아니라 그때그때의 기업 뉴스에 가까운 것)은 버린다 —
+# 화이트리스트 방식. "Conference Call ... Results"는 earn 규칙이 먼저 걸려서
+# "conference"의 ir 규칙과 충돌하지 않는다(리스트 순서상 earn을 먼저 검사).
+GLOBAL_CATEGORY_RULES = [
+    (re.compile(r"earnings|(?:quarter|quarterly).{0,20}(?:results|financial)", re.I), "earn"),
+    (re.compile(r"annual(?:\s+general)?\s+meeting|shareholder.{0,20}meeting", re.I), "agm"),
+    (re.compile(r"dividend|stock\s+split", re.I), "exright"),
+    # 국내의 "IR개최/기업설명회"에 대응 — "~at [행사명] Conference"처럼 투자자
+    # 컨퍼런스 발표 참석도 IR 일정으로 포함한다(단 "Conference Call"은 제외).
+    (re.compile(r"investor\s+(?:day|event|conference)|\bconference\b(?!\s+call)", re.I), "ir"),
+]
+
+
+def classify_global(title):
+    for pattern, ev_type in GLOBAL_CATEGORY_RULES:
+        if pattern.search(title):
+            return ev_type
+    return None
 
 
 def load_ir_sources(path):
@@ -61,11 +87,11 @@ def load_ir_sources(path):
         return json.load(f)
 
 
-def make_event(d, ticker, name, ir_url, title):
+def make_event(d, ticker, name, ir_url, title, ev_type="earn"):
     return {
         "date": d.isoformat(),
         "region": "global",
-        "type": "earn",
+        "type": ev_type,
         "ticker": ticker,
         "company": name,
         "title": title,
@@ -137,7 +163,8 @@ def scrape_mdt_wd(scraper_url, ticker, name, ir_url, today):
         if not date_m or not title_m:
             continue
         title = title_m.group(1).strip()
-        if not EARNINGS_TITLE_RE.search(title):
+        ev_type = classify_global(title)
+        if not ev_type:
             continue
         try:
             d = datetime.datetime.strptime(date_m.group(1).strip(), "%A, %B %d, %Y").date()
@@ -145,7 +172,7 @@ def scrape_mdt_wd(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title))
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
     return events
 
 
@@ -166,7 +193,8 @@ def scrape_bsx_table(scraper_url, ticker, name, ir_url, today):
     )
     for m in pattern.finditer(text):
         date_str, title = m.group(1).strip(), m.group(2).strip()
-        if not EARNINGS_TITLE_RE.search(title):
+        ev_type = classify_global(title)
+        if not ev_type:
             continue
         try:
             d = datetime.datetime.strptime(date_str, "%B %d, %Y").date()
@@ -176,13 +204,56 @@ def scrape_bsx_table(scraper_url, ticker, name, ir_url, today):
         # fetch_past_earnings(yfinance)가 이미 채워주므로 중복을 막기 위해 미래분만 취한다.
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title))
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
+def scrape_unh_events(scraper_url, ticker, name, ir_url, today):
+    """UnitedHealth Group IR 페이지의 "Events" 박스 — 서버 렌더링 HTML에 다음
+    일정 하나만 "<h4>{월 일}: {제목}</h4>" 형태로 들어있다(테이블이 아니라 단건).
+    일정이 없으면 "No upcoming events"로 채워진다. 연도가 표기되지 않으므로
+    오늘 날짜 기준으로 이미 지난 월/일이면 내년으로 추정한다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(unh_events): {e}", file=sys.stderr)
+        return events
+
+    m = re.search(r'class="upcoming-events[^"]*"[\s\S]{0,200}?<h4>\s*([^<]+?)\s*</h4>', text)
+    if not m:
+        return events
+
+    header = m.group(1).strip()
+    date_m = re.match(r'([A-Za-z]+ \d{1,2}):\s*(.+)', header)
+    if not date_m:
+        return events  # "No upcoming events" 등 날짜가 없는 경우
+
+    date_str, title = date_m.group(1).strip(), date_m.group(2).strip()
+    ev_type = classify_global(title)
+    if not ev_type:
+        return events
+
+    try:
+        md = datetime.datetime.strptime(date_str, "%B %d").date()
+    except ValueError:
+        return events
+    d = md.replace(year=today.year)
+    if d < today:
+        d = d.replace(year=today.year + 1)
+
+    if d > today + datetime.timedelta(days=DAYS_FORWARD):
+        return events
+    events.append(make_event(d, ticker, name, ir_url, title, ev_type))
     return events
 
 
 SCRAPERS = {
     "mdt_wd": scrape_mdt_wd,
     "bsx_table": scrape_bsx_table,
+    "unh_events": scrape_unh_events,
 }
 
 
