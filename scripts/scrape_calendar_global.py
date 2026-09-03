@@ -44,9 +44,15 @@
        {시각}" 문장으로 다음 실적발표 콜 날짜가 그대로 적혀 있어 정규식으로 추출
        가능함을 확인했다(scrape_rdnt_news). 다른 회사들과 달리 구조화된 필드가
        아니라 보도자료 문장에서 날짜를 뽑는 방식이라 문구가 바뀌면 깨질 수 있음.
-     - InMode: 어떤 하위 페이지(events-presentations 포함)로 접근해도 Sucuri
-       CloudProxy JS 챌린지로 막힌다(요청이 JS 실행을 거쳐야 진짜 페이지가 나옴)
-       — 사이트 전체에 걸린 차단이라 가벼운 HTTP 크롤링으로는 원천적으로 불가능.
+     - [2026-09-04] InMode: 공식 IR 사이트(inmodeinvestors.com)는 어떤 하위
+       페이지로 접근해도 Sucuri CloudProxy JS 챌린지로 막힌다(TLS 핑거프린트가
+       아니라 실제 JS 실행 여부를 보는 방식이라 curl_cffi로도 안 뚫림). 대신 IR
+       사이트가 보도자료를 원래 받아쓰는 배포처인 StockTitan의 RSS 피드
+       (stocktitan.net/rss/news/{티커})는 차단이 전혀 없고, "InMode to Report
+       {분기} {연도} Financial Results ... on {날짜}" 형식의 제목에 다음
+       실적발표 콜 날짜가 그대로 박혀 있어 본문 파싱 없이 제목만으로 뽑을 수
+       있다(scrape_inmd_rss). 다른 팔로업 기업이 이 방식으로도 막히면 같은
+       배포처(StockTitan/PR Newswire/GlobeNewswire) 우회를 시도해볼 만하다.
    나머지 회사는 회사가 공식 발표하기 전까지는 미래 일정을 아예 채우지 않는다
    (추정치를 넣느니 비워두는 쪽을 사용자가 명시적으로 선택함, 2026-08-28).
    추후 나머지 회사들의 크롤링 방법을 찾으면 여기에 scraper를 추가하면 된다.
@@ -69,6 +75,7 @@
 """
 import argparse
 import datetime
+import html
 import json
 import re
 import sys
@@ -499,6 +506,71 @@ def scrape_rdnt_news(scraper_url, ticker, name, ir_url, today):
     return events
 
 
+def scrape_inmd_rss(scraper_url, ticker, name, ir_url, today):
+    """InMode 공식 IR 사이트(inmodeinvestors.com)는 Sucuri CloudProxy가 JS 실행을
+    요구하는 챌린지로 막혀 있어(2026-09-04 확인, curl_cffi 브라우저 임퍼스네이션도
+    안 통함 — TLS/HTTP 핑거프린트가 아니라 실제 JS 실행 여부를 봄) 접근이
+    불가능하다. 대신 IR 사이트가 원래 받아쓰는 배포처인 StockTitan의 RSS
+    피드(stocktitan.net/rss/news/{티커})는 차단이 전혀 없고, "InMode to Report
+    {분기} {연도} Financial Results ... on {날짜}" 형식의 제목에 다음 실적발표
+    콜 날짜가 그대로 박혀 있어 본문 파싱 없이 제목만으로 날짜를 뽑을 수 있다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(inmd_rss): {e}", file=sys.stderr)
+        return events
+
+    item_re = re.compile(r"<item>([\s\S]*?)</item>")
+    title_re = re.compile(r"<title>([\s\S]*?)</title>")
+    pubdate_re = re.compile(r"<pubDate>([\s\S]*?)</pubDate>")
+    date_with_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2},\s*\d{4})", re.I)
+    date_no_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2})\b(?:,|\s|$)", re.I)
+
+    for m in item_re.finditer(text):
+        block = m.group(1)
+        title_m = title_re.search(block)
+        pubdate_m = pubdate_re.search(block)
+        if not title_m or not pubdate_m:
+            continue
+        title = html.unescape(title_m.group(1).strip())
+        # StockTitan이 원문 보도자료 제목 뒤에 붙이는 사이트 접미사 제거
+        title = re.sub(r"\s*\|\s*[A-Z]+\s+Stock\s+News\s*$", "", title)
+        if "InMode to Report" not in title:
+            continue
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+
+        dm = date_with_year_re.search(title)
+        if dm:
+            try:
+                d = datetime.datetime.strptime(dm.group(1).strip(), "%B %d, %Y").date()
+            except ValueError:
+                continue
+        else:
+            dm2 = date_no_year_re.search(title)
+            if not dm2:
+                continue
+            try:
+                pub = datetime.datetime.strptime(
+                    pubdate_m.group(1).strip(), "%a, %d %b %Y %H:%M:%S %Z"
+                ).date()
+                md = datetime.datetime.strptime(f"{dm2.group(1).strip()} 2000", "%B %d %Y")
+            except ValueError:
+                continue
+            d = md.date().replace(year=pub.year)
+            if d < pub:
+                d = d.replace(year=pub.year + 1)
+
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
 SCRAPERS = {
     "mdt_wd": scrape_mdt_wd,
     "bsx_table": scrape_bsx_table,
@@ -509,6 +581,7 @@ SCRAPERS = {
     "nir_llf": scrape_nir_llf,
     "nir_table_abt": scrape_nir_table_abt,
     "rdnt_news": scrape_rdnt_news,
+    "inmd_rss": scrape_inmd_rss,
 }
 
 
