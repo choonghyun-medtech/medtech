@@ -1,18 +1,18 @@
 {
  "updated": "2026-09-03T21:20:05Z",
- "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료) · 요약: Gemini 자동 생성",
  "domestic": [
   {
    "cat": "Digital Health",
    "items": [
     {
      "co": "스카이랩스",
-     "ctx": "뉴스",
+     "ctx": "신규상장",
      "t": "'스카이랩스 상장일' 청약결과 뒤집고 따따상 가나",
      "src": "gukjenews.com",
      "date": "2026-09-04",
      "url": "https://www.gukjenews.com/news/articleView.html?idxno=3684180",
-     "desc": "스카이랩스 로고 의료용 기기 제조업체 스카이랩스가 오늘(4일) 코스닥 시장에 상장한다. 스카이랩스는 앞서 진행된 수요예측에서 246개 기관이 참여한 가운데 63.41대 1의 경쟁률을 기록했다. 공모가는 희망 범위..."
+     "summary": "의료용 기기 제조업체 스카이랩스가 4일 코스닥 시장에 상장함.\n수요예측에서 246개 기관이 참여해 63.41대 1의 경쟁률을 기록했음."
     },
     {
      "co": "스카이랩스",
@@ -20,8 +20,7 @@
      "t": "의료기기 관련주 '스카이랩스', 오늘(4일) 코스닥 상장",
      "src": "newswell.co.kr",
      "date": "2026-09-04",
-     "url": "http://www.newswell.co.kr/news/articleView.html?idxno=21566",
-     "desc": "만성질환자의 생체신호를 연속적으로 측정, 분석할 수 있는 웨어러블 의료기기와 관련 데이터 플랫폼을 개발·제조하는 '스카이랩스'가 4일 코스닥시장에 상장한다. /사진=스카이랩스 4일 한국거래소..."
+     "url": "http://www.newswell.co.kr/news/articleView.html?idxno=21566"
     },
     {
      "co": "스카이랩스",
@@ -29,8 +28,7 @@
      "t": "[공모주 현황]스카이랩스 4일 코스닥 상장…최근 새내기주 부진 속 공모...",
      "src": "cbci.co.kr",
      "date": "2026-09-04",
-     "url": "https://www.cbci.co.kr/news/articleView.html?idxno=603644",
-     "desc": "반지형 웨어러블 의료기기를 개발하는 스카이랩스가 4일 코스닥 시장에 입성한다. 최근 증시에 새롭게 이름을 올린 종목들의 주가 성적이 전반적으로 녹록지 않았다는 점에서 스카이랩스가 상장 첫날 어떤..."
+     "url": "https://www.cbci.co.kr/news/articleView.html?idxno=603644"
     },
     {
      "co": "메쥬",
@@ -38,8 +36,7 @@
      "t": "\"에임드바이오 23배 잭팟\"…민트벤처파트너스 1호 펀드, 3곳 IPO 성과",
      "src": "mt.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.mt.co.kr/future/2026/09/03/2026090310104473597",
-     "desc": "에임드바이오, 메쥬 등 3곳을 잇달아 코스닥 시장에 상장시켰다고 3일 밝혔다. 민트벤처파트너스는 바이오... 기업 메쥬가 각각 코스닥 시장에 입성했다. 투자금 대비 회수 배수는 에임드바이오가 23.1배로 가장 높았다...."
+     "url": "https://www.mt.co.kr/future/2026/09/03/2026090310104473597"
     },
     {
      "co": "메쥬",
@@ -47,8 +44,7 @@
      "t": "“될성부른 바이오만 찍었다”…민트벤처파트너스, 3곳 코스닥行",
      "src": "sedaily.com",
      "date": "2026-09-03",
-     "url": "https://www.sedaily.com/article/20086812?ref=naver",
-     "desc": "민트벤처파트너스는 오가노이드사이언스, 에임드바이오, 메쥬 등 3곳이 코스닥 시장에 입성했다고 3일... 항체약물접합체(ADC) 신약 개발사 에임드바이오는 같은 해 12월, 웨어러블 심전도 모니터링 기업 메쥬는 2026년 3월..."
+     "url": "https://www.sedaily.com/article/20086812?ref=naver"
     },
     {
      "co": "메쥬",
@@ -56,8 +52,7 @@
      "t": "민트벤처파트너스, 1호 펀드 투자기업 3곳 코스닥 상장",
      "src": "한국경제",
      "date": "2026-09-03",
-     "url": "https://magazine.hankyung.com/job-joy/article/202609031643d",
-     "desc": "에임드바이오, 메쥬 등 3곳이 잇따라 코스닥 시장에 입성했다고 3일 밝혔다. 민트벤처파트너스는 유망... 기업 메쥬가 올해3월 코스닥 시장에 입성했다. 상장과 함께 투자 성과도 이어졌다. 에임드바이오는 투자액 대비 23...."
+     "url": "https://magazine.hankyung.com/job-joy/article/202609031643d"
     }
    ]
   },
@@ -70,8 +65,7 @@
      "t": "[경력채용] 대원제약, 삼일제약, 보령바이오파마, 한풍제약, 클래시스",
      "src": "hitnews.co.kr",
      "date": "2026-09-04",
-     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78893",
-     "desc": "PM~11/1옵투스제약품질관리~10/2에임드바이오IR·공시~11/1클래시스홈디바이스 RA~11/1대원제약마케팅기획~ 9... 등지원하기클래시스홈디바이스 RA~ 11/1업무국가별 규제 현황 파악 및 업데이트, 허가 관련 서류 준비..."
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=78893"
     },
     {
      "co": "파마리서치",
@@ -79,8 +73,7 @@
      "t": "출구 안 보이는 고금리·고유가…\"외국인 사들이는 '소·금·바' 종목 봐...",
      "src": "news1.kr",
      "date": "2026-09-04",
-     "url": "https://www.news1.kr/finance/market-exr/6279276",
-     "desc": "최근 한 달간 외국인 순매수 상위 업종을 보면 △셀트리온(068270) △파마리서치(214450) △삼성바이오로직스(207940) 같은 바이오헬스케어 종목이 대다수를 차지했다. △한국금융지주(071050) △키움증권(039490) 등 실적..."
+     "url": "https://www.news1.kr/finance/market-exr/6279276"
     },
     {
      "co": "에이피알",
@@ -88,8 +81,7 @@
      "t": "[단독] \"에이피알, 짝퉁에 당했다\"…싱가포르는 한때 수출금지",
      "src": "newspim.com",
      "date": "2026-09-04",
-     "url": "https://www.newspim.com/news/view/20260903001199",
-     "desc": "글로벌 뷰티 기업 에이피알의 메디큐브 'PDRN 핑크 콜라겐 캡슐 크림'에서 수단레드가 검출됐다는 싱가포르 보건과학청(HSA) 발표는 알고 보니 에이피알의 공식 수출품이 아닌 가품 유통에서 비롯됐을 가능성이 높은..."
+     "url": "https://www.newspim.com/news/view/20260903001199"
     },
     {
      "co": "클래시스, 엘앤씨바이오, 덴티움",
@@ -97,8 +89,7 @@
      "t": "본업 경쟁력 찾는다… 한미사이언스, 신약 개발 속도 내며 기업가치 제...",
      "src": "pinpointnews.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483577",
-     "desc": "종근당, 클래시스, JW중외제약, 티씨케이, 키움증권, 한샘, 주성엔지니어링, 솔브레인, 넥스틴, LG이노텍, F&F, SK텔레콤, 한미약품, 한진칼, 파마리서치, 삼양식품, 엘앤씨바이오, 코미코 등이 내림세를 보이고 있다...."
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483577"
     },
     {
      "co": "휴젤, 파마리서치, 에이피알",
@@ -106,8 +97,7 @@
      "t": "\"다들 반도체만 볼 때 조용히 터졌다\"…수출 29% 뛴 '이 업종'",
      "src": "한국경제",
      "date": "2026-09-03",
-     "url": "https://www.hankyung.com/article/2026090330847",
-     "desc": "해당 ETF는 에이피알, 아모레퍼시픽, LG생활건강, 한국콜마 등 화장품 기업과 함께 파마리서치, 휴젤 등 미용의료 관련 기업을 담은 K-뷰티 전반에 투자하는 상품이다. 김승철 ETF투자본부장은 \"K-뷰티는 역대 최대..."
+     "url": "https://www.hankyung.com/article/2026090330847"
     },
     {
      "co": "휴젤",
@@ -115,8 +105,7 @@
      "t": "NH-Amundi자산운용, 반도체 쏠림 속 'K뷰티 수출 성장' 주목",
      "src": "pinpointnews.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483652",
-     "desc": "이 ETF는 에이피알과 아모레퍼시픽, LG생활건강, 한국콜마 등 화장품 기업뿐 아니라 파마리서치와 휴젤 등 미용의료 관련 기업도 편입한다. 김승철 NH-Amundi자산운용 ETF투자본부장은 \"K-뷰티는 역대 최대 수출실적으로..."
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483652"
     }
    ]
   },
@@ -129,8 +118,7 @@
      "t": "차세대 반도체 공정 잡았다… 레이저쎌, 첨단 패키징 장비 수요 확대",
      "src": "pinpointnews.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483557",
-     "desc": "유진테크, 고영, 티씨케이, 테스, 디아이티, 하나마이크론 등도 내림세를 보이고 있다. 한미반도체는 2.58% 하락한 20만8000원에 거래되고 있다. HBM용 열압착(TC) 본더 공급 기대가 이어지고 있지만 단기 차익실현 매물이..."
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=483557"
     }
    ]
   },
@@ -143,8 +131,7 @@
      "t": "[서울신문·삼성 공동 캠페인] “‘삶자리·일자리’ 연계가 비수도권의...",
      "src": "seoul.co.kr",
      "date": "2026-09-04",
-     "url": "https://www.seoul.co.kr/news/plan/youngman_area_future/2026/09/04/20260904001006?wlog_tag3=naver",
-     "desc": "창업 후 기업공개(IPO) 상장에 성공한 김인혁 레인보우로보틱스 부대표는 “2011년 창업해 10년 만에 코스닥 상장을 하고 산업용 협동 로봇과 사족보행 로봇 등 혁신적인 하이테크 모빌리티 플랫폼을 구축했다”며 지역..."
+     "url": "https://www.seoul.co.kr/news/plan/youngman_area_future/2026/09/04/20260904001006?wlog_tag3=naver"
     },
     {
      "co": "현대차그룹",
@@ -152,8 +139,7 @@
      "t": "NC AI, LG전자와 자율형 휴머노이드 개발…인간 동작 로봇에 이식",
      "src": "4th.kr",
      "date": "2026-09-03",
-     "url": "http://www.4th.kr/news/articleView.html?idxno=2117372",
-     "desc": "현대차그룹은 보스턴다이내믹스의 차세대 휴머노이드 '아틀라스'를 실제 자동차 생산 현장에 투입하는 단계까지 사업을 구체화하고 있다. 2028년 미국 조지아주 현대차그룹 메타플랜트 아메리카(HMGMA)에서 부품 분류..."
+     "url": "http://www.4th.kr/news/articleView.html?idxno=2117372"
     }
    ]
   },
@@ -170,8 +156,7 @@
      "t": "[홍콩 AI 현장①] 韓 AI·피지컬AI 기업, 홍콩서 기회 찾는다",
      "src": "ddaily.co.kr",
      "date": "2026-09-04",
-     "url": "https://www.ddaily.co.kr/page/view/2026090316182787327",
-     "desc": "김동욱 로보티즈 글로벌비즈니스팀 프로가 지난 1일 홍콩 사이언스파크(Hong Kong Science Park)에서 열린 한국 혁신기술기업 투자설명회(IR)에서 밝힌 홍콩행 이유다. 이미 중국 베이징에서 현지 법인을 운영하는 로보티즈가..."
+     "url": "https://www.ddaily.co.kr/page/view/2026090316182787327"
     },
     {
      "co": "로보티즈",
@@ -179,8 +164,7 @@
      "t": "로보티즈, 액추에이터 고성장에도 신사업 적자 '숙제'",
      "src": "sidae.com",
      "date": "2026-09-04",
-     "url": "https://www.sidae.com/article/2026090309081724271",
-     "desc": "로보티즈가 액추에이터를 앞세워 실적 개선을 이뤘지만 자율주행로봇 신사업은 적자를 면치 못하고 있다.... 로보티즈는 1999년 설립된 로봇 전문기업이다. 휴머노이드 로봇의 관절 역할을 하는 액추에이터를 자체 개발..."
+     "url": "https://www.sidae.com/article/2026090309081724271"
     },
     {
      "co": "로보티즈",
@@ -188,8 +172,7 @@
      "t": "CJ대한통운, 휴머노이드 실전 투입…“미래형 풀필먼트 시대 연다”",
      "src": "mediapen.com",
      "date": "2026-09-03",
-     "url": "https://www.mediapen.com/news/view/1121219",
-     "desc": "로보티즈(하드웨어), 에이딘로보틱스(로봇핸드), 리얼월드AI(RFM) 등 여러 파트너들과 전략적 협업관계를 구축했다. 또 인간형 로봇핸드 개발을 비롯해 다양한 정부 국책과제에도 참여하며 물류현장의 AI 자율운영체계..."
+     "url": "https://www.mediapen.com/news/view/1121219"
     }
    ]
   },
@@ -202,8 +185,7 @@
      "t": "로킷헬스케어, 하버드와 신장 재생 패치 공동연구 결과 ASN 2026서 발표",
      "src": "lawissue.co.kr",
      "date": "2026-09-03",
-     "url": "http://www.lawissue.co.kr/view.php?ud=202609032331252507204ead0791_12",
-     "desc": "로킷헬스케어는 미국 하버드 의과대학 부속 브리검여성병원 연구진과 진행한 신장 재생 플랫폼 공동연구 결과를 오는 10월 미국신장학회(ASN 2026)에서 발표할 예정이라고 3일 밝혔다. 이번 연구는 일측 요관 폐색(UUO)..."
+     "url": "http://www.lawissue.co.kr/view.php?ud=202609032331252507204ead0791_12"
     },
     {
      "co": "로킷헬스케어",
@@ -211,8 +193,7 @@
      "t": "로킷헬스케어 \"신장 재생패치, 손상 신장 기능 62.5% 보존\"",
      "src": "news1.kr",
      "date": "2026-09-03",
-     "url": "https://www.news1.kr/bio/pharmaceutical-bio/6279443",
-     "desc": "로킷헬스케어(376900)가 환자 자신의 조직을 활용한 신장 재생 패치를 통해 손상된 신장의 기능을 보존하고 반대편 신장의 부담도 줄일 가능성을 전임상 연구에서 확인했다. 로킷헬스케어는 미국 하버드 의과대학 부속..."
+     "url": "https://www.news1.kr/bio/pharmaceutical-bio/6279443"
     },
     {
      "co": "로킷헬스케어",
@@ -220,8 +201,7 @@
      "t": "로킷헬스케어, 美 신장학회서 '신장 재생패치' 효과 공개",
      "src": "전자신문",
      "date": "2026-09-03",
-     "url": "https://www.etnews.com/20260903000368",
-     "desc": "로킷헬스케어가 한쪽 신장에만 적용한 재생 패치가 손상된 신장의 기능 저하를 줄이는 동시에 반대측 신장 기능에도 영향을 주는 전임상 결과를 확보했다. 로킷헬스케어는 미국 하버드 의과대학 부속 브리검여성병원..."
+     "url": "https://www.etnews.com/20260903000368"
     },
     {
      "co": "시지바이오",
@@ -229,8 +209,7 @@
      "t": "시지바이오·시지메드텍, 미국서 척추 내시경 마스터클래스 개최",
      "src": "medipana.com",
      "date": "2026-09-03",
-     "url": "https://www.medipana.com/news/articleView.html?idxno=417030",
-     "desc": "글로벌 재생의료 기업 시지바이오(대표이사 유현승)는 척추·정형외과 및 치과 임플란트 기업 시지메드텍과 지난달 15일 미국 캘리포니아주 샌디에이고 FIVE Labs Cadaver Lab에서 미주 지역 척추 전문 의료진을..."
+     "url": "https://www.medipana.com/news/articleView.html?idxno=417030"
     }
    ]
   },
@@ -243,8 +222,7 @@
      "t": "한무컨벤션, 김범준 신임 대표 취임…\"성장 기반·조직 경쟁력 강화\"",
      "src": "bizwnews.com",
      "date": "2026-09-03",
-     "url": "http://www.bizwnews.com/news/articleView.html?idxno=145135",
-     "desc": "이후 KTF IR 담당 실장과 KT IR 담당 상무, KT 재무실장·CFO, 한온시스템 부사장·CFO 등을 거쳤으며 유영산업 대표이사와 씨젠 경영지원 총괄 부사장도 역임했다는 소개다. 한무컨벤션은 오크우드 프리미어 코엑스 센터와..."
+     "url": "http://www.bizwnews.com/news/articleView.html?idxno=145135"
     },
     {
      "co": "씨젠",
@@ -252,8 +230,7 @@
      "t": "'오크우드 코엑스' 한무컨벤션 신임 대표에 재무通 김범준",
      "src": "shinailbo.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5058135",
-     "desc": "김 대표는 기업분석과 IR, 재무 등에서 30여년 이상 경력을 쌓은 재무통(通)으로 KT 재무실장과 한온시스템 CFO(최고재무전문가) 등을 거쳐 직전에 유영산업 대표, 씨젠 경영지원 총괄 부사장을 맡았다. 김 대표는 취임..."
+     "url": "https://www.shinailbo.co.kr/news/articleView.html?idxno=5058135"
     },
     {
      "co": "에스디바이오센서",
@@ -261,8 +238,7 @@
      "t": "메리디언 빚 갚은 에스디바이오센서…지원금 8할 '대여' 왜?",
      "src": "newsway.co.kr",
      "date": "2026-09-03",
-     "url": "https://www.newsway.co.kr/news/view?ud=2026090210405422351",
-     "desc": "에스디바이오센서가 미국 자회사 메리디언바이오사이언스의 인수금융을 상환하면서 대여와 출자를 병행했다. 과거 인수금융 상환 재원을 출자 방식으로 지원했던 것과 달리 이번에는 전체 지원액의 약 80%를..."
+     "url": "https://www.newsway.co.kr/news/view?ud=2026090210405422351"
     }
    ]
   },
@@ -279,8 +255,7 @@
      "t": "에스티팜, 글로벌 '올리고 CDMO 키플레이어' 선정…배경엔 'mRNA'",
      "src": "goodkyung.com",
      "date": "2026-09-03",
-     "url": "https://www.goodkyung.com/news/articleView.html?idxno=290960",
-     "desc": "에스티팜은 ▲미국 애질런트 테크놀로지스 ▲스위스 바텍 ▲미국 써모피셔 사이언티픽 등 유수의 해외 기업들과 어깨를 나란히 했다. 에스티팜은 지난해 9월 경기 안산시 반월캠퍼스 내 제2올리고동 준공을 계기로..."
+     "url": "https://www.goodkyung.com/news/articleView.html?idxno=290960"
     }
    ]
   }
@@ -295,8 +270,7 @@
      "t": "Medtronic invests $700M in surgical partner Cornerstone Robotics",
      "src": "therobotreport.com",
      "date": "2026-09-03",
-     "url": "https://www.therobotreport.com/medtronic-invests-700m-in-surgical-partner-cornerstone-robotics/",
-     "desc": "Medtronic and Cornerstone Robotics are building a multi-port portfolio anchored by the Hugo surgical system and expanded by Sentire.\nThe post Medtronic invests $700M in surgical partner Cornerstone Robotics appeared first on The Robot Report."
+     "url": "https://www.therobotreport.com/medtronic-invests-700m-in-surgical-partner-cornerstone-robotics/"
     },
     {
      "co": "Boston Scientific",
@@ -304,8 +278,7 @@
      "t": "Boston Scientific recalls, discontinues angiographic catheter sales",
      "src": "MassDevice",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQMVpRSG1hUkUtUFN4UnJ6Mk9XX2tESktRZDZHTWZqQ0NEYWtVTXVqZllqMnpBYktrdngxaDlfM2Y5Smw5TDdwMU9hOFNObzZhb0R1MjhLSlF0TkRZWmNiME8xc2FJZUcxWVZiS0lYMVM5Q2U1VnhZWWNSWlJwdFZiQjgyYzl0UmNqaUxDMXd3Z3ROWW1pckYtS0Zka2haUnJF?oc=5",
-     "desc": "Boston Scientific recalls, discontinues angiographic catheter sales  MassDevice"
+     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQMVpRSG1hUkUtUFN4UnJ6Mk9XX2tESktRZDZHTWZqQ0NEYWtVTXVqZllqMnpBYktrdngxaDlfM2Y5Smw5TDdwMU9hOFNObzZhb0R1MjhLSlF0TkRZWmNiME8xc2FJZUcxWVZiS0lYMVM5Q2U1VnhZWWNSWlJwdFZiQjgyYzl0UmNqaUxDMXd3Z3ROWW1pckYtS0Zka2haUnJF?oc=5"
     },
     {
      "co": "Abbott",
@@ -313,8 +286,7 @@
      "t": "Abbott Laboratories stock gains support from fresh earnings and guidance",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQZWwtZmNFdExvaC1SYlFkdVdJRV9kLUhHT2xsSFdtNXdJZ2tjbGJMTmQ5YnpIOEVCcHgzRnZXZHFVeV9oNkIwZWVaTE5VN09ERGtyeHNwUUZOQjVqaUVuZFN5NTFKYWFNR2c0THR2STF2LUM3WnQwMVRlVEx5dkl1aEpqMFRLS0c3RGE3MVVGM2dsbk9zT0g0TGJsaWZRTURYWXgxcm1UNG1uVEk2dTdreW9FYzJ2bndIWTgtWTl2aUN0NnBLS25ZRUtnVHJrbzFi?oc=5",
-     "desc": "Abbott Laboratories stock gains support from fresh earnings and guidance  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQZWwtZmNFdExvaC1SYlFkdVdJRV9kLUhHT2xsSFdtNXdJZ2tjbGJMTmQ5YnpIOEVCcHgzRnZXZHFVeV9oNkIwZWVaTE5VN09ERGtyeHNwUUZOQjVqaUVuZFN5NTFKYWFNR2c0THR2STF2LUM3WnQwMVRlVEx5dkl1aEpqMFRLS0c3RGE3MVVGM2dsbk9zT0g0TGJsaWZRTURYWXgxcm1UNG1uVEk2dTdreW9FYzJ2bndIWTgtWTl2aUN0NnBLS25ZRUtnVHJrbzFi?oc=5"
     },
     {
      "co": "Abbott",
@@ -322,8 +294,7 @@
      "t": "Equitable Holdings buys new $6.95M stake in Abbott",
      "src": "Dealroom",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOY2l0WEZhOVBISi16UktlYWUzd056N3J2Zk9IRUd1c3JvM1RuV0c3a2ZEZVlrWFFEMDhuT1hzTFBWS3hsUE9hdWlyZG9XalV2MzNBbDU4UUplQ0lBWkdQUFQxaHpWM0FSbjBueHRiRjNJUjVNbHFjODdJN3pIZE51NmRBWUk5QjJmM2Z3?oc=5",
-     "desc": "Equitable Holdings buys new $6.95M stake in Abbott  Dealroom"
+     "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOY2l0WEZhOVBISi16UktlYWUzd056N3J2Zk9IRUd1c3JvM1RuV0c3a2ZEZVlrWFFEMDhuT1hzTFBWS3hsUE9hdWlyZG9XalV2MzNBbDU4UUplQ0lBWkdQUFQxaHpWM0FSbjBueHRiRjNJUjVNbHFjODdJN3pIZE51NmRBWUk5QjJmM2Z3?oc=5"
     },
     {
      "co": "Abbott",
@@ -331,8 +302,7 @@
      "t": "Abbott shares slide nearly 3% amid mixed momentum signals and volatility spike: weekly analysis",
      "src": "Traders Union",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQeEpIZV9jcTdpZG04c0V3Yjd0Njg4X2cwZjBMZWNjNG04cmZiWUNwRndXQm1MVngydlRZSFhJOUVFUmZ3aTBwT3M2b1JobFl0NUJtYjdkaVVqSXNwRDd5aU11VjR5dWlYY0J6a3pKaVMyVXVhZjNvb09NYmo4WEFzM19Ob0RObFBsa0Z5YzdpektrVEJHZEo1VA?oc=5",
-     "desc": "Abbott shares slide nearly 3% amid mixed momentum signals and volatility spike: weekly analysis  Traders Union"
+     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQeEpIZV9jcTdpZG04c0V3Yjd0Njg4X2cwZjBMZWNjNG04cmZiWUNwRndXQm1MVngydlRZSFhJOUVFUmZ3aTBwT3M2b1JobFl0NUJtYjdkaVVqSXNwRDd5aU11VjR5dWlYY0J6a3pKaVMyVXVhZjNvb09NYmo4WEFzM19Ob0RObFBsa0Z5YzdpektrVEJHZEo1VA?oc=5"
     },
     {
      "co": "Stryker",
@@ -340,8 +310,7 @@
      "t": "Nykredit A S Makes New $88.91 Million Investment in Stryker Corporation $SYK",
      "src": "MarketBeat",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOa0VQN2RDbDZjaVBHeVdsVzVYQVdVeE85NnM5Y1BfbjVfUm5lYW5yR084aFdCU3h3cjBrVHc5YXRrNWMwSDVuTkdpNFZfZ1NOa1E3UWhHVVk0al9Cd1JmQWE0b3g3STJzQ1JSWlN6eFliczMwOGRDZE1jNlhtSGxUQmtfVmVFaEFVRnFyWlVLTFBXWGNkUk96Y2JDeWd5LXVCNXFwcXMyUzF1QWRneEc1SDRjNXFXRFlGR252WXo0cVBTRGNHeWcyNjgwWVpGbkk?oc=5",
-     "desc": "Nykredit A S Makes New $88.91 Million Investment in Stryker Corporation $SYK  MarketBeat"
+     "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOa0VQN2RDbDZjaVBHeVdsVzVYQVdVeE85NnM5Y1BfbjVfUm5lYW5yR084aFdCU3h3cjBrVHc5YXRrNWMwSDVuTkdpNFZfZ1NOa1E3UWhHVVk0al9Cd1JmQWE0b3g3STJzQ1JSWlN6eFliczMwOGRDZE1jNlhtSGxUQmtfVmVFaEFVRnFyWlVLTFBXWGNkUk96Y2JDeWd5LXVCNXFwcXMyUzF1QWRneEc1SDRjNXFXRFlGR252WXo0cVBTRGNHeWcyNjgwWVpGbkk?oc=5"
     }
    ]
   },
@@ -354,8 +323,7 @@
      "t": "Intuitive Surgical stock steadies on a Q2 beat",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNZUtCSU9oOE91Z0lvajM4LUplZ0FiQkRaak14ZDZSdVJ5RlRiQ0Z0bXZpLWxkdXRxTmRPcC1oWmRqTFFCNlpXc0ZRTm44N0N5WVcybXhmSENMZ3psYzdQcEc5d1AtS2Z3Z3RiZHpONXNEZHZyQ2xETlo4MkNIUmtDYm5OM1FLd2E5RlJFaHBaNHJadkdMUEg3NHNxX3dqeEY2cm5OUXNMa1c3Vkw2Smc?oc=5",
-     "desc": "Intuitive Surgical stock steadies on a Q2 beat  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNZUtCSU9oOE91Z0lvajM4LUplZ0FiQkRaak14ZDZSdVJ5RlRiQ0Z0bXZpLWxkdXRxTmRPcC1oWmRqTFFCNlpXc0ZRTm44N0N5WVcybXhmSENMZ3psYzdQcEc5d1AtS2Z3Z3RiZHpONXNEZHZyQ2xETlo4MkNIUmtDYm5OM1FLd2E5RlJFaHBaNHJadkdMUEg3NHNxX3dqeEY2cm5OUXNMa1c3Vkw2Smc?oc=5"
     },
     {
      "co": "Intuitive Surgical",
@@ -363,8 +331,7 @@
      "t": "Intuitive Surgical stock stabilizes as Q2 2026 growth and guidance reset sink in",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPTkRfWHlSbU0xT1JYdnQwWUQyOExHN3VnUnhLcHpWaC1GajctSDVtQjdaS1h5bkZRbmt6Rlg0X21MVEhBUkUzaXBhQS1MRElkOGlyb01Td21Xd1JKTEpUczg3NGhjVXgyd1pwT0U1TnVIQ0VpVWNqVjJib2J5dC1ldTVCUUE0VlQ4ZkxtMDdxT2xMay01aUNKNDltT0FqN1ZFVHVDX1dCTVE2RlQ5ZVNfbFkxdWhoOEd2eVZNZExnS1dSYjBJeE5OeWozOUhDVGVm?oc=5",
-     "desc": "Intuitive Surgical stock stabilizes as Q2 2026 growth and guidance reset sink in  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPTkRfWHlSbU0xT1JYdnQwWUQyOExHN3VnUnhLcHpWaC1GajctSDVtQjdaS1h5bkZRbmt6Rlg0X21MVEhBUkUzaXBhQS1MRElkOGlyb01Td21Xd1JKTEpUczg3NGhjVXgyd1pwT0U1TnVIQ0VpVWNqVjJib2J5dC1ldTVCUUE0VlQ4ZkxtMDdxT2xMay01aUNKNDltT0FqN1ZFVHVDX1dCTVE2RlQ5ZVNfbFkxdWhoOEd2eVZNZExnS1dSYjBJeE5OeWozOUhDVGVm?oc=5"
     },
     {
      "co": "Edge Medical",
@@ -372,8 +339,7 @@
      "t": "OPINION | China’s laissez-faire approach to cutting edge medical technology has set the cat among the...",
      "src": "Moneycontrol.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPM29xdURMbHZVcjNzSm1JeXl6bXo3aTB2SnI5TGxkMUFVbnpaUWNkOU1jbllqbm1BT0dkZkdIdmg3NGR3dVZlUTNhcGw0WFpjdU56UVdpUVppWGdOMkloaU51SDBfckQzaHJPVDgyeUwySWs0Q3pOYWxOLTZYWkNGbXd4RHRlUTFjdXllVlJUanpsOFBMTDl6QkstZVdCbVhlOHV0RFZsbkIxOFJnbmhHcjVWNngtQjUycUhpNGo1MzZESm5iY1VFcElSbFJKbWJDT3hGb2Z5RTFPcGhLeGVHQ1dnT2UwSmpUOFRZ0gHwAUFVX3lxTE1mcjFxMVloUDNrQlpla0dHRmNScVRERGZEbHFnVkM4VWo1ZHV4VnBzZ3BFYnlOMHNXWUo4S3l0czhhblFYVVBNVV9QR05GbE9aemR1Y29uUk5mclZhSUV0Sk5ybXFORVhHVW5wNWFJYm1SRmNHaWpIMDYyLWFnaUk0UThrdHYxV2FSb3huWWg4RjVMX0dudFl4ZFVpcVBLbnpZaWxINEVvdU9nRGI3U3VUVVNTZVZ6c1d4QTRUZUF3bXg4cHV0QkZiMjQ3ZWlVQlVLQ1psVUFmNXRNcHhadzc0N1J5YzhFUmxOZjJ3LXY1TQ?oc=5",
-     "desc": "OPINION | China’s laissez-faire approach to cutting edge medical technology has set the cat among the...  Moneycontrol.com"
+     "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPM29xdURMbHZVcjNzSm1JeXl6bXo3aTB2SnI5TGxkMUFVbnpaUWNkOU1jbllqbm1BT0dkZkdIdmg3NGR3dVZlUTNhcGw0WFpjdU56UVdpUVppWGdOMkloaU51SDBfckQzaHJPVDgyeUwySWs0Q3pOYWxOLTZYWkNGbXd4RHRlUTFjdXllVlJUanpsOFBMTDl6QkstZVdCbVhlOHV0RFZsbkIxOFJnbmhHcjVWNngtQjUycUhpNGo1MzZESm5iY1VFcElSbFJKbWJDT3hGb2Z5RTFPcGhLeGVHQ1dnT2UwSmpUOFRZ0gHwAUFVX3lxTE1mcjFxMVloUDNrQlpla0dHRmNScVRERGZEbHFnVkM4VWo1ZHV4VnBzZ3BFYnlOMHNXWUo4S3l0czhhblFYVVBNVV9QR05GbE9aemR1Y29uUk5mclZhSUV0Sk5ybXFORVhHVW5wNWFJYm1SRmNHaWpIMDYyLWFnaUk0UThrdHYxV2FSb3huWWg4RjVMX0dudFl4ZFVpcVBLbnpZaWxINEVvdU9nRGI3U3VUVVNTZVZ6c1d4QTRUZUF3bXg4cHV0QkZiMjQ3ZWlVQlVLQ1psVUFmNXRNcHhadzc0N1J5YzhFUmxOZjJ3LXY1TQ?oc=5"
     }
    ]
   },
@@ -386,8 +352,7 @@
      "t": "Thermo Fisher Scientific Inc. stock rises Thursday, outperforms market",
      "src": "MarketWatch",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxQNERtQlY1dUVYY1FYTVg1NzBlOG5OcEZRci1TQU5LbkhDRjQzd1R5dEN3WF82V253X3hVSHo2SzhPRHpEMldSd01tbzRXbmJwQ3BLeUNkUGxHRmp2aU1qTm5QSDR3YURCMU4ybG15SDYzQi1wcUJEbHVOam1jQ1EwLWxmU1Zmb1VPRkpmU013YnliWGVZSjNMT2MzMWtfOTJKYWhCVEJTNlNkXzR2MDdlY3NHTFdIYmZTbXFaWGlfRW1BYVUxVDIyZHFLcjh5Tjg3Uk9VeGNWVTlLSVplTzA0?oc=5",
-     "desc": "Thermo Fisher Scientific Inc. stock rises Thursday, outperforms market  MarketWatch"
+     "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxQNERtQlY1dUVYY1FYTVg1NzBlOG5OcEZRci1TQU5LbkhDRjQzd1R5dEN3WF82V253X3hVSHo2SzhPRHpEMldSd01tbzRXbmJwQ3BLeUNkUGxHRmp2aU1qTm5QSDR3YURCMU4ybG15SDYzQi1wcUJEbHVOam1jQ1EwLWxmU1Zmb1VPRkpmU013YnliWGVZSjNMT2MzMWtfOTJKYWhCVEJTNlNkXzR2MDdlY3NHTFdIYmZTbXFaWGlfRW1BYVUxVDIyZHFLcjh5Tjg3Uk9VeGNWVTlLSVplTzA0?oc=5"
     },
     {
      "co": "Thermo Fisher",
@@ -395,8 +360,7 @@
      "t": "Thermo Fisher Launches EMPAD G2 for Faster 4D STEM Analysis",
      "src": "Lab Manager",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQdU5XTVE3OE43UlBjcnZtbkI4MjRZUFVpQXJaWDZmbGE3ME9qT05xV0xCdGlhYXRUZXRwSlZDNVF0RHBOeEFkcXdlX1NlR0NZS0Jha0N3RWlPcHBXX3VCT3A0dWhNajI5cFpSTHExVHdhbkhjSW1sVFhfa05pNFRodVdTQy1xVHVRSXRsaHNTUG8zdk4tZWZF?oc=5",
-     "desc": "Thermo Fisher Launches EMPAD G2 for Faster 4D STEM Analysis  Lab Manager"
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQdU5XTVE3OE43UlBjcnZtbkI4MjRZUFVpQXJaWDZmbGE3ME9qT05xV0xCdGlhYXRUZXRwSlZDNVF0RHBOeEFkcXdlX1NlR0NZS0Jha0N3RWlPcHBXX3VCT3A0dWhNajI5cFpSTHExVHdhbkhjSW1sVFhfa05pNFRodVdTQy1xVHVRSXRsaHNTUG8zdk4tZWZF?oc=5"
     },
     {
      "co": "Thermo Fisher",
@@ -404,8 +368,7 @@
      "t": "Baird Adjusts Price Target on Thermo Fisher Scientific to $686 From $652, Keeps Outperform Rating",
      "src": "marketscreener.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxQakdYQ0dMYXRQNkRkQUNMTjM5ZG9Zc19vdXZnTExabS1XdGdlbzR0Ym1FWS1wXzQxVnNYUlBZTHZxYWtaLTc2bjNIZE1BTzUybzBmSWFrX2xxaHBzSFNQVll2ZktaVmV5UVlncDdBUTBJdWpiQWpiaTNyYWZONG8wcVQtZWRhU3EwRjBjOE5maGJQVWE2SnNIdmNIazdKY1dWTWFMTURwVFZjUzlWU2NTaFprOHNveWhuSWhPbWFBcmtSdkRqTlVsVmR4aVZ3ZkdoOFpldG8zYWpoV3p3V1h0Wg?oc=5",
-     "desc": "Baird Adjusts Price Target on Thermo Fisher Scientific to $686 From $652, Keeps Outperform Rating  marketscreener.com"
+     "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxQakdYQ0dMYXRQNkRkQUNMTjM5ZG9Zc19vdXZnTExabS1XdGdlbzR0Ym1FWS1wXzQxVnNYUlBZTHZxYWtaLTc2bjNIZE1BTzUybzBmSWFrX2xxaHBzSFNQVll2ZktaVmV5UVlncDdBUTBJdWpiQWpiaTNyYWZONG8wcVQtZWRhU3EwRjBjOE5maGJQVWE2SnNIdmNIazdKY1dWTWFMTURwVFZjUzlWU2NTaFprOHNveWhuSWhPbWFBcmtSdkRqTlVsVmR4aVZ3ZkdoOFpldG8zYWpoV3p3V1h0Wg?oc=5"
     },
     {
      "co": "Thermo Fisher",
@@ -413,8 +376,7 @@
      "t": "Thermo Fisher Scientific launches Multiskan Ease absorbance microplate reader",
      "src": "manufacturingchemist.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQaFFXVmEyWmR1Vi1CbUNZWnNKVzNyMVdOdTQ3QUtyaV93dzZzUzdJby1uRDZXelFhOW5fZTQyUmhPRi13WjZLNllNYkphUTh0LVRLVXpxZkVVbHhiSldNb2dsT01JeWFiQVQ0U3RkWkdFVzRqLVg5ZTZYNGhheXItbTBpRlNLX1ZsNmUzcEJmQ2dsX01TcWg1NzdfYU1vYVozOWJmLXpn?oc=5",
-     "desc": "Thermo Fisher Scientific launches Multiskan Ease absorbance microplate reader  manufacturingchemist.com"
+     "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQaFFXVmEyWmR1Vi1CbUNZWnNKVzNyMVdOdTQ3QUtyaV93dzZzUzdJby1uRDZXelFhOW5fZTQyUmhPRi13WjZLNllNYkphUTh0LVRLVXpxZkVVbHhiSldNb2dsT01JeWFiQVQ0U3RkWkdFVzRqLVg5ZTZYNGhheXItbTBpRlNLX1ZsNmUzcEJmQ2dsX01TcWg1NzdfYU1vYVozOWJmLXpn?oc=5"
     },
     {
      "co": "Thermo Fisher",
@@ -422,8 +384,7 @@
      "t": "Here Are Thursday’s Top Wall Street Analyst Research Calls: Broadcom, Deere & Company, Dell Technologies, Devon Energy, Moderna, Permian Resources, PG&E, Thermo Fisher, Viper Energy, and More",
      "src": "Yahoo Finance",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNcnZRMFhlV3VyTjdRaHoySDdQUXRJZmJDeWVERzB3dXg4LXdITE91Q2Q1Qmxab0ZSdVZ3bmFxLXBqSEl5RXdfWnp6RENQSVB5OWd3ZnBORGwtRHhka0hlcGdUaGxfV1dvY0JYRTIxNnM1bW0zUEIxMnk4M3hXQXR3cFJYa2Vtam9Xc3RTRnhRdk5qSmpxaWtLbDBRQTRtdw?oc=5",
-     "desc": "Here Are Thursday’s Top Wall Street Analyst Research Calls: Broadcom, Deere & Company, Dell Technologies, Devon Energy, Moderna, Permian Resources, PG&E, Thermo Fisher, Viper Energy, and More  Yahoo Finance"
+     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNcnZRMFhlV3VyTjdRaHoySDdQUXRJZmJDeWVERzB3dXg4LXdITE91Q2Q1Qmxab0ZSdVZ3bmFxLXBqSEl5RXdfWnp6RENQSVB5OWd3ZnBORGwtRHhka0hlcGdUaGxfV1dvY0JYRTIxNnM1bW0zUEIxMnk4M3hXQXR3cFJYa2Vtam9Xc3RTRnhRdk5qSmpxaWtLbDBRQTRtdw?oc=5"
     },
     {
      "co": "Natera",
@@ -431,8 +392,7 @@
      "t": "Victor Ray Natera Issues Public Pledge to Mentor Three Operations Leaders in Government Contracting by Year-End",
      "src": "openPR.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPRGxDOU9PSF9SUEtMQnFrTVJHakFSSk5XMDJKVjlkS2M5T2ZGNnRDY2tYXy1SdWxEN0EzZHIzcFN5cDJlbVBVS2gyeF8zWkhSYVp1ajllbTVyZm1hNW5iRFpZYXp6T2ZlOHpxdV8zZEZEV2hCbVBIZlhLZjIxTkE5S25tVDY1TW1YdUFtalh3b0Z3NVEy?oc=5",
-     "desc": "Victor Ray Natera Issues Public Pledge to Mentor Three Operations Leaders in Government Contracting by Year-End  openPR.com"
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPRGxDOU9PSF9SUEtMQnFrTVJHakFSSk5XMDJKVjlkS2M5T2ZGNnRDY2tYXy1SdWxEN0EzZHIzcFN5cDJlbVBVS2gyeF8zWkhSYVp1ajllbTVyZm1hNW5iRFpZYXp6T2ZlOHpxdV8zZEZEV2hCbVBIZlhLZjIxTkE5S25tVDY1TW1YdUFtalh3b0Z3NVEy?oc=5"
     }
    ]
   },
@@ -445,8 +405,7 @@
      "t": "Chutes & Ladders—Teladoc Health taps new CFO; Johns Hopkins Health Plan names interim CEO",
      "src": "Fierce Healthcare",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxObzdyTGN2RTkwa2l5S2QtOHlsOW5jeFN6UDBLckZ0VE5TODA0bHVoZlY3RDB0Z1FQblV4VUFpTkJmUDhuUlZLQ00xTC1fR2w0UDdlYWhRY0dzcWZweFczY3BUUmlfMm12QVlkUTZIUXJXT0Q1QmwwSEVVY1c3Wl8tWGVQbjFnOFlsREdSb25qOWxoSTBfNXJzMFluUjI3WWhDWDRpX2hEV2pWUVNSR2tXa0gtMDN3b2tkSXRrNlFuTHAwWG8?oc=5",
-     "desc": "Chutes & Ladders—Teladoc Health taps new CFO; Johns Hopkins Health Plan names interim CEO  Fierce Healthcare"
+     "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxObzdyTGN2RTkwa2l5S2QtOHlsOW5jeFN6UDBLckZ0VE5TODA0bHVoZlY3RDB0Z1FQblV4VUFpTkJmUDhuUlZLQ00xTC1fR2w0UDdlYWhRY0dzcWZweFczY3BUUmlfMm12QVlkUTZIUXJXT0Q1QmwwSEVVY1c3Wl8tWGVQbjFnOFlsREdSb25qOWxoSTBfNXJzMFluUjI3WWhDWDRpX2hEV2pWUVNSR2tXa0gtMDN3b2tkSXRrNlFuTHAwWG8?oc=5"
     },
     {
      "co": "Dexcom",
@@ -454,8 +413,7 @@
      "t": "Q2 Earnings Highs And Lows: DexCom (NASDAQ:DXCM) Vs The Rest Of The Patient Monitoring Stocks",
      "src": "Yahoo Finance",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQQjZCNnNiTW5PemlyX0pFekhiLWNHYUk4TGZ1SExqQnNSN3NBRTd5UjhGbXBjY2JuTHptUFhMUXhlYjRoOGZaQTU4dGRiX3E4MjM0SjJ5X1lnR05XSjk0YlZQOVlkZ251enlZc2dacEpETW9tLVJzblZMaGNabzRTRmctY1k4dkNXcldFTDNjT0RBOFJv?oc=5",
-     "desc": "Q2 Earnings Highs And Lows: DexCom (NASDAQ:DXCM) Vs The Rest Of The Patient Monitoring Stocks  Yahoo Finance"
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQQjZCNnNiTW5PemlyX0pFekhiLWNHYUk4TGZ1SExqQnNSN3NBRTd5UjhGbXBjY2JuTHptUFhMUXhlYjRoOGZaQTU4dGRiX3E4MjM0SjJ5X1lnR05XSjk0YlZQOVlkZ251enlZc2dacEpETW9tLVJzblZMaGNabzRTRmctY1k4dkNXcldFTDNjT0RBOFJv?oc=5"
     },
     {
      "co": "Dexcom",
@@ -463,8 +421,7 @@
      "t": "Revisiting Stock Picks Dexcom, Bristol Myers Squibb, Quanta Services",
      "src": "Barron's",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQMndLb2FhS0dRZDgxaG94SlpYdmtLMm1VdDZtTllxSEVFTUNsVlVnQ1dCSnlSOFFSZ0JKWVRzQzQyRXdNNk8wdE9WdzFoWHdZcWxYTXNHTzJQZEIzUWIwdVhJMnlZT0FwN0cza21xcWhaeTBOUkg5OG1OM2ktcUZ4cm1zTjM2NC1tMXFVYWdvdEljQ0V2ZXdBX1dwcktFYmc5T3hjR0NtM0pDaUFF?oc=5",
-     "desc": "Revisiting Stock Picks Dexcom, Bristol Myers Squibb, Quanta Services  Barron's"
+     "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQMndLb2FhS0dRZDgxaG94SlpYdmtLMm1VdDZtTllxSEVFTUNsVlVnQ1dCSnlSOFFSZ0JKWVRzQzQyRXdNNk8wdE9WdzFoWHdZcWxYTXNHTzJQZEIzUWIwdVhJMnlZT0FwN0cza21xcWhaeTBOUkg5OG1OM2ktcUZ4cm1zTjM2NC1tMXFVYWdvdEljQ0V2ZXdBX1dwcktFYmc5T3hjR0NtM0pDaUFF?oc=5"
     },
     {
      "co": "iRhythm",
@@ -472,8 +429,7 @@
      "t": "Tax-withholding stock sale by iRhythm (IRTC) CFO",
      "src": "Stock Titan",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNWlZFSkQ2NWpzeVNBdTNnemtJOWpleU44cURoMHIxZTlId3FRWURzMG9ZWVhtNFNxczl3ckE0akt2U3JXVVZyT0txRU5VSjZkbmpvMmtfQUMweHdFQTRZTFVTZE40cGtZSllPQlVNT2RJdUtsdEQwM21rU2VZMkw5QTVuLUdLTkVUTHFIelJHWTFreEJ2NWdyWHpDYWxLOG0yZUFpRXR0SlNNSW5yb0VheUJEeTFmZw?oc=5",
-     "desc": "Tax-withholding stock sale by iRhythm (IRTC) CFO  Stock Titan"
+     "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNWlZFSkQ2NWpzeVNBdTNnemtJOWpleU44cURoMHIxZTlId3FRWURzMG9ZWVhtNFNxczl3ckE0akt2U3JXVVZyT0txRU5VSjZkbmpvMmtfQUMweHdFQTRZTFVTZE40cGtZSllPQlVNT2RJdUtsdEQwM21rU2VZMkw5QTVuLUdLTkVUTHFIelJHWTFreEJ2NWdyWHpDYWxLOG0yZUFpRXR0SlNNSW5yb0VheUJEeTFmZw?oc=5"
     },
     {
      "co": "iRhythm",
@@ -481,8 +437,7 @@
      "t": "Bronstein, Gewirtz & Grossman, LLC Encourages iRhythm Technologies, Inc. (IRTC) Stockholders to Inquire about Securities Investigation",
      "src": "ACCESS Newswire",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxOelNVTlVvLU1FM2tLSnlLbnl0eGplMHFKV0h0SmZEYTA1cnIzMFo0UTlhRlVCMTAzMmNJRk1ydWhMWTB1REh5cUR2OHVCM3ZvcS1YQ2MxQnBaM2FiMzhiaTZ1SFVJaGoybzV3NlN3cWRwQTdDVzdYdENhcDlwRnRybVlNQ3NSdXdPd1BWMWVJNWh2NjdtUXpCTk9DSFdxLWRzM1dadnJQR1JWU19wMk5WZGZJeVgyM0x6ZHBOc0ZRS3pJLVhyQ2VzUnRCWk03dGxOVm9vUGxVZ0trNXA1Qmp1TEJZejI?oc=5",
-     "desc": "Bronstein, Gewirtz & Grossman, LLC Encourages iRhythm Technologies, Inc. (IRTC) Stockholders to Inquire about Securities Investigation  ACCESS Newswire"
+     "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxOelNVTlVvLU1FM2tLSnlLbnl0eGplMHFKV0h0SmZEYTA1cnIzMFo0UTlhRlVCMTAzMmNJRk1ydWhMWTB1REh5cUR2OHVCM3ZvcS1YQ2MxQnBaM2FiMzhiaTZ1SFVJaGoybzV3NlN3cWRwQTdDVzdYdENhcDlwRnRybVlNQ3NSdXdPd1BWMWVJNWh2NjdtUXpCTk9DSFdxLWRzM1dadnJQR1JWU19wMk5WZGZJeVgyM0x6ZHBOc0ZRS3pJLVhyQ2VzUnRCWk03dGxOVm9vUGxVZ0trNXA1Qmp1TEJZejI?oc=5"
     },
     {
      "co": "Hims & Hers",
@@ -490,8 +445,7 @@
      "t": "Hims & Hers Health (NYSE: HIMS) Faces Securities Class Action After FTC Lawsuit Reveal Drives Stock Sharply Lower -- HBSS",
      "src": "PR Newswire",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxNc1NlT3Rxa0c1MWtlZ1hJNzdrSjBmMC1DZmE2U0hhcm1UVUJ2dWIxQ2Y1U08zTTRzRkREOU04OEg4NjdnZzdtb2Z4N2Q1VXdOUkNqV1NEcVo3VWV6QWU0NmVEdDFQWGtBeG9TZkZSVnh5TkJVR01vWDQwTzM5clQ2ekIxSUxMR3ZNQnNDNkgweXk2X0NTWU1zZmJJYks5SENpUk9EeXMwRDR2VEp4MjBWMzhKVE56TGpWaldtUXZPOGkwcGdnbW1MREZhdGpLeDhMSnpHZWkwSEYwV2ctamgzNnJXb25oYW8tU2lsTktVRW9FOExzUzVNWmJtemxPRHNMMWVB?oc=5",
-     "desc": "Hims & Hers Health (NYSE: HIMS) Faces Securities Class Action After FTC Lawsuit Reveal Drives Stock Sharply Lower -- HBSS  PR Newswire"
+     "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxNc1NlT3Rxa0c1MWtlZ1hJNzdrSjBmMC1DZmE2U0hhcm1UVUJ2dWIxQ2Y1U08zTTRzRkREOU04OEg4NjdnZzdtb2Z4N2Q1VXdOUkNqV1NEcVo3VWV6QWU0NmVEdDFQWGtBeG9TZkZSVnh5TkJVR01vWDQwTzM5clQ2ekIxSUxMR3ZNQnNDNkgweXk2X0NTWU1zZmJJYks5SENpUk9EeXMwRDR2VEp4MjBWMzhKVE56TGpWaldtUXZPOGkwcGdnbW1MREZhdGpLeDhMSnpHZWkwSEYwV2ctamgzNnJXb25oYW8tU2lsTktVRW9FOExzUzVNWmJtemxPRHNMMWVB?oc=5"
     }
    ]
   },
@@ -504,8 +458,7 @@
      "t": "UnitedHealth Group To Cut Prior Authorizations For 1,700 Services, Including Home Health",
      "src": "Home Health Care News",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQZ3RKVTRoTFlSbUhPN3R0MGdqZWh0RzI2R0FxM1FSZE5aekFFMWdPMlNQNGxqbDlvSm41OThEQmVDVzdUbXgycU43dHpqdjA5Z1dCeFpIeUdPQWZmS1JKNmgzWk9jNFYzMGgzYVoxSUhCLXJnb1lFbmxuOWMtTEJQNWduV2M5SnRsLUdVSnpDNmRKek9XdHJGX3dwa04tQWgxOWJoS3lLb3BmZ3A4aUNHR2pXamVlNjlpd1E5dGNzUWVadDlt?oc=5",
-     "desc": "UnitedHealth Group To Cut Prior Authorizations For 1,700 Services, Including Home Health  Home Health Care News"
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQZ3RKVTRoTFlSbUhPN3R0MGdqZWh0RzI2R0FxM1FSZE5aekFFMWdPMlNQNGxqbDlvSm41OThEQmVDVzdUbXgycU43dHpqdjA5Z1dCeFpIeUdPQWZmS1JKNmgzWk9jNFYzMGgzYVoxSUhCLXJnb1lFbmxuOWMtTEJQNWduV2M5SnRsLUdVSnpDNmRKek9XdHJGX3dwa04tQWgxOWJoS3lLb3BmZ3A4aUNHR2pXamVlNjlpd1E5dGNzUWVadDlt?oc=5"
     },
     {
      "co": "UnitedHealth",
@@ -513,8 +466,7 @@
      "t": "Is UnitedHealth Group (UNH) Finally Turning the Corner Under Stephen Hemsley?",
      "src": "Yahoo Finance",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNT1pRRzN3alJKNEJHd1ZLNm15Q3JVYXVuRkVEbk1IR1dpUEJQSXJvZVhaM0JCU0ItMmN3WVctTEtGV1JXdGFiTFRvRnZLOGRIdzBTcVo5QnYybEhGYnNuc1hkVVdlTFo4ZkN4UkRsdW94VmVrVGZiQWdEdVlyWGVDUkkwZjQyclhQcVRIQ3VqZVFqR3plVFV0R3ZXeGZEaUVv?oc=5",
-     "desc": "Is UnitedHealth Group (UNH) Finally Turning the Corner Under Stephen Hemsley?  Yahoo Finance"
+     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNT1pRRzN3alJKNEJHd1ZLNm15Q3JVYXVuRkVEbk1IR1dpUEJQSXJvZVhaM0JCU0ItMmN3WVctTEtGV1JXdGFiTFRvRnZLOGRIdzBTcVo5QnYybEhGYnNuc1hkVVdlTFo4ZkN4UkRsdW94VmVrVGZiQWdEdVlyWGVDUkkwZjQyclhQcVRIQ3VqZVFqR3plVFV0R3ZXeGZEaUVv?oc=5"
     },
     {
      "co": "UnitedHealth",
@@ -522,8 +474,7 @@
      "t": "UnitedHealth Group stock gains as analysts back 2026 earnings guidance",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPUFpVSHFUUUhKcUxURlpwRFhMbHA2anJjQlVtRmtOcVkzaVJaTHlEcFRmdDBSbnFCNVpPeEpjVkUyNXhjRWp6bnVhZndEMGVNaHpCOE5qYTZvOVBQSjQzcS1tUmFRYTV5TTcycVlzak1qdGhXN2RqTTRXV1RpOEQwdTNpZFVHdzhfTGotQWZlbXk3dXJlWHk1VUJ2MzFrSDM2eHZGem9kWk0xNjhGM3B5UFVlUG9yd3Bkclg0RUxScW5JcHh0ZWVvTGZtbkFaQQ?oc=5",
-     "desc": "UnitedHealth Group stock gains as analysts back 2026 earnings guidance  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPUFpVSHFUUUhKcUxURlpwRFhMbHA2anJjQlVtRmtOcVkzaVJaTHlEcFRmdDBSbnFCNVpPeEpjVkUyNXhjRWp6bnVhZndEMGVNaHpCOE5qYTZvOVBQSjQzcS1tUmFRYTV5TTcycVlzak1qdGhXN2RqTTRXV1RpOEQwdTNpZFVHdzhfTGotQWZlbXk3dXJlWHk1VUJ2MzFrSDM2eHZGem9kWk0xNjhGM3B5UFVlUG9yd3Bkclg0RUxScW5JcHh0ZWVvTGZtbkFaQQ?oc=5"
     },
     {
      "co": "UnitedHealth",
@@ -531,8 +482,7 @@
      "t": "UnitedHealth’s Policy Change Opens a New Chapter for its Insurance Business",
      "src": "Yahoo Finance",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNcVdQWEdKN1VxZlNfcjJkQVFfYl9hbkhnaklJQ3BBWXdrVERqN1o3LW9yN3lvbG5FVFlwd3UwSjI3eDZkWjFoSVpmbG5WcG53cW42Wm8zUEdsaVdSbjlRbmRaV2E5TmZWOUxUYUM3T1ZMT1Y4eUFVd1FRV29LNlF6b3VESUQ1TVBzZldCWVZPMWxFdW5GUzR1XzllMkhiQ0Z2VmJF?oc=5",
-     "desc": "UnitedHealth’s Policy Change Opens a New Chapter for its Insurance Business  Yahoo Finance"
+     "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNcVdQWEdKN1VxZlNfcjJkQVFfYl9hbkhnaklJQ3BBWXdrVERqN1o3LW9yN3lvbG5FVFlwd3UwSjI3eDZkWjFoSVpmbG5WcG53cW42Wm8zUEdsaVdSbjlRbmRaV2E5TmZWOUxUYUM3T1ZMT1Y4eUFVd1FRV29LNlF6b3VESUQ1TVBzZldCWVZPMWxFdW5GUzR1XzllMkhiQ0Z2VmJF?oc=5"
     },
     {
      "co": "UnitedHealth",
@@ -540,8 +490,7 @@
      "t": "How many employees does UnitedHealth have? Its workforce, locations & layoffs explained",
      "src": "thestreet.com",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTFBfakVUUzFWRXRGUUhaM0lGYTBWV0FrMDJyOG5uSHV3TU5RQmhxOEh1NGxqTUwtSzZyQ3d1U3E2S3VyYjZXajJzQmZ0QUFabXRIT2JFd1RlR0hTMF9yWlJjZFk3cjl2cVVBV1UzQXBvMFA0WU5LSEJfYg?oc=5",
-     "desc": "How many employees does UnitedHealth have? Its workforce, locations & layoffs explained  thestreet.com"
+     "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTFBfakVUUzFWRXRGUUhaM0lGYTBWV0FrMDJyOG5uSHV3TU5RQmhxOEh1NGxqTUwtSzZyQ3d1U3E2S3VyYjZXajJzQmZ0QUFabXRIT2JFd1RlR0hTMF9yWlJjZFk3cjl2cVVBV1UzQXBvMFA0WU5LSEJfYg?oc=5"
     }
    ]
   },
@@ -554,8 +503,7 @@
      "t": "Clove Dental Expands Digital Scanning Capabilities Across India with over 100 iTero Lumina™ Intraoral Scanners from Align Technology",
      "src": "Press Trust of India",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMilgJBVV95cUxPY0xSNkJ2T3J2MHE5ZGE0MVNCdGhLRnpGT29XQkdJUC1DejI5RS1LTTZ1cXRhX0oyZjJjdFZBcjZ6aUFvWnlHWGVnWUcteWZzOXNnWjZuVE5KUUx6c0Q0MDBTNFF2VGhWNDI4WWNYWEN4N0g4UnlHQldKTXhxekZ6QndjaklVNlluYzFUc2xPZHFRakRGbTByNkExUmpGd2thOVdVZUJsSUE3SkdVdllkR3V1SlMxMl9vbi1yVGdDZWxPVm5tVVJnLTFnaXN3SlVJQ2FNMEhQMEFXMUQ0WTl0SzE4QnRNelBwa0lYUTcxNEpXbU1wblYtYTZDZWdpMDIyR2ZseF9QM1gzdEdMSE1iYW5naUFkUQ?oc=5",
-     "desc": "Clove Dental Expands Digital Scanning Capabilities Across India with over 100 iTero Lumina™ Intraoral Scanners from Align Technology  Press Trust of India"
+     "url": "https://news.google.com/rss/articles/CBMilgJBVV95cUxPY0xSNkJ2T3J2MHE5ZGE0MVNCdGhLRnpGT29XQkdJUC1DejI5RS1LTTZ1cXRhX0oyZjJjdFZBcjZ6aUFvWnlHWGVnWUcteWZzOXNnWjZuVE5KUUx6c0Q0MDBTNFF2VGhWNDI4WWNYWEN4N0g4UnlHQldKTXhxekZ6QndjaklVNlluYzFUc2xPZHFRakRGbTByNkExUmpGd2thOVdVZUJsSUE3SkdVdllkR3V1SlMxMl9vbi1yVGdDZWxPVm5tVVJnLTFnaXN3SlVJQ2FNMEhQMEFXMUQ0WTl0SzE4QnRNelBwa0lYUTcxNEpXbU1wblYtYTZDZWdpMDIyR2ZseF9QM1gzdEdMSE1iYW5naUFkUQ?oc=5"
     },
     {
      "co": "InMode",
@@ -563,8 +511,7 @@
      "t": "InMode stock holds steady as investors eye latest growth figures",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPX2VtRWxVeVBWbmJJSGJEakVWUUNDZlJNb1g1LWppenA0NGpBZldMY0wxMzJEMUpyMFVCY0dFWUNIWGNJZHRpNnByc1pfZTBVdEY1eks0eFhKOGZNempXZF9sYjhEZVdNZG90ZlY0aVZvOEpnaFZfdm5tLU5fUDVZRE8xQ21xV19vYUs1cm1UTXRHRjVrMEJNR0tJVTZpOFVKUFQ3LUVBS2hmbnN5UE4xQ0sxUlRCS1VFTjQyc3Y4Z1M?oc=5",
-     "desc": "InMode stock holds steady as investors eye latest growth figures  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPX2VtRWxVeVBWbmJJSGJEakVWUUNDZlJNb1g1LWppenA0NGpBZldMY0wxMzJEMUpyMFVCY0dFWUNIWGNJZHRpNnByc1pfZTBVdEY1eks0eFhKOGZNempXZF9sYjhEZVdNZG90ZlY0aVZvOEpnaFZfdm5tLU5fUDVZRE8xQ21xV19vYUs1cm1UTXRHRjVrMEJNR0tJVTZpOFVKUFQ3LUVBS2hmbnN5UE4xQ0sxUlRCS1VFTjQyc3Y4Z1M?oc=5"
     },
     {
      "co": "Straumann",
@@ -572,8 +519,7 @@
      "t": "Straumann stock slips as trading stays near CHF 96",
      "src": "AD HOC NEWS",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPeEN0a3NyNTRlTGU3M0RaRGV2UmZkUER6Tm5SN3habXNQQ3lVTmhjRFBSNmptZE5DOUxYZEtzcEpYQ0pUZmhSazMyTmRKSTI0SXNxLTZzQWdrMzBpT0FXTE5sY2dDN2ZvOHk4NTFyX0Y5MHdzM2ItOVRkSzZhUVVLRDhYdDM4OWd5N25ZdDltRkV1dWFFNlpRckJQZWxsZklZMGxUOEI1NXJhR2JfVU9BYVMtZw?oc=5",
-     "desc": "Straumann stock slips as trading stays near CHF 96  AD HOC NEWS"
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPeEN0a3NyNTRlTGU3M0RaRGV2UmZkUER6Tm5SN3habXNQQ3lVTmhjRFBSNmptZE5DOUxYZEtzcEpYQ0pUZmhSazMyTmRKSTI0SXNxLTZzQWdrMzBpT0FXTE5sY2dDN2ZvOHk4NTFyX0Y5MHdzM2ItOVRkSzZhUVVLRDhYdDM4OWd5N25ZdDltRkV1dWFFNlpRckJQZWxsZklZMGxUOEI1NXJhR2JfVU9BYVMtZw?oc=5"
     },
     {
      "co": "Straumann",
@@ -581,8 +527,7 @@
      "t": "Enterprise value to revenue forward of Straumann Holding AG – OTC:SAUHY",
      "src": "TradingView",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQTkE1SjRxSGxTMTZLNERnQk05TGd2bWk4dHdqSUY4czV5MkVDbmVqWldxenJMUEcxbVNHVDFtLXZDenh0UTkwdllZRi00eDVkNGxJLXpvOHFqV2JrNGozV1UzcEwtM29EekxPd0QzSE1ScGNOY08xOHFlYnN0dTYxS1ZoWW84dkZrS2dXcFpXTG1LazhYY29MTjcwSXdjZmF6dVp2X3JnczNWZw?oc=5",
-     "desc": "Enterprise value to revenue forward of Straumann Holding AG – OTC:SAUHY  TradingView"
+     "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQTkE1SjRxSGxTMTZLNERnQk05TGd2bWk4dHdqSUY4czV5MkVDbmVqWldxenJMUEcxbVNHVDFtLXZDenh0UTkwdllZRi00eDVkNGxJLXpvOHFqV2JrNGozV1UzcEwtM29EekxPd0QzSE1ScGNOY08xOHFlYnN0dTYxS1ZoWW84dkZrS2dXcFpXTG1LazhYY29MTjcwSXdjZmF6dVp2X3JnczNWZw?oc=5"
     }
    ]
   },
@@ -595,8 +540,7 @@
      "t": "Tesla launches Cybercab without human controls into robotaxi fray. Can its tech finally scale?",
      "src": "Automotive News",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9fYWItelQwZGNldFdBVEo4UVNDZk5CaTlabmFiRk9MUU9IR0JxZEdvSGFyUElHUGdnOG9FX0VYa29SNnZYcEhDdFNWWnJTakxBNjFGSjF1LWJ3MjFVZV9yNUxNN2Q5YmdpRVBwa2hR?oc=5",
-     "desc": "Tesla launches Cybercab without human controls into robotaxi fray. Can its tech finally scale?  Automotive News"
+     "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9fYWItelQwZGNldFdBVEo4UVNDZk5CaTlabmFiRk9MUU9IR0JxZEdvSGFyUElHUGdnOG9FX0VYa29SNnZYcEhDdFNWWnJTakxBNjFGSjF1LWJ3MjFVZV9yNUxNN2Q5YmdpRVBwa2hR?oc=5"
     },
     {
      "co": "Tesla",
@@ -604,8 +548,7 @@
      "t": "Tesla keeps hyping robotaxis as its future. But it’s trailing rival Waymo in a field yet to prove profitable",
      "src": "CNN",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNT01kRkRDWHRTWjh2TzNUUm9rUmhtQTZzdEdVLV9rTzRpb25fOUtGUS05VVJqeEs3dHVFZDI0ZmhEbnVZZEk2b2k4LWZEX2VTWjM5UUJKY3hodWlyZ29uS3BURjBqWkxncEd0ZmJONU5GN3RYNkpoN25MX2JwR0ZqYXBFbk95N1Fi?oc=5",
-     "desc": "Tesla keeps hyping robotaxis as its future. But it’s trailing rival Waymo in a field yet to prove profitable  CNN"
+     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNT01kRkRDWHRTWjh2TzNUUm9rUmhtQTZzdEdVLV9rTzRpb25fOUtGUS05VVJqeEs3dHVFZDI0ZmhEbnVZZEk2b2k4LWZEX2VTWjM5UUJKY3hodWlyZ29uS3BURjBqWkxncEd0ZmJONU5GN3RYNkpoN25MX2JwR0ZqYXBFbk95N1Fi?oc=5"
     },
     {
      "co": "Tesla",
@@ -613,8 +556,7 @@
      "t": "Bull vs. Bear: Here's My Take on Tesla's Robotaxi Rollout",
      "src": "The Motley Fool",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQR2EwRl9XUlVCdTcxZWNQMmtWaWFNQkR3dGZhUWMzUWVETHFsMmlxNWYzb2hsZ2c1cFg0a3RObERQVkFSczZ5M2ZJdUdUZTlYSV9XWXFzVlprVl9IQWgtUWtLMW5nWXdjVklXVEFTY05jYk85NGUzUEJWQkFhTTBVREttZnRCVjY2bEJnLXhBODJpc1FITkpN?oc=5",
-     "desc": "Bull vs. Bear: Here's My Take on Tesla's Robotaxi Rollout  The Motley Fool"
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQR2EwRl9XUlVCdTcxZWNQMmtWaWFNQkR3dGZhUWMzUWVETHFsMmlxNWYzb2hsZ2c1cFg0a3RObERQVkFSczZ5M2ZJdUdUZTlYSV9XWXFzVlprVl9IQWgtUWtLMW5nWXdjVklXVEFTY05jYk85NGUzUEJWQkFhTTBVREttZnRCVjY2bEJnLXhBODJpc1FITkpN?oc=5"
     },
     {
      "co": "Tesla",
@@ -622,8 +564,7 @@
      "t": "Is Tesla About to Finally Launch the Robotaxi Fleet That Will Justify Its Valuation?",
      "src": "The Motley Fool",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQbTQza1VHUzN5NDZ3bENpV2k5aGptTHhKOFFyenhaSnh6YlJoOHY3QmQyamdUSVVTNjMtX1pHenZUMWU2Q2owR0FsSlNScDUxd2hZbm5KOGZ2d0ZGTDdiR1VNOWgtNjhuRVlBSnZtNGhtNERvalNpMFRKOW1pUy1ZT3ltN2N3U2ZhYV9rc1YxQzBSMVZEd2ltZ1gzSmF5U1lBVDNUV3lxM0tRSTFjVXFVcVhmMGl3bW1KNzN2M3ZsRllnY0o3?oc=5",
-     "desc": "Is Tesla About to Finally Launch the Robotaxi Fleet That Will Justify Its Valuation?  The Motley Fool"
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQbTQza1VHUzN5NDZ3bENpV2k5aGptTHhKOFFyenhaSnh6YlJoOHY3QmQyamdUSVVTNjMtX1pHenZUMWU2Q2owR0FsSlNScDUxd2hZbm5KOGZ2d0ZGTDdiR1VNOWgtNjhuRVlBSnZtNGhtNERvalNpMFRKOW1pUy1ZT3ltN2N3U2ZhYV9rc1YxQzBSMVZEd2ltZ1gzSmF5U1lBVDNUV3lxM0tRSTFjVXFVcVhmMGl3bW1KNzN2M3ZsRllnY0o3?oc=5"
     },
     {
      "co": "Tesla",
@@ -631,8 +572,7 @@
      "t": "Optimus Prime voice actor Peter Cullen's cause of death revealed. Read his family's touching statement.",
      "src": "facebook.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNNE5JeUUxS3BUT2dCd0sxOU14NE4zWEpZa2d1OWZyemlBMy1lNVpvOFhWS2RiU2lGRXpMRkc1Q1djcUlyZEVJVllwX05jbmVHdFpFN00xYkpJLUNvTzVKZ0hRTEhjWkxsb1FmR1kzcFJlMWwzbXd0enJNaFVxMU1rN083N0FWZlhncDZfMWtwc0VYNVJhZ3VHUHM5eFFXblotOHhPSXBqUXlHc0JfUkpacTdQeXVudzkzZWRBMktKS1JIVkpacEpXekY2QUVZRWxraHpNQVhwQ2xQQQ?oc=5",
-     "desc": "Optimus Prime voice actor Peter Cullen's cause of death revealed. Read his family's touching statement.  facebook.com"
+     "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNNE5JeUUxS3BUT2dCd0sxOU14NE4zWEpZa2d1OWZyemlBMy1lNVpvOFhWS2RiU2lGRXpMRkc1Q1djcUlyZEVJVllwX05jbmVHdFpFN00xYkpJLUNvTzVKZ0hRTEhjWkxsb1FmR1kzcFJlMWwzbXd0enJNaFVxMU1rN083N0FWZlhncDZfMWtwc0VYNVJhZ3VHUHM5eFFXblotOHhPSXBqUXlHc0JfUkpacTdQeXVudzkzZWRBMktKS1JIVkpacEpXekY2QUVZRWxraHpNQVhwQ2xQQQ?oc=5"
     },
     {
      "co": "Tesla",
@@ -640,8 +580,7 @@
      "t": "Tesla shares rally ahead of Cybercab event as Musk's robotaxi ambition takes the spotlight (TSLA:NASDAQ)",
      "src": "Seeking Alpha",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPaG95YURrYnlrUEtOUmFlRXdBa2FQSnBNd2UwSzlyOVkxcXpZZm9RdlJHTXlzb2J0eWVTZDJmUFktWFdWQ2IzaGFvbC1SS1haMENHODJmME0tb0J6WkFFa01xdTlBVVA0M2dOaXJMenlJOFVFTWFFWHFYcVFTcG9xYWlHcW1SYlYwTnhXeFBpX2txanp2NnFMdWs2RXllZThtNHc2Q2FGZGRCU2VWeE9Qd3pGdXlpVWFUN3psRTBLR1lfVmtCUUE?oc=5",
-     "desc": "Tesla shares rally ahead of Cybercab event as Musk's robotaxi ambition takes the spotlight (TSLA:NASDAQ)  Seeking Alpha"
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPaG95YURrYnlrUEtOUmFlRXdBa2FQSnBNd2UwSzlyOVkxcXpZZm9RdlJHTXlzb2J0eWVTZDJmUFktWFdWQ2IzaGFvbC1SS1haMENHODJmME0tb0J6WkFFa01xdTlBVVA0M2dOaXJMenlJOFVFTWFFWHFYcVFTcG9xYWlHcW1SYlYwTnhXeFBpX2txanp2NnFMdWs2RXllZThtNHc2Q2FGZGRCU2VWeE9Qd3pGdXlpVWFUN3psRTBLR1lfVmtCUUE?oc=5"
     }
    ]
   },
@@ -654,8 +593,7 @@
      "t": "JAKA hits Teradyne Robotics back over patent dispute",
      "src": "therobotreport.com",
      "date": "2026-09-03",
-     "url": "https://www.therobotreport.com/jaka-hits-teradyne-robotics-back-over-patent-dispute/",
-     "desc": "JAKA is now taking legal action against Teradyne Robotics to end public dissemination of statements it considers \"false, misleading and damaging.\"\nThe post JAKA hits Teradyne Robotics back over patent dispute appeared first on The Robot Report."
+     "url": "https://www.therobotreport.com/jaka-hits-teradyne-robotics-back-over-patent-dispute/"
     },
     {
      "co": "FANUC",
@@ -663,8 +601,7 @@
      "t": "Protecting Dynamic Industrial Robot Cable Carriers",
      "src": "spectrum.ieee.org",
      "date": "2026-09-03",
-     "url": "https://spectrum.ieee.org/industrial-robot-cable-carrier-protection",
-     "desc": "This article is brought to you by Tsubaki KabelSchlepp.In modern automated manufacturing, six-axis articulated robots perform high-speed, multidirectional maneuvers under demanding operational cycles. However, as robot arms swivel, rotate, and extend, the electrical cables, fiber optics, and pneumatic hoses supplying them endure severe mechanical stress. Torsional twist, rapid acceleration, and repeated contact with machine structures often lead to premature conductor fatigue, insulation breakdown, and costly unplanned production halts.To overcome these multi-axis motion challenges, the Tsubaki KabelSchlepp Robotrax System provides a specialized three-dimensional cable carrier engineered specifically for complex robotic motion.Managing High Tensile Forces With Central Steel TechnologyConventional cable carriers often transfer operational movement stress directly onto internal electrical lines and hoses. The Robotrax system changes this dynamic through a central steel cable that runs through the core of every chain link.The Robotrax system’s central steel cable absorbs the primary tensile loads and preserves conductor integrity, dramatically extending cable service life.When robot arms undergo rapid directional shifts and accelerations up to 10 g, this internal steel cable absorbs the primary tensile loads. By isolating electrical and fluid lines from pulling forces, the design preserves conductor integrity and dramatically extends cable service life. Mechanics can easily calibrate and adjust system tension using an integrated clamping piece, ensuring consistent mechanical support throughout long operational cycles.Spherical Link Design and Modular Cable RoutingThe foundation of the Robotrax system lies in its open, single-piece plastic links featuring spherical snap-on connections on both sides. This geometry allows the carrier to flex smoothly across three axes, providing radial rotation of up to ±450 degrees per meter depending on the model size.To optimize internal organization, carrier links contain up to three distinct chambers. This physical separation prevents signal interference and mechanical abrasion between heavy power lines, sensitive data channels, and fluid hoses. For standard models (R040 through R100), technicians can press cables directly into the carrier without tools, drastically reducing installation and maintenance time. Larger configurations, such as the R140X, incorporate swiveling crossbars with snap locks alongside vertical and horizontal dividers for customized interior partitioning.​ROBOTRAX SystemSteel cable for transferring extremely high tensile forcesTension piece for locking the chain linksType with toolless opening swivel crossbars and divider module availableOpen design– Fast cable laying as the cables are simply pressed in– Easy checking of all cablesSpecial plastic for long service lifeProtective covers or heat shields made from different materials are available for different environmental conditionsQuick-release bracket for fixing and continuationStrain relief with LineFix clampsProtection against hard impacts, excessive abrasion and premature wear as well as limitation of the bending radius through protectorActive Retraction and Impact ProtectionLarge robot work envelopes and high-speed motion trajectories can cause loose cable carrier loops to swing and strike the robot body. To eliminate these destructive collisions, Tsubaki KabelSchlepp integrates the Pull Back Unit (PBU).The PBU serves as an active retraction mechanism that maintains optimal tension on the cable carrier throughout the entire motion cycle. By preventing excess slack and eliminating interfering contours, the PBU minimizes collision risks across complex movement paths. The unit requires zero maintenance on its retraction element and offers standard mounting configurations for leading industrial robot platforms, including KUKA, ABB, and FANUC.Tsubaki KabelSchlepp’s Pull Back Unit maintains optimal tension on the cable carrier and minimizes collision risks across complex movement paths.Additionally, external protectors can be retrofitted onto individual chain links. These durable impact shields limit the minimum bending radius to prevent over-flexing while shielding the chain body from severe external abrasion. If wear occurs, technicians simply replace the modular protector rather than the entire cable carrier assembly.Built for Demanding Industrial EnvironmentsFrom automotive welding cells to high-speed machining centers, Robotrax systems adapt to severe working conditions through tailored protective accessories:Heat Shields: Aluminum-coated textile fiber covers protect against radiated heat, hot weld spatter, and flying sparks.Protective Covers: Coated polyester sleeves shield sensitive lines against aggressive cutting fluids, hydraulic oils, paint overspray, and abrasive dust.LineFix Strain Relief: Multi-layer clamping devices anchor cables securely at both ends to prevent axial displacement during intense motion.By combining central load absorption, multi-axis flexibility, and active retraction control, the Robotrax system offers plant engineers and system integrators a reliable path toward maximizing robot uptime and reducing total operational costs."
+     "url": "https://spectrum.ieee.org/industrial-robot-cable-carrier-protection"
     },
     {
      "co": "FANUC",
@@ -672,8 +609,7 @@
      "t": "FANUC America Brings Robotics, Automation, Physical AI and CNC Innovation to IMTS 2026",
      "src": "PR Newswire",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOSk5VY3hLdEN4VVlnNGE5Ulh0cVFRY0lsZC0zeXZMSHlWbTdrdk04Nll1X2x0dXIxcnNPejg4bTlQY2hqTnJacmtTVTJTZEI2aFpTY29sbm0wYms1QWh0RUg0bnF5M2hsMWRwZk80clN1aTQwT3FaWHAtYlkxZi1RM0xhMFk0b25KTDBwN2JCVWJpSzMwdVhDSlNNekxmQWlMbWpVQk92YmVubFV0cUVKVXl3U1ZmQWJkbUhCVlJTbzJFVXBOVzBfclVKRnJudUVENFVkcUZmQQ?oc=5",
-     "desc": "FANUC America Brings Robotics, Automation, Physical AI and CNC Innovation to IMTS 2026  PR Newswire"
+     "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOSk5VY3hLdEN4VVlnNGE5Ulh0cVFRY0lsZC0zeXZMSHlWbTdrdk04Nll1X2x0dXIxcnNPejg4bTlQY2hqTnJacmtTVTJTZEI2aFpTY29sbm0wYms1QWh0RUg0bnF5M2hsMWRwZk80clN1aTQwT3FaWHAtYlkxZi1RM0xhMFk0b25KTDBwN2JCVWJpSzMwdVhDSlNNekxmQWlMbWpVQk92YmVubFV0cUVKVXl3U1ZmQWJkbUhCVlJTbzJFVXBOVzBfclVKRnJudUVENFVkcUZmQQ?oc=5"
     },
     {
      "co": "FANUC",
@@ -681,8 +617,7 @@
      "t": "Fanuc announces leadership restructure with focus on aerospace and defence",
      "src": "Machinery Market",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOOEdUaTM4MmZNdDV0dnZjM2RvTEotejFLTFNoaDl3aURPYkNYQzhVajdVREhsLWIzUk5HOXFOMFBZNjFWd29CSGh6ZU5IVDUySUkyUUpNNDZMNUhiTzJXOWdWNmp5blk3ODRtX2dvXy14dm9DbzNZNmxDQXc5NFhDaTNsTC1jRzZmWVZSWGp2clktZGdnQm1WQ0dqdWJWdF9MRnpRUlE5UHQ4YXVrSk5HbVVodnRSdTBMSlpQTg?oc=5",
-     "desc": "Fanuc announces leadership restructure with focus on aerospace and defence  Machinery Market"
+     "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOOEdUaTM4MmZNdDV0dnZjM2RvTEotejFLTFNoaDl3aURPYkNYQzhVajdVREhsLWIzUk5HOXFOMFBZNjFWd29CSGh6ZU5IVDUySUkyUUpNNDZMNUhiTzJXOWdWNmp5blk3ODRtX2dvXy14dm9DbzNZNmxDQXc5NFhDaTNsTC1jRzZmWVZSWGp2clktZGdnQm1WQ0dqdWJWdF9MRnpRUlE5UHQ4YXVrSk5HbVVodnRSdTBMSlpQTg?oc=5"
     },
     {
      "co": "FANUC",
@@ -690,8 +625,7 @@
      "t": "FANUC Expands CRX Palletizing to 40 kg as Hygienic Cobot Demand Moves Beyond Light-Case Automation",
      "src": "openPR.com",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPMFZqVVRMTGFNWGpxaFpOczlweFZSdDBCR0dveGhPVEFwWEw0SHBRU2tIRUc3SXNrRzZPSkY0cUR3RDJSbUtkNGVrNXlveWxPcWxkLTFLc0pTM3VUTWJRcGVSNkxvVDkwWmJMOEtVQ0ZPRVlDZGpHdDZuT1ZESTV4YnlzODJmcUtDb3VZYXNqQ3BoWUc1WE16b0ZmWXFZM1l0?oc=5",
-     "desc": "FANUC Expands CRX Palletizing to 40 kg as Hygienic Cobot Demand Moves Beyond Light-Case Automation  openPR.com"
+     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPMFZqVVRMTGFNWGpxaFpOczlweFZSdDBCR0dveGhPVEFwWEw0SHBRU2tIRUc3SXNrRzZPSkY0cUR3RDJSbUtkNGVrNXlveWxPcWxkLTFLc0pTM3VUTWJRcGVSNkxvVDkwWmJMOEtVQ0ZPRVlDZGpHdDZuT1ZESTV4YnlzODJmcUtDb3VZYXNqQ3BoWUc1WE16b0ZmWXFZM1l0?oc=5"
     },
     {
      "co": "ABB",
@@ -699,8 +633,7 @@
      "t": "ABB recognized by PERN for 15 years of partnership supporting Poland's energy infrastructure",
      "src": "ABB",
      "date": "2026-09-03",
-     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNUEpvODE3QjdtV00za3ZiREtnZW03d2Z3aGNGSlR5VTNXOFNIWGtHbkRPdUN6bWF3WENmSmFBcm9JSXFCazJmdDZ5dmJDbHMxMTZ6b29Jbl9USlJ4b2VMcm5BVGpkdmIteG5WU09TMnktT2ZVTVZYOVpwcmV5M2liNTBuVTREOEp1b0VBWTA1UEhTdVlpMEtrNHA5WG11QUdBVjRHemhKd0NuWkNBOHhyS2ZfMzd5OVU1OUZkS21ib09xcEJrUTJRakhn?oc=5",
-     "desc": "ABB recognized by PERN for 15 years of partnership supporting Poland's energy infrastructure  ABB"
+     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNUEpvODE3QjdtV00za3ZiREtnZW03d2Z3aGNGSlR5VTNXOFNIWGtHbkRPdUN6bWF3WENmSmFBcm9JSXFCazJmdDZ5dmJDbHMxMTZ6b29Jbl9USlJ4b2VMcm5BVGpkdmIteG5WU09TMnktT2ZVTVZYOVpwcmV5M2liNTBuVTREOEp1b0VBWTA1UEhTdVlpMEtrNHA5WG11QUdBVjRHemhKd0NuWkNBOHhyS2ZfMzd5OVU1OUZkS21ib09xcEJrUTJRakhn?oc=5"
     }
    ]
   },
