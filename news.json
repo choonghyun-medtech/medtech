@@ -1,6 +1,6 @@
 {
  "updated": "2026-09-02T21:17:45Z",
- "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료) · 요약: Gemini 자동 생성",
  "domestic": [
   {
    "cat": "Digital Health",
@@ -195,19 +195,21 @@
     },
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "후원",
      "t": "시지바이오, 대학여자아마축구대회 후원… ‘이지덤’ 제공",
      "src": "segyebiz.com",
      "date": "2026-09-02",
-     "url": "http://www.segyebiz.com/newsView/20260902518086?OutUrl=naver"
+     "url": "http://www.segyebiz.com/newsView/20260902518086?OutUrl=naver",
+     "summary": "시지바이오가 대학여자아마축구대회를 후원하며 이지덤 제품을 제공했음.\n추가 세부 내용 없음"
     },
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "사회공헌",
      "t": "시지바이오·KT&G, 지역사회 스포츠·환경 지원 확대",
      "src": "news2day.co.kr",
      "date": "2026-09-02",
-     "url": "https://www.news2day.co.kr/article/20260902500200"
+     "url": "https://www.news2day.co.kr/article/20260902500200",
+     "summary": "시지바이오와 KT&G가 지역사회 스포츠 및 환경 지원 활동을 확대함.\n추가 세부 내용 없음"
     }
    ]
   },
@@ -216,19 +218,21 @@
    "items": [
     {
      "co": "에스디바이오센서",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "[박정식의 국내 주식시황] 유가·금리 부담에 약세장 지속…삼성전자·...",
      "src": "newsquest.co.kr",
      "date": "2026-09-02",
-     "url": "https://www.newsquest.co.kr/news/articleView.html?idxno=300056"
+     "url": "https://www.newsquest.co.kr/news/articleView.html?idxno=300056",
+     "summary": "이유 설명 없는 단순 주가 등락"
     },
     {
      "co": "바디텍메드",
-     "ctx": "뉴스",
+     "ctx": "IPO",
      "t": "[더벨][엠비디 IPO] 2029년 순이익 180억 전제, 상장 밸류 1600억 제시",
      "src": "thebell.co.kr",
      "date": "2026-09-02",
-     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202609011456352040106938"
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202609011456352040106938",
+     "summary": "엠비디가 2029년 순이익 180억 원을 전제로 상장 밸류 1600억 원을 제시했음.\n추가 세부 내용 없음"
     }
    ]
   },
@@ -241,11 +245,12 @@
    "items": [
     {
      "co": "덴티움",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "[공시] 9월 3일, 코스피 상장사 50개 종목 자사주 매수 신청",
      "src": "newstnt.com",
      "date": "2026-09-02",
-     "url": "https://www.newstnt.com/news/articleView.html?idxno=716470"
+     "url": "https://www.newstnt.com/news/articleView.html?idxno=716470",
+     "summary": "덴티움을 포함한 코스피 상장사 50개 종목이 자사주 매수를 신청했음.\n추가 세부 내용 없음"
     }
    ]
   }
@@ -435,7 +440,8 @@
      "t": "HIMS & HERS HEALTH, INC. (HIMS) INVESTOR ALERT Investors",
      "src": "GlobeNewswire",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMiygJBVV95cUxPQS0yRGZQVU84Sk5WZlJhNXE0ZmdLRncxN3JkZHlsV1JoUEF6Y0FuaWNPQnVzcmdiZHJ0STg4UTdPZTdQbVloV1VIYjdEc3o5S3FvLU5jbTZLTFFPakhmdWZXbzYtWE1HN2RMc3VZRlB0YUlVb0hzYVJFY29nVFU4a3laQ202bFpnalotTFNveGtUR0xuUFVQYWFUS2hYVnRkbC1Zc3BTQTVqWjRacGZYTmE1X190RHNZdndzQ2t1WDJ2QXoxbkRIRklRcHdDNVBYT0xTSGV3WWJDRDR3QXRiQ3R1NGd6eURmWkJlM1ZqREJJd0FOY2gyQzRFQkVORU5jS3RHSFV4VDlXc1dHRTNfYWZYQkhwbTRlVGN0MVQ3WG9zTF8wdEpnd3cxOGQ3MUJkSFhDNkxLZ1hBT0FKdjk1V2FuX25SQWRLRHc?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMiygJBVV95cUxPQS0yRGZQVU84Sk5WZlJhNXE0ZmdLRncxN3JkZHlsV1JoUEF6Y0FuaWNPQnVzcmdiZHJ0STg4UTdPZTdQbVloV1VIYjdEc3o5S3FvLU5jbTZLTFFPakhmdWZXbzYtWE1HN2RMc3VZRlB0YUlVb0hzYVJFY29nVFU4a3laQ202bFpnalotTFNveGtUR0xuUFVQYWFUS2hYVnRkbC1Zc3BTQTVqWjRacGZYTmE1X190RHNZdndzQ2t1WDJ2QXoxbkRIRklRcHdDNVBYT0xTSGV3WWJDRDR3QXRiQ3R1NGd6eURmWkJlM1ZqREJJd0FOY2gyQzRFQkVORU5jS3RHSFV4VDlXc1dHRTNfYWZYQkhwbTRlVGN0MVQ3WG9zTF8wdEpnd3cxOGQ3MUJkSFhDNkxLZ1hBT0FKdjk1V2FuX25SQWRLRHc?oc=5",
+     "summary": "단순 주가/자금흐름 기사"
     }
    ]
   },
@@ -448,7 +454,8 @@
      "t": "UnitedHealth Rises as 30% of Prior Approvals Head for Removal",
      "src": "Yahoo! Finance Canada",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNdXh1aUZBWkdEcjlRdC1wald5TGJHMHVzaFpLdzAwN29VUDZmcEJ4NXRNa25SV1FYQ1UyclZ5TVF1MDBBNXlhU2M3Q2hLRl91SjI3QVdfX3d3cmtJdkJseXVHdEFDcWh0TmpWYnVLbmpGUzNCWUxrbVRqWmhhdjlyaWVqdmJraDRxS0NuM2RUcw?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNdXh1aUZBWkdEcjlRdC1wald5TGJHMHVzaFpLdzAwN29VUDZmcEJ4NXRNa25SV1FYQ1UyclZ5TVF1MDBBNXlhU2M3Q2hLRl91SjI3QVdfX3d3cmtJdkJseXVHdEFDcWh0TmpWYnVLbmpGUzNCWUxrbVRqWmhhdjlyaWVqdmJraDRxS0NuM2RUcw?oc=5",
+     "summary": "유나이티드헬스가 사전 승인의 30% 절차 축소 소식에 상승했습니다.\n사전 승인 절차 폐지가 호재로 작용하며 주가가 오르는 흐름입니다."
     },
     {
      "co": "UnitedHealth",
@@ -456,7 +463,8 @@
      "t": "Bernstein reiterates UnitedHealth stock rating on AI potential",
      "src": "Investing.com",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNdzRJSjlTY0tlaV9Bb0tmVDFxek1kUTlPX1J3bmpQdVBfdGlHWlVZYVBEdl9rTGlfaHZQbFF1SXFHd01iaTNBSDh2VE1obWFSUHpobUJVUEhJWXlJNWdMenNCOVctaG90UWlEa05UZVA3dlhaNUFiQzFMQW81aVRKNXBwY2hIUU9tWW5HWE9yMVBJM1hNSlVNOGFjdmtaY25iNVMwU1YteEFlN3pTdkVHZGFJQW55cWROOFcwdkVxQ2J0eElnZWlIN2NB?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNdzRJSjlTY0tlaV9Bb0tmVDFxek1kUTlPX1J3bmpQdVBfdGlHWlVZYVBEdl9rTGlfaHZQbFF1SXFHd01iaTNBSDh2VE1obWFSUHpobUJVUEhJWXlJNWdMenNCOVctaG90UWlEa05UZVA3dlhaNUFiQzFMQW81aVRKNXBwY2hIUU9tWW5HWE9yMVBJM1hNSlVNOGFjdmtaY25iNVMwU1YteEFlN3pTdkVHZGFJQW55cWROOFcwdkVxQ2J0eElnZWlIN2NB?oc=5",
+     "summary": "번스타인이 인공지능 잠재력을 이유로 유나이티드헬스 투자의견을 유지했습니다.\nAI 기술 활용 가능성이 회사의 긍정적인 가치 평가 요소로 제시되었습니다."
     },
     {
      "co": "UnitedHealth",
@@ -464,7 +472,8 @@
      "t": "UnitedHealth Group (NYSE:UNH) Expands Behavioral Coaching Access",
      "src": "Kalkine Media",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPQ2ZvczlMMFRaNjdkUXBSTUtWWFZtVzVnTm1wWjBaYkZlRGsxVzFZa2ZjT2tIc0V3eDN3MTJ5SzVhMzdmQjAyTVo3cE9kaXZmMHNZeW9POHhKQkRUdEZVTXkwSVJURFhYTzR0bWJkSm1vRzNqanZkdDdrRFpUdG5DVzVBdGdfVlBTTTJXNlFDX0dhN3BER2dKSFIySDQtRVNlVXliZzBrdERZekk?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPQ2ZvczlMMFRaNjdkUXBSTUtWWFZtVzVnTm1wWjBaYkZlRGsxVzFZa2ZjT2tIc0V3eDN3MTJ5SzVhMzdmQjAyTVo3cE9kaXZmMHNZeW9POHhKQkRUdEZVTXkwSVJURFhYTzR0bWJkSm1vRzNqanZkdDdrRFpUdG5DVzVBdGdfVlBTTTJXNlFDX0dhN3BER2dKSFIySDQtRVNlVXliZzBrdERZekk?oc=5",
+     "summary": "유나이티드헬스그룹이 행동 코칭 서비스에 대한 접근성을 확대했습니다.\n이를 통해 고객들의 정신 건강 관리 및 접근성이 한층 강화될 전망입니다."
     },
     {
      "co": "UnitedHealth",
@@ -472,7 +481,8 @@
      "t": "UnitedHealth Group stock gains as prior-authorization cuts support outlook",
      "src": "AD HOC NEWS",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPV1ktQXVKUC1XYkUyYjhCT2FVT2dxUlpMTGZuQm95WmJNQzc4NlFMRjh2b2pONmNyX0xRby1TanliWDdCVElNWGpJMXd4TFNnVHl5Tk1IRVZCOE5yV1hKb1VJWFpoWl9PNlFwd2stZHJQZnBYd09ta19nREYwNGwtc3ZOR2x1TnV5TEFpQzNwNTFsOG1ERF9jNzZ4T2ktUjk0bGpjanZUSlc2VzUxdEFzOU1UZ3M2Y01HSXZCdFVpTkl0Rll1eUN3OGZNXzdVZV9NNDhN?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPV1ktQXVKUC1XYkUyYjhCT2FVT2dxUlpMTGZuQm95WmJNQzc4NlFMRjh2b2pONmNyX0xRby1TanliWDdCVElNWGpJMXd4TFNnVHl5Tk1IRVZCOE5yV1hKb1VJWFpoWl9PNlFwd2stZHJQZnBYd09ta19nREYwNGwtc3ZOR2x1TnV5TEFpQzNwNTFsOG1ERF9jNzZ4T2ktUjk0bGpjanZUSlc2VzUxdEFzOU1UZ3M2Y01HSXZCdFVpTkl0Rll1eUN3OGZNXzdVZV9NNDhN?oc=5",
+     "summary": "사전 승인 절차 축소로 실적 전망이 좋아지며 주가가 상승했습니다.\n유나이티드헬스그룹의 사업 환경 개선 기대감이 주가에 반영되었습니다."
     },
     {
      "co": "UnitedHealth",
@@ -480,7 +490,8 @@
      "t": "Brokers Suggest Investing in UnitedHealth (UNH): Read This Before Placing a Bet",
      "src": "Yahoo Finance",
      "date": "2026-09-02",
-     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNc0xCVlFaY3Fxa3ZueFRJMEtWVS1YNU5jNEtXMVl1TDRJdlFIM0YxWFFMc0k4b2FwMnE0Y2ZUdVNFYktKalhiRUpoSWhTUl9lY3lRNW5fQTZmVWRKSi1qajJ4U1RiYXpxelFYWHpuU1Z1bmlfTVhfSUFIR2Z0dUNDWVZORm92YTF4ZXd5VkVaZWRoWUt6U3g2UUpwSEptRW5PRUZ0cEE3ZWcxaVU?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNc0xCVlFaY3Fxa3ZueFRJMEtWVS1YNU5jNEtXMVl1TDRJdlFIM0YxWFFMc0k4b2FwMnE0Y2ZUdVNFYktKalhiRUpoSWhTUl9lY3lRNW5fQTZmVWRKSi1qajJ4U1RiYXpxelFYWHpuU1Z1bmlfTVhfSUFIR2Z0dUNDWVZORm92YTF4ZXd5VkVaZWRoWUt6U3g2UUpwSEptRW5PRUZ0cEE3ZWcxaVU?oc=5",
+     "summary": "단순 주가/자금흐름 기사"
     },
     {
      "co": "UnitedHealth",
@@ -488,7 +499,8 @@
      "t": "How UnitedHealth’s Prior-Auth Rollback and Faster Hospital Payments Will Impact UnitedHealth Group (UNH) Investors",
      "src": "simplywall.st",
      "date": "2026-09-01",
-     "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPUjFndXNZRmdsMEdBd3dhRUF5aTlfU1I1dngyVTBBc0d5dG0tZVJKNkF1NzdGZk4wZlRydzdPVTVZY0NoVVVfSlNfUTZYTDBXRlZsMmRMdG9LMVFrLUQtc2NWWFJYODkzd1RXZEtZc2ZsN0gwN25KelNhQW44UWMyRWkwa1RQMUtEZlBtc21vR1RJQmNrUkowNHVQbGd2OXNSTHFWTnJicEhDZThhWXlmckQxODQ2YkVjMjJ6QmJBYmp2UDZmTWFqLW5OV2tNdE5vOVIyWURpa9IB1wFBVV95cUxPUjFndXNZRmdsMEdBd3dhRUF5aTlfU1I1dngyVTBBc0d5dG0tZVJKNkF1NzdGZk4wZlRydzdPVTVZY0NoVVVfSlNfUTZYTDBXRlZsMmRMdG9LMVFrLUQtc2NWWFJYODkzd1RXZEtZc2ZsN0gwN25KelNhQW44UWMyRWkwa1RQMUtEZlBtc21vR1RJQmNrUkowNHVQbGd2OXNSTHFWTnJicEhDZThhWXlmckQxODQ2YkVjMjJ6QmJBYmp2UDZmTWFqLW5OV2tNdE5vOVIyWURpaw?oc=5"
+     "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPUjFndXNZRmdsMEdBd3dhRUF5aTlfU1I1dngyVTBBc0d5dG0tZVJKNkF1NzdGZk4wZlRydzdPVTVZY0NoVVVfSlNfUTZYTDBXRlZsMmRMdG9LMVFrLUQtc2NWWFJYODkzd1RXZEtZc2ZsN0gwN25KelNhQW44UWMyRWkwa1RQMUtEZlBtc21vR1RJQmNrUkowNHVQbGd2OXNSTHFWTnJicEhDZThhWXlmckQxODQ2YkVjMjJ6QmJBYmp2UDZmTWFqLW5OV2tNdE5vOVIyWURpa9IB1wFBVV95cUxPUjFndXNZRmdsMEdBd3dhRUF5aTlfU1I1dngyVTBBc0d5dG0tZVJKNkF1NzdGZk4wZlRydzdPVTVZY0NoVVVfSlNfUTZYTDBXRlZsMmRMdG9LMVFrLUQtc2NWWFJYODkzd1RXZEtZc2ZsN0gwN25KelNhQW44UWMyRWkwa1RQMUtEZlBtc21vR1RJQmNrUkowNHVQbGd2OXNSTHFWTnJicEhDZThhWXlmckQxODQ2YkVjMjJ6QmJBYmp2UDZmTWFqLW5OV2tNdE5vOVIyWURpaw?oc=5",
+     "summary": "유나이티드헬스의 사전 승인 철회와 병원 정산 축소가 주목받고 있습니다.\n이번 변화는 향후 투자자들에게 다양한 영향을 미칠 것으로 분석됩니다."
     }
    ]
   },
