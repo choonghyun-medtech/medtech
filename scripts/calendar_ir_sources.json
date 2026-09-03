@@ -1,5 +1,5 @@
 [
-  {"ticker": "ISRG", "name": "Intuitive Surgical", "ir_url": "https://isrg.intuitive.com/"},
+  {"ticker": "ISRG", "name": "Intuitive Surgical", "ir_url": "https://isrg.intuitive.com/", "scraper": "nir_card", "scraper_url": "https://isrg.intuitive.com/events-and-presentations"},
   {"ticker": "BSX", "name": "Boston Scientific", "ir_url": "https://investors.bostonscientific.com/", "scraper": "bsx_table", "scraper_url": "https://investors.bostonscientific.com/events-and-presentations"},
   {"ticker": "SYK", "name": "Stryker", "ir_url": "https://investors.stryker.com/", "scraper": "q4_feed", "scraper_url": "https://investors.stryker.com/"},
   {"ticker": "DXCM", "name": "Dexcom", "ir_url": "https://investors.dexcom.com/", "scraper": "q4_feed", "scraper_url": "https://investors.dexcom.com/"},
@@ -14,7 +14,7 @@
   {"ticker": "TDOC", "name": "Teladoc Health", "ir_url": "https://ir.teladochealth.com/", "scraper": "q4_feed", "scraper_url": "https://ir.teladochealth.com/"},
   {"ticker": "NTRA", "name": "Natera", "ir_url": "https://investor.natera.com/", "scraper": "q4_feed", "scraper_url": "https://investor.natera.com/"},
   {"ticker": "GH", "name": "Guardant Health", "ir_url": "https://investors.guardanthealth.com/", "scraper": "q4_feed", "scraper_url": "https://investors.guardanthealth.com/"},
-  {"ticker": "ALGN", "name": "Align Technology", "ir_url": "https://investor.aligntech.com/"},
+  {"ticker": "ALGN", "name": "Align Technology", "ir_url": "https://investor.aligntech.com/", "scraper": "nir_table", "scraper_url": "https://investor.aligntech.com/events"},
   {"ticker": "INMD", "name": "InMode", "ir_url": "https://inmodeinvestors.com/"},
-  {"ticker": "TEM", "name": "Tempus AI", "ir_url": "https://investors.tempus.com/"}
+  {"ticker": "TEM", "name": "Tempus AI", "ir_url": "https://investors.tempus.com/", "scraper": "nir_llf", "scraper_url": "https://investors.tempus.com/news-events/investor-events"}
 ]

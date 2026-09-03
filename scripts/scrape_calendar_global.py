@@ -314,11 +314,112 @@ def scrape_q4_feed(scraper_url, ticker, name, ir_url, today):
     return events
 
 
+# 아래 세 함수는 전부 "nasdaqir"(Nasdaq IR, Drupal 기반) 플랫폼을 쓰는 회사용이다.
+# 같은 플랫폼이라도 회사마다 테마가 달라 렌더링되는 HTML 구조가 3갈래로 갈린다
+# (2026-09-03 로컬 사내망에서 이 플랫폼 도메인 자체가 막혀 있어 Wayback Machine
+# 아카이브 스냅샷으로 구조를 확인 — 실제 배포 후 수동 실행으로 최종 검증 필요).
+
+def scrape_nir_card(scraper_url, ticker, name, ir_url, today):
+    """nasdaqir 플랫폼의 카드형 이벤트 위젯 — stockQuotePressReleaseDate(날짜) +
+    stockQuotePressNote(제목 링크) 구조. Intuitive Surgical이 이 템플릿을 쓴다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_card): {e}", file=sys.stderr)
+        return events
+
+    pattern = re.compile(
+        r'stockQuotePressReleaseDate[\s\S]{0,150}?(\d{1,2}/\d{1,2}/\d{2})'
+        r'[\s\S]{0,300}?class="stockQuotePressNote[^"]*"[^>]*>([^<]+)<'
+    )
+    for date_str, title in pattern.findall(text):
+        title = title.strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        try:
+            d = datetime.datetime.strptime(date_str.strip(), "%m/%d/%y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
+def scrape_nir_table(scraper_url, ticker, name, ir_url, today):
+    """nasdaqir 플랫폼의 테이블형 이벤트 뷰 — views-field-field-nir-event-start-date
+    (날짜) + h3.event-title(제목) 구조. Align Technology가 이 템플릿을 쓴다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_table): {e}", file=sys.stderr)
+        return events
+
+    pattern = re.compile(
+        r'views-field-field-nir-event-start-date[\s\S]{0,150}?<strong>[\s\S]{0,60}?'
+        r'([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4})[\s\S]{0,600}?class="event-title">[\s\S]{0,30}?([^<]+?)\s*</h3>'
+    )
+    for date_str, title in pattern.findall(text):
+        title = title.strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        try:
+            d = datetime.datetime.strptime(date_str.strip(), "%b %d, %Y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
+def scrape_nir_llf(scraper_url, ticker, name, ir_url, today):
+    """nasdaqir 플랫폼의 llf(레이아웃 프레임워크) 리스트형 이벤트 뷰 —
+    <article data-title="{제목}">...nir-widget--event--date"...{날짜} 구조.
+    Tempus AI가 이 템플릿을 쓴다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_llf): {e}", file=sys.stderr)
+        return events
+
+    pattern = re.compile(
+        r'<article[^>]*data-title="([^"]+)"[\s\S]{0,900}?nir-widget--event--date"[\s\S]{0,80}?(\d{1,2}/\d{1,2}/\d{4})'
+    )
+    for title, date_str in pattern.findall(text):
+        title = title.strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        try:
+            d = datetime.datetime.strptime(date_str.strip(), "%m/%d/%Y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
 SCRAPERS = {
     "mdt_wd": scrape_mdt_wd,
     "bsx_table": scrape_bsx_table,
     "unh_events": scrape_unh_events,
     "q4_feed": scrape_q4_feed,
+    "nir_card": scrape_nir_card,
+    "nir_table": scrape_nir_table,
+    "nir_llf": scrape_nir_llf,
 }
 
 
