@@ -27,10 +27,26 @@
        웹사이트 위탁 플랫폼을 쓰고 있어서, 각자 페이지가 JS로 호출하는 공개
        JSONP 엔드포인트("{IR도메인}/feed/Event.svc/GetEventList")를 그대로
        호출하면 회사별 HTML 파싱 없이 구조화된 JSON으로 일정을 받는다
-       (scrape_q4_feed 함수 하나로 9개사 전부 처리). Align Technology/Tempus
-       AI/Abbott/Intuitive Surgical도 같은 플랫폼을 쓰는지는 로컬 사내망에서
-       TLS 핸드셰이크가 막혀 있어 확인하지 못했다 — GitHub Actions 등 다른
-       네트워크에서 재확인 필요.
+       (scrape_q4_feed 함수 하나로 9개사 전부 처리).
+     - [2026-09-03/04] Intuitive Surgical/Align Technology/Tempus AI/Abbott:
+       넷 다 "nasdaqir"(Nasdaq IR, Drupal 기반) 플랫폼을 쓰지만 회사마다 테마가
+       달라 nir_card(ISRG)/nir_table(ALGN)/nir_llf(TEM)/nir_table_abt(ABT)
+       네 가지 정규식으로 각각 대응한다. 이 플랫폼은 Akamai 봇 탐지가 걸려있어
+       일반 requests 라이브러리로는 GitHub Actions(사내망 아닌 일반 인터넷)에서도
+       타임아웃/403(X-Reference-Error 헤더, 23.202.x.x 대역)으로 막혔다 —
+       curl_cffi(impersonate="chrome")로 브라우저 TLS/HTTP2 핑거프린트를
+       흉내내니 4곳 다 200으로 정상 응답하는 것을 확인해 이 방식으로 전환했다
+       (_fetch_browser 헬퍼). requirements에 curl_cffi가 추가로 필요하다.
+     - [2026-09-04] RadNet: about-radnet/investor-relations 페이지엔 구조화된
+       이벤트 캘린더가 없지만, about-radnet/news(보도자료 목록) 페이지에 "RadNet,
+       Inc. Announces Date of its {분기} ... Conference Call" 형식의 보도자료가
+       올라오고 그 요약문에 "will host a conference call ... on {날짜} at
+       {시각}" 문장으로 다음 실적발표 콜 날짜가 그대로 적혀 있어 정규식으로 추출
+       가능함을 확인했다(scrape_rdnt_news). 다른 회사들과 달리 구조화된 필드가
+       아니라 보도자료 문장에서 날짜를 뽑는 방식이라 문구가 바뀌면 깨질 수 있음.
+     - InMode: 어떤 하위 페이지(events-presentations 포함)로 접근해도 Sucuri
+       CloudProxy JS 챌린지로 막힌다(요청이 JS 실행을 거쳐야 진짜 페이지가 나옴)
+       — 사이트 전체에 걸린 차단이라 가벼운 HTTP 크롤링으로는 원천적으로 불가능.
    나머지 회사는 회사가 공식 발표하기 전까지는 미래 일정을 아예 채우지 않는다
    (추정치를 넣느니 비워두는 쪽을 사용자가 명시적으로 선택함, 2026-08-28).
    추후 나머지 회사들의 크롤링 방법을 찾으면 여기에 scraper를 추가하면 된다.
@@ -60,6 +76,7 @@ import time
 from urllib.parse import urlparse
 
 import requests
+from curl_cffi import requests as curl_requests
 
 IR_SOURCES_FILE = "scripts/calendar_ir_sources.json"
 
@@ -314,21 +331,33 @@ def scrape_q4_feed(scraper_url, ticker, name, ir_url, today):
     return events
 
 
-# 아래 세 함수는 전부 "nasdaqir"(Nasdaq IR, Drupal 기반) 플랫폼을 쓰는 회사용이다.
-# 같은 플랫폼이라도 회사마다 테마가 달라 렌더링되는 HTML 구조가 3갈래로 갈린다
-# (2026-09-03 로컬 사내망에서 이 플랫폼 도메인 자체가 막혀 있어 Wayback Machine
-# 아카이브 스냅샷으로 구조를 확인 — 실제 배포 후 수동 실행으로 최종 검증 필요).
+# 아래 네 함수는 전부 "nasdaqir"(Nasdaq IR, Drupal 기반) 플랫폼을 쓰는 회사용이다.
+# 같은 플랫폼이라도 회사마다 테마가 달라 렌더링되는 HTML 구조가 4갈래로 갈린다.
+# 이 플랫폼은 Akamai 봇 탐지가 걸려 있어 일반 requests로는 (사내망이 아닌
+# GitHub Actions에서도) 타임아웃/403으로 막힌다 — curl_cffi로 브라우저 TLS/HTTP2
+# 핑거프린트를 흉내내면 통과하는 것을 확인해(2026-09-04) _fetch_browser로 뺐다.
+
+_INSECURE = False  # main()의 --insecure 플래그로 설정 — 사내망 SSL 프록시 환경 전용
+
+
+def _fetch_browser(url, ticker, scraper_name):
+    """nasdaqir(Akamai 봇 탐지) 플랫폼 전용 — curl_cffi로 Chrome인 척 요청한다.
+    일반 requests.get은 이 플랫폼에서 타임아웃/403으로 막히는 것을 확인했다."""
+    try:
+        r = curl_requests.get(url, impersonate="chrome", timeout=25, verify=not _INSECURE)
+        r.raise_for_status()
+        return r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패({scraper_name}): {e}", file=sys.stderr)
+        return None
+
 
 def scrape_nir_card(scraper_url, ticker, name, ir_url, today):
     """nasdaqir 플랫폼의 카드형 이벤트 위젯 — stockQuotePressReleaseDate(날짜) +
     stockQuotePressNote(제목 링크) 구조. Intuitive Surgical이 이 템플릿을 쓴다."""
     events = []
-    try:
-        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
-        text = r.text
-    except Exception as e:
-        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_card): {e}", file=sys.stderr)
+    text = _fetch_browser(scraper_url, ticker, "nir_card")
+    if text is None:
         return events
 
     pattern = re.compile(
@@ -354,12 +383,8 @@ def scrape_nir_table(scraper_url, ticker, name, ir_url, today):
     """nasdaqir 플랫폼의 테이블형 이벤트 뷰 — views-field-field-nir-event-start-date
     (날짜) + h3.event-title(제목) 구조. Align Technology가 이 템플릿을 쓴다."""
     events = []
-    try:
-        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
-        text = r.text
-    except Exception as e:
-        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_table): {e}", file=sys.stderr)
+    text = _fetch_browser(scraper_url, ticker, "nir_table")
+    if text is None:
         return events
 
     pattern = re.compile(
@@ -386,12 +411,8 @@ def scrape_nir_llf(scraper_url, ticker, name, ir_url, today):
     <article data-title="{제목}">...nir-widget--event--date"...{날짜} 구조.
     Tempus AI가 이 템플릿을 쓴다."""
     events = []
-    try:
-        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
-        text = r.text
-    except Exception as e:
-        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(nir_llf): {e}", file=sys.stderr)
+    text = _fetch_browser(scraper_url, ticker, "nir_llf")
+    if text is None:
         return events
 
     pattern = re.compile(
@@ -412,6 +433,72 @@ def scrape_nir_llf(scraper_url, ticker, name, ir_url, today):
     return events
 
 
+def scrape_nir_table_abt(scraper_url, ticker, name, ir_url, today):
+    """nasdaqir 플랫폼의 테이블형 이벤트 뷰 — Align Technology(nir_table)와 비슷한
+    테이블 구조지만 날짜/제목 필드의 세부 클래스명이 달라(views-field-field-nir-
+    event-start-date 안에 nir-widget--event--date, 제목은 field-nir-event-title
+    안 <a> 링크) 별도 정규식이 필요하다. Abbott가 이 템플릿을 쓴다."""
+    events = []
+    text = _fetch_browser(scraper_url, ticker, "nir_table_abt")
+    if text is None:
+        return events
+
+    pattern = re.compile(
+        r'views-field-field-nir-event-start-date[\s\S]{0,80}?nir-widget--event--date"'
+        r'[\s\S]{0,60}?([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4})'
+        r'[\s\S]{0,400}?field-nir-event-title[\s\S]{0,80}?<a[^>]*>([^<]+)</a>'
+    )
+    for date_str, title in pattern.findall(text):
+        title = title.strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        try:
+            d = datetime.datetime.strptime(date_str.strip(), "%b %d, %Y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
+def scrape_rdnt_news(scraper_url, ticker, name, ir_url, today):
+    """RadNet은 구조화된 이벤트 캘린더 없이 보도자료로만 다음 실적발표 콜 날짜를
+    공지한다 — "RadNet, Inc. Announces Date of its {분기} ... Conference Call"
+    보도자료 본문(목록 페이지의 요약문)에 "will host a conference call ... on
+    {날짜} at {시각}" 문장이 있어 여기서 날짜를 뽑는다. 그 문장이 없는 보도자료
+    (실적 리포트 본문 등)는 date_re가 매칭 안 돼 자연히 걸러진다."""
+    events = []
+    try:
+        r = requests.get(scraper_url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(rdnt_news): {e}", file=sys.stderr)
+        return events
+
+    item_re = re.compile(r'<div class="title">([^<]+)</div>[\s\S]{0,80}?<div class="description">([\s\S]{0,1500}?)</div>')
+    date_re = re.compile(r'on\s+(?:[A-Za-z]+day,?\s+)?([A-Za-z]+\s+\d{1,2},\s*\d{4})\s+at', re.I)
+
+    for title, desc in item_re.findall(text):
+        title = title.strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        m = date_re.search(desc)
+        if not m:
+            continue
+        try:
+            d = datetime.datetime.strptime(m.group(1).strip(), "%B %d, %Y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
 SCRAPERS = {
     "mdt_wd": scrape_mdt_wd,
     "bsx_table": scrape_bsx_table,
@@ -420,6 +507,8 @@ SCRAPERS = {
     "nir_card": scrape_nir_card,
     "nir_table": scrape_nir_table,
     "nir_llf": scrape_nir_llf,
+    "nir_table_abt": scrape_nir_table_abt,
+    "rdnt_news": scrape_rdnt_news,
 }
 
 
@@ -428,7 +517,7 @@ def main():
     ap.add_argument("--ir-sources", default=IR_SOURCES_FILE)
     ap.add_argument("--out", default="calendar_events.json")
     ap.add_argument("--insecure", action="store_true",
-                     help="TLS 인증서 검증을 건너뛴다 (사내망 SSL 프록시 환경 전용, 기본 꺼짐, yfinance 조회에만 적용)")
+                     help="TLS 인증서 검증을 건너뛴다 (사내망 SSL 프록시 환경 전용, 기본 꺼짐)")
     args = ap.parse_args()
 
     sources = load_ir_sources(args.ir_sources)
@@ -436,9 +525,11 @@ def main():
 
     session = None
     if args.insecure:
+        global _INSECURE
+        _INSECURE = True
         from curl_cffi import requests as cr
         session = cr.Session(impersonate="chrome", verify=False)
-        print("[WARN] --insecure: TLS 인증서 검증을 건너뜁니다 (로컬 전용, yfinance 조회에만 적용).", file=sys.stderr)
+        print("[WARN] --insecure: TLS 인증서 검증을 건너뜁니다 (로컬 전용).", file=sys.stderr)
 
     all_events = []
     for src in sources:

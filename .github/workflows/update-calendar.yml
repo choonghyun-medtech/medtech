@@ -23,7 +23,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install yfinance requests
+        run: pip install yfinance requests curl_cffi
 
       - name: Fetch global earnings calendar (18개 팔로업 기업, yfinance 기반 · 무료)
         run: python scripts/scrape_calendar_global.py --out calendar_events.json
