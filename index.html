@@ -653,6 +653,7 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
       <div class="chart-box"><canvas id="medTourCntChart"></canvas></div>
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP</h2></div>
+      <div class="chips" id="medtour-asp-compare-chips" style="display:none"></div>
       <div class="chart-box"><canvas id="medTourAspChart"></canvas></div>
 
       <div class="perf-grid">
@@ -664,6 +665,26 @@ tr:last-child td{border-bottom:none}
           <div class="sec-h"><h2 style="font-size:13px">소비건수 진료과목별 비율 추이</h2></div>
           <div class="chart-box small"><canvas id="medTourDeptCntChart"></canvas></div>
         </div>
+      </div>
+
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">월별 데이터</h2>
+        <button id="medtour-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
+        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+          <div class="toggle" id="medtour-range-toggle">
+            <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
+          </div>
+          <div id="medtour-range-custom" style="display:flex; flex-direction:column; gap:6px">
+            <label style="font-size:11px; color:var(--dim)">시작월
+              <input type="month" id="medtour-range-start" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+            <label style="font-size:11px; color:var(--dim)">종료월
+              <input type="month" id="medtour-range-end" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+          </div>
+        </div>
+        <div id="medtour-table-wrap" style="flex:1; min-width:220px"></div>
       </div>
     </div>
 
@@ -680,7 +701,41 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수(피부과)</h2></div>
       <div class="chart-box"><canvas id="medTourDermaCntChart"></canvas></div>
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비 ASP(피부과)</h2></div>
+      <div class="chips" id="medtour-derma-asp-compare-chips" style="display:none"></div>
       <div class="chart-box"><canvas id="medTourDermaAspChart"></canvas></div>
+
+      <!-- 국가별 비중 — 피부과 탭에서 국가 서브탭이 "전체"일 때만 의미가 있어(개별 국가를
+           선택한 상태에선 비교 대상이 없음) 그때만 노출한다. -->
+      <div class="perf-grid" id="medtour-derma-country-grid" style="display:none">
+        <div>
+          <div class="sec-h"><h2 style="font-size:13px">소비액 국가별 비중(피부과)</h2></div>
+          <div class="chart-box small"><canvas id="medTourDermaCountryAmtChart"></canvas></div>
+        </div>
+        <div>
+          <div class="sec-h"><h2 style="font-size:13px">소비건수 국가별 비중(피부과)</h2></div>
+          <div class="chart-box small"><canvas id="medTourDermaCountryCntChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">월별 데이터</h2>
+        <button id="medtour-derma-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
+      </div>
+      <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
+        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+          <div class="toggle" id="medtour-derma-range-toggle">
+            <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
+          </div>
+          <div id="medtour-derma-range-custom" style="display:flex; flex-direction:column; gap:6px">
+            <label style="font-size:11px; color:var(--dim)">시작월
+              <input type="month" id="medtour-derma-range-start" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+            <label style="font-size:11px; color:var(--dim)">종료월
+              <input type="month" id="medtour-derma-range-end" style="display:block; margin-top:3px; width:100%; box-sizing:border-box; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:4px; padding:4px 6px; font-size:12px">
+            </label>
+          </div>
+        </div>
+        <div id="medtour-derma-table-wrap" style="flex:1; min-width:220px"></div>
+      </div>
     </div>
 
     <div class="medtour-group-h">방한 외국인 데이터</div>
@@ -3154,6 +3209,51 @@ let medTourDermaCntChartInstance = null;
 let medTourDermaAspChartInstance = null;
 const MEDTOUR_SECTIONS = [ { key: 'all', label: '의료소비 전체' }, { key: 'derma', label: '피부과' } ];
 
+// ASP 비교(전체+5개국) — 의료소비 전체/피부과 두 섹션 모두, 국가 서브탭이 "전체"일 때만
+// 의미가 있어(2026-09-03 요청) 그때만 다중 선택 칩을 노출하고, 선택된 국가들의 ASP를 한
+// 차트에 함께 그린다(전체선+최대 5개국선). 개별 국가 탭에서는 비교 대상이 없어 기존처럼
+// 단일 선만 보여준다. 색상은 방한 외국인 침투율 차트(PENETRATION_GROUPS)와 통일 —
+// 전체=회색 점선, 국가별은 같은 팔레트(+PENETRATION_GROUPS에 없는 태국만 새로 배정).
+const MEDTOUR_ASP_COMPARE_GROUPS = [
+  { key: 'all', label: '전체', color: '#8a919c', dashed: true },
+  { key: 'china', label: '중국', color: '#2563eb' },
+  { key: 'japan', label: '일본', color: '#16a34a' },
+  { key: 'usa', label: '미국', color: '#f59e0b' },
+  { key: 'thailand', label: '태국', color: '#dc2626' },
+  { key: 'taiwan', label: '대만', color: '#7c3aed' },
+];
+// 기본값: 전체+5개국 모두 선택된 상태로 시작(요청 자체가 "함께 비교"가 기본 목적) — 칩을
+// 눌러서 원하는 국가만 남길 수 있다. 두 섹션(전체/피부과)은 선택 상태를 독립적으로 유지.
+let MEDTOUR_ASP_SELECTED = new Set(MEDTOUR_ASP_COMPARE_GROUPS.map(g => g.key));
+let MEDTOUR_DERMA_ASP_SELECTED = new Set(MEDTOUR_ASP_COMPARE_GROUPS.map(g => g.key));
+
+function renderMedtourAspChips(containerId, selectedSet, onChange){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+  wrap.innerHTML = MEDTOUR_ASP_COMPARE_GROUPS.map(g =>
+    `<button type="button" class="chip${selectedSet.has(g.key) ? ' active' : ''}" data-key="${g.key}">${escapeHtml(g.label)}</button>`
+  ).join('');
+  wrap.querySelectorAll('.chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      if(selectedSet.has(key)) selectedSet.delete(key); else selectedSet.add(key);
+      onChange();
+    });
+  });
+}
+
+// labels(현재 표시 중인 x축 라벨) 기준으로 tabKey 국가의 ASP(만원) 시계열을 만든다.
+// amtDivisor: 전체 소비 기준(monthly.amt, 천원 단위)이면 10, 피부과 기준
+// (buildMedtourDermaRows, deptAmt가 원 단위)이면 10000 — 위 두 ASP 차트의 기존 공식과 동일.
+function medtourAspSeriesForKey(tabKey, gran, labels, amtDivisor, isDerma){
+  const tab = MEDICAL_TOUR_DATA.tabs.find(t => t.key === tabKey);
+  if(!tab) return labels.map(() => null);
+  const monthlyRows = isDerma ? buildMedtourDermaRows(tab) : (tab.monthly || []);
+  const rows = aggregateMonthlyRows(monthlyRows, gran, ['amt', 'cnt']);
+  const byLabel = new Map(rows.map(r => [r.label, (r.cnt && r.amt != null) ? r.amt / r.cnt / amtDivisor : null]));
+  return labels.map(l => byLabel.get(l) ?? null);
+}
+
 // 8개 진료과목 고정 팔레트(데이터에 실제로 등장하는 이름 기준) — 대시보드 다른 곳에서 쓰는
 // 팔레트를 재사용해 전체 색감을 통일. 목록에 없는 새 과목이 나타나면 이름 해시로
 // 나머지 색을 순환 배정해 최소한 매 렌더마다 같은 색을 유지한다.
@@ -3231,7 +3331,7 @@ function renderMedtourDermaTabs(){
     btn.addEventListener('click', () => {
       MEDTOUR_STATE.dermaTab = btn.dataset.key;
       renderMedtourDermaTabs();
-      renderMedtourDermaTrendChart();
+      renderMedtourDermaAll();
     });
   });
 }
@@ -3448,21 +3548,40 @@ function renderMedtourTrendChart(){
   });
 
   // ASP(건당 평균 소비액, 만원) = 소비액(amt, 천원) / 소비건수(cnt) / 10 — 분기/연 단위일
-  // 때는 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다.
-  const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10 : null);
+  // 때는 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다. 국가 서브탭이
+  // "전체"일 때만(2026-09-03 요청) 전체+5개국 ASP를 한 차트에 비교하는 칩(다중 선택
+  // 토글)을 노출한다 — 개별 국가 탭에서는 비교 대상이 없어 기존처럼 단일 선만 보여준다.
+  const aspChipsWrap = document.getElementById('medtour-asp-compare-chips');
+  const aspLabels = displayRows.map(r => r.label);
+  let aspDatasets;
+  const aspLegend = MEDTOUR_STATE.tab === 'all';
+  if(aspLegend){
+    if(aspChipsWrap){
+      aspChipsWrap.style.display = '';
+      renderMedtourAspChips('medtour-asp-compare-chips', MEDTOUR_ASP_SELECTED, renderMedtourTrendChart);
+    }
+    aspDatasets = MEDTOUR_ASP_COMPARE_GROUPS
+      .filter(g => MEDTOUR_ASP_SELECTED.has(g.key))
+      .map(g => ({
+        label: g.label, data: medtourAspSeriesForKey(g.key, gran, aspLabels, 10, false),
+        borderColor: g.color, backgroundColor: g.color, borderDash: g.dashed ? [6, 4] : undefined,
+        fill: false, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true,
+      }));
+  }else{
+    if(aspChipsWrap) aspChipsWrap.style.display = 'none';
+    const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10 : null);
+    aspDatasets = [
+      { label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true },
+    ];
+  }
   medTourAspChartInstance = new Chart(document.getElementById('medTourAspChart'), {
     type: 'line',
-    data: {
-      labels: displayRows.map(r => r.label),
-      datasets: [
-        { label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true },
-      ],
-    },
+    data: { labels: aspLabels, datasets: aspDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { display: false },
+        legend: { display: aspLegend, labels: { color: textColor() } },
         tooltip: {
           mode: 'index', intersect: false,
           callbacks: {
@@ -3637,19 +3756,37 @@ function renderMedtourDermaTrendChart(){
   });
 
   // ASP(건당 평균 소비액, 만원) = 소비액(amt, 원) / 소비건수(cnt) / 10000 — 분기/연 단위일
-  // 때도 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다.
-  const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null);
+  // 때도 amt/cnt가 이미 그 구간 합계라 같은 공식으로 구간 평균 ASP가 나온다. 위 전체 섹션과
+  // 동일하게, 국가 서브탭이 "전체"일 때만 전체+5개국 ASP 비교 칩을 노출한다.
+  const dermaAspChipsWrap = document.getElementById('medtour-derma-asp-compare-chips');
+  const dermaAspLabels = displayRows.map(r => r.label);
+  let dermaAspDatasets;
+  const dermaAspLegend = MEDTOUR_STATE.dermaTab === 'all';
+  if(dermaAspLegend){
+    if(dermaAspChipsWrap){
+      dermaAspChipsWrap.style.display = '';
+      renderMedtourAspChips('medtour-derma-asp-compare-chips', MEDTOUR_DERMA_ASP_SELECTED, renderMedtourDermaTrendChart);
+    }
+    dermaAspDatasets = MEDTOUR_ASP_COMPARE_GROUPS
+      .filter(g => MEDTOUR_DERMA_ASP_SELECTED.has(g.key))
+      .map(g => ({
+        label: g.label, data: medtourAspSeriesForKey(g.key, gran, dermaAspLabels, 10000, true),
+        borderColor: g.color, backgroundColor: g.color, borderDash: g.dashed ? [6, 4] : undefined,
+        fill: false, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true,
+      }));
+  }else{
+    if(dermaAspChipsWrap) dermaAspChipsWrap.style.display = 'none';
+    const asp = displayRows.map(r => (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null);
+    dermaAspDatasets = [{ label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true }];
+  }
   medTourDermaAspChartInstance = new Chart(document.getElementById('medTourDermaAspChart'), {
     type: 'line',
-    data: {
-      labels: displayRows.map(r => r.label),
-      datasets: [{ label: 'ASP(만원)', data: asp, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.08)', fill: true, tension: .25, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, spanGaps: true }],
-    },
+    data: { labels: dermaAspLabels, datasets: dermaAspDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { display: false },
+        legend: { display: dermaAspLegend, labels: { color: textColor() } },
         tooltip: { mode: 'index', intersect: false, callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y == null ? '-' : ctx.parsed.y.toLocaleString(undefined, {maximumFractionDigits:1})}만원` } },
       },
       scales: {
@@ -3681,17 +3818,20 @@ function pivotMedtourDeptRatio(deptRows, months){
   }));
 }
 
-function renderMedtourStackedChart(canvasId, prevInstance, deptRows, months, label){
+// 이미 피벗된(과목별/국가별) datasets를 그대로 받아 누적 막대(%) 차트를 그린다 — 진료과목별
+// 비율 추이(pivotMedtourDeptRatio)와 피부과 국가별 비중(buildMedtourDermaCountryShareDatasets)
+// 둘 다 이 함수를 공유한다(2026-09-03, 국가별 비중 차트 신설하며 분리).
+function renderMedtourStackedChartFromDatasets(canvasId, prevInstance, datasets, months, label){
   if(prevInstance){ prevInstance.destroy(); }
-  if(!deptRows || !deptRows.length || !months.length) return null;
-  const datasets = pivotMedtourDeptRatio(deptRows, months);
+  if(!datasets || !datasets.length || !months.length) return null;
   return new Chart(document.getElementById(canvasId), {
     type: 'bar',
     data: { labels: months, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      // 막대 하나(과목 하나)에 커서를 올려도 그 달의 다른 과목 비율까지 한꺼번에 보이도록
-      // mode:'index'로 같은 x축(월)의 모든 과목 세그먼트를 툴팁에 함께 띄운다(2026-08-25 요청).
+      // 막대 하나(과목/국가 하나)에 커서를 올려도 그 달의 다른 세그먼트 비율까지 한꺼번에
+      // 보이도록 mode:'index'로 같은 x축(월)의 모든 세그먼트를 툴팁에 함께 띄운다
+      // (2026-08-25 요청).
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true, position: 'bottom', labels: { color: textColor(), boxWidth: 10, font: {size: 10} } },
@@ -3712,6 +3852,11 @@ function renderMedtourStackedChart(canvasId, prevInstance, deptRows, months, lab
   });
 }
 
+function renderMedtourStackedChart(canvasId, prevInstance, deptRows, months, label){
+  if(!deptRows || !deptRows.length || !months.length){ if(prevInstance) prevInstance.destroy(); return null; }
+  return renderMedtourStackedChartFromDatasets(canvasId, prevInstance, pivotMedtourDeptRatio(deptRows, months), months, label);
+}
+
 function renderMedtourDeptCharts(){
   const tab = currentMedtourTab();
   if(!tab || !tab.monthly || !tab.monthly.length){
@@ -3724,12 +3869,257 @@ function renderMedtourDeptCharts(){
   medTourDeptCntChartInstance = renderMedtourStackedChart('medTourDeptCntChart', medTourDeptCntChartInstance, tab.deptCnt, months, '소비건수');
 }
 
+// 피부과 소비 국가별 비중 — 피부과 탭에서 국가 서브탭이 "전체"일 때만 노출(2026-09-03
+// 요청). 분자는 각 국가 탭의 피부과 amt/cnt(buildMedtourDermaRows), 분모는 "전체" 탭의
+// 피부과 amt/cnt — 국가별 deptAmt/deptCnt에는 이 비중이 원본에 없어 매번 다시 계산한다.
+// 현재 수집 중인 5개국(중국/일본/미국/태국/대만) 외 나머지는 "기타"로 묶는다. 국가별 색상은
+// VISITOR_COUNTRY_GROUPS/PENETRATION_GROUPS와 동일하게 맞추고, 그 두 곳엔 없는 태국만
+// 새로 배정(MEDTOUR_PALETTE의 dc2626).
+const MEDTOUR_COUNTRY_SHARE_GROUPS = [
+  { key: 'china', label: '중국', color: '#2563eb' },
+  { key: 'japan', label: '일본', color: '#16a34a' },
+  { key: 'usa', label: '미국', color: '#f59e0b' },
+  { key: 'thailand', label: '태국', color: '#dc2626' },
+  { key: 'taiwan', label: '대만', color: '#7c3aed' },
+];
+
+function buildMedtourDermaCountryShareDatasets(valueKey, months){
+  const allTab = MEDICAL_TOUR_DATA.tabs.find(t => t.key === 'all');
+  const allByYm = new Map(buildMedtourDermaRows(allTab).map(r => [r.ym, r[valueKey]]));
+  const countryData = MEDTOUR_COUNTRY_SHARE_GROUPS.map(g => {
+    const tab = MEDICAL_TOUR_DATA.tabs.find(t => t.key === g.key);
+    const byYm = new Map(buildMedtourDermaRows(tab).map(r => [r.ym, r[valueKey]]));
+    return {
+      label: g.label,
+      backgroundColor: g.color,
+      data: months.map(ym => {
+        const total = allByYm.get(ym);
+        const v = byYm.get(ym);
+        return (total && v != null) ? (v / total) * 100 : 0;
+      }),
+    };
+  });
+  const otherData = months.map((ym, i) => {
+    const known = countryData.reduce((s, ds) => s + (ds.data[i] || 0), 0);
+    return Math.max(0, 100 - known);
+  });
+  return [...countryData, { label: '기타', backgroundColor: '#8a919c', data: otherData }];
+}
+
+let medTourDermaCountryAmtChartInstance = null;
+let medTourDermaCountryCntChartInstance = null;
+
+function renderMedtourDermaCountryCharts(){
+  const grid = document.getElementById('medtour-derma-country-grid');
+  if(!grid) return;
+  if(MEDTOUR_STATE.dermaTab !== 'all'){
+    grid.style.display = 'none';
+    if(medTourDermaCountryAmtChartInstance){ medTourDermaCountryAmtChartInstance.destroy(); medTourDermaCountryAmtChartInstance = null; }
+    if(medTourDermaCountryCntChartInstance){ medTourDermaCountryCntChartInstance.destroy(); medTourDermaCountryCntChartInstance = null; }
+    return;
+  }
+  grid.style.display = '';
+  const allTab = MEDICAL_TOUR_DATA.tabs.find(t => t.key === 'all');
+  const allRows = buildMedtourDermaRows(allTab);
+  if(!allRows.length){
+    if(medTourDermaCountryAmtChartInstance){ medTourDermaCountryAmtChartInstance.destroy(); medTourDermaCountryAmtChartInstance = null; }
+    if(medTourDermaCountryCntChartInstance){ medTourDermaCountryCntChartInstance.destroy(); medTourDermaCountryCntChartInstance = null; }
+    return;
+  }
+  const months = allRows.slice(-12).map(r => r.ym); // 진료과목별 비율 추이와 동일하게 최근 12개월
+  medTourDermaCountryAmtChartInstance = renderMedtourStackedChartFromDatasets(
+    'medTourDermaCountryAmtChart', medTourDermaCountryAmtChartInstance,
+    buildMedtourDermaCountryShareDatasets('amt', months), months, '소비액');
+  medTourDermaCountryCntChartInstance = renderMedtourStackedChartFromDatasets(
+    'medTourDermaCountryCntChart', medTourDermaCountryCntChartInstance,
+    buildMedtourDermaCountryShareDatasets('cnt', months), months, '소비건수');
+}
+
+// "데이터 복사하기" — 수출 데이터/진료행위 통계 섹션과 동일한 패턴(3/6/12개월 프리셋 +
+// 시작월/종료월 직접 선택). "의료소비 전체" 탭(현재 선택된 국가, currentMedtourTab)의
+// 월별 소비액·소비건수·ASP를 대상으로 한다. 소비액은 raw 데이터 단위(천원)를 그대로 써서
+// 엑셀 붙여넣기 시 정밀도 손실이 없게 한다(진료행위 통계 표와 동일한 원칙).
+let MEDTOUR_TABLE_RANGE = { mode: '6m', start: null, end: null };
+
+function medtourTableFilteredRows(monthly){
+  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+  if(MEDTOUR_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
+  if(MEDTOUR_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
+  if(MEDTOUR_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
+  const { start, end } = MEDTOUR_TABLE_RANGE;
+  if(!start || !end) return sorted.slice(-6);
+  return sorted.filter(r => r.ym >= start && r.ym <= end);
+}
+
+// ASP(만원) = 소비액(천원) / 소비건수 / 10 — 위 renderMedtourTrendChart의 공식과 동일.
+function medtourRowAsp(r){ return (r.cnt && r.amt != null) ? r.amt / r.cnt / 10 : null; }
+
+function renderMedtourTable(){
+  const wrap = document.getElementById('medtour-table-wrap');
+  if(!wrap) return;
+  const tab = currentMedtourTab();
+  const monthly = tab && tab.monthly;
+  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
+  const rows = medtourTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
+  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
+  const rowHtml = r => {
+    const asp = medtourRowAsp(r);
+    return `<tr><td>${r.ym}</td><td>${(r.amt || 0).toLocaleString()}</td><td>${(r.cnt || 0).toLocaleString()}</td><td>${asp == null ? '-' : asp.toLocaleString(undefined,{maximumFractionDigits:1})}</td></tr>`;
+  };
+  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>의료 소비액(천원)</th><th>의료 소비건수(건)</th><th>의료 소비 ASP(만원)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
+}
+
+async function copyMedtourTable(){
+  const tab = currentMedtourTab();
+  const monthly = tab && tab.monthly;
+  if(!monthly || !monthly.length) return;
+  const rows = medtourTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
+  const lines = ['기간\t의료 소비액(천원)\t의료 소비건수(건)\t의료 소비 ASP(만원)', ...rows.map(r => {
+    const asp = medtourRowAsp(r);
+    return `${ymToLastDay(r.ym)}\t${r.amt || 0}\t${r.cnt || 0}\t${asp == null ? '' : asp.toFixed(1)}`;
+  })];
+  const text = lines.join('\n');
+  const btn = document.getElementById('medtour-table-copy');
+  try{
+    await navigator.clipboard.writeText(text);
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }catch(e){
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }
+}
+document.getElementById('medtour-table-copy')?.addEventListener('click', copyMedtourTable);
+
+(() => {
+  const toggle = document.getElementById('medtour-range-toggle');
+  const startInput = document.getElementById('medtour-range-start');
+  const endInput = document.getElementById('medtour-range-end');
+  if(!toggle || !startInput || !endInput) return;
+  toggle.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      MEDTOUR_TABLE_RANGE.mode = btn.dataset.range;
+      const tab = currentMedtourTab();
+      const monthly = tab && tab.monthly;
+      if(monthly && monthly.length){
+        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
+        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
+        endInput.value = sorted[sorted.length - 1].ym;
+        MEDTOUR_TABLE_RANGE.start = startInput.value;
+        MEDTOUR_TABLE_RANGE.end = endInput.value;
+      }
+      renderMedtourTable();
+    });
+  });
+  const onCustomChange = () => {
+    MEDTOUR_TABLE_RANGE.mode = 'custom';
+    MEDTOUR_TABLE_RANGE.start = startInput.value || null;
+    MEDTOUR_TABLE_RANGE.end = endInput.value || null;
+    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    renderMedtourTable();
+  };
+  startInput.addEventListener('change', onCustomChange);
+  endInput.addEventListener('change', onCustomChange);
+})();
+
+// "데이터 복사하기"(피부과 탭) — 위 medtour-table-copy와 동일한 패턴이되, 대상은
+// 피부과 탭에서 선택된 국가(currentMedtourDermaTab)의 buildMedtourDermaRows() 결과.
+// deptAmt/deptCnt 기준이라 amt 단위가 "원"이라 ASP 공식의 나눗셈 자릿수만 다르다
+// (renderMedtourDermaTrendChart의 ASP 공식과 동일: amt(원)/cnt/10000).
+let MEDTOUR_DERMA_TABLE_RANGE = { mode: '6m', start: null, end: null };
+
+function medtourDermaTableFilteredRows(monthly){
+  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
+  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
+  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
+  const { start, end } = MEDTOUR_DERMA_TABLE_RANGE;
+  if(!start || !end) return sorted.slice(-6);
+  return sorted.filter(r => r.ym >= start && r.ym <= end);
+}
+
+function medtourDermaRowAsp(r){ return (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null; }
+
+function renderMedtourDermaTable(){
+  const wrap = document.getElementById('medtour-derma-table-wrap');
+  if(!wrap) return;
+  const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
+  if(!monthly.length){ wrap.innerHTML = ''; return; }
+  const rows = medtourDermaTableFilteredRows(monthly).slice().reverse();
+  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
+  const rowHtml = r => {
+    const asp = medtourDermaRowAsp(r);
+    return `<tr><td>${r.ym}</td><td>${(r.amt || 0).toLocaleString()}</td><td>${(r.cnt || 0).toLocaleString()}</td><td>${asp == null ? '-' : asp.toLocaleString(undefined,{maximumFractionDigits:1})}</td></tr>`;
+  };
+  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>의료 소비액(원)</th><th>의료 소비건수(건)</th><th>의료 소비 ASP(만원)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
+}
+
+async function copyMedtourDermaTable(){
+  const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
+  if(!monthly.length) return;
+  const rows = medtourDermaTableFilteredRows(monthly);
+  const lines = ['기간\t의료 소비액(원)\t의료 소비건수(건)\t의료 소비 ASP(만원)', ...rows.map(r => {
+    const asp = medtourDermaRowAsp(r);
+    return `${ymToLastDay(r.ym)}\t${r.amt || 0}\t${r.cnt || 0}\t${asp == null ? '' : asp.toFixed(1)}`;
+  })];
+  const text = lines.join('\n');
+  const btn = document.getElementById('medtour-derma-table-copy');
+  try{
+    await navigator.clipboard.writeText(text);
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }catch(e){
+    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
+  }
+}
+document.getElementById('medtour-derma-table-copy')?.addEventListener('click', copyMedtourDermaTable);
+
+(() => {
+  const toggle = document.getElementById('medtour-derma-range-toggle');
+  const startInput = document.getElementById('medtour-derma-range-start');
+  const endInput = document.getElementById('medtour-derma-range-end');
+  if(!toggle || !startInput || !endInput) return;
+  toggle.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      MEDTOUR_DERMA_TABLE_RANGE.mode = btn.dataset.range;
+      const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
+      if(monthly.length){
+        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
+        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
+        endInput.value = sorted[sorted.length - 1].ym;
+        MEDTOUR_DERMA_TABLE_RANGE.start = startInput.value;
+        MEDTOUR_DERMA_TABLE_RANGE.end = endInput.value;
+      }
+      renderMedtourDermaTable();
+    });
+  });
+  const onCustomChange = () => {
+    MEDTOUR_DERMA_TABLE_RANGE.mode = 'custom';
+    MEDTOUR_DERMA_TABLE_RANGE.start = startInput.value || null;
+    MEDTOUR_DERMA_TABLE_RANGE.end = endInput.value || null;
+    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    renderMedtourDermaTable();
+  };
+  startInput.addEventListener('change', onCustomChange);
+  endInput.addEventListener('change', onCustomChange);
+})();
+
+function renderMedtourDermaAll(){
+  renderMedtourDermaTrendChart();
+  renderMedtourDermaCountryCharts();
+  renderMedtourDermaTable();
+}
+
 function renderMedtourAll(){
   renderMedtourOverviewCards();
   renderMedtourTrendChart();
   renderMedtourDeptCharts();
+  renderMedtourTable();
   renderMedtourPenetrationChart();
-  renderMedtourDermaTrendChart();
+  renderMedtourDermaAll();
 }
 
 async function loadMedicalTourData(){
