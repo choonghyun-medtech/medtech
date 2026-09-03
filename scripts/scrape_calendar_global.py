@@ -17,13 +17,20 @@
    실제로 회사 공식 공지와 어긋나는 경우가 있어 신뢰할 수 없다고 판단해 걷어냈다
    (yfinance 응답 자체에 확정/추정을 구분하는 필드도 없음). 18개사 IR 페이지를
    전부 직접 테스트해본 결과 대부분이 봇 차단(403)이거나 응답 자체가 없어
-   (타임아웃) 단순 크롤링이 불가능했고, 지금까지 3곳(Medtronic, Boston
-   Scientific, UnitedHealth Group)만 막힘 없이 접근 가능하면서 미래 확정
-   일정을 그대로 내려준다는 걸 확인했다:
+   (타임아웃) 단순 크롤링이 불가능했다. 지금까지 확인된 접근 가능 회사:
      - Medtronic: 페이지 뒤의 JSON API(index.php?ajax=ajax&op=list)를 그대로 호출
      - Boston Scientific: events-and-presentations 페이지 안 <table>에 바로 있음
      - UnitedHealth Group: investors.html "Events" 박스 <h4>에 다음 일정 1건이
        "{월 일}: {제목}" 형식으로 서버 렌더링됨(연도 미표기 → 오늘 기준 추정)
+     - [2026-09-03] Stryker/Dexcom/Edwards/Thermo Fisher/Hims & Hers/iRhythm/
+       Teladoc/Natera/Guardant Health(9개사): 전부 "Q4 Inc."라는 동일한 IR
+       웹사이트 위탁 플랫폼을 쓰고 있어서, 각자 페이지가 JS로 호출하는 공개
+       JSONP 엔드포인트("{IR도메인}/feed/Event.svc/GetEventList")를 그대로
+       호출하면 회사별 HTML 파싱 없이 구조화된 JSON으로 일정을 받는다
+       (scrape_q4_feed 함수 하나로 9개사 전부 처리). Align Technology/Tempus
+       AI/Abbott/Intuitive Surgical도 같은 플랫폼을 쓰는지는 로컬 사내망에서
+       TLS 핸드셰이크가 막혀 있어 확인하지 못했다 — GitHub Actions 등 다른
+       네트워크에서 재확인 필요.
    나머지 회사는 회사가 공식 발표하기 전까지는 미래 일정을 아예 채우지 않는다
    (추정치를 넣느니 비워두는 쪽을 사용자가 명시적으로 선택함, 2026-08-28).
    추후 나머지 회사들의 크롤링 방법을 찾으면 여기에 scraper를 추가하면 된다.
@@ -250,10 +257,68 @@ def scrape_unh_events(scraper_url, ticker, name, ir_url, today):
     return events
 
 
+def scrape_q4_feed(scraper_url, ticker, name, ir_url, today):
+    """Q4 Inc.(다수의 미국 상장사가 쓰는 IR 웹사이트 위탁 플랫폼) 공개 이벤트 피드.
+    회사 IR 페이지가 브라우저에서 JS로 호출하는 "{IR도메인}/feed/Event.svc/
+    GetEventList" JSONP 엔드포인트를 그대로 호출한다 — 회사마다 다른 HTML을
+    파싱할 필요 없이 이 함수 하나로 Q4 플랫폼을 쓰는 모든 회사를 처리한다.
+    eventSelection=1 & eventDateFilter=1이 페이지가 기본으로 쓰는 "다가오는 일정만"
+    필터와 동일함을 DXCM 페이지의 위젯 초기화 스크립트(eventSelection: 1)로 확인했다."""
+    events = []
+    base = scraper_url.rstrip("/")
+    params = {
+        "pageSize": 25,
+        "includeTags": "true",
+        "eventSelection": 1,
+        "eventDateFilter": 1,
+        "sortOperator": 1,
+        "excludeSelection": 1,
+        "includePressReleases": "true",
+        "includePresentations": "true",
+        "includeFinancialReports": "true",
+        "LanguageId": 1,
+        "callback": "?",  # jQuery의 JSONP 콜백 자리표시자 — 응답은 "?(...)" 형태로 온다
+    }
+    try:
+        r = requests.get(f"{base}/feed/Event.svc/GetEventList", params=params, timeout=20,
+                          headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        text = r.text.strip()
+    except Exception as e:
+        print(f"[WARN] {ticker} 공식 IR 크롤링 실패(q4_feed): {e}", file=sys.stderr)
+        return events
+
+    m = re.match(r"^\?\((.*)\);?$", text, re.S)
+    if not m:
+        print(f"[WARN] {ticker} q4_feed 응답 형식을 인식하지 못함", file=sys.stderr)
+        return events
+    try:
+        data = json.loads(m.group(1))
+    except json.JSONDecodeError as e:
+        print(f"[WARN] {ticker} q4_feed JSON 파싱 실패: {e}", file=sys.stderr)
+        return events
+
+    for item in data.get("GetEventListResult", []):
+        title = (item.get("Title") or "").strip()
+        ev_type = classify_global(title)
+        if not ev_type:
+            continue
+        start = item.get("StartDate", "")
+        try:
+            d = datetime.datetime.strptime(start.split(" ")[0], "%m/%d/%Y").date()
+        except ValueError:
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+    return events
+
+
 SCRAPERS = {
     "mdt_wd": scrape_mdt_wd,
     "bsx_table": scrape_bsx_table,
     "unh_events": scrape_unh_events,
+    "q4_feed": scrape_q4_feed,
 }
 
 
