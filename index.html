@@ -89,7 +89,15 @@ h1{font-size:22px; margin:2px 0 2px}
 .sec-h{display:flex; align-items:baseline; justify-content:space-between; margin:22px 0 8px}
 .sec-h:first-child{margin-top:0}
 .sec-h h2{font-size:15px; margin:0}
-.sec-h .note{font-size:11.5px; color:var(--dim)}
+/* 원래 .sec-h 안에서만 스코프돼 있던 규칙이라 그 밖에서 쓴 .note(컨센서스 출처 안내,
+   "※" 각주 등)는 스타일이 전혀 안 먹고 본문 크기(14px)로 나왔다 — 텔레그램 코멘트 본문
+   (12.5px)보다 커 보인 원인이 이거였다. 전역 규칙으로 바꿔 어디서 쓰든 일관되게 적용한다
+   (2026-09-04). */
+.note{font-size:11.5px; color:var(--dim)}
+/* 기업 상세 카드 안의 소제목(투자의견 변경 이력/텔레그램 코멘트/실적 추이 등) — 컨센서스
+   출처 안내나 "※" 각주 같은 부연설명(.note, 흐린 회색)과 시각적으로 구분되도록 굵게/진하게
+   처리한다(2026-09-04, 서식이 같아서 구분이 안 된다는 피드백 반영). */
+.subsec-h{font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:6px}
 .chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px}
 .chip{
   border:1px solid var(--border); background:var(--bg2); color:var(--sub);
@@ -300,6 +308,9 @@ tr:last-child td{border-bottom:none}
 .chip-group{margin-bottom:10px}
 .chip-group-label{font-size:10.5px; color:var(--dim); font-weight:700; margin-bottom:4px; text-transform:uppercase; letter-spacing:.03em}
 .filter-select{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:6px 10px; font-size:12px}
+/* 추적 기업 카테고리 드롭다운 — 카테고리별로 옵션 텍스트 길이가 달라 폭이 제각각이었다.
+   고정폭 + 말줄임으로 가지런히 정리(2026-09-04). */
+.rep-cat-select{width:150px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 .perf-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
 @media (max-width:720px){.perf-grid{grid-template-columns:1fr}}
 .perf-table-title{font-size:13px; font-weight:700; padding:8px 10px; border-radius:8px 8px 0 0; color:#fff}
@@ -814,11 +825,14 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2>추적 기업</h2><span class="note">카테고리별 드롭다운에서 종목 선택 시 해당 리포트만 필터 · <a href="#" id="rep-reset-link" style="color:var(--accent);text-decoration:none;font-weight:600">전체 보기</a></span></div>
     <div id="rep-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
 
-    <div id="rep-company-detail"></div>
+    <div class="card">
+      <div id="rep-company-detail"></div>
+      <div id="rep-table-wrap" style="margin-top:10px"></div>
+      <div id="rep-pager" class="rep-pager"></div>
+    </div>
 
-    <div id="rep-table-wrap"></div>
-    <div id="rep-pager" class="rep-pager"></div>
     <div id="rep-stock-box" style="margin-top:14px"></div>
+    <div id="rep-earnings-wrap" style="margin-top:14px"></div>
 
     <div class="sec-h" style="margin-top:24px"><h2>바이오/로보틱스</h2><span class="note">김승민·서미화·박선영 애널리스트 발간분 · reports_bio.json 자동 갱신</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
@@ -4672,10 +4686,24 @@ function repOpLabel(op){
 // 사명 변경 대응: 구사명으로 발간된 과거 보고서도 현재 사명 기준으로 한데 묶어서 필터링.
 // 새 항목이 생기면 여기에 { 구사명: 현사명 } 한 줄만 추가하면 됨.
 const COMPANY_ALIASES = { '씨어스테크놀로지': '씨어스' };
-// 화면 표기에는 현사명과 구사명을 함께 보여줘 혼선을 줄인다.
-const COMPANY_ALT_LABEL = { '씨어스': '씨어스테크놀로지' };
+// tickers.json(TICKER_UNIVERSE)의 name 필드와 reports.json/reports_bio.json의 co 필드 표기가
+// 달라서 tickerForCompany()의 정확 일치 매칭이 실패하는 경우의 별칭 테이블 — 종목 매칭 용도로만
+// 쓰고 화면 표기는 항상 co 그대로 보여준다(구사명 병기 안 함: 씨어스는 이미 완전히 개명된 상태라
+// "(씨어스테크놀로지)"를 굳이 병기할 필요가 없다는 피드백, 2026-09-04).
+const TICKER_NAME_ALIAS = {
+  '씨어스': '씨어스테크놀로지',
+  '스트라이커': 'Stryker',
+  '메드트로닉': 'Medtronic',
+  '보스턴 사이언티픽 코퍼레이션': 'Boston Scientific',
+  '애보트 래보러토리': 'Abbott',
+  '에드워즈 라이프사이언시스': 'Edwards',
+  '덱스컴': 'Dexcom',
+  '써모 피셔 사이언티픽': 'Thermo Fisher',
+  '인튜이티브 서지컬': 'Intuitive Surgical',
+  '유나이티드 헬스 그룹': 'UnitedHealth',
+};
 function companyLabel(co){
-  return COMPANY_ALT_LABEL[co] ? `${co}(${COMPANY_ALT_LABEL[co]})` : co;
+  return co;
 }
 
 // ---- 텔레그램(t.me/globalmedtech) 리포트 코멘트 자동 매칭 ----
@@ -4724,8 +4752,10 @@ function linkifyHtml(escapedText){
 function telegramCommentBlockHtml(co, dateStr){
   const tg = findTelegramComment(co, dateStr);
   if(!tg) return '';
-  const clean = (tg.comment_clean != null ? tg.comment_clean : '').trim();
-  const body = clean || '(코멘트 본문 없음 — 링크/공지만 게시됨)';
+  // 제목+링크+디스클레이머만 있던 메시지(comment_clean이 빈 경우)는 보여줄 본문이 없으니
+  // 플레이스홀더 문구 대신 아예 표시하지 않는다(2026-09-04).
+  const body = (tg.comment_clean != null ? tg.comment_clean : '').trim();
+  if(!body) return '';
   return `<div class="tg-comment">
     <div class="tg-comment-text">💬 ${linkifyHtml(escapeHtml(body))}</div>
   </div>
@@ -4821,9 +4851,12 @@ function renderReports(filterCo){
     `미래에셋증권 · 김충현, CFA 발간 · 전체 ${rows.length}건 · ${repPage}/${totalPages}페이지`;
 }
 
-// 추적 기업 카테고리 — 필요시 회사명만 추가/이동하면 됨
+// 추적 기업 카테고리 — 필요시 회사명만 추가/이동하면 됨.
+// "산업" 카테고리는 개별 기업이 아니라 산업 전체를 다루는 테마 리포트(예: "헬스케어 산업",
+// "[2026 하반기 전망] 의료기기/디지털헬스")를 모아두는 곳이라 companies를 고정 목록으로 미리
+// 적어두지 않고, renderRepCategoryDropdowns()에서 종목코드(code)가 없는 co를 자동으로 채운다
+// (2026-09-04, 매 반기 리포트 제목이 바뀌어도 매번 여기 손댈 필요 없게).
 const CATEGORIES = [
-  {name:'산업', companies:['의료기기/디지털헬스']},
   {name:'디지털헬스', companies:['씨어스','인바디','아이센스','고영','리브스메드','루닛','큐렉소']},
   {name:'미용기기', companies:['클래시스','파마리서치']},
   {name:'치료용 의료기기', companies:['넥스트바이오메디컬']},
@@ -4831,7 +4864,8 @@ const CATEGORIES = [
   {name:'체외진단', companies:['씨젠','바이오다인']},
   {name:'생명공학', companies:['큐리오시스']},
   {name:'기타', companies:['아이엠비디엑스','뷰웍스','뉴로핏']},
-  {name:'해외기업', companies:['보스턴 사이언티픽 코퍼레이션','스트라이커','덱스컴','에드워즈 라이프사이언시스','써모 피셔 사이언티픽','인튜이티브 서지컬','애보트 래보러토리','유나이티드 헬스 그룹','메드트로닉','쿠퍼 컴퍼니스','이그젝트 사이언스','메드봇']}
+  {name:'해외기업', companies:['보스턴 사이언티픽 코퍼레이션','스트라이커','덱스컴','에드워즈 라이프사이언시스','써모 피셔 사이언티픽','인튜이티브 서지컬','애보트 래보러토리','유나이티드 헬스 그룹','메드트로닉','쿠퍼 컴퍼니스','이그젝트 사이언스','메드봇']},
+  {name:'산업', companies:[]},
 ];
 
 function resetRepFilter(){
@@ -4844,15 +4878,23 @@ function resetRepFilter(){
 
 function renderRepCategoryDropdowns(){
   const counts = {};
-  REPORTS.forEach(r=>{ counts[r.co] = (counts[r.co]||0)+1; });
+  const emptyCodeCos = new Set(), hasCodeCos = new Set();
+  REPORTS.forEach(r=>{
+    counts[r.co] = (counts[r.co]||0)+1;
+    (r.code ? hasCodeCos : emptyCodeCos).add(r.co);
+  });
+  // 종목코드가 있는 리포트가 하나도 없는 co만 "산업" 테마 리포트로 취급(=실제 기업이면
+  // 어느 리포트든 code가 있으므로 hasCodeCos에 걸려 제외된다).
+  const industrySet = new Set([...emptyCodeCos].filter(co=>!hasCodeCos.has(co)));
   const categorized = new Set();
   CATEGORIES.forEach(c=>c.companies.forEach(co=>categorized.add(co)));
-  const leftover = Object.keys(counts).filter(co=>!categorized.has(co));
+  const leftover = Object.keys(counts).filter(co=>!categorized.has(co) && !industrySet.has(co));
 
   const wrap = document.getElementById('rep-dropdown-wrap');
   let html = '';
   CATEGORIES.forEach(cat=>{
     let list = cat.companies.filter(co=>counts[co]);
+    if(cat.name==='산업') list = list.concat([...industrySet].filter(co=>counts[co]));
     if(cat.name==='기타') list = list.concat(leftover);
     if(list.length===0) return;
     html += `<select class="filter-select rep-cat-select" data-category="${cat.name}">
@@ -4879,11 +4921,11 @@ function renderRepCategoryDropdowns(){
 }
 
 // reports.json의 co(회사명)로 tickers.json(TICKER_UNIVERSE)에서 해당 종목을 찾는다.
-// 사명이 바뀐 경우(COMPANY_ALT_LABEL) 구사명으로도 한 번 더 시도한다.
+// 표기가 다른 경우(TICKER_NAME_ALIAS) 별칭으로도 한 번 더 시도한다.
 function tickerForCompany(co){
   if(!TICKER_UNIVERSE.length) return null;
   let info = TICKER_UNIVERSE.find(t=>t.name===co);
-  if(!info && COMPANY_ALT_LABEL[co]) info = TICKER_UNIVERSE.find(t=>t.name===COMPANY_ALT_LABEL[co]);
+  if(!info && TICKER_NAME_ALIAS[co]) info = TICKER_UNIVERSE.find(t=>t.name===TICKER_NAME_ALIAS[co]);
   return info ? info.ticker : null;
 }
 
@@ -4925,7 +4967,7 @@ function renderEarningsTrendTable(cons){
       return `<tr><td>${r.label}</td>${cells}</tr>`;
     }).join('');
     return `
-      <div class="note" style="margin-top:10px;margin-bottom:4px">${title}</div>
+      <div class="subsec-h" style="margin-top:10px">${title}</div>
       <table style="font-size:12px"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table>
     `;
   }
@@ -4977,8 +5019,11 @@ function renderRepStockBox(co){
     <div class="stat-card"><div class="lbl">상승여력</div><div class="val">${upside!=null?fmtPct(upside)+'%':'-'}</div><div class="delta ${upside!=null?pctClass(upside):''}">목표가 대비</div></div>
   ` : `<div class="stat-card"><div class="lbl">목표주가</div><div class="val">-</div><div class="delta">컨센서스 데이터 없음</div></div>`;
 
+  // 국내(네이버)는 페이지 표기가 이미 소수점 2자리(예: "20.00")인데, 해외(yfinance)는
+  // forwardPE가 원시값(예: 18.382051)이라 그대로 찍으면 자릿수가 안 맞았다 — 둘 다
+  // 소수점 2자리로 통일해서 표시(2026-09-04).
   const per = cons ? cons.per_fwd : null;
-  const perBlock = per!=null ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per}배</div><div class="delta">Forward PER(컨센서스)</div></div>`
+  const perBlock = per!=null ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per.toFixed(2)}배</div><div class="delta">Forward PER(컨센서스)</div></div>`
     : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">컨센서스 PER 없음(커버리지 부족)</div></div>`;
 
   box.innerHTML = `
@@ -4994,16 +5039,37 @@ function renderRepStockBox(co){
   `;
 }
 
+// 컨센서스 실적 추이 표(연간/분기)는 리포트 목록이 있던 자리로 옮겨져 #rep-earnings-wrap에
+// 따로 렌더링된다(투자의견 이력/텔레그램 코멘트/리포트 목록을 한 테두리 박스로 묶고, 컨센서스
+// 표는 그 바깥에 별도로 두고 싶다는 요청, 2026-09-04).
+function renderRepEarningsBox(co){
+  const wrap = document.getElementById('rep-earnings-wrap');
+  if(!wrap) return;
+  if(!co || co==='전체'){ wrap.innerHTML=''; return; }
+  const consTicker = tickerForCompany(co);
+  const cons = consTicker ? CONSENSUS[consTicker] : null;
+  const consNote = cons
+    ? `<div class="note" style="margin-bottom:6px">시장 컨센서스(${cons.as_of||''} 기준, ${cons.source==='naver'?'FnGuide/네이버':'Yahoo Finance'})${cons.opinion?` · 투자의견 ${cons.opinion}`:''}</div>`
+    : `<div class="note">시장 컨센서스 데이터가 아직 없습니다 (consensus.json 미연동 또는 해당 종목 커버리지 부족).</div>`;
+  wrap.innerHTML = `<div class="card">${consNote}${renderEarningsTrendTable(cons)}</div>`;
+}
+
 function renderCompanyDetail(co){
   const panel = document.getElementById('rep-company-detail');
   const stockBox = document.getElementById('rep-stock-box');
   if(!co || co==='전체'){
     panel.innerHTML='';
     if(stockBox) stockBox.innerHTML='';
+    renderRepEarningsBox(co);
     return;
   }
   const rows = REPORTS.filter(r=>r.co===co).slice().sort((a,b)=> a.d.localeCompare(b.d));
-  if(rows.length===0){ panel.innerHTML=''; if(stockBox) stockBox.innerHTML=''; return; }
+  if(rows.length===0){
+    panel.innerHTML='';
+    if(stockBox) stockBox.innerHTML='';
+    renderRepEarningsBox(co);
+    return;
+  }
   const latest = rows[rows.length-1];
   const first = rows[0];
   const codeStr = latest.code ? ` (${latest.code})` : '';
@@ -5017,24 +5083,21 @@ function renderCompanyDetail(co){
     ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${repOpLabel(t.op)}</span>`).join('')
     : '<span class="note">의견 변경 이력 없음</span>';
 
-  const consTicker = tickerForCompany(co);
-  const cons = consTicker ? CONSENSUS[consTicker] : null;
-  const consNote = cons
-    ? `<div class="note" style="margin-bottom:6px">시장 컨센서스(${cons.as_of||''} 기준, ${cons.source==='naver'?'FnGuide/네이버':'Yahoo Finance'})${cons.opinion?` · 투자의견 ${cons.opinion}`:''}</div>`
-    : `<div class="note" style="margin-top:10px">시장 컨센서스 데이터가 아직 없습니다 (consensus.json 미연동 또는 해당 종목 커버리지 부족).</div>`;
-  const estimateHtml = `<div style="margin-top:12px">${consNote}${renderEarningsTrendTable(cons)}</div>`;
-
   // 이 기업으로 매칭된 텔레그램 코멘트를 최신순으로 나열(±5일 매칭 기준은
   // findTelegramComment와 동일 로직이라, 여기서는 co가 같은 코멘트를 전부 보여준다).
   // 채널 메시지가 한 달 주기로 자동 삭제되도록 설정돼 있어 링크는 곧 죽으므로,
   // 링크 없이 코멘트 원문 텍스트만 그대로 보여준다.
-  const tgComments = TELEGRAM_COMMENTS.filter(c=>c.co===co).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  // comment_clean이 빈 코멘트(제목+링크+디스클레이머만 있던 메시지)는 보여줄 본문이 없으니
+  // 아예 목록에서 제외한다(플레이스홀더 문구를 보여주지 않기로 함, 2026-09-04).
+  const tgComments = TELEGRAM_COMMENTS
+    .filter(c=>c.co===co && (c.comment_clean||'').trim())
+    .slice()
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const tgHtml = tgComments.length
     ? `<div style="margin-top:12px">
-        <div class="note" style="margin-bottom:6px">텔레그램 채널(t.me/globalmedtech) 코멘트</div>
+        <div class="subsec-h">텔레그램 채널(t.me/globalmedtech) 코멘트</div>
         ${tgComments.map(c=>{
-          const clean = (c.comment_clean != null ? c.comment_clean : '').trim();
-          const body = clean || '(코멘트 본문 없음 — 링크/공지만 게시됨)';
+          const body = c.comment_clean.trim();
           return `
           <div class="news-item" style="padding:6px 0">
             <div class="meta" style="margin-bottom:2px">${c.date||''}</div>
@@ -5045,20 +5108,18 @@ function renderCompanyDetail(co){
     : '';
 
   panel.innerHTML = `
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
-        <div style="font-weight:700;font-size:15px">${companyLabel(co)}${codeStr}</div>
-        <div class="note">보고서 ${rows.length}건 · ${first.d} ~ ${latest.d} · 최신 의견 ${latest.op ? `<span class="badge ${repBadgeClass(latest.op)}">${repOpLabel(latest.op)}</span>` : '—'}</div>
-      </div>
-      <div style="margin-top:10px">
-        <div class="note" style="margin-bottom:6px">투자의견 변경 이력</div>
-        ${timelineHtml}
-      </div>
-      ${estimateHtml}
-      ${tgHtml}
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+      <div style="font-weight:700;font-size:15px">${companyLabel(co)}${codeStr}</div>
+      <div class="note">보고서 ${rows.length}건 · ${first.d} ~ ${latest.d} · 최신 의견 ${latest.op ? `<span class="badge ${repBadgeClass(latest.op)}">${repOpLabel(latest.op)}</span>` : '—'}</div>
     </div>
+    <div style="margin-top:10px">
+      <div class="subsec-h">투자의견 변경 이력</div>
+      ${timelineHtml}
+    </div>
+    ${tgHtml}
   `;
 
+  renderRepEarningsBox(co);
   renderRepStockBox(co);
 }
 
