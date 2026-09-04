@@ -4655,7 +4655,7 @@ document.querySelectorAll('#hira-period-toggle button').forEach(b => {
 // 실제 배포본(index.html)에서는 이 배열을 reports.json fetch로 대체합니다.
 // ==================================================================
 let REPORTS = [];
-let REPORT_ESTIMATES = {}; // report_estimates.json · 기업별 최신 보고서 PDF에서 추출한 실적추정/목표주가
+let CONSENSUS = {}; // consensus.json · ticker별 애널리스트 컨센서스(목표주가/투자의견/Forward PER). 티커 기준 키.
 let selectedRepCompany = null; // 보고서 탭에서 현재 선택된 기업 — 늦게 도착하는 stock_performance/tickers 데이터가 도착하면 이 값 기준으로 재렌더링
 
 function repBadgeClass(op){
@@ -4887,17 +4887,57 @@ function tickerForCompany(co){
   return info ? info.ticker : null;
 }
 
-// 실적 추정 표(REPORT_ESTIMATES)에서 PER/PSR처럼 이미 계산되어 있는 밸류에이션 행을 찾아
-// "F"(추정)로 표시된 첫 컬럼 값을 뽑는다. 우리가 임의로 재계산하지 않고 리포트가 이미 낸 값만 사용.
-function findValuationFromTable(table, keyword){
-  if(!table || !table.headers || !table.rows) return null;
-  const fIdx = table.headers.findIndex(h=>/F$/i.test((h||'').trim()));
-  const colIdx = fIdx>=0 ? fIdx-1 : 0; // headers[0]는 라벨 열이라 rows.values는 한 칸씩 밀려 있음
-  const row = table.rows.find(r=>r.label && r.label.toUpperCase().includes(keyword));
-  if(!row || colIdx<0 || colIdx>=row.values.length) return null;
-  const val = row.values[colIdx];
-  const headerLabel = fIdx>=0 ? table.headers[fIdx] : (table.headers[1]||'');
-  return { value: val, fiscalYear: headerLabel };
+// scripts/scrape_consensus.py의 MARKET_TO_CURRENCY와 동일한 매핑. 해외 종목 향후 실적 추정치의
+// 통화 표기용(정밀 환산은 하지 않고 라벨만 붙임).
+const MARKET_CURRENCY_LABEL = {US:'USD', KR:'원', HK:'HKD', CH:'CHF', JP:'JPY', CN:'CNY', GB:'GBP', DE:'EUR', FR:'EUR'};
+
+// consensus.json의 earnings(annual/quarterly 배열)를 두 개의 작은 추이 표로 렌더링.
+// 각 배열은 확정 실적 여러 개 + 마지막 1개 컨센서스 추정("(E)")으로 구성되어 있어, 숫자
+// 하나만 보여주지 않고 최근 추이 옆에 다음 기간 컨센서스를 나란히 붙여 보여준다.
+// 국내(네이버) 소스는 매출액/영업이익/당기순이익(억원)+EPS(원), 해외(yfinance) 소스는
+// 매출액/순이익/EPS(현지통화)를 표시한다.
+function renderEarningsTrendTable(cons){
+  if(!cons || !cons.earnings) return '';
+  const info = TICKER_UNIVERSE.find(t=>t.ticker===cons.ticker);
+  const curLabel = info ? (MARKET_CURRENCY_LABEL[info.market]||'') : '';
+  const isNaver = cons.source==='naver';
+  const rowsDef = isNaver
+    ? [
+        {key:'revenue_eok', label:'매출액(억원)'},
+        {key:'operating_income_eok', label:'영업이익(억원)'},
+        {key:'net_income_eok', label:'당기순이익(억원)'},
+        {key:'eps', label:'EPS(원)'},
+      ]
+    : [
+        {key:'revenue', label:`매출액(${curLabel})`},
+        {key:'net_income', label:`순이익(${curLabel})`},
+        {key:'eps', label:`EPS(${curLabel})`},
+      ];
+
+  function oneTable(periods, title){
+    if(!periods || !periods.length) return '';
+    const headerRow = `<th>구분</th>${periods.map(p=>`<th>${p.period}${p.is_estimate?' <span class="note">(E)</span>':''}</th>`).join('')}`;
+    const bodyRows = rowsDef.map(r=>{
+      const cells = periods.map(p=>{
+        const v = p[r.key];
+        return `<td>${v!=null?v.toLocaleString('ko-KR'):'-'}</td>`;
+      }).join('');
+      return `<tr><td>${r.label}</td>${cells}</tr>`;
+    }).join('');
+    return `
+      <div class="note" style="margin-top:10px;margin-bottom:4px">${title}</div>
+      <table style="font-size:12px"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table>
+    `;
+  }
+
+  const annualHtml = oneTable(cons.earnings.annual, '연간 실적 추이');
+  const quarterlyHtml = oneTable(cons.earnings.quarterly, '분기 실적 추이');
+  if(!annualHtml && !quarterlyHtml) return '';
+  return `
+    ${annualHtml}
+    ${quarterlyHtml}
+    <div class="note" style="margin-top:4px">※ "(E)" 표시 컬럼만 시장 컨센서스 추정치이며, 나머지는 확정 실적입니다.</div>
+  `;
 }
 
 function renderRepStockBox(co){
@@ -4919,28 +4959,30 @@ function renderRepStockBox(co){
   const currentPrice = (perf.price_history && perf.price_history.close && perf.price_history.close.length)
     ? perf.price_history.close[perf.price_history.close.length-1] : null;
 
-  const est = REPORT_ESTIMATES[co];
-  const targetPrice = est ? est.target_price_krw : null;
+  const cons = CONSENSUS[ticker];
+  const targetPrice = cons ? cons.target_price : null;
   const upside = (targetPrice!=null && currentPrice!=null && currentPrice>0)
     ? ((targetPrice - currentPrice) / currentPrice * 100) : null;
-  const per = est ? findValuationFromTable(est.table, 'PER') : null;
+  const curSuffix = perf.currency==='KRW' ? '원' : ` ${perf.currency||''}`;
 
-  const perfRow = ['d1','d5','m1','m3','m6','ytd'].map(k=>{
-    const labelMap = {d1:'1일', d5:'5일', m1:'1개월', m3:'3개월', m6:'6개월', ytd:'YTD'};
+  // renderStockStatCards()와 동일하게 1일/1개월/YTD 세 개로만 추림(5일/3개월/6개월은 중복 정보라 생략).
+  const perfRow = ['d1','m1','ytd'].map(k=>{
+    const labelMap = {d1:'1일', m1:'1개월', ytd:'YTD'};
     return `<div class="stat-card"><div class="lbl">${labelMap[k]}</div><div class="val">${fmtPct(r[k])}%</div><div class="delta ${pctClass(r[k])}"></div></div>`;
   }).join('');
 
   const targetBlock = (targetPrice!=null) ? `
-    <div class="stat-card"><div class="lbl">목표주가</div><div class="val">${targetPrice.toLocaleString('ko-KR')}원</div><div class="delta">${est.report_date} 보고서 기준</div></div>
-    <div class="stat-card"><div class="lbl">현재주가</div><div class="val">${currentPrice!=null?currentPrice.toLocaleString('ko-KR')+'원':'-'}</div><div class="delta">최근 종가</div></div>
+    <div class="stat-card"><div class="lbl">목표주가</div><div class="val">${targetPrice.toLocaleString('ko-KR')}${curSuffix}</div><div class="delta">컨센서스 · ${cons.as_of||''}</div></div>
+    <div class="stat-card"><div class="lbl">현재주가</div><div class="val">${currentPrice!=null?currentPrice.toLocaleString('ko-KR')+curSuffix:'-'}</div><div class="delta">최근 종가</div></div>
     <div class="stat-card"><div class="lbl">상승여력</div><div class="val">${upside!=null?fmtPct(upside)+'%':'-'}</div><div class="delta ${upside!=null?pctClass(upside):''}">목표가 대비</div></div>
-  ` : `<div class="stat-card"><div class="lbl">목표주가</div><div class="val">-</div><div class="delta">추출된 목표주가 없음</div></div>`;
+  ` : `<div class="stat-card"><div class="lbl">목표주가</div><div class="val">-</div><div class="delta">컨센서스 데이터 없음</div></div>`;
 
-  const perBlock = per ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per.value}배</div><div class="delta">PER(${per.fiscalYear}, 리포트 추정치)</div></div>`
-    : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">리포트 표에 PER 행 없음</div></div>`;
+  const per = cons ? cons.per_fwd : null;
+  const perBlock = per!=null ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per}배</div><div class="delta">Forward PER(컨센서스)</div></div>`
+    : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">컨센서스 PER 없음(커버리지 부족)</div></div>`;
 
   box.innerHTML = `
-    <div class="sec-h"><h2 style="font-size:14px">${companyLabel(co)} · 주가 데이터</h2><span class="note">stock_performance.json 실데이터 · 목표주가/PER은 리포트 PDF 추출값</span></div>
+    <div class="sec-h"><h2 style="font-size:14px">${companyLabel(co)} · 주가 데이터</h2><span class="note">stock_performance.json 실데이터 · 목표주가/PER은 시장 컨센서스</span></div>
     <div class="cards" style="margin-bottom:8px">
       <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
       ${perfRow}
@@ -4975,22 +5017,12 @@ function renderCompanyDetail(co){
     ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${repOpLabel(t.op)}</span>`).join('')
     : '<span class="note">의견 변경 이력 없음</span>';
 
-  const est = REPORT_ESTIMATES[co];
-  let estimateHtml;
-  if(est && est.table){
-    const headerRow = est.table.headers.map(h=>`<th>${h}</th>`).join('');
-    const bodyRows = est.table.rows.map(row=>
-      `<tr><td>${row.label}</td>${row.values.map(v=>`<td>${v}</td>`).join('')}</tr>`
-    ).join('');
-    estimateHtml = `
-      <div style="margin-top:12px">
-        <div class="note" style="margin-bottom:6px">실적 추정 (<span style="font-weight:600">${est.report_date}</span> 보고서 기준)</div>
-        <table style="font-size:12px"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table>
-        <div class="note" style="margin-top:4px">※ 리포트 PDF에서 자동 추출한 원본 표입니다. 단위는 원문 표기 그대로이며 자동 검증되지 않았으니 정확한 수치는 원문 PDF로 재확인해 주세요.</div>
-      </div>`;
-  } else {
-    estimateHtml = `<div class="note" style="margin-top:10px">실적 추정치는 아직 추출되지 않았습니다 (report_estimates.json 미연동 또는 해당 기업 표 인식 실패).</div>`;
-  }
+  const consTicker = tickerForCompany(co);
+  const cons = consTicker ? CONSENSUS[consTicker] : null;
+  const consNote = cons
+    ? `<div class="note" style="margin-bottom:6px">시장 컨센서스(${cons.as_of||''} 기준, ${cons.source==='naver'?'FnGuide/네이버':'Yahoo Finance'})${cons.opinion?` · 투자의견 ${cons.opinion}`:''}</div>`
+    : `<div class="note" style="margin-top:10px">시장 컨센서스 데이터가 아직 없습니다 (consensus.json 미연동 또는 해당 종목 커버리지 부족).</div>`;
+  const estimateHtml = `<div style="margin-top:12px">${consNote}${renderEarningsTrendTable(cons)}</div>`;
 
   // 이 기업으로 매칭된 텔레그램 코멘트를 최신순으로 나열(±5일 매칭 기준은
   // findTelegramComment와 동일 로직이라, 여기서는 co가 같은 코멘트를 전부 보여준다).
@@ -5030,14 +5062,15 @@ function renderCompanyDetail(co){
   renderRepStockBox(co);
 }
 
-async function loadReportEstimates(){
+async function loadConsensus(){
   try{
-    const res = await fetch('report_estimates.json', {cache:'no-store'});
+    const res = await fetch('consensus.json', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    REPORT_ESTIMATES = data.stocks || {};
+    CONSENSUS = {};
+    (data.stocks || []).forEach(s=>{ if(s.ticker && s.error==null) CONSENSUS[s.ticker] = s; });
   }catch(e){
-    REPORT_ESTIMATES = {};
+    CONSENSUS = {};
   }
   if(selectedRepCompany) renderCompanyDetail(selectedRepCompany);
 }
@@ -5079,7 +5112,7 @@ async function loadReports(){
   }
 }
 loadReports();
-loadReportEstimates();
+loadConsensus();
 loadTelegramComments();
 
 // ==================================================================

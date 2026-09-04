@@ -1,17 +1,16 @@
-name: Update report estimates
+name: Update consensus
 
 on:
   schedule:
-    # reports.json 갱신(오전 7시 13분) 이후에 돌도록 오전 7시 51분 = UTC 전날 22시 51분
-    # 매시 40분 단위 스케줄 혼잡을 피하려 51분으로 이동 (2026-08-28)
-    - cron: "51 22 * * 0-4"
+    # 국내 장 마감 이후, 다른 update-*.yml과 겹치지 않는 시간대에 실행 (UTC 08:20 = KST 17:20)
+    - cron: "20 8 * * 1-5"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
   contents: write
 
 jobs:
-  update-report-estimates:
+  update-consensus:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,22 +22,20 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests pdfplumber
+        run: pip install requests beautifulsoup4 yfinance
 
-      - name: Extract report estimates
-        run: python scripts/scrape_report_estimates.py --reports reports.json --out report_estimates.json
+      - name: Extract consensus
+        run: python scripts/scrape_consensus.py --tickers scripts/tickers.json --out consensus.json
 
       - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add report_estimates.json
-          if git diff --cached --quiet -- report_estimates.json; then
+          git add consensus.json
+          if git diff --cached --quiet -- consensus.json; then
             echo "변경 없음, 커밋 건너뜀"
           else
-            git commit -m "chore: report_estimates.json 자동 갱신 ($(date -u +%Y-%m-%d))"
-            # 다른 워크플로가 그 사이 먼저 push해서 main이 앞서 있으면 rebase 후 재시도
-            # (여러 update-*.yml이 각자 다른 파일만 건드리므로 실제 충돌은 거의 없다).
+            git commit -m "chore: consensus.json 자동 갱신 ($(date -u +%Y-%m-%d))"
             for i in 1 2 3 4 5; do
               if git push; then
                 echo "푸시 성공"
