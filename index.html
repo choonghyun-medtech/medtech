@@ -129,6 +129,9 @@ h1{font-size:22px; margin:2px 0 2px}
 .up{color:var(--red)} .down{color:var(--blue)}
 .chart-box{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:6px; position:relative; height:280px}
 .chart-box.small{height:200px}
+/* 국가별 의료관광객 비중 차트 — 13개국 x 최대 7개년 그룹 막대라 기본 280px로는 촘촘해
+   막대/라벨이 겹친다(2026-09-04, 국가별 나란히 비교 형태로 변경하며 추가). */
+.chart-box.tall{height:360px}
 table{width:100%; border-collapse:collapse; font-size:13px}
 th,td{padding:9px 10px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap}
 th{color:var(--dim); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em}
@@ -753,6 +756,12 @@ tr:last-child td{border-bottom:none}
 
     <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
     <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
+
+    <div class="medtour-group-h">국가별 의료관광객 비중(침투율)</div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광객 비중</h2><span class="note" id="medtour-penetration-note">연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100 · medtour_penetration.json</span></div>
+    <div class="chips" id="medtour-penetration-year-chips"></div>
+    <div class="chart-box tall"><canvas id="medTourPenetrationChart"></canvas></div>
+    <div id="medtour-penetration-table-wrap" style="margin-top:6px"></div>
     </div>
     <!-- /의료관광 데이터 -->
 
@@ -4140,6 +4149,164 @@ async function loadMedicalTourData(){
   renderMedtourAll();
 }
 loadMedicalTourData();
+
+// ==================================================================
+// 국가별 의료관광객 비중(침투율) — 산업데이터 탭 "의료관광 데이터" 최하단(2026-09-04 요청).
+// 분자(의료관광객 수)는 한국보건산업진흥원 "외국인환자 유치실적 통계분석 보고서"의 국가별
+// 실환자수, 분모(방한 외래관광객 수)는 한국관광공사 한국관광데이터랩 "한국관광통계" 연간
+// 국적별 공식 발간자료 — 위 renderMedtourPenetrationChart(구 버전, 카드소비건수/방한객으로
+// "침투율"을 근사하던 방식)와 달리 실제 헤드카운트 기준이라 방법론이 다르다. 두 자료 모두
+// 국가별 연간 전체를 실시간 API로 안정 재현할 수 없어(scrape_visitor_stats.py의
+// NAT_08_01_012는 그 기간 상위 5개국 스냅샷만 주는 구조적 한계 — 몽골/카자흐스탄/베트남
+// 등은 상위 5위 밖이라 이 API로는 못 받는다) medtour_penetration.json에 정적으로 관리하고,
+// 사용자가 정리한 "의료관광 차트!!.xlsx"(의료관광객 비중 시트)의 값을 그대로 옮겼다. 데이터가
+// 없는 경우는 0으로 채우지 않고 null로 유지해 차트/표에서 "데이터 없음"과 실제 0%를 구분한다.
+let MEDTOUR_PENETRATION_DATA = { years: [], countries: [] };
+// 기본 선택 연도 = 엑셀 원본 차트가 쓰던 4개년(2019/2023/2024/2025, 코로나로 왜곡된
+// 2020~2022 제외) — 국가별로 나란히 비교하는 형태를 그대로 재현해달라는 요청(2026-09-04)에
+// 따라 "국가 선택 → 연도별 막대" 대신 "연도 선택(다중) → 국가별 그룹 막대"로 뒤집었다.
+const MEDTOUR_PENETRATION_STATE = { years: new Set([2019, 2023, 2024, 2025]) };
+let medTourPenetrationChartInstance = null;
+
+// 오래된 해=회색, 최근 해=주황/빨강 계열로 진행되도록 고정 배정(연도 선택 조합이 바뀌어도
+// 같은 해는 항상 같은 색을 유지해야 비교가 쉽다).
+const MEDTOUR_PENETRATION_YEAR_COLORS = {
+  2019: '#cbd5e1', 2020: '#94a3b8', 2021: '#64748b',
+  2022: '#fde68a', 2023: '#fbbf24', 2024: '#fb923c', 2025: '#dc2626',
+};
+function medtourPenetrationYearColor(y){
+  return MEDTOUR_PENETRATION_YEAR_COLORS[y] || '#8a919c';
+}
+
+function renderMedtourPenetrationYearChips(){
+  const wrap = document.getElementById('medtour-penetration-year-chips');
+  if(!wrap) return;
+  const years = MEDTOUR_PENETRATION_DATA.years || [];
+  wrap.innerHTML = years.map(y =>
+    `<button type="button" class="chip${MEDTOUR_PENETRATION_STATE.years.has(y) ? ' active' : ''}" data-year="${y}">${y}년</button>`
+  ).join('');
+  wrap.querySelectorAll('.chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const y = Number(btn.dataset.year);
+      // 최소 1개년은 항상 선택돼 있어야 한다(막대가 아예 없는 빈 차트 방지).
+      if(MEDTOUR_PENETRATION_STATE.years.has(y)){
+        if(MEDTOUR_PENETRATION_STATE.years.size > 1) MEDTOUR_PENETRATION_STATE.years.delete(y);
+      }else{
+        MEDTOUR_PENETRATION_STATE.years.add(y);
+      }
+      renderMedtourPenetrationYearChips();
+      renderMedtourPenetrationChart();
+    });
+  });
+}
+
+function renderMedtourPenetrationChart(){
+  if(medTourPenetrationChartInstance){ medTourPenetrationChartInstance.destroy(); medTourPenetrationChartInstance = null; }
+  const note = document.getElementById('medtour-penetration-note');
+  const tableWrap = document.getElementById('medtour-penetration-table-wrap');
+  const allYears = MEDTOUR_PENETRATION_DATA.years || [];
+  const countries = MEDTOUR_PENETRATION_DATA.countries || [];
+  const selYears = allYears.filter(y => MEDTOUR_PENETRATION_STATE.years.has(y));
+  if(!allYears.length || !countries.length || !selYears.length){
+    if(note) note.textContent = '연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100 · 아직 데이터가 없습니다.';
+    if(tableWrap) tableWrap.innerHTML = '';
+    return;
+  }
+
+  // 국가별로 선택 연도 각각의 비중(%)을 미리 계산 — 데이터 없음(v/m이 null이거나 v=0)은
+  // 0%로 임의 처리하지 않고 null로 남겨 차트/표에서 구분한다.
+  const rateOf = (country, yearIdx) => {
+    const v = country.visitors[yearIdx], m = country.medical[yearIdx];
+    return (v == null || m == null || v === 0) ? null : (m / v * 100);
+  };
+  const withRates = countries.map(c => ({
+    country: c,
+    rates: allYears.map((y, i) => rateOf(c, i)),
+  }));
+  // x축 정렬: 선택된 연도 중 가장 최근 해 기준 오름차순(참고 이미지와 동일한 형태) — 그 해
+  // 값이 없는 국가는 맨 앞으로 보낸다.
+  const sortYearIdx = allYears.indexOf(selYears[selYears.length - 1]);
+  withRates.sort((a, b) => {
+    const av = a.rates[sortYearIdx], bv = b.rates[sortYearIdx];
+    if(av == null && bv == null) return 0;
+    if(av == null) return -1;
+    if(bv == null) return 1;
+    return av - bv;
+  });
+
+  if(note) note.textContent = `연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100 · 한국관광통계(방한 외래관광객) + 외국인환자 유치실적 통계(의료관광객) · ${selYears.join(', ')}년 비교`;
+
+  medTourPenetrationChartInstance = new Chart(document.getElementById('medTourPenetrationChart'), {
+    type: 'bar',
+    data: {
+      labels: withRates.map(r => r.country.label),
+      datasets: selYears.map(y => {
+        const yi = allYears.indexOf(y);
+        return {
+          label: `${y}년`,
+          data: withRates.map(r => r.rates[yi]),
+          backgroundColor: medtourPenetrationYearColor(y),
+          borderRadius: 3, maxBarThickness: 22,
+        };
+      }),
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              if(ctx.parsed.y == null) return `${ctx.dataset.label}: 데이터 없음`;
+              const r = withRates[ctx.dataIndex];
+              const yi = allYears.indexOf(selYears[ctx.datasetIndex]);
+              const v = r.country.visitors[yi], m = r.country.medical[yi];
+              return `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}% (의료관광객 ${m.toLocaleString()}명 / 전체 ${v.toLocaleString()}명)`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor(), autoSkip: false, maxRotation: 0, minRotation: 0, font: { size: 10.5 } } },
+        y: {
+          beginAtZero: true,
+          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v.toFixed(0) + '%' },
+          title: { display: true, text: '의료관광객 비중(%)', color: textColor() },
+        },
+      },
+    },
+  });
+
+  if(tableWrap){
+    tableWrap.innerHTML = `<table><thead><tr><th>국가</th>${selYears.map(y => `<th>${y}년</th>`).join('')}</tr></thead><tbody>${
+      withRates.map(r => {
+        const cells = selYears.map(y => {
+          const yi = allYears.indexOf(y);
+          const rate = r.rates[yi];
+          return `<td>${rate == null ? '-' : rate.toFixed(2) + '%'}</td>`;
+        }).join('');
+        return `<tr><td>${escapeHtml(r.country.label)}</td>${cells}</tr>`;
+      }).join('')
+    }</tbody></table>`;
+  }
+}
+
+async function loadMedtourPenetrationData(){
+  try{
+    const res = await fetch('medtour_penetration.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('no medtour_penetration.json yet');
+    MEDTOUR_PENETRATION_DATA = await res.json();
+  }catch(e){
+    MEDTOUR_PENETRATION_DATA = { years: [], countries: [] };
+  }
+  // 저장된 기본 선택(19/23/24/25) 중 실제 데이터에 있는 연도만 남긴다 — 혹시 데이터 범위가
+  // 바뀌어도(예: 다음 해 갱신 시 2026 추가) 존재하지 않는 연도를 선택한 채로 남지 않게.
+  const validDefaults = [...MEDTOUR_PENETRATION_STATE.years].filter(y => (MEDTOUR_PENETRATION_DATA.years || []).includes(y));
+  MEDTOUR_PENETRATION_STATE.years = new Set(validDefaults.length ? validDefaults : (MEDTOUR_PENETRATION_DATA.years || []).slice(-4));
+  renderMedtourPenetrationYearChips();
+  renderMedtourPenetrationChart();
+}
+loadMedtourPenetrationData();
 
 document.querySelectorAll('#medtour-trend-period-toggle button').forEach(b => {
   b.addEventListener('click', () => {
