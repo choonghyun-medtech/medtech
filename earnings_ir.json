@@ -1,0 +1,229 @@
+{
+  "updated": "2026-09-08T00:00:00+09:00",
+  "source": "SEC 공시(8-K/6-K Exhibit 99, 회사가 제출 의무를 지는 실적 보도자료 원문) 기반, 한국어 번역·요약은 Gemini/Claude 자동 처리(scripts/scrape_earnings_ir.py) 또는 수동 검수",
+  "note": "TIKR 등 유료 컨콜 스크립트 사이트를 스크래핑해 무료 열람 제한을 우회하는 방식 대신, 기업이 직접 공개한 IR 보도자료를 근거로 한다 — Q&A 상세 스크립트까지는 포함하지 않고 매출·수익성·가이던스 등 핵심 수치와 경영진 코멘트 위주로 요약한다.",
+  "companies": [
+    {
+      "ticker": "DXCM",
+      "name": "Dexcom",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-30",
+      "title": "Dexcom Reports Second Quarter 2026 Financial Results",
+      "source_url": "https://investors.dexcom.com/news/news-details/2026/Dexcom-Reports-Second-Quarter-2026-Financial-Results/default.aspx",
+      "metrics": [
+        { "label": "매출액", "value": "13.08억 달러", "note": "전년 동기 대비 +13%(유기적 성장 +12%) · 미국 +11%, 해외 +19%(유기적 +16%)" },
+        { "label": "영업이익", "value": "GAAP 3.183억 달러 · Non-GAAP 3.283억 달러", "note": "매출 대비 GAAP 24.3% · Non-GAAP 25.1%" },
+        { "label": "순이익", "value": "GAAP 2.491억 달러(EPS $0.64) · Non-GAAP 2.691억 달러(EPS $0.70)", "note": "" },
+        { "label": "2026년 연간 가이던스", "value": "매출 51.8억~52.5억 달러(+11~13%)", "note": "Non-GAAP 매출총이익률 약 64%, Non-GAAP 영업이익률 약 23.5~24%, 조정 EBITDA 마진 약 31.5~32%" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 13.08억 달러로 전년 동기 대비 13% 성장(유기적 성장 12%)했고, 미국(+11%)보다 해외(+19%, 유기적 +16%)가 더 빠르게 성장함.",
+        "GAAP 영업이익률 24.3%, Non-GAAP 영업이익률 25.1%로 수익성이 견조하게 유지됨.",
+        "2026년 연간 매출 가이던스를 51.8억~52.5억 달러(+11~13%)로 제시하며 Non-GAAP 영업이익률 약 23.5~24% 목표를 유지함.",
+        "2030년까지의 신규 중장기 전망을 담은 2026 Investor Day를 개최했고, 2형 당뇨 환자 대상 CONNECT 임상에서 혈당 조절 개선을 확인했으며, AI 기반 인사이트를 적용한 Stelo 앱 리뉴얼을 발표함."
+      ],
+      "ceo_quote_en": "This quarter's performance and the successful outcomes from our CONNECT trial reinforce our confidence in the path ahead.",
+      "ceo_quote_ko": "\"이번 분기 실적과 CONNECT 임상의 성공적인 결과는 앞으로의 방향성에 대한 확신을 뒷받침해준다\" — Jake Leach CEO",
+      "cash_position": "현금 및 현금성자산·유가증권 19.5억 달러 보유"
+    },
+    {
+      "ticker": "MDT",
+      "name": "Medtronic",
+      "market": "US",
+      "quarter": "2027 회계연도 1분기(Q1 FY27)",
+      "date": "2026-09-01",
+      "title": "Medtronic reports first quarter fiscal 2027 results; delivers broad-based portfolio performance and raises fiscal 2027 guidance",
+      "source_url": "https://news.medtronic.com/2026-09-01-Medtronic-reports-first-quarter-fiscal-2027-results-delivers-broad-based-portfolio-performance-and-raises-fiscal-2027-guidance",
+      "metrics": [
+        { "label": "매출액", "value": "97.56억 달러", "note": "전년 동기 대비 +13.7%(유기적 성장 +13.7%) · 가이던스 중간값 대비 약 200bp 상회" },
+        { "label": "영업이익", "value": "GAAP 17.64억 달러 · Non-GAAP 23.16억 달러", "note": "영업이익률 GAAP 18.1%(+120bp) · Non-GAAP 23.7%(+10bp)" },
+        { "label": "순이익", "value": "GAAP 14.70억 달러(EPS $1.14) · Non-GAAP 18.60억 달러(EPS $1.45)", "note": "전년 대비 GAAP +41.4%, Non-GAAP +14.4%" },
+        { "label": "FY2027 연간 가이던스(상향)", "value": "유기적 매출 성장률 7.25~7.75%", "note": "Non-GAAP EPS $5.94~$6.00(기존 $5.90~$6.00)" }
+      ],
+      "summary_ko": [
+        "2027 회계연도 1분기 매출 97.56억 달러로 전년 동기 대비 13.7% 성장했고, 가이던스 중간값을 약 200bp 상회함.",
+        "GAAP 영업이익률 18.1%, Non-GAAP 영업이익률 23.7%로 수익성이 개선됐고, 심혈관(+18.9%)·신경과학(+9.3%)·의료외과(+10.2%)·당뇨병(+14.9%) 전 사업부가 고르게 성장함.",
+        "실적 호조를 반영해 FY2027 유기적 매출 성장률 가이던스를 7.25~7.75%로, Non-GAAP EPS 가이던스를 $5.94~$6.00으로 상향 조정함.",
+        "Affera 심실부정맥 치료기기 CE Mark 확대 승인, Cornerstone Robotics와 로봇수술 파트너십 체결, Scientia Vascular·SPR Therapeutics 인수 완료 등 신성장 동력을 강화함."
+      ],
+      "ceo_quote_ko": "\"2027 회계연도를 강하게 시작했다. 이번 분기의 강점뿐 아니라 사업 전반에 걸친 광범위한 성과와 신성장 플랫폼의 기여 확대가 확신을 준다\" — Geoff Martha 회장 겸 CEO"
+    },
+    {
+      "ticker": "BSX",
+      "name": "Boston Scientific",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-29",
+      "title": "Boston Scientific announces results for second quarter 2026",
+      "source_url": "https://news.bostonscientific.com/2026-07-29-Boston-Scientific-announces-results-for-second-quarter-2026",
+      "metrics": [
+        { "label": "매출액", "value": "54.42억 달러", "note": "전년 동기 대비 보고 기준 +7.5%, 오가닉 기준 +7.0%" },
+        { "label": "부문별 성장", "value": "Cardiovascular +8.3%(오가닉 +7.8%) · MedSurg +5.9%(오가닉 +5.4%)", "note": "" },
+        { "label": "순이익", "value": "GAAP 9.07억 달러(EPS $0.61) · Adjusted EPS $0.86", "note": "전년 Adjusted EPS $0.75 대비 개선" },
+        { "label": "2026년 가이던스", "value": "매출 성장 5.5~6.5%(오가닉 5.0~6.0%)", "note": "Adjusted EPS $3.28~$3.32 · 3분기 매출 성장 3.0~5.0%, Adjusted EPS $0.80~$0.82" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 54.42억 달러로 전년 대비 7.5% 성장(오가닉 7.0%)했고, Cardiovascular 부문(+8.3%)이 MedSurg(+5.9%)보다 빠르게 성장함.",
+        "GAAP 순이익 9.07억 달러(EPS $0.61), Adjusted EPS는 $0.86으로 전년 $0.75 대비 개선됨.",
+        "20억 달러 규모 자사주 매입 프로그램을 완료했고, 심혈관·정형외과용 생체재료 기업 MiRus LLC에 15억 달러를 투자함.",
+        "2026년 연간 매출 성장 가이던스 5.5~6.5%, Adjusted EPS $3.28~$3.32를 제시함."
+      ],
+      "ceo_quote_ko": "\"역동적인 환경 속에서도 견조한 분기 실적을 냈다. 절제된 실행과 가장 임팩트가 큰 투자 기회에 집중하고 있다\" — Mike Mahoney 회장 겸 CEO"
+    },
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-16",
+      "title": "UnitedHealth Group Reports Second Quarter 2026 Results",
+      "source_url": "https://www.unitedhealthgroup.com/newsroom/2026/2026-07-16-uhg-reports-second-quarter-2026-results.html",
+      "metrics": [
+        { "label": "매출액", "value": "1,120억 달러", "note": "" },
+        { "label": "영업이익", "value": "80억 달러", "note": "순이익률 4.9%" },
+        { "label": "순이익(EPS)", "value": "GAAP EPS $6.04 · Adjusted EPS $6.38", "note": "영업현금흐름 111억 달러(순이익의 1.9배)" },
+        { "label": "2026년 연간 가이던스(상향)", "value": "GAAP EPS $18.45~$18.95", "note": "Adjusted EPS $19.50~$20.00" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 1,120억 달러, 영업이익 80억 달러(순이익률 4.9%)를 기록함.",
+        "GAAP EPS $6.04, Adjusted EPS $6.38을 달성했고 영업현금흐름은 111억 달러(순이익의 1.9배)로 견조함.",
+        "상반기 실적과 개선된 단기 전망을 반영해 2026년 연간 가이던스를 GAAP EPS $18.45~$18.95, Adjusted EPS $19.50~$20.00으로 상향 조정함.",
+        "운영 단순화, 의료비 부담 완화, 환자·의료진 경험 개선을 위한 기술 투자를 지속하고 있다고 밝힘."
+      ],
+      "ceo_quote_ko": "\"이번 실적과 전망은 운영을 단순화하고, 환자와 의료진 모두를 위한 비용 부담과 의료 경험을 개선하며, 최신 기술을 적용해 실질적인 개선을 만들어가는 노력의 성과를 보여준다\" — Stephen Hemsley CEO"
+    },
+    {
+      "ticker": "RDNT",
+      "name": "RadNet",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-08-09",
+      "title": "RadNet Reports Second Quarter Financial Results with Record Quarterly Revenue and Adjusted EBITDA(1) and Revises Upwards 2026 Financial Guidance Ranges",
+      "source_url": "https://www.radnet.com/about-radnet/news/radnet-reports-second-quarter-financial-results-with-record-quarterly-revenue-and-adjusted-ebitda-1-and-revises-upwards-2026-financial-guidance-ranges",
+      "metrics": [
+        { "label": "매출액", "value": "6.227억 달러", "note": "전년 동기 대비 +25.0% · 디지털헬스 부문 0.324억 달러(+56.5%)" },
+        { "label": "조정 EBITDA", "value": "0.997억 달러", "note": "전년 동기 대비 +22.7%" },
+        { "label": "순이익", "value": "0.075억 달러(EPS $0.10) · 조정 EPS $0.29", "note": "전년 순이익 0.145억 달러(EPS $0.19), 조정 EPS $0.34 대비 감소" },
+        { "label": "2026년 가이던스(상향)", "value": "Imaging Center 매출 23.7억~24.2억 달러", "note": "조정 EBITDA 3.45억~3.58억 달러 · 디지털헬스 매출 1.35억~1.45억 달러(유지)" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 6.227억 달러로 전년 대비 25.0% 성장했고, 디지털헬스 부문 매출은 56.5% 급증한 0.324억 달러를 기록함.",
+        "조정 EBITDA는 0.997억 달러(+22.7%)를 기록했으나, 순이익은 0.075억 달러로 전년(0.145억 달러) 대비 감소함.",
+        "고급 영상(MRI·CT·PET/CT) 절차량이 21.2% 증가했고, 디지털헬스 연환산반복매출(ARR)은 연초 0.535억 달러에서 1.055억 달러로 거의 두 배로 늘어남.",
+        "실적 호조를 반영해 2026년 Imaging Center 부문 매출·조정 EBITDA 가이던스를 상향 조정함."
+      ],
+      "ceo_quote_ko": "\"디지털헬스 부문 ARR이 97.2% 증가했고 외부 고객 매출이 전체의 약 63%를 차지한다. 고급 영상 절차 비중이 238bp 개선되며 긍정적인 사업 전환을 이끌었다\" — Howard Berger 회장 겸 CEO"
+    },
+    {
+      "ticker": "INMD",
+      "name": "InMode",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-08-05",
+      "title": "InMode Reports Second Quarter 2026 Financial Results: Quarterly GAAP Revenues of $95.6 Million, Consistent with the Second Quarter of 2025",
+      "source_url": "https://www.stocktitan.net/news/INMD/in-mode-reports-second-quarter-2026-financial-results-quarterly-gaap-v208yz4h507t.html",
+      "metrics": [
+        { "label": "매출액", "value": "0.956억 달러", "note": "전년 동기 대비 보합" },
+        { "label": "영업이익률", "value": "GAAP 13% · Non-GAAP 17%", "note": "전년 GAAP 24%, Non-GAAP 28% 대비 큰 폭 하락" },
+        { "label": "순이익", "value": "GAAP 0.171억 달러(EPS $0.29) · Non-GAAP 0.208억 달러(EPS $0.35)", "note": "전년 EPS $0.42(GAAP)/$0.47(Non-GAAP) 대비 감소" },
+        { "label": "2026년 가이던스", "value": "매출 3.65억~3.75억 달러", "note": "Non-GAAP EPS $1.29~$1.34 · Non-GAAP 영업이익 0.68억~0.73억 달러" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 GAAP 매출은 0.956억 달러로 전년 동기와 거의 동일했으나, GAAP 영업이익률은 24%→13%, Non-GAAP 영업이익률은 28%→17%로 큰 폭 하락함.",
+        "GAAP 순이익은 0.171억 달러(EPS $0.29)로 전년 0.267억 달러(EPS $0.42) 대비 감소함.",
+        "마진 하락은 매출원가 상승, 제품 믹스 변화, 북미 영업 조직 재편, 마케팅·일반관리비 증가가 원인으로 지목됨.",
+        "원치 않는 인수 제안 검토가 진행 중이어서 이번 분기는 실적 컨퍼런스콜을 개최하지 않았으며, 2026년 매출 가이던스로 3.65억~3.75억 달러를 제시함."
+      ],
+      "ceo_quote_ko": "\"전체 매출은 전년 동기와 유사한 수준이었고, 미국 자본장비 사업의 안정세가 지속됐다\" — Moshik Itzkovich CFO"
+    },
+    {
+      "ticker": "ABT",
+      "name": "Abbott",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-16",
+      "title": "Abbott Reports Second-Quarter 2026 Results and Raises Full-Year EPS Guidance",
+      "source_url": "https://abbott.mediaroom.com/2026-07-16-Abbott-Reports-Second-Quarter-2026-Results-and-Raises-Full-Year-EPS-Guidance",
+      "metrics": [
+        { "label": "매출액", "value": "125.93억 달러", "note": "전년 대비 +13.0%(비교 기준 +4.8%) · 상반기 누적 237.57억 달러(+10.5%, 비교 기준 +4.3%)" },
+        { "label": "사업부별 성장(비교 기준)", "value": "의료기기 +8.4% · 의약품 +8.7% · 진단 +2.9% · 영양식 -3.6%", "note": "" },
+        { "label": "순이익", "value": "GAAP 9.28억 달러(EPS $0.53) · 조정 22.90억 달러(EPS $1.31)", "note": "" },
+        { "label": "2026년 가이던스(상향)", "value": "비교 기준 매출 성장률 6.5~7.5%", "note": "조정 EPS $5.45~$5.60(기존 $5.38~$5.58)" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 125.93억 달러로 전년 대비 13.0% 성장(비교 기준 +4.8%)했고, 상반기 누적 매출은 237.57억 달러(+10.5%, 비교 기준 +4.3%)를 기록함.",
+        "사업부별로는 의료기기(+8.4%)·의약품(+8.7%)이 견조했던 반면 영양식은 -3.6% 역성장함.",
+        "실적 호조를 반영해 2026년 조정 EPS 가이던스를 $5.45~$5.60으로 상향 조정함(기존 $5.38~$5.58).",
+        "TECTONIC 관상동맥 석회화 치료 IVL 시스템 임상 등록 완료, Libre Duo 포도당·케톤 이중센서 CE Mark 획득, Amulet 360 좌심이 폐색 장치 FDA 승인 신청 등 파이프라인을 확대함."
+      ],
+      "ceo_quote_ko": "\"2분기 실적은 우리가 구축하고 있는 모멘텀을 반영하며, 이 모멘텀이 지속되어 하반기 매출과 수익 성장이 가속화될 것으로 예상한다\" — Robert B. Ford 회장 겸 CEO"
+    },
+    {
+      "ticker": "ISRG",
+      "name": "Intuitive Surgical",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-16",
+      "title": "Intuitive Announces Second Quarter Earnings",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001035267/000103526726000047/q226ex-991earningsrelease.htm",
+      "metrics": [
+        { "label": "매출액", "value": "28.90억 달러", "note": "전년 동기 24.40억 달러 대비 +19%" },
+        { "label": "영업이익", "value": "GAAP 9.72억 달러 · Non-GAAP 12.18억 달러", "note": "" },
+        { "label": "순이익", "value": "GAAP 8.18억 달러(EPS $2.29) · Non-GAAP 10.02억 달러(EPS $2.80)", "note": "" },
+        { "label": "2026년 가이던스", "value": "da Vinci 수술 건수 성장률 약 13.5~15.5%", "note": "Non-GAAP 매출총이익률 68.0~69.0% · 관세 영향 약 -1.0%p 반영" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 28.90억 달러로 전년 동기 대비 19% 성장했고, 전 세계 수술 건수는 16% 증가함(da Vinci +15%, Ion +36%).",
+        "GAAP 순이익 8.18억 달러(EPS $2.29), Non-GAAP 순이익 10.02억 달러(EPS $2.80)를 기록함.",
+        "da Vinci 시스템 468대를 신규 설치해 설치 기반이 11,710대(+12%)로 늘었고, Ion 시스템 설치 기반도 1,096대(+21%)로 증가함.",
+        "2026년 da Vinci 수술 건수 성장률 가이던스 약 13.5~15.5%를 유지했으나, 관세 영향으로 매출총이익률에 약 1.0%p 부정적 영향이 반영됨."
+      ],
+      "ceo_quote_ko": "\"da Vinci와 Ion부터 디지털 솔루션까지 포트폴리오 전반의 강점을 반영한 실적에 만족한다. 더 나은 환자 결과·경험, 비용 절감, 폭넓은 접근성 제공이 핵심이다\" — Intuitive 경영진"
+    },
+    {
+      "ticker": "ALGN",
+      "name": "Align Technology",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-29",
+      "title": "Align Technology Announces Second Quarter 2026 Financial Results",
+      "source_url": "https://investor.aligntech.com/news-releases/news-release-details/align-technology-announces-second-quarter-2026-financial-results",
+      "metrics": [
+        { "label": "매출액", "value": "10.562억 달러", "note": "전년 대비 +4.3%, 전분기 대비 +1.5% · Clear Aligner 8.709억 달러(+8.2%), Systems&Services 1.853억 달러(-10.8%)" },
+        { "label": "영업이익률", "value": "GAAP 14.6% · Non-GAAP 22.9%", "note": "Non-GAAP 전년 대비 +1.6%p" },
+        { "label": "순이익", "value": "GAAP 1.083억 달러(EPS $1.51) · Non-GAAP 1.891억 달러(EPS $2.64)", "note": "Non-GAAP EPS 전년 대비 +6%" },
+        { "label": "2026년 가이던스", "value": "매출 성장률 3~4%", "note": "Clear Aligner 물량 성장 약 6% · 자사주매입 4억~5억 달러" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 10.562억 달러로 전년 대비 4.3% 성장했고, Clear Aligner 매출은 사상 최대 물량(69.2만 케이스)에 힘입어 8.2% 성장한 반면 Systems&Services 매출은 10.8% 감소함.",
+        "GAAP 영업이익률 14.6%, Non-GAAP 영업이익률 22.9%(+1.6%p)로 수익성이 개선됨.",
+        "GAAP EPS $1.51, Non-GAAP EPS $2.64(+6%)를 기록했고, 2026년 매출 성장률 3~4%, Clear Aligner 물량 성장 약 6% 가이던스를 제시함.",
+        "영국 VAT 관련 상급심판소 판결(투명교정장치가 VAT 면제 대상 치과보철물에 해당하지 않는다는 판단)로 약 3,750만 달러의 충당부채를 인식함."
+      ],
+      "ceo_quote_ko": "\"사상 최대 Clear Aligner 물량에 힘입어 전년 대비 4.3% 성장한 10.6억 달러의 매출로 견조한 2분기를 기록했다\" — Joe Hogan CEO"
+    },
+    {
+      "ticker": "TEM",
+      "name": "Tempus AI",
+      "market": "US",
+      "quarter": "2026년 2분기(Q2)",
+      "date": "2026-07-30",
+      "title": "Tempus Reports Second Quarter 2026 Results",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/0001717115/000119312526326083/tem-ex99_1.htm",
+      "metrics": [
+        { "label": "매출액", "value": "3.825억 달러", "note": "전년 대비 +22% · 진단 2.893억 달러(+20%), 데이터·애플리케이션 0.932억 달러(+28%)" },
+        { "label": "영업손실", "value": "0.759억 달러", "note": "" },
+        { "label": "순이익", "value": "0.056억 달러(EPS $0.03)", "note": "전년 동기 0.428억 달러 손실(EPS -$0.25)에서 흑자 전환" },
+        { "label": "2026년 연간 가이던스(상향)", "value": "매출 15.95억~16.05억 달러(+약 25%)", "note": "조정 EBITDA 약 0.65억 달러" }
+      ],
+      "summary_ko": [
+        "2026년 2분기 매출 3.825억 달러로 전년 대비 22% 성장했고, 종양학 진단 물량이 31% 증가하며 진단사업(+20%)을 이끔.",
+        "순이익 0.056억 달러로 전년 동기(0.428억 달러 손실) 대비 흑자 전환했고, 조정 EBITDA는 0.08억 달러(+244%)로 개선됨.",
+        "Personalis를 15억~17억 달러에 인수하기로 합의해 MRD(미세잔존질환) 및 종양 진단 포트폴리오를 확장할 계획이며, 2026년 말~2027년 초 거래 종결을 목표로 함.",
+        "AstraZeneca에 첫 종양학 파운데이션 모델을 공급했고 BioNTech·브리스톨마이어스스큅 등과 데이터 파트너십을 체결했으며, 2026년 매출 가이던스를 15.95억~16.05억 달러로 상향 조정함."
+      ],
+      "ceo_quote_ko": "\"AI 분야 투자 성과가 나타나고 있으며, 특히 종양학 진단과 데이터 라이선싱 사업에서 가장 높은 성장률을 기록하고 있다\" — Eric Lefkofsky 회장 겸 CEO"
+    }
+  ]
+}

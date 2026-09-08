@@ -350,7 +350,7 @@ tr:last-child td{border-bottom:none}
     <button class="tab" data-view="stock">주가 데이터</button>
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
     <button class="tab" data-view="industry">산업 데이터</button>
-    <button class="tab" data-view="reports">리서치 보고서</button>
+    <button class="tab" data-view="reports">기업 분석</button>
     <button class="tab" data-view="snapshot">기업 스냅샷</button>
   </div>
 
@@ -822,8 +822,16 @@ tr:last-child td{border-bottom:none}
     </div>
   </section>
 
-  <!-- ================= REPORTS ================= -->
+  <!-- ================= REPORTS (기업 분석) ================= -->
   <section class="view" id="view-reports">
+    <div class="sec-h"><h2>기업 분석</h2></div>
+    <div class="tabs" id="reports-subtabs" style="margin-bottom:14px">
+      <button class="region-tab active" data-sub="research">리서치 보고서</button>
+      <button class="region-tab" data-sub="concall">해외기업 컨콜</button>
+    </div>
+
+    <!-- ---- 리서치 보고서 ---- -->
+    <div id="reports-sub-research">
     <div class="sec-h"><h2>리서치 보고서</h2><span class="note" id="rep-source-note">미래에셋증권 · 실데이터 연동</span></div>
 
     <div class="sec-h"><h2>추적 기업</h2><span class="note">카테고리별 드롭다운에서 종목 선택 시 해당 리포트만 필터 · <a href="#" id="rep-reset-link" style="color:var(--accent);text-decoration:none;font-weight:600">전체 보기</a></span></div>
@@ -844,6 +852,19 @@ tr:last-child td{border-bottom:none}
     </div>
     <div id="bio-table-wrap"></div>
     <div id="bio-pager" class="rep-pager"></div>
+    </div>
+
+    <!-- ---- 해외기업 컨콜 ----
+         TIKR 스크래핑(로그인 필요, 무료 열람 3개월 제한 우회 목적 누적 저장) 방식은 TIKR
+         이용약관 위반·컨텐츠 저작권 문제 소지가 커서 보류 — 대신 기업이 직접 공개하는 IR
+         보도자료(공식 발표자료)를 근거로 매출·수익성·가이던스·경영진 코멘트를 한국어로
+         번역·요약해 보여준다(scripts/scrape_earnings_ir.py, earnings_ir.json).
+         Q&A 전체 스크립트까지는 포함하지 않는다(2026-09-08). -->
+    <div id="reports-sub-concall" style="display:none">
+      <div class="sec-h"><h2>해외기업 컨콜</h2><span class="note" id="earnings-ir-source-note">각 기업 IR 공식 보도자료 기반 · earnings_ir.json 자동 갱신</span></div>
+      <div class="note" style="margin-bottom:12px">Q&A까지 담긴 완전한 컨콜 스크립트가 아니라, 기업이 공식 공개한 실적 보도자료(매출·수익성·가이던스·경영진 코멘트)를 한국어로 번역·요약한 것입니다. TIKR 등 유료 사이트를 스크래핑하는 방식은 이용약관·저작권 문제로 채택하지 않았습니다.</div>
+      <div id="earnings-ir-wrap"></div>
+    </div>
   </section>
 
   <!-- ================= COMPANY SNAPSHOT ================= -->
@@ -917,6 +938,7 @@ function setupSubtabs(tabsId, prefix){
 setupSubtabs('stock-subtabs', 'stock');
 setupSubtabs('industry-subtabs', 'industry');
 setupSubtabs('news-subtabs', 'news');
+setupSubtabs('reports-subtabs', 'reports');
 
 // ---- chip toggle (visual only, mockup) ----
 document.querySelectorAll('.chips').forEach(group=>{
@@ -5427,6 +5449,17 @@ function jumpToCalendarFromSnapshot(query){
 }
 function jumpToReportsFromSnapshot(co){
   activateTab('reports');
+  // "기업 분석" 탭이 리서치 보고서/해외기업 컨콜 하위 탭으로 나뉘면서(2026-09-08), 사용자가
+  // 이전에 해외기업 컨콜 하위 탭을 보고 있었다면 리포트 내용이 숨겨진 채로 갱신될 수 있어
+  // 항상 리서치 보고서 하위 탭으로 강제 전환한다.
+  const subtabs = document.getElementById('reports-subtabs');
+  if(subtabs){
+    subtabs.querySelectorAll('.region-tab').forEach(b=>b.classList.toggle('active', b.dataset.sub==='research'));
+    const research = document.getElementById('reports-sub-research');
+    const concall = document.getElementById('reports-sub-concall');
+    if(research) research.style.display = '';
+    if(concall) concall.style.display = 'none';
+  }
   if(!co) return;
   selectedRepCompany = co;
   repPage = 1;
@@ -5503,6 +5536,80 @@ async function loadReports(){
 loadReports();
 loadConsensus();
 loadTelegramComments();
+
+// ================= 해외기업 컨콜 (기업 분석 탭 하위, 2026-09-08 신설) =================
+// earnings_ir.json — scripts/scrape_earnings_ir.py가 Q4 IR 플랫폼 기업의 실적 발표
+// 보도자료를 가져와 Gemini/Claude로 번역·요약한 결과. TIKR 등 유료 컨콜 스크립트 사이트를
+// 스크래핑하는 대신 기업이 직접 공개한 공식 자료를 근거로 한다(자세한 배경은 스크립트
+// 상단 docstring 참고). 회사당 여러 분기가 누적될 수 있어(최근 8개 분기) 최신순으로
+// 나열한다.
+let EARNINGS_IR = { companies: [] };
+
+function earningsIrCardHtml(c){
+  // 지표를 stat-card 그리드에 넣으면 value+note가 좁은 칸 안에서 여러 줄로 접혀 가독성이
+  // 떨어졌다(2026-09-08 피드백) — 표(구분/내용) 형태로 한 줄씩 나열하는 방식으로 변경.
+  const metricsHtml = (c.metrics || []).length ? `
+    <table style="font-size:12.5px; margin-top:10px">
+      <tbody>
+        ${(c.metrics || []).map(m => `
+          <tr>
+            <td style="white-space:nowrap; color:var(--dim); padding-right:14px; vertical-align:top">${escapeHtml(m.label||'')}</td>
+            <td>${escapeHtml(m.value||'-')}${m.note ? `<div class="note" style="margin-top:1px">${escapeHtml(m.note)}</div>` : ''}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>` : '';
+  const summaryHtml = (c.summary_ko || []).length
+    ? `<ul style="margin:10px 0 0;padding-left:18px;font-size:13px;line-height:1.7">${(c.summary_ko||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul>`
+    : '';
+  const quoteHtml = c.ceo_quote_ko
+    ? `<div class="note" style="margin-top:8px;padding-left:10px;border-left:2px solid var(--border)">${escapeHtml(c.ceo_quote_ko)}</div>`
+    : '';
+  // 번역·요약은 어디까지나 요약이라, 원문(IR 공식 보도자료)을 바로 확인할 수 있도록 눈에
+  // 띄는 버튼으로 카드 하단에 둔다(2026-09-08 요청 — 기존엔 note 줄 안의 작은 링크뿐이었음).
+  const sourceBtn = c.source_url
+    ? `<a class="snap-jump-btn" href="${c.source_url}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block">원문 IR 보도자료 보기 ↗</a>` : '';
+  return `
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <div style="font-weight:700;font-size:14px">${escapeHtml(c.name||'')} <span class="note">(${escapeHtml(c.ticker||'')})</span> · ${escapeHtml(c.quarter||'')}</div>
+        <div class="note">${c.date||''}</div>
+      </div>
+      ${metricsHtml}
+      ${summaryHtml}
+      ${quoteHtml}
+      <div style="margin-top:10px">${sourceBtn}</div>
+    </div>
+  `;
+}
+
+function renderEarningsIR(){
+  const wrap = document.getElementById('earnings-ir-wrap');
+  if(!wrap) return;
+  const rows = (EARNINGS_IR.companies || []).slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  if(!rows.length){
+    wrap.innerHTML = '<div class="card note">아직 수집된 실적 IR 요약이 없습니다 — earnings_ir.json 자동 갱신 워크플로가 아직 실행되지 않았을 수 있습니다.</div>';
+    return;
+  }
+  wrap.innerHTML = rows.map(earningsIrCardHtml).join('');
+}
+
+async function loadEarningsIR(){
+  try{
+    const res = await fetch('earnings_ir.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    EARNINGS_IR = await res.json();
+    const note = document.getElementById('earnings-ir-source-note');
+    if(note && EARNINGS_IR.updated){
+      const dt = new Date(EARNINGS_IR.updated);
+      note.textContent = `각 기업 IR 공식 보도자료 기반 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+    }
+  }catch(e){
+    EARNINGS_IR = { companies: [] };
+  }
+  renderEarningsIR();
+}
+loadEarningsIR();
 
 // ==================================================================
 // 바이오 — 리서치 보고서 탭 하위, 서미화/김승민 애널리스트 발간분 (reports_bio.json)
