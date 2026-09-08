@@ -26,6 +26,11 @@ jobs:
 
       - name: Fetch & translate earnings IR press releases (SEC EDGAR 8-K/6-K Exhibit 99, Gemini 무료 티어 우선)
         env:
+          # 뉴스 요약/월간 브리핑과 GEMINI_API_KEY 하루 쿼터를 나눠 쓰다 소진되는 문제가
+          # 있어(2026-09-08), 이 스크립트 전용 무료 키를 GEMINI_API_KEY_EARNINGS로 따로
+          # 등록해두면 우선 쓴다(secrets에 아직 등록 전이면 빈 값이라 기존 GEMINI_API_KEY로
+          # 자동 대체됨 — scripts/scrape_earnings_ir.py의 get_provider() 참고).
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/scrape_earnings_ir.py --out earnings_ir.json

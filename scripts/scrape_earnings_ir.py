@@ -34,9 +34,14 @@
     — 완벽하진 않지만 최악의 경우도 "실적 아닌 공시를 실적으로 오인" 정도라 번역 결과를
     보면 바로 눈치챌 수 있음).
 
-- 번역/요약 provider: summarize_news.py와 동일하게 GEMINI_API_KEY(무료 티어) 우선,
-  없으면 ANTHROPIC_API_KEY(Claude, 유료) 순으로 시도한다. 둘 다 없으면 원문 영어만
-  metrics 없이 저장하고 조용히 종료한다(부분 실패로 워크플로를 실패시키지 않음).
+- 번역/요약 provider: GEMINI_API_KEY_EARNINGS(이 스크립트 전용 무료 키, 있으면 우선) →
+  없으면 GEMINI_API_KEY(뉴스 요약/월간 브리핑과 공유하는 기존 키) → 둘 다 없으면
+  ANTHROPIC_API_KEY(Claude, 유료) 순으로 시도한다. 전부 없으면 원문 영어만 metrics
+  없이 저장하고 조용히 종료한다(부분 실패로 워크플로를 실패시키지 않음). 전용 키를
+  따로 쓰는 이유(2026-09-08): 뉴스 요약·월간 브리핑이 이미 GEMINI_API_KEY의 하루 20회
+  무료 쿼터를 쓰고 있어서, 이 스크립트가 같은 키를 쓰면 서로 쿼터를 나눠 쓰다 소진되는
+  문제가 실제로 있었다 — 완전히 독립된 무료 키를 하나 더 만들면(aistudio.google.com/apikey,
+  신용카드 불필요) 셋이 각자 하루 20회씩 쓸 수 있다.
 
 - 누적: earnings_ir.json은 회사(ticker)당 최근 8개 분기만 유지한다. 이미 수집한 공시인지는
   Exhibit 문서의 URL(회사·공시마다 유일)로 판별해 중복 번역을 막는다.
@@ -242,7 +247,12 @@ class AnthropicProvider:
 
 def get_provider():
     import os
-    gemini_key = os.environ.get("GEMINI_API_KEY")
+    # 뉴스 요약(summarize_news.py)/월간 브리핑(analyze_news_trend.py)이 GEMINI_API_KEY를
+    # 이미 같이 쓰고 있어서 하루 20회 무료 쿼터를 셋이 나눠 쓰다 소진되는 문제가 있었다
+    # (2026-09-08) — 이 스크립트 전용으로 별도 무료 키를 GEMINI_API_KEY_EARNINGS에
+    # 등록하면 그 키를 우선 쓰고(완전히 독립된 하루 쿼터), 아직 안 만들었으면 기존
+    # GEMINI_API_KEY로 자동 대체한다.
+    gemini_key = os.environ.get("GEMINI_API_KEY_EARNINGS") or os.environ.get("GEMINI_API_KEY")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     if gemini_key:
         try:
@@ -257,16 +267,33 @@ def get_provider():
     return None
 
 
+class DailyQuotaExhausted(Exception):
+    """Gemini 무료 티어의 "하루" 단위 쿼터(gemini-3.6-flash 기준 하루 20회, 에러 메시지의
+    quotaId에 "PerDay"가 붙음)가 소진됐음을 나타낸다. summarize_news.py가 이미 같은 문제를
+    겪어서 쓰는 패턴 그대로다 — 분당 제한과 달리 몇 초~몇십 초 기다린다고 안 풀리고 태평양시
+    기준 하루 지나야 풀리므로, 이게 확인되면 재시도 없이 바로 포기하고 이번 실행에서 남은
+    회사들도 전부 건너뛴다(2026-09-08, 실제 실행에서 이걸 구분 못 해 회사마다 10~30초씩
+    헛되이 재시도하며 시간을 낭비한 걸 확인하고 수정)."""
+    pass
+
+
+def is_daily_quota_exhausted(error):
+    return "PerDay" in str(error)
+
+
 def translate_release(provider, release_text, retries=3):
     """[2026-09-08] 실제 워크플로 실행에서 Gemini가 "503 UNAVAILABLE(현재 수요 급증)"을
     반환해 RDNT/ALGN/TEM 번역이 실패한 적이 있다 — 구글 쪽 일시적 과부하로, 잠깐 쉬었다
     다시 부르면 대개 풀린다. 재시도 없이 바로 포기하던 걸 최대 3회까지 짧게 대기 후
-    재시도하도록 고쳤다."""
+    재시도하도록 고쳤다. 다만 하루 쿼터 초과(DailyQuotaExhausted)는 기다려도 안 풀리니
+    재시도하지 않고 바로 포기한다."""
     last_err = None
     for attempt in range(retries):
         try:
             return _parse_translation_response(provider.call(release_text))
         except Exception as e:
+            if provider.name == "gemini" and is_daily_quota_exhausted(e):
+                raise DailyQuotaExhausted(str(e)) from e
             last_err = e
             if attempt < retries - 1:
                 wait = 10 * (attempt + 1)
@@ -292,6 +319,8 @@ def process_release(ticker, name, release, provider, out_data):
         return False
     try:
         parsed = translate_release(provider, body)
+    except DailyQuotaExhausted:
+        raise  # main()이 잡아서 이번 실행에서 남은 회사들도 전부 건너뛰도록 위로 전달
     except Exception as e:
         print(f"[WARN] {ticker} 번역 실패: {e}", file=sys.stderr)
         return False
@@ -342,8 +371,15 @@ def main():
             continue
         if provider is None:
             continue
-        if process_release(ticker, info["name"], release, provider, out_data):
-            changed = True
+        try:
+            if process_release(ticker, info["name"], release, provider, out_data):
+                changed = True
+        except DailyQuotaExhausted:
+            # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
+            # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한
+            # 회사들은 dedup으로 건너뛰니 다음 실행 때 나머지가 자연히 이어서 채워진다).
+            print(f"[WARN] Gemini 무료 티어 하루 쿼터 소진 — 이번 실행은 여기까지만 진행하고 남은 회사는 다음 실행 때 이어서 수집합니다.", file=sys.stderr)
+            break
 
     if changed:
         # 같은 분기가 서로 다른 URL로 두 번 들어올 수 있다 — 예: 이전에 회사 자체 웹사이트
