@@ -163,6 +163,10 @@ tr:last-child td{border-bottom:none}
 .earn-fc-table{table-layout:fixed}
 .earn-fc-table th:first-child, .earn-fc-table td:first-child{width:150px; white-space:normal}
 .earn-fc-table th:not(:first-child), .earn-fc-table td:not(:first-child){text-align:right}
+/* 분기/연간 구간, 과거분기/현재분기/YoY·QoQ 구간을 한눈에 구분하도록 경계 열에 세로선 추가
+   (2026-09-08 요청) — 처음엔 2px solid --dim으로 넣었더니 너무 두꺼워 보인다는 피드백을
+   받아, 가로 테두리와 동일한 1px --border로 얇고 연하게 조정. */
+.earn-fc-table .col-divider{border-left:1px solid var(--border); padding-left:14px}
 /* 2026-08-31 후속 조정: 지분율/변화/순매수 열 모두 다른 표와 통일해 볼드체 없이 일반
    굵기로 표시(색상만 상승/하락 구분 유지) — perf-up/down은 다른 표에서 볼드를 쓰므로
    전역이 아니라 이 표에서만 덮어쓴다. */
@@ -5108,9 +5112,11 @@ function renderEarningsForecastTable(cons){
   const revKey = isNaver ? 'revenue_eok' : 'revenue';
   const opKey = isNaver ? 'operating_income_eok' : 'operating_income';
 
-  const headerRow = `<th>구분</th>${periods.map(p => `<th>${p._label}</th>`).join('')}`;
+  // 분기 구간과 연간 구간 사이 경계(quarterly.length번째 열)에 구분선을 넣어 두 구간을
+  // 시각적으로 나눈다.
+  const headerRow = `<th>구분</th>${periods.map((p, i) => `<th class="${i===quarterly.length?'col-divider':''}">${p._label}</th>`).join('')}`;
   const bodyRows = rowsDef.map(r => {
-    const cells = periods.map(p => `<td>${earningsRowValueText(r, earningsRowRawValue(r, p, revKey, opKey))}</td>`).join('');
+    const cells = periods.map((p, i) => `<td class="${i===quarterly.length?'col-divider':''}">${earningsRowValueText(r, earningsRowRawValue(r, p, revKey, opKey))}</td>`).join('');
     return `<tr><td>${r.label}</td>${cells}</tr>`;
   }).join('');
 
@@ -5165,16 +5171,19 @@ function renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, op
       <td>${r.label}</td>
       <td>${earningsRowValueText(r, yearAgoV)}</td>
       <td>${earningsRowValueText(r, priorV)}</td>
-      <td>${earningsRowValueText(r, curV)}</td>
-      <td>${fmtDelta(yoy)}</td>
+      <td class="col-divider">${earningsRowValueText(r, curV)}</td>
+      <td class="col-divider">${fmtDelta(yoy)}</td>
       <td>${fmtDelta(qoq)}</td>
     </tr>`;
   }).join('');
 
+  // 과거분기(전년동기/직전분기) · 현재분기(추정) · YoY·QoQ 세 구간을 구분선으로 나눈다
+  // (2026-09-08 요청) — col-divider는 "현재분기" 열과 "YoY" 열 앞에 붙여 세 구간의
+  // 경계에만 선이 생기도록 한다.
   return `
     <div class="subsec-h" style="margin-top:14px">다음 분기 실적 전망</div>
     <div style="overflow-x:auto"><table class="earn-fc-table" style="font-size:12px; min-width:600px"><thead><tr>
-      <th>구분</th><th>${yearAgoLbl}</th><th>${priorLbl}</th><th>${curLbl}</th><th>YoY</th><th>QoQ</th>
+      <th>구분</th><th>${yearAgoLbl}</th><th>${priorLbl}</th><th class="col-divider">${curLbl}</th><th class="col-divider">YoY</th><th>QoQ</th>
     </tr></thead><tbody>${bodyRows}</tbody></table></div>
     <div class="note" style="margin-top:4px">※ ${curLbl}는 시장 컨센서스 추정치, 나머지는 확정 실적입니다. 영업이익률의 YoY/QoQ는 %p(포인트) 차이입니다.</div>
   `;
