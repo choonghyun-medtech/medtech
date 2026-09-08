@@ -97,6 +97,9 @@ h1{font-size:22px; margin:2px 0 2px}
    출처 안내나 "※" 각주 같은 부연설명(.note, 흐린 회색)과 시각적으로 구분되도록 굵게/진하게
    처리한다(2026-09-04, 서식이 같아서 구분이 안 된다는 피드백 반영). */
 .subsec-h{font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:6px}
+/* 기업 스냅샷 탭의 소제목 — 오른쪽에 "탭에서 더보기" 버튼을 나란히 붙인다(2026-09-08). */
+.snap-subsec-h{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+.snap-jump-btn{background:none; border:1px solid var(--border); color:var(--accent); font-weight:600; cursor:pointer; padding:3px 10px; font-size:11px; border-radius:4px; white-space:nowrap}
 .chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px}
 .chip{
   border:1px solid var(--border); background:var(--bg2); color:var(--sub);
@@ -310,6 +313,8 @@ tr:last-child td{border-bottom:none}
 /* 추적 기업 카테고리 드롭다운 — 카테고리별로 옵션 텍스트 길이가 달라 폭이 제각각이었다.
    고정폭 + 말줄임으로 가지런히 정리(2026-09-04). */
 .rep-cat-select{width:150px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+/* 기업 스냅샷 탭의 섹터별 드롭다운도 같은 이유로 고정폭 + 말줄임(2026-09-08). */
+.snap-sector-select{width:150px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 .perf-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
 @media (max-width:720px){.perf-grid{grid-template-columns:1fr}}
 .perf-table-title{font-size:13px; font-weight:700; padding:8px 10px; border-radius:8px 8px 0 0; color:#fff}
@@ -346,6 +351,7 @@ tr:last-child td{border-bottom:none}
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
     <button class="tab" data-view="industry">산업 데이터</button>
     <button class="tab" data-view="reports">리서치 보고서</button>
+    <button class="tab" data-view="snapshot">기업 스냅샷</button>
   </div>
 
   <!-- ================= NEWS ================= -->
@@ -840,6 +846,13 @@ tr:last-child td{border-bottom:none}
     <div id="bio-pager" class="rep-pager"></div>
   </section>
 
+  <!-- ================= COMPANY SNAPSHOT ================= -->
+  <section class="view" id="view-snapshot">
+    <div class="sec-h"><h2>기업 스냅샷</h2><span class="note">기업 하나를 고르면 뉴스·공시·주가·리포트·실적을 한 화면에 모아 보여줍니다 (수출 데이터 연동은 추후 정리 예정)</span></div>
+    <div id="snap-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
+    <div id="snap-company-detail"><div class="card note">위에서 기업을 선택하면 스냅샷이 표시됩니다.</div></div>
+  </section>
+
 </div>
 
 <script>
@@ -865,22 +878,24 @@ function toggleTheme(){
 }
 
 // ---- tabs ----
+// activateTab()으로 분리해둔 이유: 탭 버튼 클릭뿐 아니라 기업 스냅샷 탭의 "탭에서 더보기"
+// 버튼도 같은 전환 로직이 필요해서다(2026-09-08, jumpTo*FromSnapshot 함수들 참고).
+function activateTab(viewName){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.view===viewName));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id === 'view-'+viewName));
+  // 리서치 보고서 탭이 처음 활성화되는 순간 텔레그램 코멘트 펼치기(▼) 버튼 노출 여부를
+  // 다시 계산한다 — 탭이 숨겨진 상태(display:none)에서는 요소 높이가 0으로 측정돼
+  // 최초 데이터 로드 시점에는 판정이 불가능했기 때문(2026-08-27).
+  if(viewName === 'reports'){
+    const repWrap = document.getElementById('rep-table-wrap');
+    const bioWrap = document.getElementById('bio-table-wrap');
+    if(repWrap) refreshTgCommentToggles(repWrap);
+    if(bioWrap) refreshTgCommentToggles(bioWrap);
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 document.querySelectorAll('.tab').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-'+btn.dataset.view).classList.add('active');
-    // 리서치 보고서 탭이 처음 활성화되는 순간 텔레그램 코멘트 펼치기(▼) 버튼 노출 여부를
-    // 다시 계산한다 — 탭이 숨겨진 상태(display:none)에서는 요소 높이가 0으로 측정돼
-    // 최초 데이터 로드 시점에는 판정이 불가능했기 때문(2026-08-27).
-    if(btn.dataset.view === 'reports'){
-      const repWrap = document.getElementById('rep-table-wrap');
-      const bioWrap = document.getElementById('bio-table-wrap');
-      if(repWrap) refreshTgCommentToggles(repWrap);
-      if(bioWrap) refreshTgCommentToggles(bioWrap);
-    }
-  });
+  btn.addEventListener('click', ()=> activateTab(btn.dataset.view));
 });
 
 // ---- 상위 탭 안의 하위 탭(주가 데이터 → 주가 Performance/글로벌 대시보드/수급 판독기,
@@ -1208,6 +1223,7 @@ async function loadNews(){
     const wrap = document.getElementById('news-domestic-wrap');
     if(wrap) wrap.innerHTML = '<div class="card">news.json을 불러오지 못했습니다 ('+e.message+').</div>';
   }
+  refreshSnapshotIfActive();
 }
 loadNews();
 
@@ -1500,6 +1516,7 @@ async function loadCalendar(){
     const list = document.getElementById('cal-up-list');
     if(list) list.innerHTML = '<div class="card">calendar_events.json을 불러오지 못했습니다 ('+e.message+').</div>';
   }
+  refreshSnapshotIfActive();
 }
 loadCalendar();
 
@@ -1687,6 +1704,7 @@ async function loadNewsHistory(){
     NEWS_HISTORY = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderNewsFlow가 안내 문구를 보여줌
   }
   renderNewsFlow();
+  if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
 loadNewsHistory();
 
@@ -2390,6 +2408,7 @@ async function loadStockPerformance(){
     document.getElementById('perf-body').innerHTML =
       '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
   }
+  if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
 loadStockPerformance();
 
@@ -2516,6 +2535,8 @@ async function loadTickerUniverse(){
   renderStockStatCards(selectedStockTicker);
   renderPriceChart(selectedStockTicker, selectedPriceMonths);
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
+  if(typeof renderSnapshotDropdowns === 'function') renderSnapshotDropdowns();
+  if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
   const input = document.getElementById('stock-search-input');
   if(input){
     input.addEventListener('input', ()=> renderStockSearchResults(input.value.trim()));
@@ -5056,18 +5077,16 @@ function renderEarningsForecastTable(cons){
   `;
 }
 
-function renderRepStockBox(co){
-  const box = document.getElementById('rep-stock-box');
-  if(!box) return;
-  const ticker = tickerForCompany(co);
+// ticker를 직접 받는 형태로 분리(2026-09-08, 기업 스냅샷 탭 신설 — 리서치 보고서 탭은
+// co(회사명)를 tickerForCompany로 변환해서 넘기고, 스냅샷 탭은 이미 ticker를 들고 있어
+// 바로 넘긴다). label은 박스 제목에 쓸 표시용 기업명.
+function buildStockBoxHtml(ticker, label){
   if(!ticker){
-    box.innerHTML = `<div class="card note">이 기업은 주가데이터 유니버스(tickers.json)에 등록되어 있지 않아 주가 박스를 표시할 수 없습니다.</div>`;
-    return;
+    return `<div class="card note">이 기업은 주가데이터 유니버스(tickers.json)에 등록되어 있지 않아 주가 박스를 표시할 수 없습니다.</div>`;
   }
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   if(!perf){
-    box.innerHTML = `<div class="card note">stock_performance.json 로딩 대기 중이거나 해당 종목 데이터가 없습니다.</div>`;
-    return;
+    return `<div class="card note">stock_performance.json 로딩 대기 중이거나 해당 종목 데이터가 없습니다.</div>`;
   }
   const r = perf.returns;
   const capEok = perf.market_cap_krw_eok!=null ? perf.market_cap_krw_eok
@@ -5100,8 +5119,8 @@ function renderRepStockBox(co){
   const perBlock = per!=null ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per.toFixed(2)}배</div><div class="delta">Forward PER(컨센서스)</div></div>`
     : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">컨센서스 PER 없음(커버리지 부족)</div></div>`;
 
-  box.innerHTML = `
-    <div class="sec-h"><h2 style="font-size:14px">${companyLabel(co)} · 주가 데이터</h2><span class="note">stock_performance.json 실데이터 · 목표주가/PER은 시장 컨센서스</span></div>
+  return `
+    <div class="sec-h"><h2 style="font-size:14px">${label} · 주가 데이터</h2><span class="note">stock_performance.json 실데이터 · 목표주가/PER은 시장 컨센서스</span></div>
     <div class="cards" style="margin-bottom:8px">
       <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
       ${perfRow}
@@ -5113,12 +5132,19 @@ function renderRepStockBox(co){
   `;
 }
 
+function renderRepStockBox(co){
+  const box = document.getElementById('rep-stock-box');
+  if(!box) return;
+  box.innerHTML = buildStockBoxHtml(tickerForCompany(co), companyLabel(co));
+}
+
 // 컨센서스 실적 전망 표는 기업 상세 패널(#rep-company-detail) 안, 기존 텔레그램 채널
 // 코멘트가 있던 자리에 렌더링한다(2026-09-08 요청 — 코멘트는 보고서 목록 행에 이미
 // 표시되어 중복이라 삭제하고, 그 자리를 실적 전망으로 대체).
-function earningsForecastBlockHtml(co){
-  const consTicker = tickerForCompany(co);
-  const cons = consTicker ? CONSENSUS[consTicker] : null;
+// ticker를 직접 받는다(2026-09-08, 기업 스냅샷 탭 신설 — buildStockBoxHtml과 동일한 이유로
+// 리서치 보고서 탭은 tickerForCompany(co)로 변환해서 넘기고, 스냅샷은 ticker를 바로 넘긴다).
+function earningsForecastBlockHtml(ticker){
+  const cons = ticker ? CONSENSUS[ticker] : null;
   const consNote = cons
     ? `<div class="note" style="margin-bottom:6px">시장 컨센서스(${cons.as_of||''} 기준, ${cons.source==='naver'?'FnGuide/네이버':'Yahoo Finance'})${cons.opinion?` · 투자의견 ${cons.opinion}`:''}</div>`
     : `<div class="note">시장 컨센서스 데이터가 아직 없습니다 (consensus.json 미연동 또는 해당 종목 커버리지 부족).</div>`;
@@ -5161,10 +5187,265 @@ function renderCompanyDetail(co){
       <div class="subsec-h">투자의견 변경 이력</div>
       ${timelineHtml}
     </div>
-    ${earningsForecastBlockHtml(co)}
+    ${earningsForecastBlockHtml(tickerForCompany(co))}
   `;
 
   renderRepStockBox(co);
+}
+
+// ================= 기업 스냅샷 (2026-09-08 신설) =================
+// 기업 하나(TICKER_UNIVERSE의 ticker)를 고르면 뉴스·공시(캘린더)·주가·리포트·실적·텔레그램
+// 코멘트를 한 화면에 모아 보여준다. 대시보드 전체에서 "기업"을 가리키는 표기가 소스마다
+// 다르다는 게 가장 큰 난관이었다:
+//  - 리포트(REPORTS)/텔레그램(TELEGRAM_COMMENTS): co 필드, 해외기업은 한글 음역
+//    ("스트라이커" 등) — 이미 있는 tickerForCompany(co)가 TICKER_NAME_ALIAS까지 거쳐
+//    ticker로 정확히 변환해주므로, 반대로 "tickerForCompany(r.co)===ticker"로 걸러 쓰면
+//    이 표기 차이를 그대로 재사용할 수 있다(별도 매핑 불필요).
+//  - 뉴스(NEWS_TRACKED_DOMESTIC/GLOBAL): reports.json과 무관한 별도의 하드코딩 목록이라
+//    TICKER_NAME_ALIAS가 커버하지 않는다. 대부분은 TICKER_UNIVERSE.name과 정확히 같지만
+//    ("스카이랩스", "Abbott" 등), 일부 해외기업은 축약형이 달라("Thermo Fisher" vs
+//    tickers.json의 "Thermo Fisher") snapshotNewsCoFor()에서 정확 일치 실패 시
+//    부분 일치(includes)로 한 번 더 시도한다 — 완벽하진 않지만 초안 수준에선 충분하다.
+//  - 캘린더(calendar_events.json): 이벤트에 ticker가 직접 들어있지만, 국내는 종목코드
+//    (예: "458870"), 해외는 심볼(예: "RDNT")이라 국내는 TICKER_UNIVERSE의 "123456.KS"에서
+//    코드 부분만 떼어 비교해야 한다(snapshotCalendarMatches).
+let selectedSnapshotTicker = null;
+
+// 뉴스 트래킹 목록(NEWS_TRACKED_DOMESTIC/GLOBAL)에서 이 기업에 해당하는 co 표기를 찾는다.
+// 정확 일치를 우선 시도하고, 실패하면 대소문자 무시 부분 일치로 한 번 더 시도한다.
+function snapshotNewsCoFor(info){
+  if(!info) return null;
+  const dicts = [NEWS_TRACKED_DOMESTIC, NEWS_TRACKED_GLOBAL];
+  for(const d of dicts){
+    if(Object.prototype.hasOwnProperty.call(d, info.name)) return info.name;
+  }
+  const nameLower = info.name.toLowerCase();
+  for(const d of dicts){
+    const hit = Object.keys(d).find(k=>{
+      const kl = k.toLowerCase();
+      return nameLower.includes(kl) || kl.includes(nameLower);
+    });
+    if(hit) return hit;
+  }
+  return null;
+}
+
+// calendar_events.json 이벤트 하나가 이 기업(info)의 것인지 판정. 국내는 종목코드,
+// 해외는 티커 심볼로 비교하고, 혹시 둘 다 안 맞으면 기업명 정확 일치로 한 번 더 확인한다.
+function snapshotCalendarMatches(ev, info){
+  if(!info) return false;
+  if(info.market === 'KR'){
+    if(ev.ticker === info.ticker.split('.')[0]) return true;
+  }else if(ev.ticker === info.ticker){
+    return true;
+  }
+  return !!(ev.company && ev.company === info.name);
+}
+
+function snapshotReportsFor(ticker){
+  return REPORTS.filter(r => tickerForCompany(r.co) === ticker);
+}
+
+// 리서치 보고서 탭의 renderRepCategoryDropdowns()와 같은 패턴이지만, reports.json에 있는
+// 기업만 다루는 CATEGORIES 대신 tickers.json 전체(145개, sector 필드 기준)로 그린다 —
+// 리포트가 아직 없는 기업도 뉴스/주가/공시만으로 스냅샷을 볼 수 있어야 하기 때문.
+const SNAPSHOT_SECTOR_ORDER = ['디지털헬스','미용','로보틱스','치과','IVD','생명공학','MedTech','Healthcare Provider'];
+function renderSnapshotDropdowns(){
+  const wrap = document.getElementById('snap-dropdown-wrap');
+  if(!wrap) return;
+  const bySector = {};
+  TICKER_UNIVERSE.forEach(t=>{ (bySector[t.sector]=bySector[t.sector]||[]).push(t); });
+  const order = [...SNAPSHOT_SECTOR_ORDER, ...Object.keys(bySector).filter(s=>!SNAPSHOT_SECTOR_ORDER.includes(s))];
+  let html = '';
+  order.forEach(sector=>{
+    const list = (bySector[sector]||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
+    if(!list.length) return;
+    html += `<select class="filter-select snap-sector-select" data-sector="${escapeHtml(sector)}">
+      <option value="">${escapeHtml(sector)} (${list.length})</option>
+      ${list.map(t=>`<option value="${t.ticker}">${escapeHtml(t.name)}${t.market!=='KR'?` (${t.market})`:''}</option>`).join('')}
+    </select>`;
+  });
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.snap-sector-select').forEach(sel=>{
+    sel.addEventListener('change', ()=>{
+      if(!sel.value) return;
+      wrap.querySelectorAll('.snap-sector-select').forEach(o=>{ if(o!==sel) o.value=''; });
+      selectedSnapshotTicker = sel.value;
+      renderSnapshot(sel.value);
+    });
+  });
+}
+
+// onclick='...(${JSON.stringify(v)})' 형태로 값을 인라인 핸들러에 박아 넣을 때, v 안에
+// 작은따옴표가 있으면(예: 영문 기업명) 속성값을 감싼 작은따옴표와 충돌해 마크업이 깨진다 —
+// JSON.stringify 결과의 작은따옴표만 HTML 엔티티로 치환해 안전하게 만든다.
+function jsAttrJson(v){ return JSON.stringify(v).replace(/'/g, '&#39;'); }
+
+function renderSnapshot(ticker){
+  const panel = document.getElementById('snap-company-detail');
+  if(!panel) return;
+  const info = TICKER_UNIVERSE.find(t=>t.ticker===ticker);
+  if(!info){
+    panel.innerHTML = '<div class="card note">위에서 기업을 선택하면 스냅샷이 표시됩니다.</div>';
+    return;
+  }
+
+  const reportRows = snapshotReportsFor(ticker).slice().sort((a,b)=> a.d.localeCompare(b.d));
+  const latestReport = reportRows[reportRows.length-1];
+
+  let timeline = [];
+  let prevOp = null;
+  reportRows.forEach(r=>{ if(r.op && r.op !== prevOp){ timeline.push({d:r.d, op:r.op}); prevOp = r.op; } });
+  const timelineHtml = timeline.length
+    ? timeline.map(t=>`<span class="badge ${repBadgeClass(t.op)}" style="margin-right:6px;margin-bottom:4px;display:inline-block">${t.d} → ${repOpLabel(t.op)}</span>`).join('')
+    : '<span class="note">의견 변경 이력 없음</span>';
+
+  const SNAP_LIST_MAX = 10;
+
+  // "오늘의 클리핑"(NEWS_DOMESTIC/NEWS_GLOBAL, news.json)은 매일 덮어써지는 하루치
+  // 스냅샷이라 어제·그제 기사는 여기 없다 — 뉴스 탭의 "뉴스 플로우"가 쓰는 누적 데이터
+  // NEWS_HISTORY(news_history.jsonl)를 대신 써서 최근 며칠간의 기사도 함께 보여준다
+  // (2026-09-08 요청). 단, history 항목엔 news.json에 있던 src(출처명)가 없다
+  // ({"date","region","cat","co","t","url","ctx"?,"summary"?} 스키마, ctx도 없을 수 있음).
+  const newsCo = snapshotNewsCoFor(info);
+  const newsItems = newsCo
+    ? NEWS_HISTORY
+        .filter(it=>newsItemCompanies(it).includes(newsCo))
+        .sort((a,b)=>(b.date||'').localeCompare(a.date||''))
+        .slice(0, SNAP_LIST_MAX)
+    : [];
+  const newsJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToNewsFromSnapshot(${jsAttrJson(newsCo)})'>뉴스 탭에서 더보기 →</button>`;
+  const newsHtml = newsItems.length ? `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px">
+      <span>관련 뉴스 (최근 ${newsItems.length}건)</span>${newsJumpBtn}
+    </div>
+    <div class="card" style="padding:0 16px">
+    ${newsItems.map(it=>{
+      const titleHtml = it.url
+        ? `<a href="${it.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(it.t)}</a>`
+        : escapeHtml(it.t);
+      const ctxTag = it.ctx ? `<span class="news-ctx">[${escapeHtml(it.ctx)}]</span> ` : '';
+      return `<div class="news-item">
+        <div class="t">${ctxTag}${titleHtml}</div>
+        <div class="meta"><span>${it.date||''}</span></div>
+      </div>`;
+    }).join('')}
+    </div>` : `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px"><span>관련 뉴스</span>${newsJumpBtn}</div>
+    <div class="note">관련 뉴스가 없습니다(뉴스 트래킹 목록에 없거나 표기가 달라 매칭되지 않았을 수 있습니다).</div>`;
+
+  const calEvents = [...CAL_DATA.domestic, ...CAL_DATA.global]
+    .filter(ev=>snapshotCalendarMatches(ev, info))
+    // 캘린더는 (실적발표 캘린더 뷰와 달리) 과거 공시·미래 예정 일정이 한 배열에 섞여
+    // 있어(scrape_calendar_*.py가 전후 120일을 함께 수집) 단순히 날짜 내림차순으로 정렬하면
+    // "가장 먼 미래의 예정 일정"이 "어제 뜬 공시"보다 위로 올라오는 문제가 있었다 — 오늘과의
+    // 날짜 거리(가까운 순)로 골라낸 뒤, 화면 표시만 시간순으로 다시 정렬한다(2026-09-08).
+    .sort((a,b)=> Math.abs(new Date(a.date) - today0) - Math.abs(new Date(b.date) - today0))
+    .slice(0, SNAP_LIST_MAX)
+    .sort((a,b)=> (a.date||'').localeCompare(b.date||''));
+  const calQuery = calEvents.length ? (calEvents[0].company || calEvents[0].ticker || info.name) : info.name;
+  const calJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToCalendarFromSnapshot(${jsAttrJson(calQuery)})'>캘린더 탭에서 더보기 →</button>`;
+  const calHtml = calEvents.length ? `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px">
+      <span>관련 일정·공시 (오늘과 가장 가까운 ${calEvents.length}건)</span>${calJumpBtn}
+    </div>
+    ${calEvents.map(ev=>{
+      const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+      const link = ev.source_url ? ` <a href="${ev.source_url}" target="_blank" rel="noopener" style="color:var(--dim); font-size:11px">출처↗</a>` : '';
+      // .up-row .d는 캘린더 탭의 "M/D"(짧은) 표기 기준으로 폭이 44px 고정이라, 스냅샷처럼
+      // 여러 해에 걸친 전체 날짜("YYYY-MM-DD")를 그대로 넣으면 줄바꿈된다 — 이 목록에서만
+      // 폭 제한을 풀고 줄바꿈을 막는다(2026-09-08).
+      return `<div class="up-row"><span class="d" style="width:auto;white-space:nowrap">${ev.date||''}</span><span class="badge ${meta.cls}">${meta.label}</span><span>${ev.title||''}${link}</span></div>`;
+    }).join('')}
+    ` : `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px"><span>관련 일정·공시</span>${calJumpBtn}</div>
+    <div class="note">관련 일정·공시가 없습니다.</div>`;
+
+  // 텔레그램 코멘트는 별도 블록으로 빼지 않고, 리서치 보고서 탭(renderReports)과 동일하게
+  // 제목 셀 안에 인라인으로 붙인다(2026-09-08 요청 — 다른 탭과 일관된 표시 방식 유지).
+  const reportsCo = reportRows.length ? reportRows[reportRows.length-1].co : null;
+  const reportsJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToReportsFromSnapshot(${jsAttrJson(reportsCo)})'>보고서 탭에서 더보기 →</button>`;
+  const reportsListHtml = reportRows.length ? `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px">
+      <span>리서치 보고서 (최근 ${Math.min(SNAP_LIST_MAX,reportRows.length)}/${reportRows.length}건)</span>${reportsJumpBtn}
+    </div>
+    <table style="font-size:12px"><thead><tr><th>작성일</th><th>제목·코멘트</th><th>투자의견</th><th>원문</th></tr></thead><tbody>
+    ${reportRows.slice(-SNAP_LIST_MAX).reverse().map(r=>{
+      const opBadge = r.op ? `<span class="badge ${repBadgeClass(r.op)}">${repOpLabel(r.op)}</span>` : '<span class="note">—</span>';
+      const pdfUrl = `https://securities.miraeasset.com/bbs/download/${r.pdf}.pdf?attachmentId=${r.pdf}`;
+      const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
+      return `<tr><td>${r.d}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
+    }).join('')}
+    </tbody></table>` : `
+    <div class="subsec-h snap-subsec-h" style="margin-top:14px"><span>리서치 보고서</span>${reportsJumpBtn}</div>
+    <div class="note">연동된 리서치 보고서가 없습니다.</div>`;
+
+  const stockJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToStockFromSnapshot(${jsAttrJson(ticker)})'>주가 탭에서 더보기 →</button>`;
+
+  panel.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <div style="font-weight:700;font-size:16px">${escapeHtml(info.name)} <span class="note">(${info.ticker})</span></div>
+        <div class="note">${info.market} · ${escapeHtml(info.sector)}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="subsec-h">투자의견 변경 이력</div>
+        ${timelineHtml}
+      </div>
+      ${newsHtml}
+      ${calHtml}
+      ${reportsListHtml}
+      ${earningsForecastBlockHtml(ticker)}
+    </div>
+    <div class="snap-subsec-h" style="margin-top:14px; justify-content:flex-end">${stockJumpBtn}</div>
+    <div id="snap-stock-box"></div>
+  `;
+  refreshTgCommentToggles(panel);
+  const stockBox = document.getElementById('snap-stock-box');
+  if(stockBox) stockBox.innerHTML = buildStockBoxHtml(ticker, info.name);
+}
+
+// 스냅샷 탭의 "탭에서 더보기" 버튼 — 해당 탭으로 전환하면서, 그 탭이 이미 갖고 있는 필터
+// 메커니즘(뉴스 기업 select/캘린더 검색어/리포트 카테고리 select/selectStock)을 같은
+// 기업으로 맞춰 그대로 재사용한다(2026-09-08 요청 — 스냅샷에서 더 자세히 보고 싶을 때
+// 해당 탭으로 바로 이동).
+function jumpToNewsFromSnapshot(newsCo){
+  activateTab('news');
+  if(!newsCo) return;
+  const sel = document.getElementById('news-company-select');
+  if(sel) sel.value = newsCo;
+  NEWS_STATE.company = newsCo;
+  applyNewsFilters();
+}
+function jumpToCalendarFromSnapshot(query){
+  activateTab('calendar');
+  const input = document.getElementById('cal-search-input');
+  if(input) input.value = query || '';
+  CAL_STATE.q = query || '';
+  calUpPage = 1;
+  renderCalendar();
+}
+function jumpToReportsFromSnapshot(co){
+  activateTab('reports');
+  if(!co) return;
+  selectedRepCompany = co;
+  repPage = 1;
+  document.querySelectorAll('.rep-cat-select').forEach(sel=>{
+    sel.value = [...sel.options].some(o=>o.value===co) ? co : '';
+  });
+  renderReports(co);
+  renderCompanyDetail(co);
+}
+function jumpToStockFromSnapshot(ticker){
+  activateTab('stock');
+  if(ticker) selectStock(ticker);
+}
+
+// 데이터가 스냅샷 탭보다 늦게 도착해도(뉴스/캘린더/컨센서스/텔레그램/보고서 로더가 각자
+// 비동기로 완료됨) 이미 선택된 기업이 있으면 다시 그려서 뒤늦게 채워준다 — renderCompanyDetail의
+// loadConsensus/loadTelegramComments 재렌더 패턴과 동일한 이유.
+function refreshSnapshotIfActive(){
+  if(selectedSnapshotTicker) renderSnapshot(selectedSnapshotTicker);
 }
 
 async function loadConsensus(){
@@ -5178,6 +5459,7 @@ async function loadConsensus(){
     CONSENSUS = {};
   }
   if(selectedRepCompany) renderCompanyDetail(selectedRepCompany);
+  refreshSnapshotIfActive();
 }
 
 // 텔레그램 코멘트는 reports.json보다 늦게 도착해도 상관없도록, 로딩되면 현재 화면을
@@ -5195,6 +5477,7 @@ async function loadTelegramComments(){
     renderReports(selectedRepCompany || '전체');
     if(selectedRepCompany) renderCompanyDetail(selectedRepCompany);
   }
+  refreshSnapshotIfActive();
 }
 
 async function loadReports(){
@@ -5215,6 +5498,7 @@ async function loadReports(){
     document.getElementById('rep-table-wrap').innerHTML =
       '<div class="card">reports.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions가 아직 한 번도 실행되지 않았다면 Actions 탭에서 워크플로를 수동 실행(Run workflow)해주세요.</div>';
   }
+  refreshSnapshotIfActive();
 }
 loadReports();
 loadConsensus();
