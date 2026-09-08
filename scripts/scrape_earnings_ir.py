@@ -208,24 +208,41 @@ SYSTEM_PROMPT = """당신은 한국 증권사 애널리스트를 위한 해외 �
 
 
 class GeminiProvider:
+    """summarize_news.py가 이미 겪은 문제와 동일 — gemini-3.x는 기본적으로 내부 "thinking"
+    (추론) 토큰을 max_output_tokens 예산에서 같이 소모해, 실제 JSON 응답이 중간에 잘리는
+    문제가 있다("Unterminated string..." 파싱 에러로 나타남, 2026-09-08 실행에서 IRTC/GH/
+    ISRG가 이 문제였다). thinking_budget=0으로 꺼서 예산을 전부 실제 응답에 쓰게 한다 —
+    일부 모델 버전은 이 값을 거부(400)하니 그럴 땐 thinking_config 자체를 빼고 재시도."""
     name = "gemini"
 
     def __init__(self, api_key):
         from google import genai
+        self._genai = genai
         self.client = genai.Client(api_key=api_key)
 
-    def call(self, user_content):
+    def _generate(self, user_content, thinking_budget):
         from google.genai import types
+        config_kwargs = dict(
+            system_instruction=SYSTEM_PROMPT,
+            max_output_tokens=3000,
+            response_mime_type="application/json",
+        )
+        if thinking_budget is not None:
+            config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=thinking_budget)
         resp = self.client.models.generate_content(
             model=GEMINI_MODEL,
             contents=user_content,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=2000,
-                response_mime_type="application/json",
-            ),
+            config=types.GenerateContentConfig(**config_kwargs),
         )
         return resp.text
+
+    def call(self, user_content):
+        try:
+            return self._generate(user_content, thinking_budget=0)
+        except Exception as e:
+            if "400" in str(e) or "INVALID_ARGUMENT" in str(e):
+                return self._generate(user_content, thinking_budget=None)
+            raise
 
 
 class AnthropicProvider:
