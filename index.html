@@ -157,6 +157,12 @@ tr:last-child td{border-bottom:none}
 #foreign-rank-table-wrap th:nth-child(3), #foreign-rank-table-wrap td:nth-child(3){width:20%}
 #foreign-rank-table-wrap th:nth-child(4), #foreign-rank-table-wrap td:nth-child(4){width:20%}
 #foreign-rank-table-wrap th:nth-child(5), #foreign-rank-table-wrap td:nth-child(5){width:26%}
+/* 실적 전망/다음 분기 실적 전망 표: table-layout:auto로 두면 첫 열("매출액(백만 USD)"처럼
+   통화 표기가 붙은 해외 종목 라벨이 국내 "매출액(억원)"보다 길다) 때문에 기업마다 첫 열
+   너비가 들쭉날쭉해 보였다(2026-09-08 지적) — 첫 열은 고정폭, 나머지 기간 열은 균등폭으로 강제. */
+.earn-fc-table{table-layout:fixed}
+.earn-fc-table th:first-child, .earn-fc-table td:first-child{width:150px; white-space:normal}
+.earn-fc-table th:not(:first-child), .earn-fc-table td:not(:first-child){text-align:right}
 /* 2026-08-31 후속 조정: 지분율/변화/순매수 열 모두 다른 표와 통일해 볼드체 없이 일반
    굵기로 표시(색상만 상승/하락 구분 유지) — perf-up/down은 다른 표에서 볼드를 쓰므로
    전역이 아니라 이 표에서만 덮어쓴다. */
@@ -863,6 +869,9 @@ tr:last-child td{border-bottom:none}
     <div id="reports-sub-concall" style="display:none">
       <div class="sec-h"><h2>해외기업 컨콜</h2><span class="note" id="earnings-ir-source-note">각 기업 IR 공식 보도자료 기반 · earnings_ir.json 자동 갱신</span></div>
       <div class="note" style="margin-bottom:12px">Q&A까지 담긴 완전한 컨콜 스크립트가 아니라, 기업이 공식 공개한 실적 보도자료(매출·수익성·가이던스·경영진 코멘트)를 한국어로 번역·요약한 것입니다. TIKR 등 유료 사이트를 스크래핑하는 방식은 이용약관·저작권 문제로 채택하지 않았습니다.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+        <select id="earnings-ir-company-select" class="filter-select"></select>
+      </div>
       <div id="earnings-ir-wrap"></div>
     </div>
   </section>
@@ -5042,21 +5051,10 @@ function consensusPeriodLabel(periods, idx, isAnnual, isNaver){
 // ⚠️ 해외 종목은 yfinance 컨센서스(earnings_estimate/revenue_estimate)가 매출액·EPS
 // 추정치만 제공하고 영업이익 추정치는 제공하지 않아, 추정("F") 구간의 영업이익/영업이익률은
 // 항상 "-"로 표시된다(확정 실적 구간은 income_stmt의 Operating Income 값을 그대로 사용).
-function renderEarningsForecastTable(cons){
-  if(!cons || !cons.earnings) return '';
-  const info = TICKER_UNIVERSE.find(t=>t.ticker===cons.ticker);
-  const curLabel = info ? (MARKET_CURRENCY_LABEL[info.market]||'') : '';
-  const isNaver = cons.source==='naver';
-  const quarterly = cons.earnings.quarterly || [];
-  const annual = cons.earnings.annual || [];
-  if(!quarterly.length && !annual.length) return '';
-
-  const periods = [
-    ...quarterly.map((p, i) => ({ ...p, _label: consensusPeriodLabel(quarterly, i, false, isNaver) })),
-    ...annual.map((p, i) => ({ ...p, _label: consensusPeriodLabel(annual, i, true, isNaver) })),
-  ];
-
-  const rowsDef = isNaver
+// 실적 전망/다음 분기 전망 표가 공유하는 행 정의 — 국내(네이버, 억원)와 해외(yfinance,
+// 현지통화 백만) 단위 표기만 다르고 매출액/영업이익/영업이익률/순이익 4행 구성은 동일하다.
+function earningsRowsDef(isNaver, curLabel){
+  return isNaver
     ? [
         {key:'revenue_eok', label:'매출액(억원)'},
         {key:'operating_income_eok', label:'영업이익(억원)'},
@@ -5069,33 +5067,116 @@ function renderEarningsForecastTable(cons){
         {key:'__op_margin', label:'영업이익률(%)'},
         {key:'net_income', label:`순이익(백만${curLabel?' '+curLabel:''})`, scale:1e6},
       ];
+}
+
+function earningsRowRawValue(r, p, revKey, opKey){
+  if(r.key === '__op_margin'){
+    const rev = p[revKey], op = p[opKey];
+    return (rev && op != null) ? (op / rev * 100) : null;
+  }
+  return p[r.key];
+}
+
+function earningsRowValueText(r, v){
+  if(v == null) return '-';
+  const shown = r.scale ? v / r.scale : v;
+  return r.key === '__op_margin'
+    ? shown.toFixed(1) + '%'
+    : shown.toLocaleString('ko-KR', r.scale ? {maximumFractionDigits:1} : {});
+}
+
+// 국내(FnGuide/네이버)는 원본 표가 최근 5개 분기 + 추정 1개(총 6개)를 내려주는 반면 해외
+// (yfinance)는 최근 4개 + 추정 1개(총 5개)만 내려온다. 두 시장 모두 3Q25부터 보이도록
+// 마지막 5개만 사용해 범위를 통일한다(2026-09-08 요청). 이 슬라이스가 기준이라 실제
+// 실적이 추가되면(quarterly 배열 자체가 최신 분기로 갱신) 표시 구간도 자동으로 한 분기씩
+// 밀린다 — 분기 라벨을 하드코딩하지 않고 항상 "배열의 마지막 N개" 기준으로 뽑기 때문.
+function renderEarningsForecastTable(cons){
+  if(!cons || !cons.earnings) return '';
+  const info = TICKER_UNIVERSE.find(t=>t.ticker===cons.ticker);
+  const curLabel = info ? (MARKET_CURRENCY_LABEL[info.market]||'') : '';
+  const isNaver = cons.source==='naver';
+  const quarterly = (cons.earnings.quarterly || []).slice(-5);
+  const annual = cons.earnings.annual || [];
+  if(!quarterly.length && !annual.length) return '';
+
+  const periods = [
+    ...quarterly.map((p, i) => ({ ...p, _label: consensusPeriodLabel(quarterly, i, false, isNaver) })),
+    ...annual.map((p, i) => ({ ...p, _label: consensusPeriodLabel(annual, i, true, isNaver) })),
+  ];
+
+  const rowsDef = earningsRowsDef(isNaver, curLabel);
   const revKey = isNaver ? 'revenue_eok' : 'revenue';
   const opKey = isNaver ? 'operating_income_eok' : 'operating_income';
 
   const headerRow = `<th>구분</th>${periods.map(p => `<th>${p._label}</th>`).join('')}`;
   const bodyRows = rowsDef.map(r => {
-    const cells = periods.map(p => {
-      let v;
-      if(r.key === '__op_margin'){
-        const rev = p[revKey], op = p[opKey];
-        v = (rev && op != null) ? (op / rev * 100) : null;
-      }else{
-        v = p[r.key];
-      }
-      if(v == null) return `<td>-</td>`;
-      const shown = r.scale ? v / r.scale : v;
-      const text = r.key === '__op_margin'
-        ? shown.toFixed(1) + '%'
-        : shown.toLocaleString('ko-KR', r.scale ? {maximumFractionDigits:1} : {});
-      return `<td>${text}</td>`;
-    }).join('');
+    const cells = periods.map(p => `<td>${earningsRowValueText(r, earningsRowRawValue(r, p, revKey, opKey))}</td>`).join('');
     return `<tr><td>${r.label}</td>${cells}</tr>`;
   }).join('');
 
-  return `
+  const minWidth = 150 + periods.length * 75; // 첫 열(150px) + 기간 열(열당 75px) — 열 개수가 달라도 열 하나당 너비는 항상 동일
+  const forecastHtml = `
     <div class="subsec-h" style="margin-top:10px">실적 전망</div>
-    <div style="overflow-x:auto"><table style="font-size:12px; min-width:560px"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></div>
+    <div style="overflow-x:auto"><table class="earn-fc-table" style="font-size:12px; min-width:${minWidth}px"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></div>
     <div class="note" style="margin-top:4px">※ 기간명 뒤 "F"가 붙은 구간만 시장 컨센서스 추정치이며, 나머지는 확정 실적입니다.${isNaver ? '' : ' 해외 종목은 영업이익 컨센서스가 제공되지 않아 추정 구간의 영업이익/영업이익률은 "-"로 표시됩니다.'}</div>
+  `;
+
+  return forecastHtml + renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, opKey);
+}
+
+// "실적 전망" 표 바로 아래에 다음 발표 분기 하나만 떼어서 전년동기/직전분기 대비를 보여주는
+// 표(2026-09-08 요청). quarterly는 이미 위에서 slice(-5)한 배열을 그대로 넘겨받으므로,
+// 항상 "마지막=다음 분기 추정", "마지막-1=직전 분기", "마지막-4=전년동기"로 계산한다 —
+// 분기 라벨이 아니라 배열 끝을 기준으로 삼기 때문에 실제 실적이 들어와 배열이 한 칸씩
+// 밀려도(3Q25/2Q26/3Q26F → 4Q25/3Q26/4Q26F ...) 코드 수정 없이 자동으로 따라간다.
+function renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, opKey){
+  const idxCur = quarterly.length - 1;
+  const curP = quarterly[idxCur];
+  if(!curP || !curP.is_estimate) return ''; // 다음 분기 추정치가 없으면 표를 만들 근거가 없음
+  const idxPrior = idxCur - 1;
+  const idxYearAgo = idxCur - 4;
+  const priorP = idxPrior >= 0 ? quarterly[idxPrior] : null;
+  const yearAgoP = idxYearAgo >= 0 ? quarterly[idxYearAgo] : null;
+
+  const curLbl = consensusPeriodLabel(quarterly, idxCur, false, isNaver);
+  const priorLbl = priorP ? consensusPeriodLabel(quarterly, idxPrior, false, isNaver) : '직전분기';
+  const yearAgoLbl = yearAgoP ? consensusPeriodLabel(quarterly, idxYearAgo, false, isNaver) : '전년동기';
+
+  const rowsDef = earningsRowsDef(isNaver, curLabel);
+  const bodyRows = rowsDef.map(r => {
+    const isMargin = r.key === '__op_margin';
+    const yearAgoV = yearAgoP ? earningsRowRawValue(r, yearAgoP, revKey, opKey) : null;
+    const priorV = priorP ? earningsRowRawValue(r, priorP, revKey, opKey) : null;
+    const curV = earningsRowRawValue(r, curP, revKey, opKey);
+    const delta = (base, cur) => {
+      if(base == null || cur == null) return null;
+      if(isMargin) return cur - base; // 영업이익률은 %p 차이로
+      if(base === 0) return null;
+      return (cur - base) / Math.abs(base) * 100;
+    };
+    const fmtDelta = v => {
+      if(v == null) return '-';
+      const sign = v >= 0 ? '+' : '';
+      return isMargin ? `${sign}${v.toFixed(1)}%p` : `${sign}${v.toFixed(1)}%`;
+    };
+    const yoy = delta(yearAgoV, curV);
+    const qoq = delta(priorV, curV);
+    return `<tr>
+      <td>${r.label}</td>
+      <td>${earningsRowValueText(r, yearAgoV)}</td>
+      <td>${earningsRowValueText(r, priorV)}</td>
+      <td>${earningsRowValueText(r, curV)}</td>
+      <td>${fmtDelta(yoy)}</td>
+      <td>${fmtDelta(qoq)}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="subsec-h" style="margin-top:14px">다음 분기 실적 전망</div>
+    <div style="overflow-x:auto"><table class="earn-fc-table" style="font-size:12px; min-width:600px"><thead><tr>
+      <th>구분</th><th>${yearAgoLbl}</th><th>${priorLbl}</th><th>${curLbl}</th><th>YoY</th><th>QoQ</th>
+    </tr></thead><tbody>${bodyRows}</tbody></table></div>
+    <div class="note" style="margin-top:4px">※ ${curLbl}는 시장 컨센서스 추정치, 나머지는 확정 실적입니다. 영업이익률의 YoY/QoQ는 %p(포인트) 차이입니다.</div>
   `;
 }
 
@@ -5583,15 +5664,62 @@ function earningsIrCardHtml(c){
   `;
 }
 
+// 회사당 여러 분기가 쌓이면 죽 나열하는 대신 기업 단위로 묶어서 볼 수 있어야 한다는
+// 요청(2026-09-08) — 드롭다운으로 기업 하나를 골라 그 기업의 분기만 모아보거나,
+// "전체보기" 상태에서는 기업별로 묶어서(최근 발표한 기업 순) 보여준다.
+let selectedEarningsIrTicker = '';
+
+function earningsIrGroupKey(c){ return c.ticker || c.name || ''; }
+
+function renderEarningsIrDropdown(){
+  const sel = document.getElementById('earnings-ir-company-select');
+  if(!sel) return;
+  const byKey = {};
+  (EARNINGS_IR.companies || []).forEach(c=>{
+    const key = earningsIrGroupKey(c);
+    if(!byKey[key]) byKey[key] = c;
+  });
+  const companies = Object.values(byKey).sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  sel.innerHTML = `<option value="">전체보기 (${companies.length}개 기업)</option>` +
+    companies.map(c=> `<option value="${escapeHtml(c.ticker||'')}">${escapeHtml(c.name||'')} (${escapeHtml(c.ticker||'')})</option>`).join('');
+  sel.value = selectedEarningsIrTicker;
+  sel.onchange = ()=>{ selectedEarningsIrTicker = sel.value; renderEarningsIR(); };
+}
+
 function renderEarningsIR(){
   const wrap = document.getElementById('earnings-ir-wrap');
   if(!wrap) return;
-  const rows = (EARNINGS_IR.companies || []).slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-  if(!rows.length){
+  const all = EARNINGS_IR.companies || [];
+  if(!all.length){
     wrap.innerHTML = '<div class="card note">아직 수집된 실적 IR 요약이 없습니다 — earnings_ir.json 자동 갱신 워크플로가 아직 실행되지 않았을 수 있습니다.</div>';
     return;
   }
-  wrap.innerHTML = rows.map(earningsIrCardHtml).join('');
+  if(selectedEarningsIrTicker){
+    const rows = all.filter(c=> earningsIrGroupKey(c) === selectedEarningsIrTicker)
+      .slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+    wrap.innerHTML = rows.map(earningsIrCardHtml).join('');
+    return;
+  }
+  // 전체보기: 기업별로 묶고, 그룹은 각 기업의 최신 발표일 기준 최근순으로 정렬
+  const groups = {};
+  all.forEach(c=>{
+    const key = earningsIrGroupKey(c);
+    (groups[key] = groups[key] || []).push(c);
+  });
+  const groupList = Object.values(groups).map(rows=>{
+    rows.sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+    return rows;
+  }).sort((a,b)=> (b[0].date||'').localeCompare(a[0].date||''));
+  wrap.innerHTML = groupList.map(rows=>{
+    const head = rows[0];
+    const quarterCount = rows.length > 1 ? `<span class="note" style="font-weight:400">· 최근 ${rows.length}개 분기</span>` : '';
+    return `
+      <div style="margin-bottom:18px">
+        <div style="font-weight:700;font-size:14.5px;margin-bottom:6px">${escapeHtml(head.name||'')} <span class="note">(${escapeHtml(head.ticker||'')})</span> ${quarterCount}</div>
+        ${rows.map(earningsIrCardHtml).join('')}
+      </div>
+    `;
+  }).join('');
 }
 
 async function loadEarningsIR(){
@@ -5607,6 +5735,7 @@ async function loadEarningsIR(){
   }catch(e){
     EARNINGS_IR = { companies: [] };
   }
+  renderEarningsIrDropdown();
   renderEarningsIR();
 }
 loadEarningsIR();
