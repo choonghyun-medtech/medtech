@@ -96,18 +96,23 @@ SEC_HEADERS = {"User-Agent": "medtech-dashboard research contact@example.com"}
 EXHIBIT_99_RE = re.compile(r"ex.{0,10}99", re.I)
 
 
-def find_earnings_release_via_edgar(ticker, cik, form_type):
-    """data.sec.gov 공식 JSON API로 최근 공시를 조회해 실적 보도자료로 보이는 첨부문서를
-    찾는다. 8-K는 submissions JSON의 "items"에 "2.02"(Results of Operations and Financial
-    Condition)가 있는 것을 우선으로 고르고(6-K는 이 분류 체계가 없어 그냥 최근 것부터
-    순서대로 본다), 그 공시 안의 첨부문서 중 EXHIBIT_99_RE에 맞는 파일을 고른다."""
+def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3):
+    """data.sec.gov 공식 JSON API로 최근 공시를 조회해 실적 보도자료로 보일 만한 첨부문서
+    후보를 최대 max_candidates개까지 순서대로 내놓는다(제너레이터). 8-K는 submissions
+    JSON의 "items"에 "2.02"(Results of Operations and Financial Condition)가 있는 것을
+    우선으로 고르고(6-K는 이 분류 체계가 없어 그냥 최근 것부터 순서대로 본다), 그 공시
+    안의 첨부문서 중 EXHIBIT_99_RE에 맞는 파일을 고른다.
+    [2026-09-08] 처음엔 첫 매치 하나만 반환했는데, "99번대 첨부문서가 있다"는 것만으로는
+    실적 발표 여부를 확신할 수 없다(예: HIMS는 M&A 완료 보도자료가 먼저 걸렸다) — 실제
+    내용 판정은 process_release()가 LLM으로 하므로, 그게 "실적 발표 아님"으로 판정하면
+    호출부(main)가 다음 후보를 마저 시도할 수 있도록 여러 개를 준다."""
     try:
         r = requests.get(f"https://data.sec.gov/submissions/CIK{cik}.json", timeout=20, headers=SEC_HEADERS)
         r.raise_for_status()
         data = r.json()
     except Exception as e:
         print(f"[WARN] {ticker} EDGAR submissions 조회 실패: {e}", file=sys.stderr)
-        return None
+        return
 
     recent = data.get("filings", {}).get("recent", {})
     forms = recent.get("form", [])
@@ -137,7 +142,10 @@ def find_earnings_release_via_edgar(ticker, cik, form_type):
         other = [i for i in candidates if i not in earnings_first]
         candidates = earnings_first + other  # 2.02(실적) 표시된 것부터, 없으면 나머지도 시도
 
+    found = 0
     for i in candidates:
+        if found >= max_candidates:
+            return
         accession_nodash = accessions[i].replace("-", "")
         index_url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/index.json"
         try:
@@ -151,16 +159,18 @@ def find_earnings_release_via_edgar(ticker, cik, form_type):
             fname = item.get("name", "")
             if EXHIBIT_99_RE.search(fname):
                 url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/{fname}"
-                return {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i]}
-    print(f"[INFO] {ticker} 최근 {form_type} 공시 중 실적 보도자료로 보이는 첨부문서를 찾지 못함", file=sys.stderr)
-    return None
+                found += 1
+                yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i]}
+                break  # 이 공시에서 하나 찾았으면 다음 공시로(같은 공시 안 다른 99 첨부문서는 안 봄)
+    if found == 0:
+        print(f"[INFO] {ticker} 최근 {form_type} 공시 중 실적 보도자료로 보이는 첨부문서를 찾지 못함", file=sys.stderr)
 
 
 def fetch_release_text(url):
     """보도자료 상세 페이지에서 본문 텍스트를 최대한 뽑아낸다. 회사마다 컨테이너 클래스가
     달라 범용적으로 본문 후보 컨테이너를 순서대로 시도하고, 다 실패하면 body 전체에서
     짧은 nav/footer 텍스트를 걸러낸 <p> 모음을 쓴다."""
-    # sec.gov는 자동화 요청에 식별 가능한 User-Agent를 요구한다(find_earnings_release_via_edgar
+    # sec.gov는 자동화 요청에 식별 가능한 User-Agent를 요구한다(find_earnings_release_candidates
     # 주석 참고) — data.sec.gov API뿐 아니라 www.sec.gov/Archives 정적 문서 요청도 마찬가지다.
     req_headers = SEC_HEADERS if "sec.gov" in url else HEADERS
     try:
@@ -395,23 +405,29 @@ def main():
         print("[WARN] GEMINI_API_KEY/ANTHROPIC_API_KEY가 없어 번역을 건너뜁니다 — 기존 데이터만 유지합니다.", file=sys.stderr)
 
     changed = False
+    quota_exhausted = False
     for ticker, info in EDGAR_SOURCES.items():
-        release = find_earnings_release_via_edgar(ticker, info["cik"], info["form"])
-        if not release:
-            continue
-        if release["url"] in existing_urls:
-            continue
-        if provider is None:
-            continue
-        try:
-            if process_release(ticker, info["name"], release, provider, out_data):
-                changed = True
-        except DailyQuotaExhausted:
-            # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
-            # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한
-            # 회사들은 dedup으로 건너뛰니 다음 실행 때 나머지가 자연히 이어서 채워진다).
-            print(f"[WARN] Gemini 무료 티어 하루 쿼터 소진 — 이번 실행은 여기까지만 진행하고 남은 회사는 다음 실행 때 이어서 수집합니다.", file=sys.stderr)
+        if quota_exhausted:
             break
+        # "99번대 첨부문서가 있다"는 것만으로는 실적 발표를 확신할 수 없어(2026-09-08,
+        # HIMS가 M&A 완료 보도자료를 먼저 집은 사례) 후보를 여러 개 받아 순서대로 시도하고,
+        # 하나라도 실적 발표로 판정되면(process_release가 True) 그 회사는 끝낸다.
+        for release in find_earnings_release_candidates(ticker, info["cik"], info["form"]):
+            if release["url"] in existing_urls:
+                continue
+            if provider is None:
+                continue
+            try:
+                if process_release(ticker, info["name"], release, provider, out_data):
+                    changed = True
+                    break
+            except DailyQuotaExhausted:
+                # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
+                # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한
+                # 회사들은 dedup으로 건너뛰니 다음 실행 때 나머지가 자연히 이어서 채워진다).
+                print(f"[WARN] Gemini 무료 티어 하루 쿼터 소진 — 이번 실행은 여기까지만 진행하고 남은 회사는 다음 실행 때 이어서 수집합니다.", file=sys.stderr)
+                quota_exhausted = True
+                break
 
     if changed:
         # 같은 분기가 서로 다른 URL로 두 번 들어올 수 있다 — 예: 이전에 회사 자체 웹사이트
