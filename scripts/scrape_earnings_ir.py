@@ -116,7 +116,22 @@ def find_earnings_release_via_edgar(ticker, cik, form_type):
     items_list = recent.get("items", [])
     cik_int = str(int(cik))
 
-    candidates = [i for i, f in enumerate(forms) if f == form_type]
+    # items="2.02" 필터로도 못 찾으면 계속 과거로 거슬러 올라가며 아무 8-K/6-K나 뒤지게
+    # 되는데, 그러다 우연히 "99" 첨부문서가 있는 완전히 엉뚱한 옛날 공시를 집는 사고가
+    # 실제로 있었다(2026-09-08, UNH가 2025-10-28짜리, ALGN이 2021-04-28짜리 — 5년 전! —
+    # 공시를 "실적 발표"로 오인). 회사는 분기마다 실적을 발표하므로 최신 공시는 항상
+    # 100여 일 이내여야 한다는 사실을 이용해, 그보다 오래된 공시는 애초에 후보에서 뺀다.
+    today = datetime.date.today()
+    MAX_FILING_AGE_DAYS = 120
+
+    def _recent_enough(i):
+        try:
+            d = datetime.datetime.strptime(dates[i], "%Y-%m-%d").date()
+        except (ValueError, IndexError):
+            return False
+        return (today - d).days <= MAX_FILING_AGE_DAYS
+
+    candidates = [i for i, f in enumerate(forms) if f == form_type and _recent_enough(i)]
     if form_type == "8-K":
         earnings_first = [i for i in candidates if "2.02" in (items_list[i] if i < len(items_list) else "")]
         other = [i for i in candidates if i not in earnings_first]
