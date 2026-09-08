@@ -14,8 +14,9 @@ tickers.json 유니버스 종목의 애널리스트 컨센서스(목표주가, �
     붙은 마지막 컬럼만 컨센서스 추정치, 나머지는 확정 실적).
 - 해외 종목: yfinance의 `Ticker.info`에서 targetMeanPrice/targetHighPrice/targetLowPrice/
   numberOfAnalystOpinions/forwardPE를, `Ticker.income_stmt`/`quarterly_income_stmt`에서 최근
-  실제 실적(매출액/순이익/EPS)을, `Ticker.earnings_estimate`/`revenue_estimate`에서
-  차년도(+1y)/차분기(+1q) 매출·EPS 컨센서스 평균을 가져와 한 흐름으로 이어붙인다.
+  실제 실적(매출액/영업이익/순이익/EPS)을, `Ticker.earnings_estimate`/`revenue_estimate`에서
+  차년도(+1y)/차분기(+1q) 매출·EPS 컨센서스 평균을 가져와 한 흐름으로 이어붙인다. 영업이익은
+  yfinance 컨센서스에 추정치가 없어 확정 실적 구간에만 채워진다(추정 구간은 null).
 - 이전엔 PDF 리포트에서 목표주가/밸류에이션을 정규식으로 추출하려 했으나(scrape_report_estimates.py),
   실제 리포트 PDF가 텍스트 레이어 없이 페이지 전체를 이미지로 렌더링한 형태라 원리적으로 추출이
   불가능해 전면 폐기하고 시장 컨센서스로 대체했다.
@@ -177,12 +178,14 @@ def fetch_yfinance_earnings_table(t):
         rows = []
         for c in cols:
             rev = stmt.loc["Total Revenue", c] if "Total Revenue" in stmt.index else None
+            op = stmt.loc["Operating Income", c] if "Operating Income" in stmt.index else None
             ni = stmt.loc["Net Income", c] if "Net Income" in stmt.index else None
             eps_v = stmt.loc["Diluted EPS", c] if "Diluted EPS" in stmt.index else None
             rows.append({
                 "period": str(c.date()) if hasattr(c, "date") else str(c),
                 "is_estimate": False,
                 "revenue": _safe_float(rev),
+                "operating_income": _safe_float(op),
                 "net_income": _safe_float(ni),
                 "eps": _safe_float(eps_v),
             })
@@ -217,6 +220,10 @@ def fetch_yfinance_earnings_table(t):
             "period": label,
             "is_estimate": True,
             "revenue": _safe_float(rev_avg),
+            # yfinance의 earnings_estimate/revenue_estimate는 매출액·EPS 컨센서스만 제공하고
+            # 영업이익 추정치는 주지 않는다 — 추정 구간의 영업이익/영업이익률은 항상 null로
+            # 내려가고, index.html에서 "-"로 표시된다(2026-09-08, 영업이익률 행 추가 요청 시 확인).
+            "operating_income": None,
             "net_income": None,
             "eps": _safe_float(eps_avg),
         })
