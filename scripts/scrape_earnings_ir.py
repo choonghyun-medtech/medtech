@@ -49,6 +49,7 @@ import datetime
 import json
 import re
 import sys
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -159,6 +160,15 @@ def fetch_release_text(url):
                 return text[:8000]
     paras = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
     text = "\n".join(p for p in paras if len(p) > 40)
+    if len(text) > 200:
+        return text[:8000]
+    # [2026-09-08] 실제 워크플로 실행에서 SEC EDGAR Exhibit 99 문서 대부분이 여기서
+    # 걸러졌다 — SEC 제출용으로 변환된 옛날 스타일 HTML이라 <p> 없이 <table>/<div>/<font>
+    # 태그로만 레이아웃을 잡는 경우가 많아 위 두 방식이 실패한다. 최후 수단으로 body
+    # 전체 텍스트를 쓴다 — SEC 개별 문서(회사 웹사이트와 달리)는 nav/광고가 없는
+    # 본문 전용 정적 파일이라 이 방식이 오히려 잘 맞는다.
+    body = soup.find("body") or soup
+    text = re.sub(r"\n{3,}", "\n\n", body.get_text("\n", strip=True))
     return text[:8000] if len(text) > 200 else None
 
 
@@ -247,8 +257,25 @@ def get_provider():
     return None
 
 
-def translate_release(provider, release_text):
-    raw = provider.call(release_text)
+def translate_release(provider, release_text, retries=3):
+    """[2026-09-08] 실제 워크플로 실행에서 Gemini가 "503 UNAVAILABLE(현재 수요 급증)"을
+    반환해 RDNT/ALGN/TEM 번역이 실패한 적이 있다 — 구글 쪽 일시적 과부하로, 잠깐 쉬었다
+    다시 부르면 대개 풀린다. 재시도 없이 바로 포기하던 걸 최대 3회까지 짧게 대기 후
+    재시도하도록 고쳤다."""
+    last_err = None
+    for attempt in range(retries):
+        try:
+            return _parse_translation_response(provider.call(release_text))
+        except Exception as e:
+            last_err = e
+            if attempt < retries - 1:
+                wait = 10 * (attempt + 1)
+                print(f"[WARN] 번역 API 호출 실패(재시도 {attempt+1}/{retries}, {wait}초 대기): {e}", file=sys.stderr)
+                time.sleep(wait)
+    raise last_err
+
+
+def _parse_translation_response(raw):
     text = raw.strip()
     if text.startswith("```"):
         text = re.sub(r"^```[a-zA-Z]*\s*", "", text)
@@ -319,6 +346,16 @@ def main():
             changed = True
 
     if changed:
+        # 같은 분기가 서로 다른 URL로 두 번 들어올 수 있다 — 예: 이전에 회사 자체 웹사이트
+        # URL로 수동 시딩해둔 분기를, 이번 실행에서 EDGAR가 같은 분기를 다른(sec.gov) URL로
+        # 새로 찾아 중복 추가하는 경우(2026-09-08, 실제 실행에서 RDNT/ALGN/TEM/ABT/ISRG가
+        # 이 케이스였음 — source_url 기준 중복 체크만으로는 못 거른다). (ticker, date) 기준으로
+        # 합쳐서 나중에 추가된 쪽(=이번에 새로 수집된 EDGAR 항목)을 남긴다.
+        dedup = {}
+        for c in out_data["companies"]:
+            dedup[(c["ticker"], c.get("date"))] = c
+        out_data["companies"] = list(dedup.values())
+
         # 회사별 최근 8개 분기만 유지(오래된 분기는 자연히 정리).
         by_ticker = {}
         for c in out_data["companies"]:
