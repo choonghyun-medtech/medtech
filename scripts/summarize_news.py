@@ -83,8 +83,12 @@ def is_transient_server_error(error):
 def transient_backoff_seconds(attempt):
     """is_transient_server_error 케이스용 백오프 — "high demand"는 429 쿼터 리셋(초 단위)보다
     훨씬 오래(수십 초~분 단위) 지속되는 경우가 흔해서, 시도할수록 더 오래 기다리게 지수적으로
-    늘린다(20s → 40s → 80s, 최대 90s)."""
-    return min(20 * (2 ** attempt), 90)
+    늘린다(20s → 40s → 80s → 120s, 최대 120s). 2026-09-08엔 최대 90s(재시도 4회)로 잡았는데,
+    2026-09-09 실제로 이 재시도 로직이 정상 작동(로그상 3~4분 소요 확인)했음에도 그날의
+    "high demand"가 그보다 더 오래 지속돼 결국 4회 다 실패한 사례가 있었다 — 백그라운드
+    워크플로라 사람이 기다리는 게 아니므로, 몇 분 더 버티는 비용보다 성공률을 높이는 게
+    낫다고 판단해 재시도 5회(아래 호출부)·최대 대기 120s로 늘렸다."""
+    return min(20 * (2 ** attempt), 120)
 
 
 class DailyQuotaExhausted(Exception):
@@ -301,9 +305,10 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
 
         # 2026-09-09: 1차+재시도 1회(총 2회)로는 "503 UNAVAILABLE(high demand)" 같은 일시적
         # 과부하를 못 버텨냈다(실제로 매 실행 전체가 실패하는 사례 확인) — 트렌드 스크립트와
-        # 동일하게 4회로 늘리고, 503/UNAVAILABLE은 429와 다른(더 길게, 지수적으로 늘어나는)
-        # 백오프를 쓴다.
-        for attempt in range(4):
+        # 동일하게 4회로 늘렸다가, 같은 날 그마저도 부족한 사례가 또 있어 5회로 재조정
+        # (transient_backoff_seconds의 최대 120s와 맞춘 값). 503/UNAVAILABLE은 429와
+        # 다른(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
+        for attempt in range(5):
             if not pending:
                 break
             idx_list = sorted(pending.keys())

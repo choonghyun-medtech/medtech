@@ -169,9 +169,12 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
     tag = f"{REGION_LABEL[region]} {len(ordered_keys)}개 구간 일괄"
 
     # 2026-09-09: 1차+재시도 1회(총 2회)로는 "503 UNAVAILABLE(high demand)"를 못 버텨내고
-    # 그날 브리핑 전체가 0건으로 끝나는 사례가 실제로 있었다 — 4회로 늘리고, 503/UNAVAILABLE은
-    # 429와 별도의(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
-    for attempt in range(4):
+    # 그날 브리핑 전체가 0건으로 끝나는 사례가 실제로 있었다 — 4회로 늘렸다가, 같은 날
+    # 그마저도(재시도 로직이 정상 작동해 3~4분을 썼음에도) 부족했던 사례가 또 있어 5회로
+    # 재조정(summarize_news.transient_backoff_seconds의 최대 120s와 맞춘 값). 백그라운드
+    # 워크플로라 사람이 기다리는 게 아니므로, 몇 분 더 버티는 비용보다 성공률을 우선한다.
+    # 503/UNAVAILABLE은 429와 별도의(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
+    for attempt in range(5):
         try:
             raw = provider.call(TREND_SYSTEM, user_content, max_tokens=max_tokens)
         except Exception as e:

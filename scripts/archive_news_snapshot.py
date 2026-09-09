@@ -13,6 +13,12 @@ fetch해 날짜별 원문 조회·카테고리별 AI 월간 분석에 쓴다. ne
   않는다). ctx/summary는 요약 단계가 실패했거나 아직 안 붙었으면 빈 문자열일 수 있다.
 - 같은 url은 이미 기록된 경우 다시 추가하지 않는다(news.json의 수집 윈도우가 겹쳐도
   history가 중복으로 쌓이지 않도록). url이 없는 항목은 건너뛴다(식별 불가).
+- 백필(2026-09-09 추가, 사용자 지적): 위 "이미 기록된 URL은 건너뜀" 규칙 때문에, 그날
+  summarize_news.py가 Gemini 503 등으로 실패해 summary가 빈 채로 먼저 아카이빙된 기사는,
+  같은 날 나중에 워크플로를 재실행해 요약이 성공해도 영영 빈 채로 남는 문제가 있었다.
+  그래서 이미 기록된 URL이라도 기존 summary가 비어 있고 이번 news.json에는 summary가
+  채워져 있으면, 그 필드만 덮어써서 뒤늦은 성공을 반영한다(다른 필드는 건드리지 않음 —
+  이미 요약이 있던 기사를 다시 요약해서 바꿔치기하지는 않는다).
 - 보관 기간 상한 RETENTION_DAYS(2026-09-03 추가, 2026-09-08 3개월→36개월로 확대 —
   실측 기준 하루 평균 약 51건/422바이트 증가로, 36개월치를 쌓아도 약 22MB에 불과해
   용량 부담이 거의 없음을 확인 후 사용자가 선택) — 화면의 기간 토글이 아직 오늘/7일/
@@ -65,15 +71,30 @@ def main():
         sys.exit(0)  # news.json 문제는 다른 스크립트가 이미 실패 처리하므로 여기서는 조용히 종료
 
     existing_records = load_existing_records(args.history)
-    seen_urls = {rec["url"] for rec in existing_records}
+    by_url = {rec["url"]: rec for rec in existing_records}
     new_records = []
+    backfilled = 0
 
     for region, key in (("domestic", "domestic"), ("global", "global")):
         for group in news.get(key, []) or []:
             cat = group.get("cat", "")
             for item in group.get("items", []) or []:
                 url = item.get("url")
-                if not url or url in seen_urls:
+                if not url:
+                    continue
+                summary = item.get("summary", "")
+                existing = by_url.get(url)
+                if existing is not None:
+                    # 2026-09-09: summarize_news.py가 그날 실패해서(예: Gemini 503) 빈
+                    # summary로 먼저 아카이빙된 기사가, 이후 재실행(같은 날 workflow_dispatch
+                    # 재시도 등)에서 성공하는 경우가 있다 — 이전엔 "이미 기록된 URL"이면
+                    # 무조건 건너뛰어서 이런 뒤늦은 성공을 영영 반영 못 했다(사용자 지적).
+                    # 기존 기록에 summary가 없고 이번 것에는 있으면 백필(덮어쓰기)한다.
+                    if not (existing.get("summary") or "").strip() and summary:
+                        existing["summary"] = summary
+                        if item.get("ctx"):
+                            existing["ctx"] = item.get("ctx")
+                        backfilled += 1
                     continue
                 new_records.append({
                     "date": item.get("date", ""),
@@ -83,9 +104,9 @@ def main():
                     "t": item.get("t", ""),
                     "url": url,
                     "ctx": item.get("ctx", ""),
-                    "summary": item.get("summary", ""),
+                    "summary": summary,
                 })
-                seen_urls.add(url)
+                by_url[url] = new_records[-1]
 
     cutoff = (datetime.date.today() - datetime.timedelta(days=RETENTION_DAYS)).strftime("%Y-%m-%d")
     all_records = existing_records + new_records
@@ -96,7 +117,7 @@ def main():
         for rec in kept_records:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
-    print(f"저장 완료: {args.history} 신규 {len(new_records)}건 추가, "
+    print(f"저장 완료: {args.history} 신규 {len(new_records)}건 추가, 뒤늦게 요약된 {backfilled}건 백필, "
           f"{RETENTION_DAYS}일 초과 {expired}건 삭제 (누적 {len(kept_records)}건)")
 
 
