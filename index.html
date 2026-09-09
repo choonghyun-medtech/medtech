@@ -521,10 +521,44 @@ tr:last-child td{border-bottom:none}
     </div>
     <!-- /주가 Performance -->
 
-    <!-- ---- 글로벌 대시보드 (준비 중) ---- -->
+    <!-- ---- 글로벌 대시보드 (2026-09-09 초안, 사수 요청) ---- -->
     <div id="stock-sub-global" style="display:none">
-      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note">한국, 미국, 중국, 일본 4개 지역 주요 Medtech 및 로보틱스 기업들 시총 및 밸류에이션 실적</span></div>
-      <div class="card">준비 중입니다 — 추후 콘텐츠가 채워질 예정입니다.</div>
+      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note" id="global-dash-note">한국·미국·중국·일본 4개 지역 의료기기 관련 기업 시가총액 및 밸류에이션(Forward PER) 비교</span></div>
+      <div class="note" style="margin-bottom:4px">중국은 상해·심천(A주) 상장사와 홍콩(HK) 상장 중국 기업을 함께 묶었습니다(중국 MedTech 상장사 다수가 홍콩에 상장돼 있어 홍콩만 따로 떼면 표본이 지나치게 작아짐) — tickers.json 기준 국가/섹터 태그를 그대로 쓴 초안이라, 세부 기업 포함·제외는 검토 후 조정 가능합니다.</div>
+      <div class="note" style="margin-bottom:10px">"MedTech"는 tickers.json 태그 그대로 쓰면 국내(한국)만 유독 좁게 잡히는 문제가 있었습니다 — 국내 섹터 분류가 미용·치과·IVD·디지털헬스·생명공학·로보틱스·MedTech로 세분화돼 있어, 클래시스(미용)·덴티움(치과)·씨젠(IVD) 같은 실제 의료기기 회사들이 "MedTech" 태그에서 빠져 한국만 5개사로 쪼그라들었기 때문입니다(2026-09-09 지적). 그래서 이 대시보드에서는 <b>MedTech·로보틱스·미용·치과·IVD 5개 섹터를 "의료기기"로 묶어서</b> 비교합니다(소프트웨어 성격의 디지털헬스, 제약에 가까운 생명공학, 병원·서비스인 Healthcare Provider는 제외) — 그 결과 한국 표본이 5개사→25개사로 늘어 국가 간 비교가 더 공정해졌습니다.</div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <select id="global-dash-country" class="filter-select">
+          <option value="">국가 전체</option>
+          <option value="KR">한국</option>
+          <option value="US">미국</option>
+          <option value="CN">중국(A주+홍콩)</option>
+          <option value="JP">일본</option>
+        </select>
+        <select id="global-dash-sector" class="filter-select">
+          <option value="">세부 섹터 전체(의료기기 광의)</option>
+          <option value="MedTech">MedTech</option>
+          <option value="로보틱스">로보틱스</option>
+          <option value="미용">미용기기</option>
+          <option value="치과">치과기기</option>
+          <option value="IVD">IVD(체외진단)</option>
+        </select>
+      </div>
+
+      <div class="cards" id="global-dash-stat-cards"></div>
+
+      <div class="sec-h" style="margin-top:14px"><h2>국가별 요약</h2><span class="note">국가마다 추적 중인 기업 수 자체가 달라(한국 5개사 vs 미국 24개사 등) 시총 "합계"만 보면 표본 크기 차이가 시장 규모 차이처럼 보일 수 있습니다 — 그래서 합계·평균·중앙값을 같이 보여줍니다.</span></div>
+      <div style="overflow-x:auto"><div id="global-dash-country-summary-wrap"></div></div>
+
+      <div class="sec-h" style="margin-top:14px"><h2>국가별 시가총액 합계</h2><span class="note">KRW 환산 · 조원 · 세부 섹터별 스택 구성 · 막대 아래 괄호는 기업 수</span></div>
+      <div class="chart-box"><canvas id="globalDashCapChart"></canvas></div>
+
+      <div class="sec-h" style="margin-top:14px"><h2>국가별 밸류에이션(Forward PER) 비교</h2><span class="note">중앙값 기준 · 적자(음수 PER)·데이터 없음 종목은 제외</span></div>
+      <div class="chart-box"><canvas id="globalDashPerChart"></canvas></div>
+
+      <div class="sec-h" style="margin-top:14px"><h2>기업 목록</h2><span class="note" id="global-dash-table-note"></span></div>
+      <div class="note" style="margin:-4px 0 10px">목표주가·투자의견은 시장 컨센서스입니다 — 국내는 네이버/FnGuide 애널리스트 컨센서스(목표주가 평균, 투자의견 "매수/중립" 등 국문 표기), 해외는 Yahoo Finance(yfinance) 애널리스트 컨센서스(목표주가 평균 targetMeanPrice, 투자의견은 recommendationKey 원문 "buy/hold/sell" 등)를 그대로 가져온 값이라 국내외 표기 체계가 다릅니다.</div>
+      <div id="global-dash-table-wrap"></div>
     </div>
 
     <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
@@ -2458,6 +2492,7 @@ async function loadStockPerformance(){
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
     if(typeof renderFlowMap === 'function') renderFlowMap();
     if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
+    if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
   }catch(e){
     document.getElementById('perf-body').innerHTML =
       '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
@@ -2465,6 +2500,259 @@ async function loadStockPerformance(){
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
 loadStockPerformance();
+
+// ==================================================================
+// 글로벌 대시보드 — 주가 데이터 탭 하위(2026-09-09 초안, 사수 요청: "한국·미국·중국·일본
+// 4개국 주요 MedTech·로보틱스 기업의 시가총액과 밸류에이션 실적을 볼 수 있는 페이지").
+// "밸류에이션 실적"이 정확히 뭘 가리키는지 스펙이 없어, 우선 이미 갖고 있는 데이터 중 가장
+// 표준적인 밸류에이션 지표인 Forward PER(컨센서스, consensus.json)로 초안을 구성했다 —
+// 세부 지표(EV/EBITDA, P/B 등)나 구성 방식은 미리보기 확인 후 조정 예정.
+// tickers.json(TICKER_UNIVERSE)의 sector가 "MedTech"/"로보틱스"인 종목만 모으고, market
+// 필드로 국가를 나눈다. 중국은 상해·심천(CN) A주와 홍콩(HK) 상장 중국기업을 하나로 묶었다
+// (마이크로포트 계열 등 중국 MedTech 대형주 다수가 홍콩 상장이라 HK를 따로 떼면 표본이
+// 너무 작아짐) — 이 판단이 틀렸으면 나중에 쉽게 바꿀 수 있도록 country 매핑 함수 하나로 뺐다.
+const GLOBAL_DASH_COUNTRIES = [
+  { key: 'KR', label: '한국' },
+  { key: 'US', label: '미국' },
+  { key: 'CN', label: '중국' },
+  { key: 'JP', label: '일본' },
+];
+// 2026-09-09: tickers.json의 "MedTech" 태그만 쓰면 국내(한국) 섹터 분류가 유독 세분화돼
+// (미용/치과/IVD/디지털헬스/생명공학/로보틱스/MedTech) 있어 한국만 5개사로 좁게 잡히는
+// 문제가 있었다 — 미용기기(클래시스 등)·치과기기(덴티움 등)·IVD(씨젠 등)도 실질적으로
+// "의료기기" 업종이므로 함께 묶어 "의료기기 광의"로 국가 비교를 한다. 소프트웨어 성격의
+// 디지털헬스, 제약에 가까운 생명공학, 병원 서비스인 Healthcare Provider는 제외.
+const GLOBAL_DASH_SECTORS = ['MedTech', '로보틱스', '미용', '치과', 'IVD'];
+let globalDashChartInstances = { cap: null, per: null };
+const GLOBAL_DASH_STATE = { country: '', sector: '' };
+
+function globalDashCountryOf(market){
+  return market === 'HK' ? 'CN' : market;
+}
+
+// TICKER_UNIVERSE + STOCK_PERF(시총) + CONSENSUS(Forward PER/투자의견/목표주가)를 합쳐
+// 대상 기업 목록을 만든다. 국가는 4개국(KR/US/CN/JP)만 남기고 그 외(DE/GB/CH/FR 등)는
+// 애초에 이 대시보드 범위가 아니므로 제외한다.
+function globalDashRows(){
+  return TICKER_UNIVERSE
+    .filter(t => GLOBAL_DASH_SECTORS.includes(t.sector))
+    .map(t => {
+      const country = globalDashCountryOf(t.market);
+      if(!GLOBAL_DASH_COUNTRIES.some(c => c.key === country)) return null;
+      const perf = STOCK_PERF.find(s => s.ticker === t.ticker);
+      const cons = CONSENSUS[t.ticker];
+      const capEok = perf ? (perf.market_cap_krw_eok ?? (perf.market_cap_krw_tril != null ? perf.market_cap_krw_tril * 10000 : null)) : null;
+      const per = cons && cons.per_fwd != null && cons.per_fwd > 0 ? cons.per_fwd : null; // 적자(음수)는 밸류에이션 비교에서 제외
+      const currentPrice = (perf && perf.price_history && perf.price_history.close && perf.price_history.close.length)
+        ? perf.price_history.close[perf.price_history.close.length - 1] : null;
+      const targetPrice = cons ? cons.target_price : null;
+      const upside = (targetPrice != null && currentPrice != null && currentPrice > 0)
+        ? (targetPrice - currentPrice) / currentPrice * 100 : null;
+      return {
+        ticker: t.ticker, name: stockDisplayName(t.ticker), sector: t.sector, country,
+        capEok, per, opinion: cons ? cons.opinion : null, targetPrice, currentPrice, upside,
+        currency: perf ? perf.currency : null,
+      };
+    })
+    .filter(Boolean);
+}
+
+function median(nums){
+  if(!nums.length) return null;
+  const sorted = nums.slice().sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+function globalDashFilteredRows(rows){
+  return rows.filter(r =>
+    (!GLOBAL_DASH_STATE.country || r.country === GLOBAL_DASH_STATE.country) &&
+    (!GLOBAL_DASH_STATE.sector || r.sector === GLOBAL_DASH_STATE.sector)
+  );
+}
+
+function renderGlobalDashStatCards(rows){
+  const wrap = document.getElementById('global-dash-stat-cards');
+  if(!wrap) return;
+  const totalCapEok = rows.reduce((sum, r) => sum + (r.capEok || 0), 0);
+  const perMedian = median(rows.map(r => r.per).filter(v => v != null));
+  const upsides = rows.map(r => r.upside).filter(v => v != null);
+  const avgUpside = upsides.length ? upsides.reduce((a, b) => a + b, 0) / upsides.length : null;
+  wrap.innerHTML = `
+    <div class="stat-card"><div class="lbl">기업 수</div><div class="val">${rows.length}개</div><div class="delta">현재 필터 기준</div></div>
+    <div class="stat-card"><div class="lbl">시가총액 합계</div><div class="val">${formatMarketCapEok(totalCapEok)}</div><div class="delta">KRW 환산</div></div>
+    <div class="stat-card"><div class="lbl">Forward PER 중앙값</div><div class="val">${perMedian != null ? perMedian.toFixed(1) + '배' : '-'}</div><div class="delta">적자·데이터 없음 제외</div></div>
+    <div class="stat-card"><div class="lbl">평균 상승여력</div><div class="val">${avgUpside != null ? fmtPct(avgUpside) + '%' : '-'}</div><div class="delta ${avgUpside != null ? pctClass(avgUpside) : ''}">목표주가 대비 · 컨센서스 있는 종목만</div></div>
+  `;
+}
+
+// 세부 섹터(5개)별 고정 색상 — 국가별 시총 구성(스택 바)과 PER 비교(그룹 바) 두 차트에서
+// 동일한 색을 써서 어느 섹터인지 바로 알아보게 한다.
+const GLOBAL_DASH_SECTOR_COLORS = {
+  'MedTech': '#2563eb', '로보틱스': '#f59e0b', '미용': '#10b981', '치과': '#8b5cf6', 'IVD': '#ef4444',
+};
+
+function renderGlobalDashCharts(allRows){
+  // 차트 두 개는 국가 간 비교가 핵심이라, 국가 필터와 무관하게 항상 4개국 전체를 보여주고
+  // 섹터 필터만 반영한다(국가 하나만 골랐을 때 막대가 하나만 남으면 "비교"라는 목적에
+  // 안 맞기 때문). 세부 섹터 필터가 걸려 있으면 그 섹터 하나만, 아니면 5개 세부 섹터를
+  // 모두 표시해 시총은 구성비(스택), PER은 섹터별 비교(그룹)로 보여준다.
+  const activeSectors = GLOBAL_DASH_STATE.sector ? [GLOBAL_DASH_STATE.sector] : GLOBAL_DASH_SECTORS;
+  const bySectorRows = allRows.filter(r => activeSectors.includes(r.sector));
+
+  const capByCountrySector = {};
+  const perByCountrySector = {};
+  GLOBAL_DASH_COUNTRIES.forEach(c => {
+    capByCountrySector[c.key] = {};
+    perByCountrySector[c.key] = {};
+    activeSectors.forEach(s => { capByCountrySector[c.key][s] = 0; perByCountrySector[c.key][s] = []; });
+  });
+  bySectorRows.forEach(r => {
+    capByCountrySector[r.country][r.sector] += (r.capEok || 0) / 10000; // 조원 단위
+    if(r.per != null) perByCountrySector[r.country][r.sector].push(r.per);
+  });
+
+  // 국가마다 표본 기업 수가 달라 시총 합계만 보면 오해할 수 있어(위 "국가별 요약" 표와
+  // 동일한 이유), 막대 라벨에 기업 수를 같이 붙인다(2026-09-09 요청).
+  const countByCountry = {};
+  GLOBAL_DASH_COUNTRIES.forEach(c => { countByCountry[c.key] = bySectorRows.filter(r => r.country === c.key).length; });
+  const labels = GLOBAL_DASH_COUNTRIES.map(c => `${c.label}(${countByCountry[c.key]}개사)`);
+  const capCanvas = document.getElementById('globalDashCapChart');
+  const perCanvas = document.getElementById('globalDashPerChart');
+  if(globalDashChartInstances.cap){ globalDashChartInstances.cap.destroy(); globalDashChartInstances.cap = null; }
+  if(globalDashChartInstances.per){ globalDashChartInstances.per.destroy(); globalDashChartInstances.per = null; }
+  if(!capCanvas || !perCanvas) return;
+
+  // 시총은 "국가 안에서 어느 세부 섹터가 비중이 큰지"가 궁금할 수 있어 스택(누적) 바로,
+  // PER은 누적하면 의미가 없어(중앙값끼리 더하는 건 무의미) 섹터별 나란히 비교하는
+  // 그룹 바로 그린다.
+  globalDashChartInstances.cap = new Chart(capCanvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: activeSectors.map(s => ({
+        label: `${s}(조원)`, data: GLOBAL_DASH_COUNTRIES.map(c => capByCountrySector[c.key][s]),
+        backgroundColor: GLOBAL_DASH_SECTOR_COLORS[s] || '#999', stack: 'cap',
+      })),
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      // 스택 바는 막대 하나(세그먼트 하나)에만 마우스를 올리면 그 섹터 값만 보여 전체
+      // 구성을 한눈에 비교하기 어려웠다(2026-09-09 지적) — mode:'index'로 그 국가의
+      // 모든 섹터 값이 툴팁 하나에 같이 뜨도록 한다(시가총액 합계 등 다른 차트와 동일한 방식).
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: textColor() } },
+        tooltip: { mode: 'index', intersect: false },
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { color: textColor() } },
+        y: { stacked: true, grid: { color: gridColor() }, ticks: { color: textColor() }, title: { display: true, text: '시가총액(조원)', color: textColor() } },
+      },
+    },
+  });
+
+  globalDashChartInstances.per = new Chart(perCanvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: activeSectors.map(s => ({
+        label: `${s} PER(배)`, data: GLOBAL_DASH_COUNTRIES.map(c => median(perByCountrySector[c.key][s])),
+        backgroundColor: GLOBAL_DASH_SECTOR_COLORS[s] || '#999',
+      })),
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color: textColor() } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor() } },
+        y: { grid: { color: gridColor() }, ticks: { color: textColor() }, title: { display: true, text: 'Forward PER(배, 중앙값)', color: textColor() } },
+      },
+    },
+  });
+}
+
+// 국가별 요약 — "시총 합계"만 보면 표본 크기(기업 수) 차이를 시장 규모 차이로 착각하기
+// 쉬워서(2026-09-09 지적), 합계와 함께 평균·중앙값·기업 수를 나란히 보여준다.
+function renderGlobalDashCountrySummary(bySectorRows){
+  const wrap = document.getElementById('global-dash-country-summary-wrap');
+  if(!wrap) return;
+  const rowsHtml = GLOBAL_DASH_COUNTRIES.map(c => {
+    const rs = bySectorRows.filter(r => r.country === c.key);
+    const caps = rs.map(r => r.capEok).filter(v => v != null);
+    const totalEok = caps.reduce((a, b) => a + b, 0);
+    const avgEok = caps.length ? totalEok / caps.length : null;
+    const perMed = median(rs.map(r => r.per).filter(v => v != null));
+    return `<tr>
+      <td>${escapeHtml(c.label)}</td>
+      <td style="text-align:right">${rs.length}개사</td>
+      <td style="text-align:right">${formatMarketCapEok(totalEok)}</td>
+      <td style="text-align:right">${avgEok != null ? formatMarketCapEok(avgEok) : '-'}</td>
+      <td style="text-align:right">${perMed != null ? perMed.toFixed(1) + '배' : '-'}</td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<table><thead><tr>
+    <th>국가</th><th>기업 수</th><th>시총 합계</th><th>시총 평균(기업당)</th><th>PER 중앙값</th>
+  </tr></thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function globalDashRowHtml(r){
+  const upsideHtml = r.upside != null
+    ? `<span class="${pctClass(r.upside)}">${fmtPct(r.upside)}%</span>` : '-';
+  return `<tr>
+    <td>${escapeHtml(r.sector)}</td>
+    <td>${escapeHtml(r.name)} <span class="note">(${escapeHtml(r.ticker)})</span></td>
+    <td style="text-align:right">${formatMarketCapEok(r.capEok)}</td>
+    <td style="text-align:right">${r.per != null ? r.per.toFixed(1) + '배' : '-'}</td>
+    <td>${r.opinion ? escapeHtml(String(r.opinion)) : '-'}</td>
+    <td style="text-align:right">${r.targetPrice != null ? r.targetPrice.toLocaleString('ko-KR') : '-'}</td>
+    <td style="text-align:right">${upsideHtml}</td>
+  </tr>`;
+}
+
+// 기업 목록이 국가·섹터 구분 없이 45개사가 쭉 나열돼 알아보기 어렵다는 지적(2026-09-09)에
+// 따라, 뉴스 아카이브의 날짜별 그룹 헤더(news-cat-h)와 같은 방식으로 국가별 소제목을
+// 붙여 나눈다. 국가 필터가 걸려 있으면 그 국가 그룹 하나만 보인다.
+function globalDashTableHtml(rows){
+  return GLOBAL_DASH_COUNTRIES.map(c => {
+    const groupRows = rows.filter(r => r.country === c.key);
+    if(!groupRows.length) return '';
+    const totalEok = groupRows.reduce((a, r) => a + (r.capEok || 0), 0);
+    return `
+      <div class="news-cat-h">${escapeHtml(c.label)} <span class="note">(${groupRows.length}개사 · 시총 합계 ${formatMarketCapEok(totalEok)})</span></div>
+      <table><thead><tr>
+        <th>섹터</th><th>기업</th><th>시가총액</th><th style="text-transform:none">Forward PER</th><th>투자의견</th><th>목표주가(현지통화)</th><th>상승여력</th>
+      </tr></thead><tbody>${groupRows.map(globalDashRowHtml).join('')}</tbody></table>
+    `;
+  }).join('');
+}
+
+function renderGlobalDashboard(){
+  const wrap = document.getElementById('global-dash-table-wrap');
+  const note = document.getElementById('global-dash-table-note');
+  if(!wrap) return;
+  const allRows = globalDashRows();
+  if(!allRows.length){
+    wrap.innerHTML = '<div class="card note">stock_performance.json / tickers.json 로딩 대기 중이거나 대상 종목이 없습니다.</div>';
+    return;
+  }
+  const sectorRows = GLOBAL_DASH_STATE.sector ? allRows.filter(r => r.sector === GLOBAL_DASH_STATE.sector) : allRows;
+  renderGlobalDashCountrySummary(sectorRows);
+  renderGlobalDashCharts(allRows);
+  const rows = globalDashFilteredRows(allRows).slice().sort((a, b) => (b.capEok || 0) - (a.capEok || 0));
+  renderGlobalDashStatCards(rows);
+  if(note) note.textContent = `국가별로 시가총액 내림차순 정렬 · 전체 ${rows.length}개사`;
+  wrap.innerHTML = globalDashTableHtml(rows);
+}
+
+document.getElementById('global-dash-country')?.addEventListener('change', e => {
+  GLOBAL_DASH_STATE.country = e.target.value;
+  renderGlobalDashboard();
+});
+document.getElementById('global-dash-sector')?.addEventListener('change', e => {
+  GLOBAL_DASH_STATE.sector = e.target.value;
+  renderGlobalDashboard();
+});
 
 // ==================================================================
 // 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
@@ -2591,6 +2879,7 @@ async function loadTickerUniverse(){
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
   if(typeof renderSnapshotDropdowns === 'function') renderSnapshotDropdowns();
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
+  if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
   const input = document.getElementById('stock-search-input');
   if(input){
     input.addEventListener('input', ()=> renderStockSearchResults(input.value.trim()));
@@ -5708,6 +5997,7 @@ async function loadConsensus(){
   }
   if(selectedRepCompany) renderCompanyDetail(selectedRepCompany);
   refreshSnapshotIfActive();
+  if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
 }
 
 // 텔레그램 코멘트는 reports.json보다 늦게 도착해도 상관없도록, 로딩되면 현재 화면을
