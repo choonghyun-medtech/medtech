@@ -882,7 +882,7 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= COMPANY SNAPSHOT ================= -->
   <section class="view" id="view-snapshot">
-    <div class="sec-h"><h2>기업 스냅샷</h2><span class="note">기업 하나를 고르면 뉴스·공시·주가·리포트·실적을 한 화면에 모아 보여줍니다 (수출 데이터 연동은 추후 정리 예정)</span></div>
+    <div class="sec-h"><h2>기업 스냅샷</h2><span class="note">기업 하나를 고르면 뉴스·공시·주가·리포트·실적을 한 화면에 모아 보여줍니다 (HS코드로 매칭되는 수출 데이터가 있으면 함께 표시)</span></div>
     <div id="snap-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
     <div id="snap-company-detail"><div class="card note">위에서 기업을 선택하면 스냅샷이 표시됩니다.</div></div>
   </section>
@@ -2788,24 +2788,30 @@ let exportChartInstance = null;
 // (export_data.json은 scripts/scrape_export_data.py의 hsCodesByPeriod로 기간을 나눠 수집한
 // 뒤 이미 하나의 월별 시계열로 합쳐서 내려주므로, 이 hsCodes 배열은 칩 부제목 표시용일 뿐
 // 프론트에서 별도로 기간을 나눌 필요는 없다).
+// companies 필드는 2026-09-08 국내 추적 유니버스(scripts/tickers.json 39개사) 대비
+// 재검토 결과로 갱신 — 추적 대상이 아닌 종목(대웅제약/휴온스글로벌/루트로닉/레이저옵텍/
+// 오스템임플란트/휴메딕스/제노레이)은 빼고, 추적 중인데 사업이 실제로 일치하는 종목
+// (디오-임플란트, 바텍-치과CBCT)과 그동안 공란이던 PCR/면역진단 TODO(씨젠, 바디텍메드)를
+// 채웠다. 자세한 판단 근거는 해당 대화 기록 참고 — 임플란트/CBCT/PCR/면역진단 쪽은
+// 관세청 공식 분류가 아니라 사업 내용 기준 추정이라 향후 실제 신고 실적과 다를 수 있음.
 const EXPORT_CATEGORY_CONFIG = [
-  { key: 'toxin', label: '톡신', hsCodes: ['3002903090', '3002491000', '3002909000'], companies: '휴젤·메디톡스·대웅제약·휴온스글로벌',
+  { key: 'toxin', label: '톡신', hsCodes: ['3002903090', '3002491000', '3002909000'], companies: '휴젤·메디톡스',
     countries: ['미국', '중국', '브라질', '태국', '일본'], regions: ['경기 화성시', '강원 춘천시'] },
-  { key: 'device_medical', label: '미용기기', hsCodes: ['901890'], companies: '클래시스·루트로닉·원텍·레이저옵텍',
+  { key: 'device_medical', label: '미용기기', hsCodes: ['901890'], companies: '클래시스·원텍',
     countries: ['미국', '브라질', '태국', '중국', '일본'], regions: ['경기 고양시', '서울 강남구', '서울 금천구', '대전 유성구'] },
-  { key: 'implant_dental', label: '임플란트', hsCodes: ['902129'], companies: '오스템임플란트·덴티움',
+  { key: 'implant_dental', label: '임플란트', hsCodes: ['902129'], companies: '덴티움·디오',
     countries: ['러시아 연방', '중국', '미국'], regions: ['서울 강서구', '경기 수원시', '부산 해운대구'] },
-  { key: 'filler', label: '필러', hsCodes: ['3304999000'], companies: '휴젤·파마리서치·휴메딕스',
+  { key: 'filler', label: '필러', hsCodes: ['3304999000'], companies: '휴젤·파마리서치',
     countries: [], regions: ['강원 강릉시', '강원 춘천시'] },
-  { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '제노레이(추가 종목 확인 필요)',
+  { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '바텍',
     countries: ['중국', '미국', '유럽'], regions: ['경기 화성시', '경기 성남시'] },
   { key: 'hemostat', label: '지혈재', hsCodes: ['3006104000'], companies: '넥스트바이오메디컬',
     countries: ['미국', '유럽', '일본'], regions: ['인천 연수구'] },
   { key: 'body_composition', label: '체성분 분석기', hsCodes: ['9018198000'], companies: '인바디',
     countries: ['미국', '중국', '유럽'], regions: ['서울 강남구'] },
-  { key: 'pcr_diagnostic', label: '체외진단 PCR', hsCodes: ['3822192020'], companies: '',
+  { key: 'pcr_diagnostic', label: '체외진단 PCR', hsCodes: ['3822192020'], companies: '씨젠',
     countries: [], regions: ['서울 송파구'] },
-  { key: 'immuno_diagnostic', label: '면역진단', hsCodes: ['3822191000'], companies: '',
+  { key: 'immuno_diagnostic', label: '면역진단', hsCodes: ['3822191000'], companies: '바디텍메드',
     countries: [], regions: ['경기 수원시'] },
 ];
 
@@ -3259,6 +3265,7 @@ async function loadExportData(){
   renderExportCategoryChips();
   renderExportScopeTabs();
   renderExportAll();
+  if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
 loadExportData();
 
@@ -5370,11 +5377,14 @@ function renderSnapshotDropdowns(){
   const order = [...SNAPSHOT_SECTOR_ORDER, ...Object.keys(bySector).filter(s=>!SNAPSHOT_SECTOR_ORDER.includes(s))];
   let html = '';
   order.forEach(sector=>{
-    const list = (bySector[sector]||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
+    // 화면 표기는 항상 stockDisplayName()으로 통일(주가 탭과 동일한 사명 변경 대응 — 예:
+    // tickers.json엔 구사명 "씨어스테크놀로지"로 남아있어도 2026-03 사명 변경 이후 현재
+    // 사명인 "씨어스"로 보여준다, 2026-09-08 지적).
+    const list = (bySector[sector]||[]).slice().sort((a,b)=>stockDisplayName(a.ticker).localeCompare(stockDisplayName(b.ticker)));
     if(!list.length) return;
     html += `<select class="filter-select snap-sector-select" data-sector="${escapeHtml(sector)}">
       <option value="">${escapeHtml(sector)} (${list.length})</option>
-      ${list.map(t=>`<option value="${t.ticker}">${escapeHtml(t.name)}${t.market!=='KR'?` (${t.market})`:''}</option>`).join('')}
+      ${list.map(t=>`<option value="${t.ticker}">${escapeHtml(stockDisplayName(t.ticker))}${t.market!=='KR'?` (${t.market})`:''}</option>`).join('')}
     </select>`;
   });
   wrap.innerHTML = html;
@@ -5392,6 +5402,80 @@ function renderSnapshotDropdowns(){
 // 작은따옴표가 있으면(예: 영문 기업명) 속성값을 감싼 작은따옴표와 충돌해 마크업이 깨진다 —
 // JSON.stringify 결과의 작은따옴표만 HTML 엔티티로 치환해 안전하게 만든다.
 function jsAttrJson(v){ return JSON.stringify(v).replace(/'/g, '&#39;'); }
+
+// 기업 스냅샷 → 관련 수출 데이터(2026-09-08 요청) — EXPORT_CATEGORY_CONFIG의 companies
+// 문자열("휴젤·메디톡스" 식)에 이 기업명이 정확히 포함돼 있으면 "관련 품목"으로 본다.
+// HS코드-상장사 매칭은 관세청 공식 분류가 아니라 리서치 추정이라는 점은 scrape_export_data.py
+// 주석 참고 — 한 기업이 여러 품목에 걸릴 수 있어(예: 휴젤은 톡신+필러) 배열로 반환한다.
+function snapshotExportCategoriesFor(info){
+  if(!info) return [];
+  return EXPORT_CATEGORY_CONFIG.filter(cfg => (cfg.companies || '').split('·').includes(info.name));
+}
+
+let snapExportChartInstances = {};
+
+function snapshotExportSectionHtml(cfgs){
+  return `
+    <div class="card" style="margin-top:14px">
+      <div class="subsec-h">관련 수출 데이터 (HS코드 매칭 ${cfgs.length}건)</div>
+      ${cfgs.map((cfg, i) => `
+        <div style="margin-top:${i === 0 ? '4' : '20'}px">
+          <div class="snap-subsec-h" style="margin-bottom:2px">
+            <span style="font-weight:600;font-size:13px">${escapeHtml(cfg.label)} <span class="note">HS ${cfg.hsCodes.join(', ')}</span></span>
+            <button type="button" class="snap-jump-btn" onclick="jumpToExportFromSnapshot('${cfg.key}')">수출 데이터 탭에서 더보기 →</button>
+          </div>
+          <div class="note" id="snap-export-note-${cfg.key}" style="margin-bottom:6px"></div>
+          <div class="chart-box small"><canvas id="snap-export-chart-${cfg.key}"></canvas></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// renderExportChart()(산업데이터 탭의 메인 차트)와 동일한 방식으로 월별 막대(수출액)+선(YoY)을
+// 그리되, 항상 scope=전체/gran=월별로 고정한 요약 버전 — 스냅샷은 한눈에 보는 용도라 산업데이터
+// 탭의 국가별/지역별/기간 토글까지는 가져오지 않는다(자세히 보려면 "더보기" 버튼으로 이동).
+function drawSnapshotExportCharts(cfgs){
+  cfgs.forEach(cfg => {
+    const canvas = document.getElementById(`snap-export-chart-${cfg.key}`);
+    const note = document.getElementById(`snap-export-note-${cfg.key}`);
+    if(!canvas) return;
+    if(snapExportChartInstances[cfg.key]){ snapExportChartInstances[cfg.key].destroy(); delete snapExportChartInstances[cfg.key]; }
+    const cat = EXPORT_DATA.categories.find(c => c.key === cfg.key);
+    const monthly = cat && cat.monthly && cat.monthly.length ? cat.monthly : null;
+    if(!monthly){
+      if(note) note.textContent = '아직 이 품목의 수출 데이터가 수집되지 않았습니다.';
+      return;
+    }
+    const displayFrom = exportDisplayFromLabel(monthly, 'month');
+    const aggFull = aggregateExportMonthly(monthly, 'month');
+    const yoyFull = computeYoYSeries(aggFull, 'month');
+    const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
+    if(note) note.textContent = `월별 · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · ${displayFrom || ''}부터 표시`;
+    snapExportChartInstances[cfg.key] = new Chart(canvas, {
+      data: {
+        labels: agg.map(a => a.label),
+        datasets: [
+          { type: 'bar', label: `${cfg.label} 수출액($)`, data: agg.map(a => a.expDlr), backgroundColor: '#2563eb', yAxisID: 'y', order: 2 },
+          { type: 'line', label: 'YoY(%)', data: yoy, borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1', spanGaps: true, tension: 0.25, pointRadius: 2, order: 1 },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: true, labels: { color: textColor() } },
+          tooltip: { mode: 'index', intersect: false },
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+          y: { position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() } },
+          y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' } },
+        },
+      },
+    });
+  });
+}
 
 function renderSnapshot(ticker){
   const panel = document.getElementById('snap-company-detail');
@@ -5493,11 +5577,12 @@ function renderSnapshot(ticker){
     <div class="note">연동된 리서치 보고서가 없습니다.</div>`;
 
   const stockJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToStockFromSnapshot(${jsAttrJson(ticker)})'>주가 탭에서 더보기 →</button>`;
+  const exportCfgs = snapshotExportCategoriesFor(info);
 
   panel.innerHTML = `
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
-        <div style="font-weight:700;font-size:16px">${escapeHtml(info.name)} <span class="note">(${info.ticker})</span></div>
+        <div style="font-weight:700;font-size:16px">${escapeHtml(stockDisplayName(ticker))} <span class="note">(${info.ticker})</span></div>
         <div class="note">${info.market} · ${escapeHtml(info.sector)}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
       </div>
       <div style="margin-top:10px">
@@ -5509,12 +5594,14 @@ function renderSnapshot(ticker){
       ${reportsListHtml}
       ${earningsForecastBlockHtml(ticker)}
     </div>
+    ${exportCfgs.length ? snapshotExportSectionHtml(exportCfgs) : ''}
     <div class="snap-subsec-h" style="margin-top:14px; justify-content:flex-end">${stockJumpBtn}</div>
     <div id="snap-stock-box"></div>
   `;
   refreshTgCommentToggles(panel);
+  if(exportCfgs.length) drawSnapshotExportCharts(exportCfgs);
   const stockBox = document.getElementById('snap-stock-box');
-  if(stockBox) stockBox.innerHTML = buildStockBoxHtml(ticker, info.name);
+  if(stockBox) stockBox.innerHTML = buildStockBoxHtml(ticker, stockDisplayName(ticker));
 }
 
 // 스냅샷 탭의 "탭에서 더보기" 버튼 — 해당 탭으로 전환하면서, 그 탭이 이미 갖고 있는 필터
@@ -5562,6 +5649,25 @@ function jumpToReportsFromSnapshot(co){
 function jumpToStockFromSnapshot(ticker){
   activateTab('stock');
   if(ticker) selectStock(ticker);
+}
+// jumpToReportsFromSnapshot과 동일한 패턴(setupSubtabs가 만든 하위 탭 구조를 그대로
+// 수동 재현) — industry-subtabs의 "수출 데이터" 칩을 활성화하고 해당 품목 칩까지 선택한다.
+function jumpToExportFromSnapshot(catKey){
+  activateTab('industry');
+  const subtabs = document.getElementById('industry-subtabs');
+  if(subtabs){
+    subtabs.querySelectorAll('.region-tab').forEach(b => b.classList.toggle('active', b.dataset.sub === 'export'));
+    subtabs.parentElement.querySelectorAll(':scope > [id^="industry-sub-"]').forEach(el => {
+      el.style.display = el.id === 'industry-sub-export' ? '' : 'none';
+    });
+  }
+  if(!catKey) return;
+  EXPORT_STATE.cat = catKey;
+  EXPORT_STATE.scope = 'all';
+  EXPORT_STATE.scopeKey = null;
+  renderExportCategoryChips();
+  renderExportScopeTabs();
+  renderExportAll();
 }
 
 // 데이터가 스냅샷 탭보다 늦게 도착해도(뉴스/캘린더/컨센서스/텔레그램/보고서 로더가 각자
