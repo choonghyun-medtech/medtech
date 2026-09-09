@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
 news_history.jsonl(scripts/archive_news_snapshot.py가 매일 누적)을 카테고리별로 모아
-"최근 30일간 이 카테고리에서 어떤 흐름/이벤트가 있었는지" LLM으로 종합 서술한다.
+"최근 N일간 이 카테고리에서 어떤 흐름/이벤트가 있었는지" LLM으로 종합 서술한다.
 
-index.html의 산업·기업 뉴스 탭 안 "월간 브리핑" 서브탭이 이 결과(news_trend.json)를 읽어,
+index.html의 산업·기업 뉴스 탭 안 "브리핑" 서브탭이 이 결과(news_trend.json)를 읽어,
 건수 집계나 헤드라인 재나열이 아니라 "미용 카테고리에서 최근 한 달간 신제품 효과 관련
 이슈가 부각됨" 같은 내용 종합을 카테고리 선택 없이 한 페이지에 쭉 보여준다(2026-09-02
-사용자 요청 반영).
+사용자 요청 반영, 2026-09-09 주간(7일)/월간(30일) 토글 추가 — 사수 요청).
 
 - provider(Gemini 무료/Anthropic 유료)는 summarize_news.py의 것을 그대로 재사용한다
   (같은 scripts/ 디렉터리에 있어 import 가능).
@@ -15,23 +15,35 @@ index.html의 산업·기업 뉴스 탭 안 "월간 브리핑" 서브탭이 이 
 - 카테고리 단위로만 생성한다. 처음엔 기업 단위도 함께 생성했었는데(2026-09-02), 기업이
   60개 넘게 있어 소요 시간이 너무 길어져 뺐다 — 기업별 흐름이 궁금하면 뉴스 아카이브
   서브탭에서 기업으로 필터링해 원문 기사를 직접 훑어보는 쪽으로 대체한다.
-- 지역 하나당 API 호출 1번으로 그 지역의 카테고리 전체를 한꺼번에 처리한다(2026-09-03
-  추가). 원래는 카테고리마다 호출을 따로 냈는데(최대 19번), 실제 워크플로 로그로 확인해
-  보니 Gemini 무료 티어가 분당 제한(5회) 말고 "하루 20회"짜리 일별(daily) 쿼터도 같이
-  걸려 있어서 summarize_news.py 호출까지 합치면 하루 한도를 넘어 대부분 429로 실패했다.
+- 지역 하나당 API 호출 1번으로 그 지역의 카테고리×기간 조합 전체를 한꺼번에 처리한다
+  (2026-09-03 추가, 2026-09-09 기간(PERIODS) 추가 후에도 이 "지역당 1번" 제약은 유지).
+  원래는 카테고리마다 호출을 따로 냈는데(최대 19번), 실제 워크플로 로그로 확인해 보니
+  Gemini 무료 티어가 분당 제한(5회) 말고 "하루 20회"짜리 일별(daily) 쿼터도 같이 걸려
+  있어서 summarize_news.py 호출까지 합치면 하루 한도를 넘어 대부분 429로 실패했다.
   분당 페이싱은 이 일별 한도엔 전혀 도움이 안 되므로(하루 지나야 풀림), 호출 자체를
   국내 1번 + 해외 1번(최대 2번)으로 줄이는 쪽으로 근본적으로 바꿨다 — summarize_news.py
   가 이미 기사 20개씩 한 번의 호출로 묶어 처리하는 것과 같은 원리를 카테고리 단위에도
-  적용한 것.
-- 기사가 3건 미만인 카테고리×지역 조합은 애초에 이 배치 호출 대상에서 제외한다(근거
-  부족, 억지로 트렌드를 지어내지 않도록).
+  적용한 것. 2026-09-09: 사수가 주간 브리핑도 요청했는데, 기간(7일/30일)마다 별도
+  호출을 내면 호출 수가 두 배가 돼 다시 일별 쿼터에 걸릴 위험이 커진다 — 그래서 같은
+  카테고리의 7일 구간과 30일 구간을 "같은 호출의 프롬프트 안에 나란히" 넣고 한 응답에서
+  함께 받는 방식으로 호출 수는 그대로 유지한 채 기간만 늘렸다(PERIODS 참고).
+- 기간별로 최소 기사 수(PERIODS의 min_articles)에 못 미치는 카테고리×기간 조합은 애초에
+  이 배치 호출 대상에서 제외한다(근거 부족, 억지로 트렌드를 지어내지 않도록). 7일처럼
+  짧은 기간은 기사 수가 자연히 적어지므로 30일보다 낮은 기준을 쓴다.
 - 프롬프트에 "주어진 기사 목록에 없는 내용은 절대 추측하지 말라"는 지침과 "반드시 한국어로만
   작성하라"는 지침(해외 기사도 summarize_news.py 단계에서 이미 한국어 2줄 요약으로 변환돼
   있지만, summary가 비어 원문 영문 제목이 그대로 들어간 항목이 섞일 수 있어 명시적으로 못박음)
-  을 명시하고, 실제 기사 목록(날짜/기업/맥락/요약)을 카테고리별로 나눠 프롬프트에 넣어 그
-  안에서만 종합하게 한다.
+  을 명시하고, 실제 기사 목록(날짜/기업/맥락/요약)을 카테고리×기간별로 나눠 프롬프트에 넣어
+  그 구간 안에서만 종합하게 한다.
 - 이 단계도 요약 단계와 마찬가지로 "보강" 단계다 — 실패해도 news_history.jsonl/news.json
   자체는 이미 저장된 상태이므로 sys.exit(1)로 워크플로를 실패시키지 않는다.
+- 2026-09-09: 실제 워크플로에서 "503 UNAVAILABLE(This model is currently experiencing
+  high demand)"로 국내/해외 호출이 둘 다 실패해 브리핑이 매일 0건으로 나오는 문제가
+  있었다 — 이건 쿼터 문제가 아니라 Gemini 쪽 일시적 과부하인데, 기존엔 1차+재시도 1회
+  (총 2회, 13초 페이싱)만 해서 "high demand"가 수십 초~분 단위로 지속되면 못 버텨냈다.
+  summarize_news.is_transient_server_error()로 429(쿼터)와 구분해 감지하고, 재시도 횟수를
+  4회로 늘리고 20s→40s→80s로 지수적으로 늘어나는 백오프를 쓰도록 고쳤다(아래
+  generate_trends_batch 참고). summarize_news.py의 동일한 재시도 루프도 같이 고쳤다.
 
 사용법:
     python analyze_news_trend.py --history news_history.jsonl --out news_trend.json
@@ -49,26 +61,37 @@ from summarize_news import (
     gemini_backoff_seconds,
     gemini_pace,
     is_daily_quota_exhausted,
+    is_transient_server_error,
+    transient_backoff_seconds,
 )
 
-PERIOD_DAYS = 30  # 월간 분석만 생성(2026-09-02, 7일치는 뺐다 — 위 docstring 참고)
-MIN_ARTICLES = 3  # 이보다 적으면 트렌드 생성을 건너뜀(근거 부족)
-MAX_LINES_PER_CATEGORY = 15  # 카테고리 하나당 프롬프트에 넣는 기사 목록 상한(토큰 보호,
+# 2026-09-09: 사수 요청으로 주간 브리핑을 재도입 — 2026-09-02에는 "7일치는 API 호출이
+# 너무 많아진다"는 이유로 뺐었는데, 이번엔 region(국내/해외)당 호출을 여전히 1번으로 유지한
+# 채(PERIODS의 두 구간을 한 호출의 프롬프트 안에 같이 넣고 한 응답에서 같이 받음) 해결했다
+# — 그래서 호출 수 자체는 이전과 동일(최대 2회: 국내 1 + 해외 1)하면서 주간+월간을 함께
+# 생성한다. min_articles는 기간이 짧을수록 기사 수가 자연히 적어지므로 기간별로 다르게 둔다.
+PERIODS = [
+    {"days": 7, "label": "주간", "min_articles": 2},
+    {"days": 30, "label": "월간", "min_articles": 3},
+]
+MAX_LINES_PER_CATEGORY = 15  # 카테고리×기간 한 구간당 프롬프트에 넣는 기사 목록 상한(토큰 보호,
 # 한 호출에 카테고리 전체를 몰아넣다 보니 예전(50줄/카테고리)보다 더 줄였다)
-MAX_TOKENS_PER_CATEGORY = 300  # 카테고리 하나당 배정하는 출력 토큰 예산(불릿 3~5개 기준)
+MAX_TOKENS_PER_SECTION = 300  # 카테고리×기간 한 구간당 배정하는 출력 토큰 예산(불릿 3~5개 기준)
 REGIONS = ["domestic", "global"]
 REGION_LABEL = {"domestic": "국내", "global": "해외"}
 
 TREND_SYSTEM = """당신은 한국 증권사의 의료기기/디지털헬스/로보틱스 담당 애널리스트를 돕는
-리서치 보조원입니다. 아래에 여러 카테고리 각각의 최근 한 달간 나온 기사 목록(날짜/기업/
-맥락/제목 또는 요약)이 카테고리별로 구분되어 주어집니다. 카테고리마다 그 목록만 근거로
-삼아, 이 기간 동안 두드러진 이벤트·주제·흐름을 애널리스트 관점에서 3~5개의 불릿(bullet)
-으로 종합하세요.
+리서치 보조원입니다. 아래에 여러 카테고리 각각의 최근 기사 목록(날짜/기업/맥락/제목 또는
+요약)이 카테고리별로 구분되어 주어집니다. 한 카테고리 밑에 "[기간: 7일]", "[기간: 30일]"처럼
+서로 다른 기간의 구간이 하나 또는 둘 다 나올 수 있습니다 — 각 (카테고리, 기간) 구간마다
+그 구간에 나열된 기사만 근거로 삼아, 그 기간 동안 두드러진 이벤트·주제·흐름을 애널리스트
+관점에서 3~5개의 불릿(bullet)으로 종합하세요.
 
 규칙:
-- 카테고리끼리 내용을 섞지 마세요. 각 카테고리는 그 카테고리 밑에 나열된 기사만 근거로
-  삼으세요.
-- 각 카테고리의 출력 형식은 반드시 줄바꿈("\\n")으로 구분된 불릿 목록이어야 합니다. 각 줄은
+- 카테고리끼리, 그리고 같은 카테고리라도 기간(7일/30일)끼리 내용을 섞지 마세요. 각 구간은
+  그 구간 밑에 나열된 기사만 근거로 삼으세요(30일 구간이라고 7일 구간의 기사만 반복하거나,
+  반대로 7일 구간에 30일치 내용을 끌어오지 마세요).
+- 각 구간의 출력 형식은 반드시 줄바꿈("\\n")으로 구분된 불릿 목록이어야 합니다. 각 줄은
   "- "로 시작하세요(예: "- 세포라 입점으로 북미 유통망 확대함\\n- 상반기 매출 역대 최대
   기록\\n- ..."). 문장을 죽 이어붙인 하나의 문단으로 쓰지 마세요 — 가독성을 위해 항목별로
   줄을 나눕니다.
@@ -89,8 +112,9 @@ TREND_SYSTEM = """당신은 한국 증권사의 의료기기/디지털헬스/로
 - 뚜렷한 공통 주제가 안 보이면 억지로 만들지 말고 "특별히 두드러진 단일 흐름보다는
   개별 기업 이슈가 산발적으로 있었음" 같이 있는 그대로 서술하세요.
 - 투자 조언이나 매수/매도 의견은 절대 포함하지 마세요(사실 종합만).
-- 입력에 주어진 카테고리 개수와 순서를 정확히 맞춰서 모두 답하세요. 출력은 JSON 하나만:
-  {"categories": [{"key": "카테고리명", "text": "- 첫째 불릿\\n- 둘째 불릿"}, ...]}"""
+- 입력에 주어진 (카테고리, 기간) 구간 개수를 정확히 맞춰서 모두 답하세요. 출력은 JSON
+  하나만: {"sections": [{"key": "카테고리명", "period_days": 7 또는 30, "text": "- 첫째
+  불릿\\n- 둘째 불릿"}, ...]}"""
 
 
 def parse_json_object(text):
@@ -126,19 +150,28 @@ def build_lines(items):
     return lines[:MAX_LINES_PER_CATEGORY]
 
 
-def generate_trends_batch(provider, region, cat_items, debug=False):
-    """cat_items: {카테고리명: 기사목록} — 한 지역의 카테고리 전체를 API 호출 1번으로 처리한다
-    (2026-09-03, Gemini 무료 티어의 "하루 20회" 쿼터에 걸리지 않도록 호출 수 자체를 줄임).
-    반환값: {카테고리명: 불릿 텍스트}. 실패하거나 응답에 없는 카테고리는 결과에서 빠진다."""
+def generate_trends_batch(provider, region, cat_period_items, debug=False):
+    """cat_period_items: {(카테고리명, period_days): 기사목록} — 한 지역의 카테고리×기간
+    조합 전체를 API 호출 1번으로 처리한다(2026-09-03, Gemini 무료 티어의 "하루 20회" 쿼터에
+    걸리지 않도록 호출 수 자체를 줄임 — 2026-09-09 주간 브리핑을 추가하면서도 이 호출 수
+    제약(지역당 1번)은 그대로 유지하기 위해, 같은 카테고리의 7일/30일 구간을 한 프롬프트
+    안에 같이 넣는 방식으로 바꿨다).
+    반환값: {(카테고리명, period_days): 불릿 텍스트}. 실패하거나 응답에 없는 구간은 빠진다."""
+    # 프롬프트에서 같은 카테고리의 여러 기간이 바로 이어서 보이도록 카테고리 기준으로 묶어 정렬.
+    ordered_keys = sorted(cat_period_items.keys(), key=lambda k: (k[0], k[1]))
     sections = []
-    for cat, items in cat_items.items():
+    for cat, days in ordered_keys:
+        items = cat_period_items[(cat, days)]
         lines = build_lines(items)
-        sections.append(f"[카테고리: {cat}] (최근 {PERIOD_DAYS}일 기사 {len(items)}건)\n" + "\n".join(lines))
+        sections.append(f"[카테고리: {cat}] [기간: {days}일] (최근 {days}일 기사 {len(items)}건)\n" + "\n".join(lines))
     user_content = "\n\n".join(sections)
-    max_tokens = min(8000, 200 + MAX_TOKENS_PER_CATEGORY * len(cat_items))
-    tag = f"{REGION_LABEL[region]} {len(cat_items)}개 카테고리 일괄"
+    max_tokens = min(8000, 200 + MAX_TOKENS_PER_SECTION * len(ordered_keys))
+    tag = f"{REGION_LABEL[region]} {len(ordered_keys)}개 구간 일괄"
 
-    for attempt in range(2):  # 1차 시도 + 실패 시 1회 재시도(요약 배치와 동일한 방식)
+    # 2026-09-09: 1차+재시도 1회(총 2회)로는 "503 UNAVAILABLE(high demand)"를 못 버텨내고
+    # 그날 브리핑 전체가 0건으로 끝나는 사례가 실제로 있었다 — 4회로 늘리고, 503/UNAVAILABLE은
+    # 429와 별도의(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
+    for attempt in range(4):
         try:
             raw = provider.call(TREND_SYSTEM, user_content, max_tokens=max_tokens)
         except Exception as e:
@@ -146,28 +179,36 @@ def generate_trends_batch(provider, region, cat_items, debug=False):
                 print(f"[WARN] 일별 쿼터 소진 확인({tag}) — 재시도해도 못 풀리므로 남은 "
                       f"지역도 전부 건너뜁니다: {e}", file=sys.stderr)
                 raise DailyQuotaExhausted(str(e)) from e
-            retry = "재시도도 " if attempt else ""
+            retry = f"재시도({attempt}회차)도 " if attempt else ""
             print(f"[WARN] 트렌드 생성 API 호출 {retry}실패({tag}): {e}", file=sys.stderr)
             # Gemini 무료 티어는 분당 제한 외에 "하루 20회"짜리 일별 쿼터도 있다(2026-09-03
-            # 실제 로그로 확인 — quotaId가 PerDay로 찍힘). 위에서 그 경우는 먼저 걸러내고,
-            # 여기 남는 건 분당 제한/일시적 오류라 페이싱만으로 대응한다.
+            # 실제 로그로 확인 — quotaId가 PerDay로 찍힘). 그건 위에서 먼저 걸러냈고, 여기
+            # 남는 건 분당 제한(429) 또는 일시적 과부하(503/UNAVAILABLE)다 — 후자는 몇 초
+            # 페이싱으론 거의 안 풀려서(2026-09-09 실측) 훨씬 긴 지수 백오프를 쓴다.
             if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                 time.sleep(gemini_backoff_seconds(e))
+            elif is_transient_server_error(e):
+                time.sleep(transient_backoff_seconds(attempt))
             else:
                 gemini_pace(provider)
             continue
         gemini_pace(provider)
         obj = parse_json_object(raw)
-        items_out = obj.get("categories") if obj else None
+        items_out = obj.get("sections") if obj else None
         if isinstance(items_out, list):
             result = {}
             for it in items_out:
                 if not isinstance(it, dict):
                     continue
                 key = str(it.get("key") or "").strip()
+                days = it.get("period_days")
                 text = str(it.get("text") or "").strip()
-                if key and text:
-                    result[key] = text
+                try:
+                    days = int(days)
+                except (TypeError, ValueError):
+                    days = None
+                if key and days and text:
+                    result[(key, days)] = text
             if result:
                 return result
         if debug:
@@ -194,7 +235,6 @@ def main():
         sys.exit(0)  # build_provider가 이미 WARN 로그를 남김
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    cutoff = (now - datetime.timedelta(days=PERIOD_DAYS)).strftime("%Y-%m-%d")
 
     trends = []
     for region in REGIONS:
@@ -203,40 +243,43 @@ def main():
             continue
         categories = sorted({r.get("cat") for r in region_records if r.get("cat")})
 
-        cat_items = {}
+        cat_period_items = {}
         for cat in categories:
-            items = [r for r in region_records if r.get("cat") == cat and r.get("date", "") >= cutoff]
-            if len(items) < MIN_ARTICLES:
-                continue
-            items.sort(key=lambda r: r.get("date", ""))
-            cat_items[cat] = items
-        if not cat_items:
+            for period in PERIODS:
+                cutoff = (now - datetime.timedelta(days=period["days"])).strftime("%Y-%m-%d")
+                items = [r for r in region_records if r.get("cat") == cat and r.get("date", "") >= cutoff]
+                if len(items) < period["min_articles"]:
+                    continue
+                items.sort(key=lambda r: r.get("date", ""))
+                cat_period_items[(cat, period["days"])] = items
+        if not cat_period_items:
             continue
 
         try:
-            results = generate_trends_batch(provider, region, cat_items, debug=args.debug)
+            results = generate_trends_batch(provider, region, cat_period_items, debug=args.debug)
         except DailyQuotaExhausted:
             print("[WARN] 일별 쿼터가 이미 소진된 상태라 남은 지역의 트렌드 생성을 전부 "
                   "건너뜁니다(어차피 똑같이 실패하므로 시간 낭비 방지).", file=sys.stderr)
             break
-        for cat, items in cat_items.items():
-            text = results.get(cat)
+        for (cat, days), items in cat_period_items.items():
+            text = results.get((cat, days))
+            period_label = next(p["label"] for p in PERIODS if p["days"] == days)
             if not text:
-                print(f"[WARN] 트렌드 응답에 카테고리 누락: [{REGION_LABEL[region]}] {cat}", file=sys.stderr)
+                print(f"[WARN] 트렌드 응답에 구간 누락: [{REGION_LABEL[region]}] {cat} / {period_label}({days}일)", file=sys.stderr)
                 continue
             trends.append({
                 "scope": "category",
                 "key": cat,
                 "region": region,
-                "period_days": PERIOD_DAYS,
+                "period_days": days,
                 "text": text,
                 "n_articles": len(items),
             })
-            print(f"[INFO] 트렌드 생성 완료: [{REGION_LABEL[region]}] {cat} / 최근 {PERIOD_DAYS}일 ({len(items)}건)", file=sys.stderr)
+            print(f"[INFO] 트렌드 생성 완료: [{REGION_LABEL[region]}] {cat} / {period_label} 최근 {days}일 ({len(items)}건)", file=sys.stderr)
 
     payload = {
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"news_history.jsonl 기반 카테고리별 월간 자동 종합 ({provider.name})",
+        "source": f"news_history.jsonl 기반 카테고리별 주간·월간 자동 종합 ({provider.name})",
         "trends": trends,
     }
     with open(args.out, "w", encoding="utf-8") as f:

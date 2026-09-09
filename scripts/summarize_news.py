@@ -71,6 +71,22 @@ def gemini_backoff_seconds(error, default=30):
     return default
 
 
+def is_transient_server_error(error):
+    """429(쿼터)와는 별개로, Gemini 쪽이 일시적으로 과부하인 경우("This model is currently
+    experiencing high demand", HTTP 503/UNAVAILABLE)를 구분한다. 2026-09-09 실제 워크플로
+    로그로 확인 — 이 경우는 쿼터 문제가 아니라 몇십 초~몇 분 후 재시도하면 보통 풀리므로,
+    429와는 다른(더 길게 잡는) 백오프가 필요하다."""
+    s = str(error)
+    return "503" in s or "UNAVAILABLE" in s
+
+
+def transient_backoff_seconds(attempt):
+    """is_transient_server_error 케이스용 백오프 — "high demand"는 429 쿼터 리셋(초 단위)보다
+    훨씬 오래(수십 초~분 단위) 지속되는 경우가 흔해서, 시도할수록 더 오래 기다리게 지수적으로
+    늘린다(20s → 40s → 80s, 최대 90s)."""
+    return min(20 * (2 ** attempt), 90)
+
+
 class DailyQuotaExhausted(Exception):
     """Gemini 무료 티어의 '하루' 단위 쿼터(예: limit 20, quotaId에 PerDay가 붙음)가 소진됐음을
     나타낸다. 분당 제한과 달리 몇 초~몇 십 초 기다린다고 풀리지 않고 하루(태평양시 기준으로
@@ -283,7 +299,11 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
         chunk = items[start:start + MAX_ITEMS_PER_CALL]
         pending = {idx: it for idx, it in enumerate(chunk)}  # 아직 요약을 못 받은 항목만 추적
 
-        for attempt in range(2):  # 1차 시도 + 실패분 1회 재시도
+        # 2026-09-09: 1차+재시도 1회(총 2회)로는 "503 UNAVAILABLE(high demand)" 같은 일시적
+        # 과부하를 못 버텨냈다(실제로 매 실행 전체가 실패하는 사례 확인) — 트렌드 스크립트와
+        # 동일하게 4회로 늘리고, 503/UNAVAILABLE은 429와 다른(더 길게, 지수적으로 늘어나는)
+        # 백오프를 쓴다.
+        for attempt in range(4):
             if not pending:
                 break
             idx_list = sorted(pending.keys())
@@ -299,12 +319,16 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
                     print(f"[WARN] {provider.name} 일별 쿼터 소진 확인(항목 {start}~{start+len(chunk)-1}) — "
                           f"재시도해도 못 풀리므로 이 실행의 남은 요약을 전부 건너뜁니다: {e}", file=sys.stderr)
                     raise DailyQuotaExhausted(str(e)) from e
-                tag = "재시도도 " if attempt else ""
+                tag = f"재시도({attempt}회차)도 " if attempt else ""
                 print(f"[WARN] {provider.name} 요약 API 호출 {tag}실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
                 # Gemini 무료 티어는 분당 5회 제한이라 429가 나면 일반 페이싱보다 더 오래 쉬어야
                 # 다음 시도가 또 429로 낭비되지 않는다(2026-09-02 실제 로그로 확인된 원인).
+                # 503/UNAVAILABLE(일시 과부하)은 쿼터 문제가 아니라 더 오래(지수적으로) 기다려야
+                # 풀리는 경우가 많아 별도 백오프를 쓴다(2026-09-09).
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     time.sleep(gemini_backoff_seconds(e))
+                elif is_transient_server_error(e):
+                    time.sleep(transient_backoff_seconds(attempt))
                 else:
                     gemini_pace(provider)
                 continue

@@ -385,7 +385,7 @@ tr:last-child td{border-bottom:none}
     <div class="tabs" id="news-subtabs">
       <button class="region-tab active" data-sub="clipping">오늘의 클리핑</button>
       <button class="region-tab" data-sub="archive">뉴스 아카이브</button>
-      <button class="region-tab" data-sub="briefing">월간 브리핑</button>
+      <button class="region-tab" data-sub="briefing">브리핑</button>
     </div>
 
     <div id="news-sub-clipping">
@@ -408,7 +408,6 @@ tr:last-child td{border-bottom:none}
 
       <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">
         <div class="toggle" id="news-period-toggle">
-          <button data-days="0">오늘</button>
           <button data-days="7" class="active">최근 7일</button>
           <button data-days="30">최근 30일</button>
         </div>
@@ -424,7 +423,11 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div id="news-sub-briefing" style="display:none">
-      <div class="sec-h"><h2>월간 브리핑</h2><span class="note">최근 30일간 카테고리별 흐름을 AI가 글로 종합 · 국내/해외 토글 기준, 카테고리를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
+      <div class="sec-h"><h2>브리핑</h2><span class="note">카테고리별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 카테고리를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
+      <div class="toggle" id="news-briefing-period-toggle" style="margin-bottom:12px">
+        <button data-days="7">주간(최근 7일)</button>
+        <button data-days="30" class="active">월간(최근 30일)</button>
+      </div>
       <div id="news-briefing-wrap"></div>
     </div>
   </section>
@@ -1656,17 +1659,21 @@ function renderBriefingBullets(text){
   }</ul>`;
 }
 
-// 월간 브리핑 — 카테고리를 따로 선택하지 않아도 현재 국내/해외 토글 기준 카테고리별
-// AI 월간 분석(news_trend.json, scope="category")을 전부 한 페이지에 보여준다(2026-09-02
-// 사용자 요청 — 기업 단위 분석은 호출량이 너무 많아 빼고 카테고리만 유지하기로 함).
+// 브리핑 — 카테고리를 따로 선택하지 않아도 현재 국내/해외 토글 + 주간/월간 토글 기준
+// 카테고리별 AI 분석(news_trend.json, scope="category")을 전부 한 페이지에 보여준다
+// (2026-09-02 사용자 요청 — 기업 단위 분석은 호출량이 너무 많아 빼고 카테고리만 유지.
+// 2026-09-09: period_days 토글(주간/월간) 추가 — scripts/analyze_news_trend.py가 카테고리당
+// 7일/30일 두 구간을 한 번에 생성해 둔다).
+let NEWS_BRIEFING_PERIOD_DAYS = 30;
 function renderMonthlyBriefing(){
   const wrap = document.getElementById('news-briefing-wrap');
   if(!wrap) return;
   const matches = NEWS_TREND
-    .filter(t=>t.scope==='category' && t.region===NEWS_STATE.region)
+    .filter(t=>t.scope==='category' && t.region===NEWS_STATE.region && t.period_days===NEWS_BRIEFING_PERIOD_DAYS)
     .slice().sort((a,b)=> a.key.localeCompare(b.key));
+  const periodLabel = NEWS_BRIEFING_PERIOD_DAYS === 7 ? '주간' : '월간';
   if(matches.length === 0){
-    wrap.innerHTML = '<div class="note" style="padding:8px 0">아직 월간 브리핑이 없습니다(최근 30일 기사가 카테고리당 3건 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>';
+    wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 ${periodLabel} 브리핑이 없습니다(최근 ${NEWS_BRIEFING_PERIOD_DAYS}일 기사가 카테고리당 기준 건수 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
     return;
   }
   wrap.innerHTML = matches.map(t=>`
@@ -1679,6 +1686,18 @@ function renderMonthlyBriefing(){
     </div>
   `).join('');
 }
+(function initNewsBriefingPeriodToggle(){
+  const toggle = document.getElementById('news-briefing-period-toggle');
+  if(!toggle) return;
+  toggle.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      toggle.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      NEWS_BRIEFING_PERIOD_DAYS = Number(b.dataset.days);
+      renderMonthlyBriefing();
+    });
+  });
+})();
 
 // 선택한 기간(오늘/7일/30일 또는 직접 지정한 날짜 범위) 동안 누적된 기사를 날짜별로 나열한다.
 // 월간 브리핑이 "종합"이라면 이건 그 근거가 된 실제 기사 원문을 확인하는 용도(뉴스 아카이브
