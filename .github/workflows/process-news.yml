@@ -11,7 +11,12 @@ on:
   workflow_run:
     workflows: ["Collect news"]
     types: [completed]
-  workflow_dispatch: {}  # Actions 탭에서 수동 실행 — 수집 없이 AI 처리만 재시도할 때 사용
+  workflow_dispatch:  # Actions 탭에서 수동 실행 — 수집 없이 AI 처리만 재시도할 때 사용
+    inputs:
+      skip_trend:
+        description: "트렌드 분석(analyze_news_trend.py) 건너뛰기 — 일별 쿼터가 빠듯할 때 기사 요약만 재시도하고 싶으면 체크"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -47,7 +52,7 @@ jobs:
         run: python scripts/archive_news_snapshot.py --news news.json --history news_history.jsonl
 
       - name: Analyze news flow trend (카테고리별 최근 30일 흐름 종합, Gemini 무료 티어 우선)
-        if: always()  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
+        if: always() && github.event.inputs.skip_trend != 'true'  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

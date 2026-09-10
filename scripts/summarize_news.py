@@ -360,7 +360,14 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
 
 
 def summarize_domestic(provider, items, debug=False):
-    if not items:
+    # global과 동일하게, 이미 summary가 채워진 기사는 재요약하지 않고 건너뛴다 — 일별 쿼터
+    # 소진 후 수동 재실행할 때 이미 성공한 기사까지 다시 호출해 쿼터를 낭비하지 않기 위함
+    # (2026-09-10, 수동 재시도 시 "남은 분량만" 처리되도록 개선).
+    todo = [it for it in items if not (it.get("summary") or "").strip()]
+    skipped = len(items) - len(todo)
+    if skipped and debug:
+        print(f"[DEBUG] domestic: 이미 요약이 있는 {skipped}건은 재요약 건너뜀", file=sys.stderr)
+    if not todo:
         return
 
     def build_payload(idx, it):
@@ -375,8 +382,8 @@ def summarize_domestic(provider, items, debug=False):
             it["summary"] = summary[:300]  # 1줄→2줄로 늘리면서 상한도 global과 동일하게 300자로 상향
 
     # 2줄 요약으로 늘어난 만큼 항목당 토큰 배분도 global과 동일하게(120→150) 상향.
-    max_tokens = min(8000, 400 + 150 * min(len(items), MAX_ITEMS_PER_CALL))
-    summarize_batch(provider, items, DOMESTIC_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
+    max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
+    summarize_batch(provider, todo, DOMESTIC_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
 
 
 def summarize_global(provider, items, debug=False):
