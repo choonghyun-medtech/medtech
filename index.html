@@ -34,8 +34,12 @@ body{
   font-size:14px; line-height:1.5;
 }
 .wrap{max-width:1080px; margin:0 auto; padding:20px 20px 60px}
-.topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
-h1{font-size:22px; margin:2px 0 2px}
+.topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding-bottom:14px; border-bottom:1px solid var(--border)}
+.brand{display:flex; align-items:center; gap:12px}
+.brand-bar{width:4px; align-self:stretch; min-height:34px; border-radius:3px; background:var(--accent); flex:none}
+h1{font-size:20px; margin:0; letter-spacing:-.2px}
+h1 .brand-lead{color:var(--sub); font-weight:700; font-size:15px; display:block; margin-bottom:2px}
+h1 .brand-main{color:var(--text); font-weight:800}
 .subtitle{color:var(--sub); font-size:13px; margin-bottom:16px}
 .theme-toggle{
   border:1px solid var(--border); background:var(--card); color:var(--text);
@@ -355,8 +359,9 @@ tr:last-child td{border-bottom:none}
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div>
-      <h1>충간지의 Global MedTech/Robotics 대시보드</h1>
+    <div class="brand">
+      <div class="brand-bar"></div>
+      <h1><span class="brand-lead">충간지의</span><span class="brand-main">Global MedTech/Robotics 대시보드</span></h1>
     </div>
     <button class="theme-toggle" onclick="toggleTheme()">☀️ 라이트 모드</button>
   </div>
