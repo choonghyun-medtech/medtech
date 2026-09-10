@@ -3104,6 +3104,7 @@ let exportChartInstance = null;
 // 관세청 공식 분류가 아니라 사업 내용 기준 추정이라 향후 실제 신고 실적과 다를 수 있음.
 const EXPORT_CATEGORY_CONFIG = [
   { key: 'toxin', label: '톡신', hsCodes: ['3002903090', '3002491000', '3002909000'], companies: '휴젤·메디톡스',
+    hsCodeNote: '2022-01 HS 개정으로 구코드→신코드 전환, 현재는 신코드 2개 합산',
     countries: ['미국', '중국', '브라질', '태국', '일본'], regions: ['경기 화성시', '강원 춘천시'] },
   { key: 'device_medical', label: '미용기기', hsCodes: ['901890'], companies: '클래시스·원텍',
     countries: ['미국', '브라질', '태국', '중국', '일본'], regions: ['경기 고양시', '서울 강남구', '서울 금천구', '대전 유성구'] },
@@ -3121,7 +3122,31 @@ const EXPORT_CATEGORY_CONFIG = [
     countries: [], regions: ['서울 송파구'] },
   { key: 'immuno_diagnostic', label: '면역진단', hsCodes: ['3822191000'], companies: '바디텍메드',
     countries: [], regions: ['경기 수원시'] },
+  { key: 'xray_detector', label: '엑스레이 디텍터', hsCodes: ['902290'], companies: '뷰웍스',
+    countries: ['미국', '중국'], regions: ['경기 안양시'] },
+  { key: 'surgical_device', label: '수술용 의료기기', hsCodes: ['901890'], companies: '리브스메드',
+    countries: ['미국', '독일'], regions: ['경기 성남시'] },
+  { key: 'ecg_diagnostic', label: '심전계', hsCodes: ['9018111000'], companies: '씨어스',
+    countries: ['아랍에미리트', '베트남'], regions: ['경기 평택시'] },
 ];
+
+// HS 코드는 원본이 점 없는 6/10자리 연속 숫자(예: '902290', '9018111000')로 들어있어
+// 그대로 표시하면 읽기 어렵다 — 국제 표준 표기(2-2-2-...자리마다 점)로 가독성만 높여서
+// 보여준다. 이미 점이 포함된 값(예: '9018.11.1000'처럼 수동으로 넣은 경우)은 그대로 둔다.
+function formatHsCode(code){
+  if(!code) return '';
+  if(code.includes('.')) return code;
+  if(code.length === 6) return `${code.slice(0,4)}.${code.slice(4,6)}`;
+  if(code.length === 10) return `${code.slice(0,4)}.${code.slice(4,6)}.${code.slice(6,10)}`;
+  return code;
+}
+
+// cfg.hsCodes를 점 찍은 형태로 join하고, cfg.hsCodeNote가 있으면 괄호로 덧붙인다(예: 톡신처럼
+// HS 개정으로 기간별 코드가 바뀌어 hsCodes에 신/구 코드가 같이 나열된 경우 안내용).
+function hsCodesLabel(cfg){
+  const codes = cfg.hsCodes.map(formatHsCode).join(', ');
+  return cfg.hsCodeNote ? `${codes} (${cfg.hsCodeNote})` : codes;
+}
 
 function currentExportCategoryConfig(){
   return EXPORT_CATEGORY_CONFIG.find(c => c.key === EXPORT_STATE.cat) || null;
@@ -3253,7 +3278,7 @@ function renderExportCategoryChips(){
   const cfg = currentExportCategoryConfig();
   // HS코드는 칩 안이 아니라 칩 바로 아래 줄에 텍스트로 표시(2026-09-02) — 톡신처럼
   // 코드가 여러 개라도 이 note 줄은 자연히 줄바꿈되므로 칩 크기에는 영향을 안 준다.
-  if(hsNote) hsNote.textContent = cfg ? `HS ${cfg.hsCodes.join(', ')}` : '';
+  if(hsNote) hsNote.textContent = cfg ? `HS ${hsCodesLabel(cfg)}` : '';
   if(companiesNote) companiesNote.textContent = cfg && cfg.companies ? `관련 종목: ${cfg.companies}` : '';
 }
 
@@ -3399,12 +3424,12 @@ function renderExportChart(){
   if(exportChartInstance){ exportChartInstance.destroy(); exportChartInstance = null; }
   const monthly = currentExportMonthly();
   if(!monthly || !monthly.length){
-    if(note) note.textContent = cfg ? `HS ${cfg.hsCodes.join(', ')} · 아직 이 범위의 데이터가 수집되지 않았습니다.` : '';
+    if(note) note.textContent = cfg ? `HS ${hsCodesLabel(cfg)} · 아직 이 범위의 데이터가 수집되지 않았습니다.` : '';
     return;
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
   const displayFrom = exportDisplayFromLabel(monthly, EXPORT_STATE.gran);
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${cfg.hsCodes.join(', ')} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${hsCodesLabel(cfg)} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
   const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
   const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
@@ -5729,7 +5754,7 @@ function snapshotExportSectionHtml(cfgs){
       ${cfgs.map((cfg, i) => `
         <div style="margin-top:${i === 0 ? '4' : '20'}px">
           <div class="snap-subsec-h" style="margin-bottom:2px">
-            <span style="font-weight:600;font-size:13px">${escapeHtml(cfg.label)} <span class="note">HS ${cfg.hsCodes.join(', ')}</span></span>
+            <span style="font-weight:600;font-size:13px">${escapeHtml(cfg.label)} <span class="note">HS ${hsCodesLabel(cfg)}</span></span>
             <button type="button" class="snap-jump-btn" onclick="jumpToExportFromSnapshot('${cfg.key}')">수출 데이터 탭에서 더보기 →</button>
           </div>
           <div class="note" id="snap-export-note-${cfg.key}" style="margin-bottom:6px"></div>

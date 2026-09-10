@@ -252,6 +252,38 @@ CATEGORIES = [
         "countries": [],
         "regions": ["경기 수원시"],
     },
+    {
+        # 2026-09-10 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준) — 뷰웍스 엑스레이
+        # 디텍터. 지역(경기 안양시)은 뷰웍스 본사·공장 소재지 프록시.
+        "key": "xray_detector",
+        "label": "엑스레이 디텍터",
+        "hsCodes": ["902290"],
+        "companies": "뷰웍스",
+        "countries": [("US", "미국"), ("CN", "중국")],
+        "regions": ["경기 안양시"],
+    },
+    {
+        # 2026-09-10 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준) — 리브스메드
+        # 수술용 의료기기. HS 901890은 device_medical(미용기기)과 동일 6자리 코드를
+        # 공유(국가 전체 총계는 두 카테고리가 같은 값을 보일 수 있음) — 지역(경기
+        # 성남시) 브레이크다운으로 리브스메드 몫을 구분 추정하는 용도.
+        "key": "surgical_device",
+        "label": "수술용 의료기기",
+        "hsCodes": ["901890"],
+        "companies": "리브스메드",
+        "countries": [("US", "미국"), ("DE", "독일")],
+        "regions": ["경기 성남시"],
+    },
+    {
+        # 2026-09-10 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준) — 씨어스 심전계.
+        # 지역(경기 평택시)은 씨어스 공장 소재지 프록시.
+        "key": "ecg_diagnostic",
+        "label": "심전계",
+        "hsCodes": ["9018111000"],
+        "companies": "씨어스",
+        "countries": [("AE", "아랍에미리트"), ("VN", "베트남")],
+        "regions": ["경기 평택시"],
+    },
 ]
 # home_device(홈뷰터, HS 8543702020)는 2026-08-21 사용자 확인으로 목록에서 제외됨
 # (index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음 — "셋 다 지금 업데이트된
