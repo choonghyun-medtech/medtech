@@ -1933,8 +1933,8 @@ function renderFlowChart(ticker, months){
     labels = dates.map(d=>{ const p=d.split('-'); return `${parseInt(p[1],10)}/${parseInt(p[2],10)}`; });
     inst = cumulativeSum(real.inst_eok.slice(-days));
     foreign = cumulativeSum(real.foreign_eok.slice(-days));
-    retail = cumulativeSum(real.retail_eok_est.slice(-days));
-    note.textContent = `일별 순매수 누적 · 억원 · 실데이터(investor_flow.json, 네이버금융 기준) · 개인은 -(기관+외국인) 추정치 · ${dates[0]} ~ ${dates[dates.length-1]}`;
+    retail = cumulativeSum(real.retail_eok.slice(-days));
+    note.textContent = `일별 순매수 누적 · 억원 · 실데이터(investor_flow.json, 네이버증권 기준) · ${dates[0]} ~ ${dates[dates.length-1]}`;
   }else{
     note.textContent = '이 종목의 투자자 수급 데이터가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
     if(flowChartInstance){ flowChartInstance.destroy(); flowChartInstance = null; }
