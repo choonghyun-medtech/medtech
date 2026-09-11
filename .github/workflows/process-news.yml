@@ -17,6 +17,10 @@ on:
         description: "트렌드 분석(analyze_news_trend.py) 건너뛰기 — 일별 쿼터가 빠듯할 때 기사 요약만 재시도하고 싶으면 체크"
         type: boolean
         default: false
+      skip_summarize:
+        description: "기사 요약(summarize_news.py) 건너뛰기 — 요약은 이미 잘 됐고 월간/주간 브리핑(analyze_news_trend.py)만 재시도하고 싶으면 체크"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -42,6 +46,7 @@ jobs:
         run: pip install google-genai anthropic
 
       - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
+        if: github.event.inputs.skip_summarize != 'true'  # 기사 요약이 이미 잘 된 상태에서 브리핑만 재시도할 때 건너뜀
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
