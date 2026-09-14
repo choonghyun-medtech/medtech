@@ -200,8 +200,17 @@ CATEGORIES = [
         "hsCodes": ["3006104000"],
         "companies": "넥스트바이오메디컬",
         # 2026-09-02: 유럽은 관세청 API가 국가 단위 cntyCd만 지원해(EU 전체를 묶는 코드
-        # 없음) 제외 — index.html 칩만 노출, 실데이터는 미수집.
+        # 없음) index.html 칩만 노출하고 실데이터는 미수집이었으나, 2026-09-14 사용자
+        # 요청으로 "유럽 = 독일+이탈리아+영국 합산"으로 근사해 채운다. europeCountries에
+        # 지정된 국가들을 각각 조회한 뒤 main()에서 ym별로 합산해 "유럽" 단일 시리즈로
+        # 만들고(aggregate_countries_as), 개별 국가(독일/이탈리아/영국) 항목은 byCountry에서
+        # 제거한다 — index.html이 이미 cfg.countries의 '유럽' 문자열로 byCountry['유럽']을
+        # 조회하므로 프론트 변경 없이 그대로 동작함. GB(영국) cntyCd는 DE(독일, 이미
+        # surgical_device에서 검증됨)와 같은 ISO 알파-2 패턴을 따른 것으로, 실제 API
+        # 응답으로 아직 직접 검증하지 않았다 — 첫 실행 후 by_country['유럽']이 비어있으면
+        # 이 코드부터 의심할 것.
         "countries": [("US", "미국"), ("JP", "일본")],
+        "europeCountries": [("DE", "독일"), ("IT", "이탈리아"), ("GB", "영국")],
         # 인천 연수시(SIDO_CD_BY_NAME에 신규 등록한 "인천"=28 사용, 아래 SIDO_CD_BY_NAME
         # 주석 참고 — 서울/부산/대전/경기가 일반 행정표준코드와 일치하는 패턴에 근거한
         # 추정치라 관세청조회코드_v1.3.xlsx로 재확인 전까지는 데이터가 비어 있을 수 있음).
@@ -218,18 +227,22 @@ CATEGORIES = [
         "label": "치과영상장비",
         "hsCodes": ["902213"],
         "companies": "바텍",
-        # 2026-09-02: 미국 추가(index.html 기준). 유럽은 위 hemostat과 동일한 이유로 제외.
+        # 2026-09-02: 미국 추가(index.html 기준). 유럽은 위 hemostat과 동일한 이유로 제외했으나
+        # 2026-09-14부터 독일+이탈리아+영국 합산으로 채움(hemostat 항목 주석 참고).
         "countries": [("CN", "중국"), ("US", "미국")],
+        "europeCountries": [("DE", "독일"), ("IT", "이탈리아"), ("GB", "영국")],
         "regions": ["경기 화성시", "경기 성남시"],
     },
     {
         # 2026-09-02 신규 추가(index.html EXPORT_CATEGORY_CONFIG 기준). 유럽은 hemostat과
-        # 동일한 이유로 국가 목록에서 제외.
+        # 동일한 이유로 국가 목록에서 제외했으나 2026-09-14부터 독일+이탈리아+영국 합산으로
+        # 채움(hemostat 항목 주석 참고).
         "key": "body_composition",
         "label": "체성분 분석기",
         "hsCodes": ["9018198000"],
         "companies": "인바디",
         "countries": [("US", "미국"), ("CN", "중국")],
+        "europeCountries": [("DE", "독일"), ("IT", "이탈리아"), ("GB", "영국")],
         "regions": ["서울 강남구"],
     },
     {
@@ -408,6 +421,21 @@ def merge_breakdown_dicts(*dicts):
         name: sorted(({"ym": ym, "expDlr": v} for ym, v in ym_map.items()), key=lambda r: r["ym"])
         for name, ym_map in merged.items()
     }
+
+
+def aggregate_countries_as(by_country, country_names, agg_name):
+    """by_country(국가명 -> [{ym, expDlr}]) 중 country_names에 해당하는 여러 나라의 시계열을
+    ym별로 합산해 agg_name 단일 키의 시리즈 하나로 만든다(예: 독일+이탈리아+영국 합산을
+    '유럽'으로 근사할 때 사용, 2026-09-14 — 관세청 API가 EU를 묶는 단일 cntyCd를 지원하지
+    않아 개별 국가를 합산하는 방식으로 대체). 대상 국가 중 하나도 데이터가 없으면 빈 dict를
+    반환(agg_name 키 자체를 만들지 않음 — byCountry에 빈 배열이 남는 걸 방지)."""
+    monthly = {}
+    for name in country_names:
+        for row in by_country.get(name, []):
+            monthly[row["ym"]] = monthly.get(row["ym"], 0) + row["expDlr"]
+    if not monthly:
+        return {}
+    return {agg_name: sorted(({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"])}
 
 
 def api_get(url, params, debug=False):
@@ -701,16 +729,27 @@ def main():
         monthly = merge_monthly_lists(*[
             fetch_national_series(service_key, hs, s, e, debug=args.debug) for hs, s, e in national_segs
         ])
+        # 유럽 합산이 지정된 카테고리는 개별 국가(독일/이탈리아/영국 등)를 countries와
+        # 함께 한 번에 조회한 뒤, 아래에서 ym별로 합산해 "유럽" 단일 키로 바꾸고 개별
+        # 국가 항목은 제거한다(aggregate_countries_as, 2026-09-14).
+        europe_countries = cat.get("europeCountries", [])
+        fetch_countries = cat.get("countries", []) + europe_countries
         by_country = (
             merge_breakdown_dicts(*[
                 fetch_country_breakdown(
-                    service_key, hs, cat.get("countries", []), s, e, debug=args.debug,
+                    service_key, hs, fetch_countries, s, e, debug=args.debug,
                 )
                 for hs, s, e in resolve_hs_segments(cat, country_start_yymm, end_yymm)
             ])
-            if cat.get("countries")
+            if fetch_countries
             else {}
         )
+        if europe_countries:
+            europe_names = [name for _, name in europe_countries]
+            europe_agg = aggregate_countries_as(by_country, europe_names, "유럽")
+            for name in europe_names:
+                by_country.pop(name, None)
+            by_country.update(europe_agg)
         by_region = merge_breakdown_dicts(*[
             fetch_sigungu_breakdown(service_key, hs, cat.get("regions", []), s, e, debug=args.debug)
             for hs, s, e in resolve_hs_segments(cat, sigungu_start_yymm, end_yymm)

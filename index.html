@@ -687,7 +687,8 @@ tr:last-child td{border-bottom:none}
          지역/국가 목록이 있을 때만 지역별/국가별 탭 노출) → 범위 선택 시 구체적인
          국가/지역명 칩이 아래에 추가로 뜬다. -->
     <div class="tabs" id="export-scope-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
-    <div class="chips" id="export-scope-keys" style="margin-bottom:10px"></div>
+    <div class="chips" id="export-scope-keys" style="margin-bottom:6px"></div>
+    <div class="note" id="export-europe-note" style="margin:0 0 10px"></div>
 
     <div class="cards" id="export-stat-cards"></div>
 
@@ -3220,10 +3221,15 @@ let exportChartInstance = null;
 //  - 체외진단 PCR(HS 3822192020), 면역진단(HS 3822191000)은 이번에 신규 추가된 품목
 //    이라 관련 상장사(companies)를 아직 확인하지 못해 빈 값으로 둠 — 추후 채울 것.
 // [2026-09-02] 유럽(EU)은 관세청 품목별 국가별 수출입실적 API가 국가 단위 cntyCd(ISO
-// 국가코드)만 지원해 EU 전체를 묶는 단일 코드가 없다 — 그래서 countries에 '유럽'이 있는
-// 카테고리는 칩(하위 탭)만 우선 노출하고 실제 데이터 수집은 보류한다(다른 국가와 동일하게
-// "아직 이 범위의 데이터가 수집되지 않았습니다" 안내만 뜬다). 미국/중국/일본은 기존
-// 카테고리와 동일한 방식(cntyCd US/CN/JP)으로 추후 스크래퍼에 반영 가능.
+// 국가코드)만 지원해 EU 전체를 묶는 단일 코드가 없다 — 그래서 처음엔 countries에 '유럽'이
+// 있는 카테고리도 칩만 노출하고 실데이터는 미수집이었다.
+// [2026-09-14] 사용자 요청으로 "유럽 = 독일+이탈리아+영국 3개국 합산"으로 근사해 채우기로
+// 변경. scripts/scrape_export_data.py의 europeCountries(카테고리별 CATEGORIES 항목)가
+// 이 3개국을 개별 조회한 뒤 ym별로 합산해 export_data.json의 byCountry['유럽']에 단일
+// 시리즈로 저장한다 — 이 파일(EXPORT_CATEGORY_CONFIG)의 countries 배열에 있는 '유럽'
+// 문자열은 그대로 두면 byCountry['유럽']을 찾아 자동으로 표시되므로 프론트 조회 로직은
+// 변경 불필요. 실제 3개국 합산이라는 사실은 renderExportScopeKeys()의 유럽 안내문으로
+// 노출(EXPORT_EUROPE_NOTE 참고).
 // [2026-09-02] 톡신 HS코드: 2022-01-01 시행된 HS 개정으로 코드가 바뀌었다 — 2021-12
 // 이전은 구코드 3002903090 단독, 2022-01부터는 신코드 3002491000 + 3002909000 합산
 // (export_data.json은 scripts/scrape_export_data.py의 hsCodesByPeriod로 기간을 나눠 수집한
@@ -3443,14 +3449,29 @@ function renderExportScopeTabs(){
   renderExportScopeKeys();
 }
 
+// "유럽" 칩 선택 시 이게 EU 전체가 아니라 독일+이탈리아+영국 3개국 합산 근사치라는 걸
+// 알려주는 안내문 — 관세청 API가 EU를 묶는 단일 국가코드를 지원하지 않아 개별 국가를
+// 합산한 것이므로(scripts/scrape_export_data.py의 europeCountries/aggregate_countries_as
+// 참고, 2026-09-14) 실제 EU 전체 수출액과는 차이가 있을 수 있음을 명확히 밝힌다.
+const EXPORT_EUROPE_NOTE = '※ "유럽"은 EU 전체가 아니라 독일 + 이탈리아 + 영국 3개국 수출액 합산 근사치입니다.';
+
 // 범위가 "지역별"/"국가별"일 때 구체적인 국가명/지역명을 고르는 2차 칩 목록.
 function renderExportScopeKeys(){
   const wrap = document.getElementById('export-scope-keys');
   const cfg = currentExportCategoryConfig();
+  const europeNote = document.getElementById('export-europe-note');
   if(!wrap || !cfg) return;
-  if(EXPORT_STATE.scope === 'all'){ wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+  if(EXPORT_STATE.scope === 'all'){
+    wrap.innerHTML = ''; wrap.style.display = 'none';
+    if(europeNote) europeNote.textContent = '';
+    return;
+  }
   const list = EXPORT_STATE.scope === 'region' ? cfg.regions : cfg.countries;
-  if(!list.length){ wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+  if(!list.length){
+    wrap.innerHTML = ''; wrap.style.display = 'none';
+    if(europeNote) europeNote.textContent = '';
+    return;
+  }
   if(!EXPORT_STATE.scopeKey || !list.includes(EXPORT_STATE.scopeKey)) EXPORT_STATE.scopeKey = list[0];
   wrap.style.display = '';
   wrap.innerHTML = list.map(name =>
@@ -3463,6 +3484,7 @@ function renderExportScopeKeys(){
       renderExportAll();
     });
   });
+  if(europeNote) europeNote.textContent = EXPORT_STATE.scope === 'country' && EXPORT_STATE.scopeKey === '유럽' ? EXPORT_EUROPE_NOTE : '';
 }
 
 // 현재 선택된 품목·범위(전체/지역별/국가별 + 구체 국가/지역명)에 해당하는 실제 수집 데이터를
