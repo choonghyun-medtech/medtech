@@ -8,7 +8,12 @@ on:
     # 안 도는 버그였다(사용자 리포트로 발견) — 다른 daily 워크플로(news/calendar/reports/
     # stock-performance/investor-flow)와 동일하게 "0-4"(UTC 일~목)로 수정.
     - cron: "40 22 * * 0-4"
-  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+  workflow_dispatch:  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+    inputs:
+      since:
+        description: "백필 시작일(YYYY-MM-DD). 비워두면 평소처럼 최신 분기 1개만 수집. 예: 2025-10-01 -> 4Q25부터 전 분기 백필"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -37,7 +42,12 @@ jobs:
           GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/scrape_earnings_ir.py --out earnings_ir.json
+        run: |
+          if [ -n "${{ github.event.inputs.since }}" ]; then
+            python scripts/scrape_earnings_ir.py --out earnings_ir.json --since "${{ github.event.inputs.since }}"
+          else
+            python scripts/scrape_earnings_ir.py --out earnings_ir.json
+          fi
 
       - name: Commit changes if any
         run: |
