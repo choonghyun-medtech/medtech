@@ -1,0 +1,67 @@
+name: Update medtour monthly analysis
+
+on:
+  schedule:
+    # medical_tour.json 수집 창(update-medical-tour.yml, 매월 12~15일)이 끝난 다음날인 매월
+    # 16일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다(사용자 지정, 2026-09-14).
+    # 방한외국인(visitor_stats.json) 분석은 갱신 시차가 더 길어(update-visitor-stats.yml의
+    # 수집 창 참고) 일부러 별도 스케줄(update-visitor-monthly-analysis.yml, 매월 3일)로
+    # 분리했다 — 같이 돌리면 방한외국인 데이터를 기다리느라 이 의료관광 소비 분석 자체가
+    # 매달 지연될 위험이 있기 때문(사용자 지적). 시간은 다른 update-*.yml과 겹치지 않는
+    # 애매한 분으로 KST 08:24 = 23:24 UTC(전날).
+    - cron: "24 23 15 * *"
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-medtour-monthly-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install google-genai anthropic
+
+      - name: Analyze medtour monthly highlights (Gemini 무료 티어 우선)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/analyze_medtour_monthly.py --data medical_tour.json --out medtour_monthly_analysis.json
+
+      - name: Commit changes if any
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ ! -f medtour_monthly_analysis.json ]; then
+            echo "medtour_monthly_analysis.json이 아직 없음(키 미등록 또는 유의미한 변동 없음) — 커밋할 것 없음"
+            exit 0
+          fi
+          git add medtour_monthly_analysis.json
+          if git diff --cached --quiet -- medtour_monthly_analysis.json; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: medtour_monthly_analysis.json 자동 갱신 (의료관광, $(date -u +%Y-%m-%d))"
+            # update-visitor-monthly-analysis.yml도 같은 파일(다른 달 키 또는 같은 달의
+            # 다른 섹션)에 쓸 수 있어 rebase 재시도가 특히 중요하다.
+            for i in 1 2 3 4 5; do
+              if git push; then
+                echo "푸시 성공"
+                exit 0
+              fi
+              echo "푸시 실패, 재시도 $i/5 (원격 변경사항 반영 후 재시도)"
+              git fetch origin main
+              git rebase origin/main || { echo "리베이스 충돌, 수동 확인 필요"; exit 1; }
+              sleep $((RANDOM % 6 + 2))
+            done
+            echo "5회 재시도에도 푸시 실패"
+            exit 1
+          fi

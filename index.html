@@ -702,8 +702,8 @@ tr:last-child td{border-bottom:none}
       <div id="export-table-wrap" style="flex:1; min-width:220px"></div>
     </div>
 
-    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
-    <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note" id="export-monthly-analysis-note">매월 20일 자동 작성</span></div>
+    <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 20일 자동 작성됩니다.</div>
     </div>
     <!-- /수출 데이터 -->
 
@@ -832,8 +832,8 @@ tr:last-child td{border-bottom:none}
     <div class="note" id="visitor-country-note" style="margin:-4px 0 8px">월별 비중 · % · 기타 = 중국·일본·대만·미국 제외 전체</div>
     <div class="chart-box"><canvas id="visitorCountryChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note">매월 24일 자동 작성 (예정)</span></div>
-    <div class="card">아직 월간 분석이 없습니다 — 매월 24일 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note" id="medtour-monthly-analysis-note">매월 16일(의료관광)·3일(방한외국인) 자동 작성</span></div>
+    <div class="card" id="medtour-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 16일(의료관광)·3일(방한외국인) 자동 작성됩니다.</div>
 
     <div class="medtour-group-h">국가별 의료관광객 비중(침투율)</div>
     <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광객 비중</h2><span class="note" id="medtour-penetration-note">연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100 · medtour_penetration.json</span></div>
@@ -1824,6 +1824,51 @@ async function loadNewsTrend(){
   renderMonthlyBriefing();
 }
 loadNewsTrend();
+
+// 산업데이터 "월간 분석" 카드 — export_monthly_analysis.json(scripts/analyze_export_monthly.py,
+// 매월 20일)과 medtour_monthly_analysis.json(scripts/analyze_medtour_monthly.py 매월 16일
+// "medtour" 섹션 + scripts/analyze_visitor_monthly.py 매월 3일 "visitor" 섹션이 같은 파일의
+// 같은 대상월 키에 합쳐짐 — 둘 다 유의미한 변동이 있는 항목만 LLM이 서술한 텍스트라 값이
+// 아예 없는 달도 있을 수 있다(그 경우 안내 문구 유지).
+async function loadExportMonthlyAnalysis(){
+  const card = document.getElementById('export-monthly-analysis-card');
+  const note = document.getElementById('export-monthly-analysis-note');
+  if(!card) return;
+  try{
+    const res = await fetch('export_monthly_analysis.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(!data.summary) throw new Error('empty');
+    card.textContent = data.summary;
+    if(note) note.textContent = `${data.target_month} 기준 · 매월 20일 자동 작성`;
+  }catch(e){
+    // 아직 워크플로가 한 번도 안 돌았거나, 이번 달엔 유의미한 변동이 없어 생성을 건너뛴 경우
+  }
+}
+loadExportMonthlyAnalysis();
+
+async function loadMedtourMonthlyAnalysis(){
+  const card = document.getElementById('medtour-monthly-analysis-card');
+  const note = document.getElementById('medtour-monthly-analysis-note');
+  if(!card) return;
+  try{
+    const res = await fetch('medtour_monthly_analysis.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const months = Object.keys(data.months || {}).sort();
+    const latestMonth = months[months.length - 1];
+    const entry = latestMonth ? data.months[latestMonth] : null;
+    const parts = [];
+    if(entry && entry.medtour && entry.medtour.summary) parts.push(entry.medtour.summary);
+    if(entry && entry.visitor && entry.visitor.summary) parts.push(entry.visitor.summary);
+    if(!parts.length) throw new Error('empty');
+    card.textContent = parts.join('\n\n');
+    if(note) note.textContent = `${latestMonth} 기준 · 매월 16일(의료관광)·3일(방한외국인) 자동 작성`;
+  }catch(e){
+    // 아직 워크플로가 한 번도 안 돌았거나, 이번 달엔 유의미한 변동이 없어 생성을 건너뛴 경우
+  }
+}
+loadMedtourMonthlyAnalysis();
 
 // 주가/외국인 지분율 추이 — 실데이터(stock_performance.json) · 각자 독립 기간 토글(1/3/6/12개월)
 const MONTHS_TO_TRADING_DAYS = {1:22, 3:65, 6:130, 12:260};

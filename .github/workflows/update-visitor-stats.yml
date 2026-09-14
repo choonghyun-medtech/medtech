@@ -2,10 +2,17 @@ name: Update visitor stats data
 
 on:
   schedule:
-    # 한국관광 데이터랩 방한 외래관광객 통계도 월 단위 갱신이라 매일 돌릴 필요는 없음.
-    # export_data.json(매월 16일)·medical_tour.json(매월 20일)과 겹치지 않게 매월 22일 KST
-    # 07:00 = 21일 22:00 UTC.
-    - cron: "0 22 21 * *"
+    # 방한 외국인 통계는 통상 "매월 말" 데이터가 갱신되므로 기준일은 그 다음날인 매월 1일.
+    # 다만 말일이나 1일이 주말/공휴일에 걸리면 실제 갱신이 그 다음 영업일로 밀릴 수 있어
+    # "그 달 마지막 이틀 + 다음달 처음 이틀" 4일 창(window)으로 매일 시도한다(사용자 지정).
+    # 말일이 28~31일로 달마다 다르므로(예: 31일이 말일이면 30~2일, 30일이 말일이면 29~2일,
+    # 2월 28일이 말일이면 27~2일) 고정된 day 리스트로는 정확히 표현이 안 된다 — 그래서 cron
+    # 자체는 매달 26,27,28,29,30,31,1일(존재하는 날짜만) 넉넉히 걸어두고, 실제로 "그 달의
+    # 마지막 이틀"인지/"1~2일"인지는 아래 "Check collection window" 게이트 스텝이 그날의
+    # 실제 월말 일자를 계산해서 판단한다 — 이 스크립트도 매번 전체 시계열을 다시 받고 변경
+    # 없으면 커밋을 건너뛰므로(idempotent) 창 안에서 중복 실행해도 무해하다. 시간은 다른
+    # update-*.yml과 겹치지 않는 애매한 분(07:00 정각 회피)으로 KST 07:47 = 22:47 UTC(전날).
+    - cron: "47 22 26,27,28,29,30,31,1 * *"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
@@ -18,19 +25,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check collection window (그 달 마지막 이틀 + 다음달 처음 이틀만 진행 — cron은 넉넉히 걸어뒀으므로 실제 월말 일자를 계산해 재확인)
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "수동 실행 — 날짜 게이트 건너뜀"
+          else
+            kst_date=$(date -u -d '+9 hours' +%Y-%m-%d)
+            kst_day=$(date -d "$kst_date" +%-d)
+            # 이번 달 1일(YYYY-MM-01)에서 +1개월 -1일 = 이번 달의 실제 말일
+            last_day=$(date -d "${kst_date:0:8}01 +1 month -1 day" +%-d)
+            if [ "$kst_day" -le 2 ] || [ "$kst_day" -ge $((last_day - 1)) ]; then
+              echo "run=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              echo "오늘(KST ${kst_date}, 이번달 말일=${last_day}일)은 수집 대상일이 아님 — 건너뜀"
+            fi
+          fi
+
       - name: Set up Python
+        if: steps.gate.outputs.run == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
         run: pip install requests
 
       - name: Fetch visitor stats data (한국관광 데이터랩)
+        if: steps.gate.outputs.run == 'true'
         run: python scripts/scrape_visitor_stats.py --out visitor_stats.json
 
       - name: Commit changes if any
-        if: always()
+        if: always() && steps.gate.outputs.run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

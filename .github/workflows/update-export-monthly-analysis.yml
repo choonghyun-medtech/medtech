@@ -1,20 +1,18 @@
-name: Update HIRA procedure statistics
+name: Update export monthly analysis
 
 on:
   schedule:
-    # 사용자 지정 기준일은 매월 3일. 다만 그 날짜가 주말/공휴일이면 HIRA 갱신도 그 다음
-    # 영업일로 밀릴 수 있어 3~6일 4일 창(window)으로 매일 시도한다 — 이 스크립트도 매번
-    # 전체 시계열을 다시 받고 변경 없으면 커밋을 건너뛰므로(idempotent) 창 안에서 중복
-    # 실행해도 무해하다. 시간은 다른 update-*.yml과 겹치지 않는 애매한 분(07:00 정각 회피)
-    # 으로 KST 07:18 = 22:18 UTC(전날).
-    - cron: "18 22 2,3,4,5 * *"
+    # export_data.json 수집 창(update-export-data.yml, 매월 16~19일)이 끝난 다음날인 매월
+    # 20일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다(사용자 지정, 2026-09-14).
+    # 시간은 다른 update-*.yml과 겹치지 않는 애매한 분으로 KST 08:12 = 23:12 UTC(전날).
+    - cron: "12 23 19 * *"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
   contents: write
 
 jobs:
-  update-hira-procedure:
+  update-export-monthly-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,25 +24,28 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install google-genai anthropic
 
-      - name: Fetch HIRA procedure statistics (opendata.hira.or.kr)
-        run: python scripts/scrape_hira_procedure.py --out hira_procedure.json
+      - name: Analyze export monthly highlights (Gemini 무료 티어 우선)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/analyze_export_monthly.py --data export_data.json --out export_monthly_analysis.json
 
       - name: Commit changes if any
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ ! -f hira_procedure.json ]; then
-            echo "hira_procedure.json이 아직 없음 — 커밋할 것 없음"
+          if [ ! -f export_monthly_analysis.json ]; then
+            echo "export_monthly_analysis.json이 아직 없음(키 미등록 또는 유의미한 변동 없음) — 커밋할 것 없음"
             exit 0
           fi
-          git add hira_procedure.json
-          if git diff --cached --quiet -- hira_procedure.json; then
+          git add export_monthly_analysis.json
+          if git diff --cached --quiet -- export_monthly_analysis.json; then
             echo "변경 없음, 커밋 건너뜀"
           else
-            git commit -m "chore: hira_procedure.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            git commit -m "chore: export_monthly_analysis.json 자동 갱신 ($(date -u +%Y-%m-%d))"
             for i in 1 2 3 4 5; do
               if git push; then
                 echo "푸시 성공"
