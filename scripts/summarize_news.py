@@ -452,6 +452,28 @@ def main():
     for it in domestic_items + global_items:
         it.pop("desc", None)
 
+    # 2026-09-14: "단순 주가/자금흐름 기사"(해외)·"이유 설명 없는 단순 주가 등락"(국내)은
+    # DOMESTIC_SYSTEM/GLOBAL_SYSTEM 프롬프트가 LLM에게 "내용 없는 기사면 이 문구를 그대로
+    # summary에 쓰라"고 지시해서 만들어지는 라벨인데, 지금까지는 라벨만 붙이고 기사 자체는
+    # news.json에 계속 남겨뒀다 — 국내는 scrape_news.py의 passes_content_filter가 수집
+    # 단계에서 이런 기사를 대부분 걸러내 눈에 덜 띄었지만, 해외(scrape_news_global.py /
+    # scrape_news_global_gsearch.py)는 회사명 매칭만 하고 내용 필터가 아예 없어서(포팅 안 됨)
+    # investor-alert 소송 광고나 "주가 반등" 한 줄짜리 기사가 그대로 쌓였다(사용자 지적).
+    # 새로 영문 키워드 필터를 만드는 대신, 이미 정확하게 판별해주는 이 LLM 라벨을 그대로
+    # "제외 신호"로 재사용한다 — 두 라벨 모두 "단순 주가"로 시작하므로 그 부분 문자열로 판정.
+    def _drop_junk_price_items(region_key):
+        removed = 0
+        for group in data.get(region_key, []):
+            items = group.get("items", [])
+            kept = [it for it in items if "단순 주가" not in (it.get("summary") or "")]
+            removed += len(items) - len(kept)
+            group["items"] = kept
+        return removed
+
+    n_dropped = _drop_junk_price_items("domestic") + _drop_junk_price_items("global")
+    if n_dropped and args.debug:
+        print(f"[DEBUG] 단순 주가/자금흐름 기사로 판정된 {n_dropped}건 제외", file=sys.stderr)
+
     n_summarized = sum(1 for it in domestic_items + global_items if it.get("summary"))
     if n_summarized > 0 and data.get("source") and "요약" not in data["source"]:
         provider_label = f"Claude(Haiku)" if provider is not None and provider.name == "anthropic" else "Gemini"
