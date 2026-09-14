@@ -55,6 +55,18 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
   padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;
 }
 .tab.active{background:var(--accent); border-color:var(--accent); color:#fff}
+/* 최상위 뷰 전환(뉴스/주가/캘린더/산업데이터/기업분석/스냅샷) 탭 — 각 뷰 안의 하위 탭들
+   (.region-tab/.export-scope-tab 등)이 전부 같은 "테두리+배경 알약" 스타일이라 최상위와
+   하위가 구분이 안 된다는 지적(2026-09-14)에 따라, 최상위만 밑줄 인디케이터 방식의
+   언더라인 탭으로 바꿔 하위 탭과 확실히 다른 체급으로 보이게 한다. */
+#main-tabs{gap:4px; border-bottom:2px solid var(--border); padding-bottom:0; margin-bottom:20px}
+#main-tabs .tab{
+  border:none; border-bottom:3px solid transparent; background:transparent; border-radius:0;
+  padding:10px 16px 11px; margin-bottom:-2px;
+  font-size:14.5px; font-weight:700; color:var(--dim);
+}
+#main-tabs .tab:hover{color:var(--text)}
+#main-tabs .tab.active{background:transparent; color:var(--accent); border-bottom-color:var(--accent)}
 /* 뉴스 탭 내부의 국내/해외 서브탭 — 페이지 전역 .tab과 클릭 핸들러가 섞이지 않도록
    별도 클래스로 분리(같은 시각 스타일만 재사용). */
 .region-tab{
@@ -125,10 +137,17 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
 /* 수출 데이터 품목 칩 — 항목명만 한 줄로 표시(2026-09-02: 톡신처럼 HS코드가 여러 개라
    칩 안에 같이 적으면 그 칩만 유독 길어지는 문제가 있어, HS코드는 칩 밖으로 빼서
    아래 export-hs-note/export-companies-note 줄에 텍스트로 표시하는 방식으로 변경). */
+/* 2026-09-14: 품목명 길이가 제각각(톡신 2자 ~ 치과 CBCT 장비/엑스레이 디텍터/수술용
+   의료기기 등 8~10자)이라 칩 너비가 들쭉날쭉해 정렬이 지저분해 보였다 — 처음엔 min-width로
+   짧은 라벨만 맞췄으나, "가장 긴 항목 기준으로 전부 통일해달라"는 요청에 따라 고정폭으로
+   변경(가장 긴 라벨 "치과 CBCT 장비"/"엑스레이 디텍터"가 줄바꿈 없이 들어가는 140px로
+   설정, white-space:nowrap). 향후 이보다 긴 라벨이 추가되면 이 값을 다시 늘려야 한다. */
 .export-chip{
   border:1px solid var(--border); background:var(--bg2); color:var(--sub);
   padding:6px 12px; border-radius:10px; cursor:pointer; line-height:1.35;
   font-size:12.5px; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:140px; box-sizing:border-box; text-align:center; white-space:nowrap;
 }
 .export-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
 .toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
@@ -371,7 +390,7 @@ tr:last-child td{border-bottom:none}
   </div>
   <div class="subtitle">전 탭이 GitHub Actions로 평일 자동 갱신되는 실데이터입니다</div>
 
-  <div class="tabs">
+  <div class="tabs" id="main-tabs">
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
     <button class="tab" data-view="stock">주가 데이터</button>
     <button class="tab" data-view="calendar">이벤트 캘린더</button>
@@ -3278,7 +3297,7 @@ const EXPORT_CATEGORY_CONFIG = [
   // 3822192020)·바디텍메드(면역진단, 3822191000)가 같은 6자리 아래 10자리 코드를 쓰고
   // 있어 다른 진단시약 수출액과 섞일 수 있음 — 정확한 10자리 서브코드 미확인 상태로 사용자
   // 확인 후 진행(스크래퍼 쪽 주석 참고).
-  { key: 'glucose_monitoring', label: '혈당관리(측정기·시험지)', hsCodes: ['902780', '902789', '382200', '382219'], companies: '아이센스',
+  { key: 'glucose_monitoring', label: '혈당진단', hsCodes: ['902780', '902789', '382200', '382219'], companies: '아이센스',
     hsCodeNote: '2022-01 HS 개정으로 혈당측정기 9027.80→9027.89, 혈당시험지 3822.00→3822.19로 전환, 구간별 합산(3822.19는 6자리라 다른 진단시약과 섞일 수 있음)',
     countries: ['미국', '중국', '일본', '유럽'], regions: ['강원 원주시', '인천 연수구'] },
 ];

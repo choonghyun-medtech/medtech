@@ -321,7 +321,7 @@ CATEGORIES = [
         # 공유하는 것과 같은 유형의 한계. 정확한 10자리 코드를 확인하게 되면 hsCodesByPeriod의
         # "382219"를 그 값으로 좁혀야 한다.
         "key": "glucose_monitoring",
-        "label": "혈당관리(측정기·시험지)",
+        "label": "혈당진단",
         "hsCodes": ["902780", "902789", "382200", "382219"],
         "hsCodesByPeriod": [
             {"hsCodes": ["902780", "382200"], "until": "202112"},
