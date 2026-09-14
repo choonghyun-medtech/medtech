@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-09T22:50:24.448437+00:00",
+  "updated": "2026-09-14T22:54:41.136127+00:00",
   "source": "SEC 공시(8-K/6-K Exhibit 99, 회사가 제출 의무를 지는 실적 보도자료 원문) 기반, 한국어 번역·요약은 Gemini/Claude 자동 처리(scripts/scrape_earnings_ir.py) 또는 수동 검수",
   "note": "TIKR 등 유료 컨콜 스크립트 사이트를 스크래핑해 무료 열람 제한을 우회하는 방식 대신, 기업이 직접 공개한 IR 보도자료를 근거로 한다 — Q&A 상세 스크립트까지는 포함하지 않고 매출·수익성·가이던스 등 핵심 수치와 경영진 코멘트 위주로 요약한다.",
   "companies": [
@@ -270,37 +270,46 @@
       "market": "US",
       "quarter": "2026년 2분기(Q2)",
       "date": "2026-08-05",
-      "title": "InMode Reports Second Quarter 2026 Financial Results: Quarterly GAAP Revenues of $95.6 Million, Consistent with the Second Quarter of 2025",
-      "source_url": "https://www.stocktitan.net/news/INMD/in-mode-reports-second-quarter-2026-financial-results-quarterly-gaap-v208yz4h507t.html",
+      "title": "INMD 6-K Exhibit 99 (2026-08-05)",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1742692/000117891326003831/exhibit_99-1.htm",
       "metrics": [
         {
           "label": "매출액",
-          "value": "0.956억 달러",
-          "note": "전년 동기 대비 보합"
+          "value": "9,558.9만 달러",
+          "note": "GAAP 기준, 전년 동기 대비 보합"
+        },
+        {
+          "label": "영업이익",
+          "value": "1,230만 달러",
+          "note": "GAAP 기준 (Non-GAAP 기준 1,600만 달러)"
         },
         {
           "label": "영업이익률",
-          "value": "GAAP 13% · Non-GAAP 17%",
-          "note": "전년 GAAP 24%, Non-GAAP 28% 대비 큰 폭 하락"
+          "value": "13%",
+          "note": "GAAP 기준, 전년 동기(24%) 대비 감소 (Non-GAAP 17%)"
         },
         {
           "label": "순이익",
-          "value": "GAAP 0.171억 달러(EPS $0.29) · Non-GAAP 0.208억 달러(EPS $0.35)",
-          "note": "전년 EPS $0.42(GAAP)/$0.47(Non-GAAP) 대비 감소"
+          "value": "1,706.4만 달러",
+          "note": "GAAP 기준, 전년 동기(2,674.2만 달러) 대비 감소 (Non-GAAP 2,081.2만 달러)"
         },
         {
-          "label": "2026년 가이던스",
-          "value": "매출 3.65억~3.75억 달러",
-          "note": "Non-GAAP EPS $1.29~$1.34 · Non-GAAP 영업이익 0.68억~0.73억 달러"
+          "label": "EPS",
+          "value": "$0.29",
+          "note": "GAAP 희석 기준 (Non-GAAP $0.35)"
+        },
+        {
+          "label": "가이던스",
+          "value": "매출액 3억 6,500만~3억 7,500만 달러",
+          "note": "2026년 전체 회계연도 기준 (Non-GAAP EPS $1.29~$1.34)"
         }
       ],
       "summary_ko": [
-        "2026년 2분기 GAAP 매출은 0.956억 달러로 전년 동기와 거의 동일했으나, GAAP 영업이익률은 24%→13%, Non-GAAP 영업이익률은 28%→17%로 큰 폭 하락함.",
-        "GAAP 순이익은 0.171억 달러(EPS $0.29)로 전년 0.267억 달러(EPS $0.42) 대비 감소함.",
-        "마진 하락은 매출원가 상승, 제품 믹스 변화, 북미 영업 조직 재편, 마케팅·일반관리비 증가가 원인으로 지목됨.",
-        "원치 않는 인수 제안 검토가 진행 중이어서 이번 분기는 실적 컨퍼런스콜을 개최하지 않았으며, 2026년 매출 가이던스로 3.65억~3.75억 달러를 제시함."
+        "인모드(InMode)의 2026년 2분기 GAAP 매출액은 9,558.9만 달러로 전년 동기 수준을 유지했으나, 영업이익률은 원가 상승 및 영업·마케팅 투자 확대 등으로 인해 13%로 전년 동기(24%) 대비 하락함.",
+        "2026년 전체 연간 가이던스로 매출액 3억 6,500만~3억 7,500만 달러, Non-GAAP 영업이익 6,800만~7,300만 달러, Non-GAAP 희석 EPS $1.29~$1.34를 제시함.",
+        "소모품 및 서비스 매출은 전년 동기 대비 13% 증가한 2,230만 달러를 기록하며 성장세를 이어갔고, 아시아 지역 매출은 역대 최고 분기 실적을 달성함."
       ],
-      "ceo_quote_ko": "\"전체 매출은 전년 동기와 유사한 수준이었고, 미국 자본장비 사업의 안정세가 지속됐다\" — Moshik Itzkovich CFO"
+      "ceo_quote_ko": "전체 매출은 전년 동기 수준을 유지했으며, 미국 자본재 장비 사업의 지속적인 안정성은 견조한 고객 수요를 반영합니다. 이러한 실적은 올 남은 기간 동안 지속될 것으로 예상되는 안정화 흐름과 일치하며, 당사는 장기 성장을 지원하는 기회에 대한 투자를 지속하고 있습니다."
     },
     {
       "ticker": "ABT",
