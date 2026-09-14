@@ -48,6 +48,8 @@
 
 사용법:
     python scrape_earnings_ir.py --out earnings_ir.json
+    # 과거 분기 백필(예: 4Q25부터 현재까지 한 번에 채우기):
+    python scrape_earnings_ir.py --out earnings_ir.json --since 2025-10-01
 """
 import argparse
 import datetime
@@ -96,8 +98,8 @@ SEC_HEADERS = {"User-Agent": "medtech-dashboard research contact@example.com"}
 EXHIBIT_99_RE = re.compile(r"ex.{0,10}99", re.I)
 
 
-def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3):
-    """data.sec.gov 공식 JSON API로 최근 공시를 조회해 실적 보도자료로 보일 만한 첨부문서
+def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, min_date=None):
+    """data.sec.gov 공식 JSON API로 공시를 조회해 실적 보도자료로 보일 만한 첨부문서
     후보를 최대 max_candidates개까지 순서대로 내놓는다(제너레이터). 8-K는 submissions
     JSON의 "items"에 "2.02"(Results of Operations and Financial Condition)가 있는 것을
     우선으로 고르고(6-K는 이 분류 체계가 없어 그냥 최근 것부터 순서대로 본다), 그 공시
@@ -105,7 +107,9 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3):
     [2026-09-08] 처음엔 첫 매치 하나만 반환했는데, "99번대 첨부문서가 있다"는 것만으로는
     실적 발표 여부를 확신할 수 없다(예: HIMS는 M&A 완료 보도자료가 먼저 걸렸다) — 실제
     내용 판정은 process_release()가 LLM으로 하므로, 그게 "실적 발표 아님"으로 판정하면
-    호출부(main)가 다음 후보를 마저 시도할 수 있도록 여러 개를 준다."""
+    호출부(main)가 다음 후보를 마저 시도할 수 있도록 여러 개를 준다.
+    [2026-09-15] min_date를 받으면 그 날짜까지 과거로 거슬러 올라가며 후보를 찾는다
+    (--since 백필 모드용). 지정하지 않으면 기존처럼 "오늘 - 120일" 컷오프를 쓴다."""
     try:
         r = requests.get(f"https://data.sec.gov/submissions/CIK{cik}.json", timeout=20, headers=SEC_HEADERS)
         r.raise_for_status()
@@ -128,13 +132,14 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3):
     # 100여 일 이내여야 한다는 사실을 이용해, 그보다 오래된 공시는 애초에 후보에서 뺀다.
     today = datetime.date.today()
     MAX_FILING_AGE_DAYS = 120
+    cutoff = min_date if min_date is not None else (today - datetime.timedelta(days=MAX_FILING_AGE_DAYS))
 
     def _recent_enough(i):
         try:
             d = datetime.datetime.strptime(dates[i], "%Y-%m-%d").date()
         except (ValueError, IndexError):
             return False
-        return (today - d).days <= MAX_FILING_AGE_DAYS
+        return d >= cutoff
 
     candidates = [i for i, f in enumerate(forms) if f == form_type and _recent_enough(i)]
     if form_type == "8-K":
@@ -391,7 +396,12 @@ def process_release(ticker, name, release, provider, out_data):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="earnings_ir.json")
+    ap.add_argument("--since", default=None,
+                     help="YYYY-MM-DD. 지정하면 이 날짜 이후 공시까지 과거로 거슬러 올라가며 "
+                          "여러 분기를 한 번에 백필 수집한다(예: 2025-10-01 -> 4Q25부터). "
+                          "지정하지 않으면 기존처럼 최근 120일 이내 최신 공시 1건만 확인한다.")
     args = ap.parse_args()
+    since_date = datetime.datetime.strptime(args.since, "%Y-%m-%d").date() if args.since else None
 
     try:
         with open(args.out, encoding="utf-8") as f:
@@ -410,9 +420,13 @@ def main():
         if quota_exhausted:
             break
         # "99번대 첨부문서가 있다"는 것만으로는 실적 발표를 확신할 수 없어(2026-09-08,
-        # HIMS가 M&A 완료 보도자료를 먼저 집은 사례) 후보를 여러 개 받아 순서대로 시도하고,
-        # 하나라도 실적 발표로 판정되면(process_release가 True) 그 회사는 끝낸다.
-        for release in find_earnings_release_candidates(ticker, info["cik"], info["form"]):
+        # HIMS가 M&A 완료 보도자료를 먼저 집은 사례) 후보를 여러 개 받아 순서대로 시도한다.
+        # 평상시(since_date 없음)는 하나라도 실적 발표로 판정되면(process_release가 True)
+        # 그 회사는 끝낸다(최신 분기 1개만 필요). --since 백필 모드에서는 그 날짜까지의
+        # 분기를 전부 모아야 하므로 성공해도 멈추지 않고 남은 후보를 계속 시도한다.
+        max_candidates = 20 if since_date else 3
+        for release in find_earnings_release_candidates(
+                ticker, info["cik"], info["form"], max_candidates=max_candidates, min_date=since_date):
             if release["url"] in existing_urls:
                 continue
             if provider is None:
@@ -420,7 +434,8 @@ def main():
             try:
                 if process_release(ticker, info["name"], release, provider, out_data):
                     changed = True
-                    break
+                    if not since_date:
+                        break
             except DailyQuotaExhausted:
                 # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
                 # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한

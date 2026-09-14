@@ -965,6 +965,7 @@ tr:last-child td{border-bottom:none}
       <div class="note" style="margin-bottom:12px">Q&A까지 담긴 완전한 컨콜 스크립트가 아니라, 기업이 공식 공개한 실적 보도자료(매출·수익성·가이던스·경영진 코멘트)를 한국어로 번역·요약한 것입니다. TIKR 등 유료 사이트를 스크래핑하는 방식은 이용약관·저작권 문제로 채택하지 않았습니다.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
         <select id="earnings-ir-company-select" class="filter-select"></select>
+        <select id="earnings-ir-quarter-select" class="filter-select" style="display:none"></select>
       </div>
       <div id="earnings-ir-wrap"></div>
     </div>
@@ -6308,10 +6309,13 @@ function earningsIrCardHtml(c){
   `;
 }
 
-// 회사당 여러 분기가 쌓이면 죽 나열하는 대신 기업 단위로 묶어서 볼 수 있어야 한다는
-// 요청(2026-09-08) — 드롭다운으로 기업 하나를 골라 그 기업의 분기만 모아보거나,
-// "전체보기" 상태에서는 기업별로 묶어서(최근 발표한 기업 순) 보여준다.
+// 회사당 여러 분기가 쌓이면(2026-09-15부터 --since 백필로 4Q25까지 늘어남) 죽 나열하는
+// 대신 기업을 고르고, 그 안에서도 분기 하나를 콕 집어서 볼 수 있어야 한다는 요청
+// (2026-09-15) — 기업 드롭다운은 그대로 두고, 기업을 고르면 그 기업이 보유한 분기 목록으로
+// 두 번째(분기) 드롭다운이 채워진다. "전체보기" 상태에서는 기업마다 최신 분기 카드 1개만
+// 보여주고(그 아래 개수만 note로 표시), 과거 분기를 보려면 기업을 선택하게 한다.
 let selectedEarningsIrTicker = '';
+let selectedEarningsIrDate = '';
 
 function earningsIrGroupKey(c){ return c.ticker || c.name || ''; }
 
@@ -6327,7 +6331,32 @@ function renderEarningsIrDropdown(){
   sel.innerHTML = `<option value="">전체보기 (${companies.length}개 기업)</option>` +
     companies.map(c=> `<option value="${escapeHtml(c.ticker||'')}">${escapeHtml(c.name||'')} (${escapeHtml(c.ticker||'')})</option>`).join('');
   sel.value = selectedEarningsIrTicker;
-  sel.onchange = ()=>{ selectedEarningsIrTicker = sel.value; renderEarningsIR(); };
+  sel.onchange = ()=>{
+    selectedEarningsIrTicker = sel.value;
+    selectedEarningsIrDate = ''; // 기업을 바꾸면 분기 선택은 최신 분기로 리셋
+    renderEarningsIrQuarterDropdown();
+    renderEarningsIR();
+  };
+}
+
+function renderEarningsIrQuarterDropdown(){
+  const qsel = document.getElementById('earnings-ir-quarter-select');
+  if(!qsel) return;
+  if(!selectedEarningsIrTicker){
+    qsel.style.display = 'none';
+    qsel.innerHTML = '';
+    return;
+  }
+  const rows = (EARNINGS_IR.companies || [])
+    .filter(c=> earningsIrGroupKey(c) === selectedEarningsIrTicker)
+    .slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  qsel.style.display = rows.length ? '' : 'none';
+  qsel.innerHTML = rows.map(c=> `<option value="${escapeHtml(c.date||'')}">${escapeHtml(c.quarter || c.date || '(날짜 미상)')}</option>`).join('');
+  if(!rows.some(c=> c.date === selectedEarningsIrDate)){
+    selectedEarningsIrDate = rows[0] ? rows[0].date : '';
+  }
+  qsel.value = selectedEarningsIrDate;
+  qsel.onchange = ()=>{ selectedEarningsIrDate = qsel.value; renderEarningsIR(); };
 }
 
 function renderEarningsIR(){
@@ -6341,10 +6370,11 @@ function renderEarningsIR(){
   if(selectedEarningsIrTicker){
     const rows = all.filter(c=> earningsIrGroupKey(c) === selectedEarningsIrTicker)
       .slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-    wrap.innerHTML = rows.map(earningsIrCardHtml).join('');
+    const picked = rows.find(c=> c.date === selectedEarningsIrDate) || rows[0];
+    wrap.innerHTML = picked ? earningsIrCardHtml(picked) : '<div class="card note">선택한 분기 데이터를 찾을 수 없습니다.</div>';
     return;
   }
-  // 전체보기: 기업별로 묶고, 그룹은 각 기업의 최신 발표일 기준 최근순으로 정렬
+  // 전체보기: 기업별로 묶어 최신 분기 카드 1개만 보여준다(과거 분기는 기업 선택 후 조회).
   const groups = {};
   all.forEach(c=>{
     const key = earningsIrGroupKey(c);
@@ -6356,11 +6386,12 @@ function renderEarningsIR(){
   }).sort((a,b)=> (b[0].date||'').localeCompare(a[0].date||''));
   wrap.innerHTML = groupList.map(rows=>{
     const head = rows[0];
-    const quarterCount = rows.length > 1 ? `<span class="note" style="font-weight:400">· 최근 ${rows.length}개 분기</span>` : '';
+    const quarterCount = rows.length > 1
+      ? `<span class="note" style="font-weight:400">· 보유 ${rows.length}개 분기(기업 선택 시 분기별 조회 가능)</span>` : '';
     return `
       <div style="margin-bottom:18px">
         <div style="font-weight:700;font-size:14.5px;margin-bottom:6px">${escapeHtml(head.name||'')} <span class="note">(${escapeHtml(head.ticker||'')})</span> ${quarterCount}</div>
-        ${rows.map(earningsIrCardHtml).join('')}
+        ${earningsIrCardHtml(head)}
       </div>
     `;
   }).join('');
@@ -6380,6 +6411,7 @@ async function loadEarningsIR(){
     EARNINGS_IR = { companies: [] };
   }
   renderEarningsIrDropdown();
+  renderEarningsIrQuarterDropdown();
   renderEarningsIR();
 }
 loadEarningsIR();
