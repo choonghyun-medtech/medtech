@@ -5976,24 +5976,31 @@ function renderSnapshot(ticker){
   const stockJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToStockFromSnapshot(${jsAttrJson(ticker)})'>주가 탭에서 더보기 →</button>`;
   const exportCfgs = snapshotExportCategoriesFor(info);
 
+  // 섹션 순서(2026-09-14 사용자 지정): 주가 데이터 → 실적 전망 → 리서치 보고서 →
+  // 산업데이터 → 뉴스 및 공시. 각 블록의 내부 마크업은 그대로 두고 배치 순서만 바꿨다 —
+  // 헤더(기업명/티커/섹터)는 5개 항목에 속하지 않는 식별 정보라 항상 맨 위에 고정.
   panel.innerHTML = `
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
         <div style="font-weight:700;font-size:16px">${escapeHtml(stockDisplayName(ticker))} <span class="note">(${info.ticker})</span></div>
         <div class="note">${info.market} · ${escapeHtml(info.sector)}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
       </div>
-      <div style="margin-top:10px">
-        <div class="subsec-h">투자의견 변경 이력</div>
-        ${timelineHtml}
-      </div>
-      ${newsHtml}
-      ${calHtml}
-      ${reportsListHtml}
-      ${earningsForecastBlockHtml(ticker)}
     </div>
-    ${exportCfgs.length ? snapshotExportSectionHtml(exportCfgs) : ''}
     <div class="snap-subsec-h" style="margin-top:14px; justify-content:flex-end">${stockJumpBtn}</div>
     <div id="snap-stock-box"></div>
+    <div class="card" style="margin-top:14px">
+      ${earningsForecastBlockHtml(ticker)}
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="subsec-h">투자의견 변경 이력</div>
+      ${timelineHtml}
+      ${reportsListHtml}
+    </div>
+    ${exportCfgs.length ? snapshotExportSectionHtml(exportCfgs) : ''}
+    <div class="card" style="margin-top:14px">
+      ${newsHtml}
+      ${calHtml}
+    </div>
   `;
   refreshTgCommentToggles(panel);
   if(exportCfgs.length) drawSnapshotExportCharts(exportCfgs);
