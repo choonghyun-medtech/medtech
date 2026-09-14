@@ -60,6 +60,7 @@ from scrape_news_global import (
     company_mentioned,
     context_ok,
     is_duplicate_title,
+    is_excluded_article_type_global,
     clean_text,
 )
 
@@ -193,6 +194,9 @@ def main():
                 src = source_field.get("title") or source_field.get("href") or ""
             if not src and " - " in raw_title:
                 src = raw_title.rsplit(" - ", 1)[1].strip()
+
+            if is_excluded_article_type_global(title, summary):
+                continue
 
             haystack = f"{title} {summary}"
             candidates = [

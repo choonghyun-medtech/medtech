@@ -197,6 +197,44 @@ CONTEXT_REQUIRED_GLOBAL = {
     "Schaeffler": ["robot", "actuator", "harmonic drive", "gearbox"],
 }
 
+# --- 콘텐츠 품질 필터 (2026-09-14 추가) ---------------------------------------------
+# scrape_news.py(국내)는 회사명 매칭 뒤에도 "단순 종목 나열/시황 칼럼/랭킹형/홍보성" 기사를
+# 통째로 거르는 is_excluded_article_type()이 있는데, 이 스크립트(해외)는 그동안 회사명
+# 매칭만 하고 이런 필터가 전혀 없었다(사용자 지적, 2026-09-14) — 그래서 미국 증권 집단소송
+# 로펌이 뿌리는 "OO 주주는 연락하라"류 보도자료(PR Newswire 등으로 대량 배포돼 회사명
+# 매칭에 자주 걸림, 실제로 "ROSEN, NATIONAL TRIAL COUNSEL, Encourages Hims & Hers" 사례로
+# 확인됨)나 "Top 10 stocks" 식 랭킹 기사가 그대로 섞여 들어왔다. 국내처럼 카테고리
+# 화이트리스트 전체를 영문으로 포팅하는 대신, 가장 흔하고 명확한 두 가지 스팸 유형만
+# 통째로 제외한다(단순 주가/자금흐름 기사 자체는 summarize_news.py가 요약 후 라벨로 걸러냄).
+LAW_FIRM_SPAM_KEYWORDS = [
+    "class action", "investor alert", "shareholder alert", "shareholder rights",
+    "national trial counsel", "encourages investors", "encourages shareholders",
+    "securities fraud", "lead plaintiff", "rosen law", "pomerantz", "bragar eagel",
+    "kahn swick", "levi & korsinsky", "glancy prongay", "halper sadeh", "schall law",
+    "faruqi", "johnson fistel", "law firm",
+]
+RANKING_TITLE_PATTERNS_GLOBAL = [
+    # "top 10"만 보고 걸렀더니 "Thermo Fisher Junior Innovators Challenge Top 300
+    # Qualifier"(청소년 과학경진대회 기사)까지 오탐되어(2026-09-14 실측), "stocks"가 함께
+    # 있을 때만 매칭하도록 좁혔다.
+    re.compile(r"\btop\s*\d+\s+(\w+\s+){0,2}stocks?\b", re.IGNORECASE),
+    re.compile(r"\bbest\s+\d*\s*stocks?\b", re.IGNORECASE),
+    re.compile(r"\bstocks?\s+to\s+(buy|watch|sell)\b", re.IGNORECASE),
+    re.compile(r"\b\d+\s+(\w+\s+){0,2}stocks?\s+(to|that|for)\b", re.IGNORECASE),
+]
+
+
+def is_excluded_article_type_global(title: str, desc: str) -> bool:
+    """소송 유치 스팸/랭킹형 리스티클인지 판별(회사명 매칭과 무관하게 제외).
+    scrape_news.py의 is_excluded_article_type()과 동일한 역할의 영문 버전."""
+    hay = f"{title} {desc}".lower()
+    if any(kw in hay for kw in LAW_FIRM_SPAM_KEYWORDS):
+        return True
+    if any(p.search(title) for p in RANKING_TITLE_PATTERNS_GLOBAL):
+        return True
+    return False
+
+
 CUSTOM_DATE_FMT = "%b %d, %Y %I:%M%p"  # Fierce 계열 매체가 쓰는 'Aug 18, 2026 7:53am' 형식
 
 
@@ -309,6 +347,9 @@ def main():
                 continue
             date_str, dt = parse_entry_date(entry)
             if date_str is None or dt is None or dt < cutoff:
+                continue
+
+            if is_excluded_article_type_global(title, summary):
                 continue
 
             haystack = f"{title} {summary}"
