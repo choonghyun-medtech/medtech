@@ -586,6 +586,23 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · investor_flow.json + stock_performance.json 자동 갱신</div>
 
+    <!-- 검색/구분/섹터로 보고싶은 종목만 골라볼 수 있는 필터 (2026-09-14 추가) — 산점도/막대/표/전환점
+         전 구역에 동일하게 적용된다. -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input id="flowmap-search-input" class="filter-select" style="flex:0 1 220px;min-width:140px" placeholder="종목명 또는 티커 검색..." autocomplete="off" />
+      <select id="flowmap-quadrant-filter" class="filter-select">
+        <option value="all">구분 전체</option>
+        <option value="fill_buy">매집 강화</option>
+        <option value="fill_sell">차익 실현</option>
+        <option value="empty_buy">관심 유입</option>
+        <option value="empty_sell">수급 약화</option>
+      </select>
+      <select id="flowmap-sector-filter" class="filter-select">
+        <option value="all">섹터 전체</option>
+      </select>
+      <a href="#" id="flowmap-reset-link" class="note" style="text-decoration:underline;align-self:center">초기화</a>
+    </div>
+
     <!-- 사분면별 종목 수를 카드 4개로 나열하던 걸 가로 구성비 막대 하나로 교체
          (2026-09-04) — 카드 그리드는 흔한 대시보드 패턴이라 참고 사이트와 형태가
          겹친다는 지적에 따라, "전체 수급 분위기가 사자/팔자 어느 쪽으로 쏠려있나"를
@@ -2037,6 +2054,40 @@ const FLOWMAP_PERIODS = {
   12: { midDays: MONTHS_TO_TRADING_DAYS[12], shortDays: 20 },
 };
 let flowMapSelectedMonths = 3;
+let flowMapFilters = { search: '', quadrant: 'all', sector: 'all' };
+
+function populateFlowMapSectorFilter(){
+  const sel = document.getElementById('flowmap-sector-filter');
+  if(!sel) return;
+  const sectors = [...new Set(STOCK_PERF.filter(s => s.market === 'KR').map(s => s.sector))].sort();
+  const prev = sel.value || 'all';
+  sel.innerHTML = '<option value="all">섹터 전체</option>' + sectors.map(s => `<option value="${s}">${s}</option>`).join('');
+  if(sectors.includes(prev)) sel.value = prev;
+}
+
+// 검색어(종목명/티커)·구분(사분면)·섹터 세 조건을 모두 만족하는 행만 남긴다.
+// quadrant 필드명이 다른 두 종류(rows의 quadrant, transitions의 qNow)를 함께
+// 다루기 위해 quadrantKey를 인자로 받는다.
+function flowMapRowMatchesFilters(name, ticker, sector, quadrantKey){
+  const f = flowMapFilters;
+  if(f.search){
+    const q = f.search.trim().toLowerCase();
+    if(q && !name.toLowerCase().includes(q) && !ticker.toLowerCase().includes(q)) return false;
+  }
+  if(f.quadrant !== 'all' && quadrantKey !== f.quadrant) return false;
+  if(f.sector !== 'all' && sector !== f.sector) return false;
+  return true;
+}
+function applyFlowMapFilters(rows){
+  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sector, r.quadrant.key));
+}
+function applyFlowMapFiltersToTransitions(rows){
+  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sector, r.qNow.key));
+}
+function hasActiveFlowMapFilters(){
+  const f = flowMapFilters;
+  return !!f.search.trim() || f.quadrant !== 'all' || f.sector !== 'all';
+}
 
 // 사분면 4구분 — 가로축(중기 수급 포지션, 순매수 누적 부호) x 세로축(최근 수급 모멘텀,
 // 최근 단기 순매수 부호)의 조합. 점 색깔·표 색깔·범례 모두 이 4구분 기준으로 통일한다
@@ -2145,7 +2196,7 @@ function renderFlowMapChart(rows, period){
     axisLabel.textContent = `가로축=중기 수급 포지션(최근 ${period.midDays}거래일) · 세로축=최근 수급 모멘텀(최근 ${period.shortDays}거래일)`;
   }
   if(!rows.length){
-    if(note) note.textContent = '아직 데이터가 없습니다.';
+    if(note) note.textContent = hasActiveFlowMapFilters() ? '필터 조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.';
     return;
   }
   if(note) note.textContent = `${rows.length}종목 · 기준일 ${rows[0].lastDate} · 네이버금융/자체 시가총액 추정 기준`;
@@ -2251,7 +2302,7 @@ function renderFlowMapTable(rows){
   const wrap = document.getElementById('flowmap-table-wrap');
   if(!wrap) return;
   if(!rows.length){
-    wrap.innerHTML = '<div class="na-msg">아직 데이터가 없습니다.</div>';
+    wrap.innerHTML = `<div class="na-msg">${hasActiveFlowMapFilters() ? '필터 조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.'}</div>`;
     return;
   }
   const sorted = [...rows].sort((a, b) => (b.x + b.y) - (a.x + a.y));
@@ -2346,9 +2397,9 @@ function renderFlowMapTransitions(rows){
 
 function renderFlowMap(){
   const period = FLOWMAP_PERIODS[flowMapSelectedMonths] || FLOWMAP_PERIODS[3];
-  const rows = computeFlowMapRows(flowMapSelectedMonths);
+  const rows = applyFlowMapFilters(computeFlowMapRows(flowMapSelectedMonths));
   renderFlowMapStatCards(rows);
-  renderFlowMapTransitions(computeFlowMapTransitions());
+  renderFlowMapTransitions(applyFlowMapFiltersToTransitions(computeFlowMapTransitions()));
   renderFlowMapChart(rows, period);
   renderFlowMapTable(rows);
 }
@@ -2359,6 +2410,26 @@ document.querySelectorAll('#flowmap-period-toggle button').forEach(b => {
     flowMapSelectedMonths = parseInt(b.dataset.months, 10);
     renderFlowMap();
   });
+});
+document.getElementById('flowmap-search-input').addEventListener('input', e => {
+  flowMapFilters.search = e.target.value;
+  renderFlowMap();
+});
+document.getElementById('flowmap-quadrant-filter').addEventListener('change', e => {
+  flowMapFilters.quadrant = e.target.value;
+  renderFlowMap();
+});
+document.getElementById('flowmap-sector-filter').addEventListener('change', e => {
+  flowMapFilters.sector = e.target.value;
+  renderFlowMap();
+});
+document.getElementById('flowmap-reset-link').addEventListener('click', e => {
+  e.preventDefault();
+  flowMapFilters = { search: '', quadrant: 'all', sector: 'all' };
+  document.getElementById('flowmap-search-input').value = '';
+  document.getElementById('flowmap-quadrant-filter').value = 'all';
+  document.getElementById('flowmap-sector-filter').value = 'all';
+  renderFlowMap();
 });
 
 // ==================================================================
@@ -2551,6 +2622,7 @@ async function loadStockPerformance(){
     if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
     if(typeof renderForeignRatioChart === 'function') renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
+    if(typeof populateFlowMapSectorFilter === 'function') populateFlowMapSectorFilter();
     if(typeof renderFlowMap === 'function') renderFlowMap();
     if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
     if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
