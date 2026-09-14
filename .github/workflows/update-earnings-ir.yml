@@ -2,8 +2,12 @@ name: Update earnings IR summaries
 
 on:
   schedule:
-    # 다른 update-*.yml 스케줄과 겹치지 않는 시간대 (UTC 22:40 = KST 07:40)
-    - cron: "40 22 * * 1-5"
+    # 매일 평일(KST 월~금) 오전 7시 40분 = UTC 전날 22시 40분 (일~목 22:40 UTC).
+    # 2026-09-14: 기존 "1-5"(UTC 월~금)는 자정을 넘기는 스케줄(UTC 전날→KST 당일)인데
+    # 요일을 하루 당겨서 지정하지 않아, 실제로는 KST 화~토요일에 돌고 정작 월요일엔
+    # 안 도는 버그였다(사용자 리포트로 발견) — 다른 daily 워크플로(news/calendar/reports/
+    # stock-performance/investor-flow)와 동일하게 "0-4"(UTC 일~목)로 수정.
+    - cron: "40 22 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
