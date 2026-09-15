@@ -711,7 +711,15 @@ def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm
                     if not period or not period[:4].isdigit():
                         continue  # "총계" 등 합계 행 제외
                     ym = period.replace(".", "-")  # "2024.01" -> "2024-01"
-                    exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0")
+                    # [2026-09-16] 시군구별 API(sigunguperprlstperacrs)의 expUsdAmt는 다른 세 API
+                    # (Itemtrade/nitemtrade)와 달리 "천달러" 단위로 값을 준다 — 실데이터로 검증:
+                    # 서울 강서구·임플란트(902129) 2026년 1~8월 8개 달 전부, bandtrass.or.kr
+                    # 무역통계 원본 조회값을 1000으로 나눈 값과 우리가 저장해온 값이 소수점까지
+                    # 정확히 일치했다(예: 08월 실제 14,006,665 ÷ 1000 반올림 = 14,007 = 우리가
+                    # 저장해온 값). 그동안 이 필드를 그대로 "달러"로 저장해서 전체 지역·전체
+                    # 카테고리·전체 기간의 byRegion 수출액이 실제보다 1000배 작게 표시되고
+                    # 있었다(사용자 발견, 2026-09-16) — 1000을 곱해 실제 달러 단위로 맞춘다.
+                    exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0") * 1000
                     for region, (want_sido, want_sigungu) in wanted.items():
                         if want_sido == sido_cd and want_sigungu == sigungu_part:
                             slot = monthly_by_region[region]
