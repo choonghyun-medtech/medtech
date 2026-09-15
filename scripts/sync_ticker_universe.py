@@ -93,6 +93,10 @@ EXCHANGE_MAP = {
 # 로슈: 원본 엑셀이 2026-03-17 폐지된 옛 티커(ROG)를 그대로 쓰고 있어 최신 티커로 강제.
 TICKER_OVERRIDES = {
     'rog sw equity': ('ROP.SW', 'CH'),
+    # 엘렉타(Elekta AB) — 스웨덴 B주는 Yahoo에서 클래스 문자 앞에 하이픈이 필요한데
+    # (EKTA-B.ST), 블룸버그 표기(EKTAB SS Equity)엔 하이픈이 없어 기계적 변환으로는
+    # "EKTAB.ST"가 나와 실패했다(2026-09-16, Update stock performance 워크플로 오류로 발견).
+    'ektab ss equity': ('EKTA-B.ST', 'SE'),
 }
 
 # 한국 신규 편입 종목의 코스피/코스닥 구분(2026-09-16 웹 검색으로 확인) — 기존
