@@ -712,14 +712,17 @@ def fetch_sigungu_breakdown(service_key, hs_codes, regions, start_yymm, end_yymm
                         continue  # "총계" 등 합계 행 제외
                     ym = period.replace(".", "-")  # "2024.01" -> "2024-01"
                     # [2026-09-16] 시군구별 API(sigunguperprlstperacrs)의 expUsdAmt는 다른 세 API
-                    # (Itemtrade/nitemtrade)와 달리 "천달러" 단위로 값을 준다 — 실데이터로 검증:
-                    # 서울 강서구·임플란트(902129) 2026년 1~8월 8개 달 전부, bandtrass.or.kr
-                    # 무역통계 원본 조회값을 1000으로 나눈 값과 우리가 저장해온 값이 소수점까지
-                    # 정확히 일치했다(예: 08월 실제 14,006,665 ÷ 1000 반올림 = 14,007 = 우리가
-                    # 저장해온 값). 그동안 이 필드를 그대로 "달러"로 저장해서 전체 지역·전체
-                    # 카테고리·전체 기간의 byRegion 수출액이 실제보다 1000배 작게 표시되고
-                    # 있었다(사용자 발견, 2026-09-16) — 1000을 곱해 실제 달러 단위로 맞춘다.
-                    exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0") * 1000
+                    # (Itemtrade/nitemtrade, 원래부터 "달러" 단위)와 달리 "천달러" 단위로 값을
+                    # 준다 — 실데이터로 검증: 서울 강서구·임플란트(902129) 2026년 1~8월 8개 달
+                    # 전부, bandtrass.or.kr 무역통계 원본 조회값을 1000으로 나눈 값과 우리가
+                    # 저장해온 값이 소수점까지 정확히 일치했다(예: 08월 실제 14,006,665 ÷ 1000
+                    # 반올림 = 14,007 = 우리가 저장해온 값, 사용자 발견 2026-09-16). 이 값에
+                    # 1000을 곱해 "달러"인 척 자릿수를 늘리면 원본 API가 애초에 갖고 있지 않은
+                    # 정밀도(원래 14,006 천달러 vs 14,007 천달러 사이의 실제 달러 단위 값)를
+                    # 지어내는 셈이라, 원본 값을 그대로 "천달러" 단위로 저장한다 — 화면 표시
+                    # 쪽(index.html의 exportAmountUnitWord() 등)에서 단위 라벨만 "천달러"로
+                    # 명확히 구분해서 보여준다.
+                    exp = int((row.get("expUsdAmt") or "0").replace(",", "").strip() or "0")
                     for region, (want_sido, want_sigungu) in wanted.items():
                         if want_sido == sido_cd and want_sigungu == sigungu_part:
                             slot = monthly_by_region[region]

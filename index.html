@@ -3562,6 +3562,16 @@ function currentExportCategoryConfig(){
   return EXPORT_CATEGORY_CONFIG.find(c => c.key === EXPORT_STATE.cat) || null;
 }
 
+// 지역별(byRegion) 수출액은 원본 API(시군구별 API)가 애초에 "천달러" 단위로만 값을 주는
+// 걸 실측으로 확인했다(2026-09-16) — 임의로 1000을 곱해 달러인 척 자릿수를 늘리면 API가
+// 실제로 갖고 있지 않은 정밀도를 지어내는 셈이라, 원본 값을 그대로 두고 단위 표기만
+// "천달러"로 명확히 한다(전국/국가별은 원래부터 달러 단위라 그대로 "$" 표기 유지).
+function exportIsRegionScope(){ return EXPORT_STATE.scope === 'region'; }
+function exportAmountUnitWord(){ return exportIsRegionScope() ? '천달러' : '달러'; }
+function exportAmountDisplay(v){
+  return exportIsRegionScope() ? `${(v || 0).toLocaleString('ko-KR')}천달러` : `$${fmtUsdShort(v)}`;
+}
+
 function fmtUsdShort(dlr){
   if(dlr == null) return 'N/A';
   const abs = Math.abs(dlr);
@@ -3794,7 +3804,7 @@ function renderExportStatCards(){
   const momPct = prev && prev.expDlr ? (last.expDlr - prev.expDlr) / prev.expDlr * 100 : null;
   const yoyPct = yoyRow && yoyRow.expDlr ? (last.expDlr - yoyRow.expDlr) / yoyRow.expDlr * 100 : null;
   wrap.innerHTML = `
-    <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">$${fmtUsdShort(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
+    <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">${exportAmountDisplay(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
     <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
   `;
 }
@@ -3855,7 +3865,7 @@ function renderExportChart(){
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
   const displayFrom = exportDisplayFromLabel(monthly, EXPORT_STATE.gran);
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${hsCodesLabel(cfg)} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, ${exportAmountUnitWord()}, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${hsCodesLabel(cfg)} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
   const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
   const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
@@ -3865,7 +3875,7 @@ function renderExportChart(){
       labels: agg.map(a => a.label),
       datasets: [
         {
-          type: 'bar', label: `${cfg.label} 수출액($)`, data: agg.map(a => a.expDlr),
+          type: 'bar', label: `${cfg.label} 수출액(${exportAmountUnitWord()})`, data: agg.map(a => a.expDlr),
           backgroundColor: '#2563eb', yAxisID: 'y', order: 2,
         },
         {
@@ -3888,7 +3898,7 @@ function renderExportChart(){
         x: { grid: { display: false }, ticks: { color: textColor(), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
         y: {
           position: 'left', grid: { color: gridColor() }, ticks: { color: textColor() },
-          title: { display: true, text: '수출액($)', color: textColor() },
+          title: { display: true, text: `수출액(${exportAmountUnitWord()})`, color: textColor() },
         },
         y1: {
           position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor(), callback: v => v + '%' },
@@ -3926,7 +3936,7 @@ function renderExportTable(){
   const rows = exportTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
   if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
   const rowHtml = r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`;
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액($)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
+  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액(${exportAmountUnitWord()})</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
 }
 
 // ym("YYYY-MM")을 그 달의 마지막 날짜("YYYY-MM-DD")로 바꾼다. 엑셀에 "YYYY-MM"을
@@ -3943,7 +3953,7 @@ async function copyExportTable(){
   const monthly = currentExportMonthly();
   if(!monthly || !monthly.length) return;
   const rows = exportTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
-  const lines = ['기간\t수출액($)', ...rows.map(r => `${ymToLastDay(r.ym)}\t${r.expDlr || 0}`)];
+  const lines = [`기간\t수출액(${exportAmountUnitWord()})`, ...rows.map(r => `${ymToLastDay(r.ym)}\t${r.expDlr || 0}`)];
   const text = lines.join('\n');
   const btn = document.getElementById('export-table-copy');
   try{
