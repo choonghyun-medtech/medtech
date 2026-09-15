@@ -377,6 +377,47 @@ tr:last-child td{border-bottom:none}
 .news-cat-h:first-child{margin-top:0}
 .news-co{font-weight:700; margin-right:4px}
 .news-ctx{color:var(--dim); font-weight:600}
+
+/* ---- 글로벌 대시보드 Peer Table (2026-09-15 개편) ----
+   기본 table{text-align:left}과 달리 숫자 위주 표라 셀 기본 정렬을 오른쪽으로 바꿔야 하는데,
+   전역 th,td 규칙을 건드리면 사이트의 다른 모든 표 정렬이 깨진다 — .gd-table로 스코프해서
+   이 표 안에서만 정렬/스티키/그룹헤더 스타일이 적용되게 한다. */
+.gd-tab-bar{display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:14px}
+.gd-tab-btn{border:1px solid var(--border); background:var(--card); color:var(--sub); border-radius:999px; padding:6px 13px; font-size:12px; cursor:pointer}
+.gd-tab-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
+.gd-filter-bar{display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; margin-bottom:10px}
+.gd-filter-group{display:flex; flex-direction:column; gap:3px}
+.gd-filter-label{font-size:10.5px; color:var(--dim); font-weight:600; padding-left:2px}
+.gd-msel{position:relative}
+.gd-msel summary{list-style:none; cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:6px 10px; font-size:12px; min-width:140px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+.gd-msel summary::-webkit-details-marker{display:none}
+.gd-msel summary::after{content:'▾'; color:var(--dim); font-size:10px}
+.gd-msel[open] summary::after{content:'▴'}
+.gd-msel-panel{position:absolute; top:calc(100% + 4px); left:0; z-index:20; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px; min-width:200px; max-height:260px; overflow-y:auto; box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.gd-msel-row{display:flex; align-items:center; gap:7px; padding:3px 4px; font-size:12px; border-radius:5px; white-space:nowrap}
+.gd-msel-row:hover{background:var(--bg2)}
+.gd-msel-actions{display:flex; gap:10px; padding:4px 4px 8px; border-bottom:1px solid var(--border); margin-bottom:6px}
+.gd-msel-actions a{font-size:11px; color:var(--accent); cursor:pointer; text-decoration:underline}
+.gd-reset-link{font-size:11.5px; color:var(--accent); text-decoration:underline; cursor:pointer; align-self:center}
+.gd-table-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius)}
+.gd-table{font-size:12px}
+.gd-table th, .gd-table td{text-align:right; padding:7px 9px; white-space:nowrap}
+.gd-table th.gd-lh, .gd-table td.gd-lh{text-align:left}
+.gd-table thead th{color:var(--dim); font-weight:600; font-size:10.5px; background:var(--bg2); position:sticky; top:0; z-index:2}
+.gd-table thead tr.gd-grp th{font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:var(--sub); border-bottom:none; padding-bottom:2px}
+.gd-table thead tr.gd-grp th:not(.gd-lh){text-align:center}
+.gd-table thead tr.gd-sub th{padding-top:2px}
+.gd-table tbody tr.gd-excluded{opacity:.4}
+.gd-sticky-col{position:sticky; background:var(--card); z-index:1}
+.gd-sticky-1{left:0; width:34px}
+.gd-sticky-2{left:34px; min-width:150px; max-width:220px; overflow:hidden; text-overflow:ellipsis}
+.gd-table thead .gd-sticky-col{background:var(--bg2); z-index:3}
+.gd-avg-row{background:var(--accent-soft); font-weight:700}
+.gd-avg-row .gd-sticky-col{background:var(--accent-soft)}
+.gd-col-div{border-left:1px solid var(--border)}
+.gd-sector-tag{color:var(--dim); font-size:10.5px}
+.gd-country-badge{font-size:10px; color:var(--dim)}
+.gd-empty{padding:30px; text-align:center; color:var(--dim)}
 </style>
 </head>
 <body>
@@ -556,44 +597,27 @@ tr:last-child td{border-bottom:none}
     </div>
     <!-- /주가 Performance -->
 
-    <!-- ---- 글로벌 대시보드 (2026-09-09 초안, 사수 요청) ---- -->
+    <!-- ---- 글로벌 대시보드 (2026-09-15 개편: 엑셀 기반 Peer Table + 섹터별 하위 탭) ----
+         이전 버전(2026-09-09 초안)은 tickers.json/stock_performance.json/consensus.json을
+         엮어 4개국 요약 차트로 구성했었다 — "글로벌 대시보드.xlsx"(Bloomberg 컨센서스,
+         305개사, 국가/섹터/시총/OPM/PER/PS/EV-EBITDA/매출/매출성장률 FY0~2)를 기반으로 한
+         Peer Table 방식으로 전면 교체했다(global_dashboard.json, scripts/convert_global_dashboard.py
+         참고 — 이 데이터는 블룸버그 터미널 라이선스가 있는 로컬 PC에서만 갱신 가능해 다른
+         *.json처럼 GitHub Actions로 자동 갱신되지 않고, 엑셀을 새로 저장한 뒤 수동으로
+         변환 스크립트를 돌려 커밋해야 한다). -->
     <div id="stock-sub-global" style="display:none">
-      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note" id="global-dash-note">한국·미국·중국·일본 4개 지역 의료기기 관련 기업 시가총액 및 밸류에이션(Forward PER) 비교</span></div>
-      <div class="note" style="margin-bottom:4px">중국은 상해·심천(A주) 상장사와 홍콩(HK) 상장 중국 기업을 함께 묶었습니다(중국 MedTech 상장사 다수가 홍콩에 상장돼 있어 홍콩만 따로 떼면 표본이 지나치게 작아짐) — tickers.json 기준 국가/섹터 태그를 그대로 쓴 초안이라, 세부 기업 포함·제외는 검토 후 조정 가능합니다.</div>
-      <div class="note" style="margin-bottom:10px">"MedTech"는 tickers.json 태그 그대로 쓰면 국내(한국)만 유독 좁게 잡히는 문제가 있었습니다 — 국내 섹터 분류가 미용·치과·IVD·디지털헬스·생명공학·로보틱스·MedTech로 세분화돼 있어, 클래시스(미용)·덴티움(치과)·씨젠(IVD) 같은 실제 의료기기 회사들이 "MedTech" 태그에서 빠져 한국만 5개사로 쪼그라들었기 때문입니다(2026-09-09 지적). 그래서 이 대시보드에서는 <b>MedTech·로보틱스·미용·치과·IVD 5개 섹터를 "의료기기"로 묶어서</b> 비교합니다(소프트웨어 성격의 디지털헬스, 제약에 가까운 생명공학, 병원·서비스인 Healthcare Provider는 제외) — 그 결과 한국 표본이 5개사→25개사로 늘어 국가 간 비교가 더 공정해졌습니다.</div>
+      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note" id="gd-source-note">Bloomberg 컨센서스 기반 Peer Table · global_dashboard.json</span></div>
+      <div class="note" style="margin-bottom:14px">함수 오류(#N/A 등)로 값이 비어있는 셀은 "-"로 표시됩니다. 환율은 고정 가정치(1,400원/달러, 7.1위안/달러)를 쓴 초안 값이라 실시간 환율과 다를 수 있습니다 — 위안화 시총 구간은 원화와 동일한 1/3/5/10 배수를 그대로 위안화 단위로 재사용한 것으로, 환율 환산값이 아닙니다. 엔비디아 이하 반도체·산업자동화·로봇부품 등 참고용 산업재 비교군은 의료기기 피어사가 아니라서 별도 섹터 탭 없이 "전체" 탭에서만 표시됩니다.</div>
 
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <select id="global-dash-country" class="filter-select">
-          <option value="">국가 전체</option>
-          <option value="KR">한국</option>
-          <option value="US">미국</option>
-          <option value="CN">중국(A주+홍콩)</option>
-          <option value="JP">일본</option>
-        </select>
-        <select id="global-dash-sector" class="filter-select">
-          <option value="">세부 섹터 전체(의료기기 광의)</option>
-          <option value="MedTech">MedTech</option>
-          <option value="로보틱스">로보틱스</option>
-          <option value="미용">미용기기</option>
-          <option value="치과">치과기기</option>
-          <option value="IVD">IVD(체외진단)</option>
-        </select>
-      </div>
+      <div class="gd-tab-bar" id="gd-tab-bar"></div>
+      <div class="gd-filter-bar" id="gd-filter-bar"></div>
+      <div class="note" id="gd-result-count-note" style="margin-bottom:8px"></div>
 
-      <div class="cards" id="global-dash-stat-cards"></div>
+      <div class="sec-h"><h2 id="gd-table-title" style="font-size:14.5px">Peer Table</h2><span class="note">맨 왼쪽 체크박스로 평균 계산에서 제외할 기업을 고를 수 있습니다 · 표는 가로로 스크롤됩니다</span></div>
+      <div id="gd-peer-table-wrap"></div>
 
-      <div class="sec-h" style="margin-top:14px"><h2>국가별 요약</h2><span class="note">국가마다 추적 중인 기업 수 자체가 달라(한국 5개사 vs 미국 24개사 등) 시총 "합계"만 보면 표본 크기 차이가 시장 규모 차이처럼 보일 수 있습니다 — 그래서 합계·평균·중앙값을 같이 보여줍니다.</span></div>
-      <div style="overflow-x:auto"><div id="global-dash-country-summary-wrap"></div></div>
-
-      <div class="sec-h" style="margin-top:14px"><h2>국가별 시가총액 합계</h2><span class="note">KRW 환산 · 조원 · 세부 섹터별 스택 구성 · 막대 아래 괄호는 기업 수</span></div>
-      <div class="chart-box"><canvas id="globalDashCapChart"></canvas></div>
-
-      <div class="sec-h" style="margin-top:14px"><h2>국가별 밸류에이션(Forward PER) 비교</h2><span class="note">중앙값 기준 · 적자(음수 PER)·데이터 없음 종목은 제외</span></div>
-      <div class="chart-box"><canvas id="globalDashPerChart"></canvas></div>
-
-      <div class="sec-h" style="margin-top:14px"><h2>기업 목록</h2><span class="note" id="global-dash-table-note"></span></div>
-      <div class="note" style="margin:-4px 0 10px">목표주가·투자의견은 시장 컨센서스입니다 — 국내는 네이버/FnGuide 애널리스트 컨센서스(목표주가 평균, 투자의견 "매수/중립" 등 국문 표기), 해외는 Yahoo Finance(yfinance) 애널리스트 컨센서스(목표주가 평균 targetMeanPrice, 투자의견은 recommendationKey 원문 "buy/hold/sell" 등)를 그대로 가져온 값이라 국내외 표기 체계가 다릅니다.</div>
-      <div id="global-dash-table-wrap"></div>
+      <div class="sec-h" style="margin-top:20px"><h2>주요 지표 요약</h2><span class="note">이 탭의 현재 필터·제외 설정이 반영된 결과 기준</span></div>
+      <div class="cards" id="gd-analysis-cards"></div>
     </div>
 
     <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
@@ -2656,257 +2680,452 @@ async function loadStockPerformance(){
 loadStockPerformance();
 
 // ==================================================================
-// 글로벌 대시보드 — 주가 데이터 탭 하위(2026-09-09 초안, 사수 요청: "한국·미국·중국·일본
-// 4개국 주요 MedTech·로보틱스 기업의 시가총액과 밸류에이션 실적을 볼 수 있는 페이지").
-// "밸류에이션 실적"이 정확히 뭘 가리키는지 스펙이 없어, 우선 이미 갖고 있는 데이터 중 가장
-// 표준적인 밸류에이션 지표인 Forward PER(컨센서스, consensus.json)로 초안을 구성했다 —
-// 세부 지표(EV/EBITDA, P/B 등)나 구성 방식은 미리보기 확인 후 조정 예정.
-// tickers.json(TICKER_UNIVERSE)의 sector가 "MedTech"/"로보틱스"인 종목만 모으고, market
-// 필드로 국가를 나눈다. 중국은 상해·심천(CN) A주와 홍콩(HK) 상장 중국기업을 하나로 묶었다
-// (마이크로포트 계열 등 중국 MedTech 대형주 다수가 홍콩 상장이라 HK를 따로 떼면 표본이
-// 너무 작아짐) — 이 판단이 틀렸으면 나중에 쉽게 바꿀 수 있도록 country 매핑 함수 하나로 뺐다.
-const GLOBAL_DASH_COUNTRIES = [
-  { key: 'KR', label: '한국' },
-  { key: 'US', label: '미국' },
-  { key: 'CN', label: '중국' },
-  { key: 'JP', label: '일본' },
-];
-// 2026-09-09: tickers.json의 "MedTech" 태그만 쓰면 국내(한국) 섹터 분류가 유독 세분화돼
-// (미용/치과/IVD/디지털헬스/생명공학/로보틱스/MedTech) 있어 한국만 5개사로 좁게 잡히는
-// 문제가 있었다 — 미용기기(클래시스 등)·치과기기(덴티움 등)·IVD(씨젠 등)도 실질적으로
-// "의료기기" 업종이므로 함께 묶어 "의료기기 광의"로 국가 비교를 한다. 소프트웨어 성격의
-// 디지털헬스, 제약에 가까운 생명공학, 병원 서비스인 Healthcare Provider는 제외.
-const GLOBAL_DASH_SECTORS = ['MedTech', '로보틱스', '미용', '치과', 'IVD'];
-let globalDashChartInstances = { cap: null, per: null };
-const GLOBAL_DASH_STATE = { country: '', sector: '' };
+// 글로벌 대시보드 — 주가 데이터 탭 하위(2026-09-15 개편)
+// 이전 버전(2026-09-09 초안)은 tickers.json+stock_performance.json+consensus.json을 엮어
+// 4개국(한국/미국/중국/일본) MedTech·로보틱스 시총/Forward PER 비교 차트였다. 이번에
+// "글로벌 대시보드.xlsx"(Bloomberg 컨센서스, 305개사 — 국가/섹터/시총/OPM/PER/PS/
+// EV-EBITDA/매출/매출성장률 FY0~2)를 기반으로 한 Peer Table 방식으로 전면 교체했다.
+// 함수/변수 전부 gd 접두사로 스코프해 기존(다른 탭) 코드와 이름이 겹치지 않게 했다.
+const GD_FX = { usd: 1, krw: 1400, cny: 7.1 }; // USD 기준 환율 가정치(초안)
+let GD_RAW = [];
+let GD_SECTOR_COUNTS = []; // [{sector, count}], count 내림차순 · misc(산업재 참고군) 제외
+let GD_COUNTRIES = [];
+let GD_TABS = []; // ['ALL', ...섹터명]
+let GD_LOADED = false;
 
-function globalDashCountryOf(market){
-  return market === 'HK' ? 'CN' : market;
+let GD_STATE = {
+  activeTab: 'ALL',
+  tabState: {}, // tabId -> {countries:Set, sectors:Set, currency, capMin, capMax, excluded:Set, search}
+};
+
+function gdMakeDefaultTabState(){
+  return {
+    countries: new Set(['대한민국']), // 디폴트: 한국만(2026-09-15 요청)
+    sectors: new Set(), // ALL 탭에서만 사용(빈 값=전체)
+    currency: 'krw',
+    capMin: null,
+    capMax: null,
+    excluded: new Set(),
+    search: '',
+  };
+}
+function gdGetTabState(tabId){
+  if(!GD_STATE.tabState[tabId]) GD_STATE.tabState[tabId] = gdMakeDefaultTabState();
+  return GD_STATE.tabState[tabId];
 }
 
-// TICKER_UNIVERSE + STOCK_PERF(시총) + CONSENSUS(Forward PER/투자의견/목표주가)를 합쳐
-// 대상 기업 목록을 만든다. 국가는 4개국(KR/US/CN/JP)만 남기고 그 외(DE/GB/CH/FR 등)는
-// 애초에 이 대시보드 범위가 아니므로 제외한다.
-function globalDashRows(){
-  return TICKER_UNIVERSE
-    .filter(t => GLOBAL_DASH_SECTORS.includes(t.sector))
-    .map(t => {
-      const country = globalDashCountryOf(t.market);
-      if(!GLOBAL_DASH_COUNTRIES.some(c => c.key === country)) return null;
-      const perf = STOCK_PERF.find(s => s.ticker === t.ticker);
-      const cons = CONSENSUS[t.ticker];
-      const capEok = perf ? (perf.market_cap_krw_eok ?? (perf.market_cap_krw_tril != null ? perf.market_cap_krw_tril * 10000 : null)) : null;
-      const per = cons && cons.per_fwd != null && cons.per_fwd > 0 ? cons.per_fwd : null; // 적자(음수)는 밸류에이션 비교에서 제외
-      const currentPrice = (perf && perf.price_history && perf.price_history.close && perf.price_history.close.length)
-        ? perf.price_history.close[perf.price_history.close.length - 1] : null;
-      const targetPrice = cons ? cons.target_price : null;
-      const upside = (targetPrice != null && currentPrice != null && currentPrice > 0)
-        ? (targetPrice - currentPrice) / currentPrice * 100 : null;
-      return {
-        ticker: t.ticker, name: stockDisplayName(t.ticker), sector: t.sector, country,
-        capEok, per, opinion: cons ? cons.opinion : null, targetPrice, currentPrice, upside,
-        currency: perf ? perf.currency : null,
-      };
-    })
-    .filter(Boolean);
+// 시총 구간 경계값 — 화폐별로 숫자+단위만 다르고 구조(1/3/5/10 배수)는 동일.
+// 위안화는 원화와 별도의 환산 기준이 없어 원화와 동일한 1/3/5/10 배수를 그대로 위안화
+// 단위로 재사용한다(환율 환산값 아님) — 필터링 시에는 각 통화 금액을 환율로 usdM 환산해 비교.
+const GD_CAP_BREAKPOINTS = {
+  usd: [
+    {n: 300, label:'3억달러'}, {n: 2000, label:'20억달러'},
+    {n: 10000, label:'100억달러'}, {n: 200000, label:'2,000억달러'},
+  ].map(t => ({label:t.label, usdM:t.n})),
+  krw: [1,3,5,10].map(n => ({label:`${n}조원`, usdM:(n*1e12)/GD_FX.krw/1e6})),
+  cny: [1,3,5,10].map(n => ({label:`${n}조위안`, usdM:(n*1e12)/GD_FX.cny/1e6})),
+};
+function gdBuildCapBuckets(currency){
+  const t = GD_CAP_BREAKPOINTS[currency];
+  const buckets = [{label:`${t[0].label} 이하`, min:null, max:t[0].usdM}];
+  for(let i=1;i<t.length;i++) buckets.push({label:`${t[i-1].label}~${t[i].label}`, min:t[i-1].usdM, max:t[i].usdM});
+  buckets.push({label:`${t[t.length-1].label} 이상`, min:t[t.length-1].usdM, max:null});
+  return buckets;
 }
 
-function median(nums){
-  if(!nums.length) return null;
-  const sorted = nums.slice().sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+function gdFmt1(v){ return (v===null || v===undefined || isNaN(v)) ? '-' : v.toLocaleString('ko-KR', {maximumFractionDigits:1, minimumFractionDigits:1}); }
+function gdFmt0(v){ return (v===null || v===undefined || isNaN(v)) ? '-' : Math.round(v).toLocaleString('ko-KR'); }
+function gdFmtPct(v){ return (v===null || v===undefined || isNaN(v)) ? '-' : (v>=0?'+':'') + v.toLocaleString('ko-KR', {maximumFractionDigits:1, minimumFractionDigits:1}) + '%'; }
+
+function gdConvertAmount(usdM, currency){
+  if(usdM === null || usdM === undefined) return null;
+  if(currency === 'usd') return usdM;
+  if(currency === 'krw') return usdM * GD_FX.krw / 1000;
+  if(currency === 'cny') return usdM * GD_FX.cny / 1000;
+  return usdM;
+}
+function gdCurrencyUnitLabel(currency){
+  return currency === 'usd' ? '백만달러' : currency === 'krw' ? '십억원' : '십억위안';
 }
 
-function globalDashFilteredRows(rows){
-  return rows.filter(r =>
-    (!GLOBAL_DASH_STATE.country || r.country === GLOBAL_DASH_STATE.country) &&
-    (!GLOBAL_DASH_STATE.sector || r.sector === GLOBAL_DASH_STATE.sector)
-  );
+async function gdInit(){
+  try{
+    const res = await fetch('global_dashboard.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    GD_RAW = data.rows.map((r, idx)=> ({...r, _idx: idx}));
+    const note = document.getElementById('gd-source-note');
+    if(note && data.updated){
+      const dt = new Date(data.updated);
+      note.textContent = `Bloomberg 컨센서스 기반 Peer Table · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+    }
+  }catch(e){
+    GD_RAW = [];
+  }
+  GD_COUNTRIES = Array.from(new Set(GD_RAW.map(r=>r.country))).sort((a,b)=> a==='대한민국'?-1 : b==='대한민국'?1 : a.localeCompare(b,'ko'));
+
+  // 엔비디아 이하 반도체·산업자동화·로봇부품 등 참고용 산업재 비교군(misc:true)은 의료기기
+  // 피어사가 아니라서 자기 섹터로 별도 탭을 만들지 않는다 — "전체" 탭에서만 노출한다.
+  const counts = {};
+  GD_RAW.filter(r => !r.misc).forEach(r => (r.sectors||[]).forEach(s => counts[s] = (counts[s]||0) + 1));
+  GD_SECTOR_COUNTS = Object.entries(counts).map(([sector,count])=>({sector,count})).sort((a,b)=> b.count-a.count || a.sector.localeCompare(b.sector,'ko'));
+  GD_TABS = ['ALL', ...GD_SECTOR_COUNTS.map(s=>s.sector)];
+
+  gdGetTabState('ALL');
+  gdRenderTabBar();
+  gdRenderFilterBar();
+  gdRender();
 }
 
-function renderGlobalDashStatCards(rows){
-  const wrap = document.getElementById('global-dash-stat-cards');
-  if(!wrap) return;
-  const totalCapEok = rows.reduce((sum, r) => sum + (r.capEok || 0), 0);
-  const perMedian = median(rows.map(r => r.per).filter(v => v != null));
-  const upsides = rows.map(r => r.upside).filter(v => v != null);
-  const avgUpside = upsides.length ? upsides.reduce((a, b) => a + b, 0) / upsides.length : null;
-  wrap.innerHTML = `
-    <div class="stat-card"><div class="lbl">기업 수</div><div class="val">${rows.length}개</div><div class="delta">현재 필터 기준</div></div>
-    <div class="stat-card"><div class="lbl">시가총액 합계</div><div class="val">${formatMarketCapEok(totalCapEok)}</div><div class="delta">KRW 환산</div></div>
-    <div class="stat-card"><div class="lbl">Forward PER 중앙값</div><div class="val">${perMedian != null ? perMedian.toFixed(1) + '배' : '-'}</div><div class="delta">적자·데이터 없음 제외</div></div>
-    <div class="stat-card"><div class="lbl">평균 상승여력</div><div class="val">${avgUpside != null ? fmtPct(avgUpside) + '%' : '-'}</div><div class="delta ${avgUpside != null ? pctClass(avgUpside) : ''}">목표주가 대비 · 컨센서스 있는 종목만</div></div>
+function gdRenderTabBar(){
+  const bar = document.getElementById('gd-tab-bar');
+  if(!bar) return;
+  bar.innerHTML = GD_TABS.map(t=>{
+    const label = t === 'ALL' ? '전체' : `${escapeHtml(t)} (${GD_SECTOR_COUNTS.find(s=>s.sector===t).count})`;
+    return `<button class="gd-tab-btn ${t===GD_STATE.activeTab?'active':''}" data-tab="${escapeHtml(t)}">${label}</button>`;
+  }).join('');
+  bar.querySelectorAll('.gd-tab-btn').forEach(btn=>{
+    btn.onclick = ()=>{
+      GD_STATE.activeTab = btn.dataset.tab;
+      gdRenderTabBar();
+      gdRenderFilterBar();
+      gdRender();
+    };
+  });
+}
+
+function gdRenderFilterBar(){
+  const isAll = GD_STATE.activeTab === 'ALL';
+  const ts = gdGetTabState(GD_STATE.activeTab);
+  const bar = document.getElementById('gd-filter-bar');
+  if(!bar) return;
+  bar.innerHTML = `
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">국가 (복수 선택)</span>
+      <details class="gd-msel" id="gd-country-msel">
+        <summary id="gd-country-summary">국가 선택</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
+          <div id="gd-country-options"></div>
+        </div>
+      </details>
+    </div>
+    ${isAll ? `
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">섹터 (복수 선택, 비우면 전체)</span>
+      <details class="gd-msel" id="gd-sector-msel">
+        <summary id="gd-sector-summary">섹터 전체</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
+          <div id="gd-sector-options"></div>
+        </div>
+      </details>
+    </div>` : ''}
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">화폐</span>
+      <select id="gd-currency-select" class="filter-select">
+        <option value="usd">백만달러</option>
+        <option value="krw">십억원</option>
+        <option value="cny">십억위안</option>
+      </select>
+    </div>
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">시가총액 구간</span>
+      <select id="gd-cap-range-select" class="filter-select"></select>
+    </div>
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">기업명 검색</span>
+      <input id="gd-name-search" class="filter-select" placeholder="기업명 또는 티커..." autocomplete="off" style="min-width:160px">
+    </div>
+    <div class="gd-filter-group">
+      <span class="gd-filter-label">&nbsp;</span>
+      <a class="gd-reset-link" id="gd-reset-link">이 탭 필터 초기화</a>
+    </div>
+  `;
+
+  document.getElementById('gd-currency-select').value = ts.currency;
+  document.getElementById('gd-name-search').value = ts.search;
+
+  gdBuildCountryOptions(ts);
+  if(isAll) gdBuildSectorOptions(ts);
+  gdBuildCapSelect(ts);
+
+  document.getElementById('gd-currency-select').onchange = (e)=>{ ts.currency = e.target.value; gdBuildCapSelect(ts); gdRender(); };
+  document.getElementById('gd-name-search').oninput = (e)=>{ ts.search = e.target.value.trim().toLowerCase(); gdRender(); };
+  document.getElementById('gd-reset-link').onclick = ()=>{
+    GD_STATE.tabState[GD_STATE.activeTab] = gdMakeDefaultTabState();
+    gdRenderFilterBar();
+    gdRender();
+  };
+  document.querySelectorAll('#gd-country-msel .gd-msel-actions a').forEach(a=>{
+    a.onclick = ()=>{ ts.countries = a.dataset.act === 'all' ? new Set(GD_COUNTRIES) : new Set(); gdBuildCountryOptions(ts); gdRender(); };
+  });
+  if(isAll){
+    document.querySelectorAll('#gd-sector-msel .gd-msel-actions a').forEach(a=>{
+      a.onclick = ()=>{ ts.sectors = a.dataset.act === 'all' ? new Set(GD_SECTOR_COUNTS.map(s=>s.sector)) : new Set(); gdBuildSectorOptions(ts); gdRender(); };
+    });
+  }
+  document.addEventListener('click', (e)=>{
+    document.querySelectorAll('details.gd-msel[open]').forEach(d=>{
+      if(!d.contains(e.target)) d.removeAttribute('open');
+    });
+  }, {once:true});
+}
+
+function gdBuildCountryOptions(ts){
+  const wrap = document.getElementById('gd-country-options');
+  wrap.innerHTML = GD_COUNTRIES.map(c => `
+    <label class="gd-msel-row"><input type="checkbox" data-country="${escapeHtml(c)}" ${ts.countries.has(c)?'checked':''}> ${escapeHtml(c)}</label>
+  `).join('');
+  wrap.querySelectorAll('input[data-country]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) ts.countries.add(cb.dataset.country); else ts.countries.delete(cb.dataset.country);
+      gdUpdateCountrySummary(ts); gdRender();
+    };
+  });
+  gdUpdateCountrySummary(ts);
+}
+function gdUpdateCountrySummary(ts){
+  const s = document.getElementById('gd-country-summary');
+  const n = ts.countries.size;
+  s.textContent = n === 0 ? '국가 선택 (0)' : n === GD_COUNTRIES.length ? `전체 국가(${n})` : n <= 2 ? Array.from(ts.countries).join(', ') : `${Array.from(ts.countries)[0]} 외 ${n-1}개`;
+}
+
+function gdBuildSectorOptions(ts){
+  const wrap = document.getElementById('gd-sector-options');
+  wrap.innerHTML = GD_SECTOR_COUNTS.map(s => `
+    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(s.sector)}" ${ts.sectors.has(s.sector)?'checked':''}> ${escapeHtml(s.sector)} <span class="note">(${s.count})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-sector]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) ts.sectors.add(cb.dataset.sector); else ts.sectors.delete(cb.dataset.sector);
+      gdUpdateSectorSummary(ts); gdRender();
+    };
+  });
+  gdUpdateSectorSummary(ts);
+}
+function gdUpdateSectorSummary(ts){
+  const s = document.getElementById('gd-sector-summary');
+  const n = ts.sectors.size;
+  s.textContent = n === 0 ? '섹터 전체' : n === 1 ? Array.from(ts.sectors)[0] : `${Array.from(ts.sectors)[0]} 외 ${n-1}개`;
+}
+
+function gdBuildCapSelect(ts){
+  const sel = document.getElementById('gd-cap-range-select');
+  const buckets = gdBuildCapBuckets(ts.currency);
+  sel.innerHTML = `<option value="">전체 구간</option>` + buckets.map((b,i)=>`<option value="${i}">${b.label}</option>`).join('');
+  sel.value = '';
+  ts.capMin = null; ts.capMax = null;
+  sel.onchange = (e)=>{
+    if(e.target.value === ''){ ts.capMin = null; ts.capMax = null; }
+    else { const b = gdBuildCapBuckets(ts.currency)[+e.target.value]; ts.capMin = b.min; ts.capMax = b.max; }
+    gdRender();
+  };
+}
+
+function gdGetFilteredForActiveTab(){
+  const tabId = GD_STATE.activeTab;
+  const isAll = tabId === 'ALL';
+  const ts = gdGetTabState(tabId);
+  return GD_RAW.filter(r=>{
+    if(!isAll && r.misc) return false; // 산업재 참고 비교군은 섹터 탭에 노출하지 않음
+    if(!isAll && !(r.sectors||[]).includes(tabId)) return false;
+    if(ts.countries.size && !ts.countries.has(r.country)) return false;
+    if(isAll && ts.sectors.size && !(r.sectors||[]).some(s=> ts.sectors.has(s))) return false;
+    if(ts.capMin !== null && (r.mktcap === null || r.mktcap < ts.capMin)) return false;
+    if(ts.capMax !== null && (r.mktcap === null || r.mktcap > ts.capMax)) return false;
+    if(ts.search){
+      const hay = (r.name + ' ' + (r.ticker||'')).toLowerCase();
+      if(!hay.includes(ts.search)) return false;
+    }
+    return true;
+  });
+}
+
+function gdRowHtml(r, currency, showSectorCol){
+  const ts = gdGetTabState(GD_STATE.activeTab);
+  const excluded = ts.excluded.has(r._idx);
+  const cap = gdConvertAmount(r.mktcap, currency);
+  const rev = (r.revenue||[]).map(v => gdConvertAmount(v, currency));
+  return `
+    <tr class="${excluded?'gd-excluded':''}" data-idx="${r._idx}">
+      <td class="gd-sticky-col gd-sticky-1"><input type="checkbox" class="gd-excl-cb" data-idx="${r._idx}" ${excluded?'checked':''} title="평균 계산에서 제외"></td>
+      <td class="gd-sticky-col gd-sticky-2 gd-lh" title="${escapeHtml(r.name)}${r.ticker?(' · '+escapeHtml(r.ticker)):''}">${escapeHtml(r.name)}</td>
+      <td class="gd-lh gd-country-badge">${escapeHtml(r.country)}</td>
+      ${showSectorCol ? `<td class="gd-lh gd-sector-tag">${escapeHtml((r.sectors||[]).join(', '))}</td>` : ''}
+      <td>${gdFmt0(cap)}</td>
+      <td class="gd-col-div">${gdFmt1(r.opm[0])}</td><td>${gdFmt1(r.opm[1])}</td><td>${gdFmt1(r.opm[2])}</td>
+      <td class="gd-col-div">${gdFmt1(r.per[0])}</td><td>${gdFmt1(r.per[1])}</td><td>${gdFmt1(r.per[2])}</td>
+      <td class="gd-col-div">${gdFmt1(r.ps[0])}</td><td>${gdFmt1(r.ps[1])}</td><td>${gdFmt1(r.ps[2])}</td>
+      <td class="gd-col-div">${gdFmt1(r.ev_ebitda[0])}</td><td>${gdFmt1(r.ev_ebitda[1])}</td><td>${gdFmt1(r.ev_ebitda[2])}</td>
+      <td class="gd-col-div">${gdFmt0(rev[0])}</td><td>${gdFmt0(rev[1])}</td><td>${gdFmt0(rev[2])}</td>
+      <td class="gd-col-div">${gdFmtPct(r.rev_growth[0])}</td><td>${gdFmtPct(r.rev_growth[1])}</td>
+    </tr>
   `;
 }
 
-// 세부 섹터(5개)별 고정 색상 — 국가별 시총 구성(스택 바)과 PER 비교(그룹 바) 두 차트에서
-// 동일한 색을 써서 어느 섹터인지 바로 알아보게 한다.
-const GLOBAL_DASH_SECTOR_COLORS = {
-  'MedTech': '#2563eb', '로보틱스': '#f59e0b', '미용': '#10b981', '치과': '#8b5cf6', 'IVD': '#ef4444',
-};
-
-function renderGlobalDashCharts(allRows){
-  // 차트 두 개는 국가 간 비교가 핵심이라, 국가 필터와 무관하게 항상 4개국 전체를 보여주고
-  // 섹터 필터만 반영한다(국가 하나만 골랐을 때 막대가 하나만 남으면 "비교"라는 목적에
-  // 안 맞기 때문). 세부 섹터 필터가 걸려 있으면 그 섹터 하나만, 아니면 5개 세부 섹터를
-  // 모두 표시해 시총은 구성비(스택), PER은 섹터별 비교(그룹)로 보여준다.
-  const activeSectors = GLOBAL_DASH_STATE.sector ? [GLOBAL_DASH_STATE.sector] : GLOBAL_DASH_SECTORS;
-  const bySectorRows = allRows.filter(r => activeSectors.includes(r.sector));
-
-  const capByCountrySector = {};
-  const perByCountrySector = {};
-  GLOBAL_DASH_COUNTRIES.forEach(c => {
-    capByCountrySector[c.key] = {};
-    perByCountrySector[c.key] = {};
-    activeSectors.forEach(s => { capByCountrySector[c.key][s] = 0; perByCountrySector[c.key][s] = []; });
-  });
-  bySectorRows.forEach(r => {
-    capByCountrySector[r.country][r.sector] += (r.capEok || 0) / 10000; // 조원 단위
-    if(r.per != null) perByCountrySector[r.country][r.sector].push(r.per);
-  });
-
-  // 국가마다 표본 기업 수가 달라 시총 합계만 보면 오해할 수 있어(위 "국가별 요약" 표와
-  // 동일한 이유), 막대 라벨에 기업 수를 같이 붙인다(2026-09-09 요청).
-  const countByCountry = {};
-  GLOBAL_DASH_COUNTRIES.forEach(c => { countByCountry[c.key] = bySectorRows.filter(r => r.country === c.key).length; });
-  const labels = GLOBAL_DASH_COUNTRIES.map(c => `${c.label}(${countByCountry[c.key]}개사)`);
-  const capCanvas = document.getElementById('globalDashCapChart');
-  const perCanvas = document.getElementById('globalDashPerChart');
-  if(globalDashChartInstances.cap){ globalDashChartInstances.cap.destroy(); globalDashChartInstances.cap = null; }
-  if(globalDashChartInstances.per){ globalDashChartInstances.per.destroy(); globalDashChartInstances.per = null; }
-  if(!capCanvas || !perCanvas) return;
-
-  // 시총은 "국가 안에서 어느 세부 섹터가 비중이 큰지"가 궁금할 수 있어 스택(누적) 바로,
-  // PER은 누적하면 의미가 없어(중앙값끼리 더하는 건 무의미) 섹터별 나란히 비교하는
-  // 그룹 바로 그린다.
-  globalDashChartInstances.cap = new Chart(capCanvas, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: activeSectors.map(s => ({
-        label: `${s}(조원)`, data: GLOBAL_DASH_COUNTRIES.map(c => capByCountrySector[c.key][s]),
-        backgroundColor: GLOBAL_DASH_SECTOR_COLORS[s] || '#999', stack: 'cap',
-      })),
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      // 스택 바는 막대 하나(세그먼트 하나)에만 마우스를 올리면 그 섹터 값만 보여 전체
-      // 구성을 한눈에 비교하기 어려웠다(2026-09-09 지적) — mode:'index'로 그 국가의
-      // 모든 섹터 값이 툴팁 하나에 같이 뜨도록 한다(시가총액 합계 등 다른 차트와 동일한 방식).
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, labels: { color: textColor() } },
-        tooltip: { mode: 'index', intersect: false },
-      },
-      scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { color: textColor() } },
-        y: { stacked: true, grid: { color: gridColor() }, ticks: { color: textColor() }, title: { display: true, text: '시가총액(조원)', color: textColor() } },
-      },
-    },
-  });
-
-  globalDashChartInstances.per = new Chart(perCanvas, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: activeSectors.map(s => ({
-        label: `${s} PER(배)`, data: GLOBAL_DASH_COUNTRIES.map(c => median(perByCountrySector[c.key][s])),
-        backgroundColor: GLOBAL_DASH_SECTOR_COLORS[s] || '#999',
-      })),
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: true, labels: { color: textColor() } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: textColor() } },
-        y: { grid: { color: gridColor() }, ticks: { color: textColor() }, title: { display: true, text: 'Forward PER(배, 중앙값)', color: textColor() } },
-      },
-    },
-  });
+function gdAvg(arr){
+  const vals = arr.filter(v => v !== null && v !== undefined && !isNaN(v));
+  if(!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0) / vals.length;
 }
 
-// 국가별 요약 — "시총 합계"만 보면 표본 크기(기업 수) 차이를 시장 규모 차이로 착각하기
-// 쉬워서(2026-09-09 지적), 합계와 함께 평균·중앙값·기업 수를 나란히 보여준다.
-function renderGlobalDashCountrySummary(bySectorRows){
-  const wrap = document.getElementById('global-dash-country-summary-wrap');
+function gdAvgRowHtml(rows, currency, label, showSectorCol){
+  const capAvg = gdAvg(rows.map(r=>r.mktcap));
+  const revAvg = [0,1,2].map(i=> gdAvg(rows.map(r=>r.revenue[i])));
+  const opmAvg = [0,1,2].map(i=> gdAvg(rows.map(r=>r.opm[i])));
+  const perAvg = [0,1,2].map(i=> gdAvg(rows.map(r=>r.per[i])));
+  const psAvg = [0,1,2].map(i=> gdAvg(rows.map(r=>r.ps[i])));
+  const evAvg = [0,1,2].map(i=> gdAvg(rows.map(r=>r.ev_ebitda[i])));
+  const growthAvg = [0,1].map(i=> gdAvg(rows.map(r=>r.rev_growth[i])));
+  return `
+    <tr class="gd-avg-row">
+      <td class="gd-sticky-col gd-sticky-1"></td>
+      <td class="gd-sticky-col gd-sticky-2 gd-lh">${escapeHtml(label)}</td>
+      <td class="gd-lh"></td>
+      ${showSectorCol ? `<td class="gd-lh"></td>` : ''}
+      <td>${gdFmt0(gdConvertAmount(capAvg, currency))}</td>
+      <td class="gd-col-div">${gdFmt1(opmAvg[0])}</td><td>${gdFmt1(opmAvg[1])}</td><td>${gdFmt1(opmAvg[2])}</td>
+      <td class="gd-col-div">${gdFmt1(perAvg[0])}</td><td>${gdFmt1(perAvg[1])}</td><td>${gdFmt1(perAvg[2])}</td>
+      <td class="gd-col-div">${gdFmt1(psAvg[0])}</td><td>${gdFmt1(psAvg[1])}</td><td>${gdFmt1(psAvg[2])}</td>
+      <td class="gd-col-div">${gdFmt1(evAvg[0])}</td><td>${gdFmt1(evAvg[1])}</td><td>${gdFmt1(evAvg[2])}</td>
+      <td class="gd-col-div">${gdFmt0(gdConvertAmount(revAvg[0], currency))}</td><td>${gdFmt0(gdConvertAmount(revAvg[1], currency))}</td><td>${gdFmt0(gdConvertAmount(revAvg[2], currency))}</td>
+      <td class="gd-col-div">${gdFmtPct(growthAvg[0])}</td><td>${gdFmtPct(growthAvg[1])}</td>
+    </tr>
+  `;
+}
+
+function gdTableHeadHtml(currency, showSectorCol){
+  const unit = gdCurrencyUnitLabel(currency);
+  return `
+    <thead>
+      <tr class="gd-grp">
+        <th class="gd-sticky-col gd-sticky-1"></th>
+        <th class="gd-sticky-col gd-sticky-2 gd-lh"></th>
+        <th class="gd-lh">국가</th>
+        ${showSectorCol ? `<th class="gd-lh">섹터</th>` : ''}
+        <th>시가총액(${unit})</th>
+        <th class="gd-col-div" colspan="3">영업이익률(OPM,%)</th>
+        <th class="gd-col-div" colspan="3">PER(배)</th>
+        <th class="gd-col-div" colspan="3">P/S(배)</th>
+        <th class="gd-col-div" colspan="3">EV/EBITDA(배)</th>
+        <th class="gd-col-div" colspan="3">매출(${unit})</th>
+        <th class="gd-col-div" colspan="2">매출성장률(%)</th>
+      </tr>
+      <tr class="gd-sub">
+        <th class="gd-sticky-col gd-sticky-1"></th>
+        <th class="gd-sticky-col gd-sticky-2 gd-lh">사명</th>
+        <th class="gd-lh"></th>
+        ${showSectorCol ? `<th class="gd-lh"></th>` : ''}
+        <th></th>
+        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
+        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
+        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
+        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
+        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
+        <th class="gd-col-div">1FY</th><th>2FY</th>
+      </tr>
+    </thead>
+  `;
+}
+
+function gdRender(){
+  const isAll = GD_STATE.activeTab === 'ALL';
+  const ts = gdGetTabState(GD_STATE.activeTab);
+  const filtered = gdGetFilteredForActiveTab();
+  const included = filtered.filter(r => !ts.excluded.has(r._idx));
+  const currency = ts.currency;
+  const unit = gdCurrencyUnitLabel(currency);
+  const showSectorCol = isAll;
+
+  const titleEl = document.getElementById('gd-table-title');
+  if(titleEl) titleEl.textContent = isAll ? 'Peer Table — 전체' : `Peer Table — ${GD_STATE.activeTab}`;
+  const countNote = document.getElementById('gd-result-count-note');
+  if(countNote) countNote.textContent = `총 ${filtered.length}개사 표시 중 (평균 계산 제외 ${filtered.length - included.length}개사) · 화폐: ${unit}`;
+
+  const wrap = document.getElementById('gd-peer-table-wrap');
   if(!wrap) return;
-  const rowsHtml = GLOBAL_DASH_COUNTRIES.map(c => {
-    const rs = bySectorRows.filter(r => r.country === c.key);
-    const caps = rs.map(r => r.capEok).filter(v => v != null);
-    const totalEok = caps.reduce((a, b) => a + b, 0);
-    const avgEok = caps.length ? totalEok / caps.length : null;
-    const perMed = median(rs.map(r => r.per).filter(v => v != null));
-    return `<tr>
-      <td>${escapeHtml(c.label)}</td>
-      <td style="text-align:right">${rs.length}개사</td>
-      <td style="text-align:right">${formatMarketCapEok(totalEok)}</td>
-      <td style="text-align:right">${avgEok != null ? formatMarketCapEok(avgEok) : '-'}</td>
-      <td style="text-align:right">${perMed != null ? perMed.toFixed(1) + '배' : '-'}</td>
-    </tr>`;
-  }).join('');
-  wrap.innerHTML = `<table><thead><tr>
-    <th>국가</th><th>기업 수</th><th>시총 합계</th><th>시총 평균(기업당)</th><th>PER 중앙값</th>
-  </tr></thead><tbody>${rowsHtml}</tbody></table>`;
+  if(!filtered.length){
+    wrap.innerHTML = `<div class="card note">조건에 맞는 기업이 없습니다.</div>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="gd-table-scroll">
+        <table class="gd-table">
+          ${gdTableHeadHtml(currency, showSectorCol)}
+          <tbody>${filtered.map(r => gdRowHtml(r, currency, showSectorCol)).join('')}</tbody>
+          <tfoot>${included.length ? gdAvgRowHtml(included, currency, `평균 (${included.length}개사)`, showSectorCol) : ''}</tfoot>
+        </table>
+      </div>
+    `;
+    wrap.querySelectorAll('.gd-excl-cb').forEach(cb=>{
+      cb.onclick = (e)=> e.stopPropagation();
+      cb.onchange = ()=>{
+        const idx = +cb.dataset.idx;
+        if(cb.checked) ts.excluded.add(idx); else ts.excluded.delete(idx);
+        gdRender();
+      };
+    });
+  }
+
+  gdRenderAnalysis(included, currency);
 }
 
-function globalDashRowHtml(r){
-  const upsideHtml = r.upside != null
-    ? `<span class="${pctClass(r.upside)}">${fmtPct(r.upside)}%</span>` : '-';
-  return `<tr>
-    <td>${escapeHtml(r.sector)}</td>
-    <td>${escapeHtml(r.name)} <span class="note">(${escapeHtml(r.ticker)})</span></td>
-    <td style="text-align:right">${formatMarketCapEok(r.capEok)}</td>
-    <td style="text-align:right">${r.per != null ? r.per.toFixed(1) + '배' : '-'}</td>
-    <td>${r.opinion ? escapeHtml(String(r.opinion)) : '-'}</td>
-    <td style="text-align:right">${r.targetPrice != null ? r.targetPrice.toLocaleString('ko-KR') : '-'}</td>
-    <td style="text-align:right">${upsideHtml}</td>
-  </tr>`;
+function gdTopBy(rows, getter){
+  let best = null, bestVal = -Infinity;
+  rows.forEach(r=>{
+    const v = getter(r);
+    if(v !== null && v !== undefined && !isNaN(v) && v > bestVal){ bestVal = v; best = r; }
+  });
+  return best ? {row: best, val: bestVal} : null;
+}
+function gdBottomBy(rows, getter){
+  let best = null, bestVal = Infinity;
+  rows.forEach(r=>{
+    const v = getter(r);
+    if(v !== null && v !== undefined && !isNaN(v) && v < bestVal){ bestVal = v; best = r; }
+  });
+  return best ? {row: best, val: bestVal} : null;
 }
 
-// 기업 목록이 국가·섹터 구분 없이 45개사가 쭉 나열돼 알아보기 어렵다는 지적(2026-09-09)에
-// 따라, 뉴스 아카이브의 날짜별 그룹 헤더(news-cat-h)와 같은 방식으로 국가별 소제목을
-// 붙여 나눈다. 국가 필터가 걸려 있으면 그 국가 그룹 하나만 보인다.
-function globalDashTableHtml(rows){
-  return GLOBAL_DASH_COUNTRIES.map(c => {
-    const groupRows = rows.filter(r => r.country === c.key);
-    if(!groupRows.length) return '';
-    const totalEok = groupRows.reduce((a, r) => a + (r.capEok || 0), 0);
+function gdRenderAnalysis(rows, currency){
+  const wrap = document.getElementById('gd-analysis-cards');
+  if(!wrap) return;
+  if(!rows.length){ wrap.innerHTML = `<div class="stat-card note">분석할 데이터가 없습니다.</div>`; return; }
+
+  const items = [
+    { label: '시가총액 최고', pick: gdTopBy(rows, r=>r.mktcap), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
+    { label: '밸류에이션(PER, 0FY) 최고', pick: gdTopBy(rows, r=>r.per[0]), fmt: (v)=> gdFmt1(v) + '배' },
+    { label: '매출(0FY) 최고', pick: gdTopBy(rows, r=>r.revenue[0]), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
+    { label: '영업이익률(0FY) 최고', pick: gdTopBy(rows, r=>r.opm[0]), fmt: (v)=> gdFmt1(v) + '%' },
+    { label: '매출성장률(1FY) 최고', pick: gdTopBy(rows, r=>r.rev_growth[0]), fmt: (v)=> gdFmtPct(v) },
+    { label: 'EV/EBITDA(0FY) 최저(저평가)', pick: gdBottomBy(rows, r=>r.ev_ebitda[0]), fmt: (v)=> gdFmt1(v) + '배' },
+  ];
+
+  wrap.innerHTML = items.map(it=>{
+    if(!it.pick) return `<div class="stat-card"><div class="lbl">${it.label}</div><div class="val">-</div></div>`;
     return `
-      <div class="news-cat-h">${escapeHtml(c.label)} <span class="note">(${groupRows.length}개사 · 시총 합계 ${formatMarketCapEok(totalEok)})</span></div>
-      <table><thead><tr>
-        <th>섹터</th><th>기업</th><th>시가총액</th><th style="text-transform:none">Forward PER</th><th>투자의견</th><th>목표주가(현지통화)</th><th>상승여력</th>
-      </tr></thead><tbody>${groupRows.map(globalDashRowHtml).join('')}</tbody></table>
+      <div class="stat-card">
+        <div class="lbl">${it.label}</div>
+        <div class="val">${escapeHtml(it.pick.row.name)}</div>
+        <div class="sub">${it.fmt(it.pick.val)} · ${escapeHtml(it.pick.row.country)}</div>
+      </div>
     `;
   }).join('');
 }
 
+// 다른 탭들의 각종 로더가 완료될 때마다 방어적으로 호출하는 기존 관례
+// (if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard())를 그대로
+// 살리기 위해 함수명은 유지한다 — 이 대시보드는 자체 JSON(global_dashboard.json)만 쓰고
+// TICKER_UNIVERSE/STOCK_PERF/CONSENSUS에 의존하지 않으므로, 최초 1회만 fetch하고
+// 그 이후 호출은 재렌더만 한다(가벼워서 문제 없음).
 function renderGlobalDashboard(){
-  const wrap = document.getElementById('global-dash-table-wrap');
-  const note = document.getElementById('global-dash-table-note');
-  if(!wrap) return;
-  const allRows = globalDashRows();
-  if(!allRows.length){
-    wrap.innerHTML = '<div class="card note">stock_performance.json / tickers.json 로딩 대기 중이거나 대상 종목이 없습니다.</div>';
-    return;
+  if(!GD_LOADED){
+    GD_LOADED = true;
+    gdInit();
+  } else {
+    gdRender();
   }
-  const sectorRows = GLOBAL_DASH_STATE.sector ? allRows.filter(r => r.sector === GLOBAL_DASH_STATE.sector) : allRows;
-  renderGlobalDashCountrySummary(sectorRows);
-  renderGlobalDashCharts(allRows);
-  const rows = globalDashFilteredRows(allRows).slice().sort((a, b) => (b.capEok || 0) - (a.capEok || 0));
-  renderGlobalDashStatCards(rows);
-  if(note) note.textContent = `국가별로 시가총액 내림차순 정렬 · 전체 ${rows.length}개사`;
-  wrap.innerHTML = globalDashTableHtml(rows);
 }
-
-document.getElementById('global-dash-country')?.addEventListener('change', e => {
-  GLOBAL_DASH_STATE.country = e.target.value;
-  renderGlobalDashboard();
-});
-document.getElementById('global-dash-sector')?.addEventListener('change', e => {
-  GLOBAL_DASH_STATE.sector = e.target.value;
-  renderGlobalDashboard();
-});
 
 // ==================================================================
 // 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
