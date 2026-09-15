@@ -18,6 +18,9 @@
      바뀌면 새로 잘린 값이 생길 수 있으니, 이 매핑에 없는 새로운 이상한 값은 수동으로 추가.
   2) MicroPort MedBot Group/Shenzhen Edge Medical/글로부스 메디컬 행이 원본에 실수로
      완전히 중복 입력돼 있어(2026-09-15 확인) (사명,티커) 기준으로 중복 제거한다.
+  3) 국적(A열) 오타 — 스카이랩스(386380 KS Equity, 코스닥 상장)가 한때 "미국"으로 잘못
+     들어있던 걸 발견(2026-09-15), 사용자가 원본 엑셀에서 직접 정정 완료. 혹시 비슷한
+     오타가 또 생기면 COUNTRY_OVERRIDES(티커 기준)에 등록해 바로잡을 수 있다(현재는 비어있음).
 - MISC_TICKERS: 원본 엑셀에서 "엔비디아" 이후로 이어지는 반도체·산업자동화·로봇부품 등
   의료기기와 무관한 참고용 비교 기업들(2026-09-15 사용자 요청 — 이 회사들은 섹터별
   하위 탭을 따로 만들지 않고 "전체" 탭에서만 보이게 한다, index.html의 GD_RAW misc 필드).
@@ -59,6 +62,10 @@ SECTOR_FIXES = {
     '생명 과학 도구 & 서비': '생명 과학 도구 및 서비스',
     '애플리케이션 소프트': '애플리케이션 소프트웨어',
 }
+
+# 국적(A열) 오타 정정 — 원본을 못 고치는 경우에 대비한 안전망(티커 기준). 지금은 비어있음
+# (2026-09-15 스카이랩스 오타는 사용자가 원본 엑셀에서 직접 정정해 더 이상 필요 없음).
+COUNTRY_OVERRIDES = {}
 
 # 엔비디아 이하 반도체·산업자동화·로봇부품 등 의료기기 무관 참고 비교군(2026-09-15 요청)
 # — index.html에서 이 티커들은 misc:true로 표시돼 섹터별 하위 탭에는 안 나오고 "전체" 탭에만 노출.
@@ -113,6 +120,9 @@ def load_rows(path):
         sector_joined = SECTOR_FIXES.get(sector, sector) if sector else sector
         sectors = [s.strip() for s in (sector_joined or '').split(',') if s.strip()]
         country_ko = COUNTRY_KO.get((country or '').strip(), country)
+        ticker_key = (ticker or '').strip().lower()
+        if ticker_key in COUNTRY_OVERRIDES:
+            country_ko = COUNTRY_OVERRIDES[ticker_key]
 
         row = {
             'country': country_ko,
