@@ -417,6 +417,10 @@ tr:last-child td{border-bottom:none}
 .gd-col-div{border-left:1px solid var(--border)}
 .gd-sector-tag{color:var(--dim); font-size:10.5px}
 .gd-country-badge{font-size:10px; color:var(--dim)}
+/* 주요 지표 요약 카드 — 수치와 국가를 한 줄에 같이 쓰면 카드마다 줄바꿈 여부가 들쭉날쭉해
+   서식이 지저분해 보였다(2026-09-16 지적) — 국가를 항상 별도 줄로 고정한다. */
+#gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
+#gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
 .gd-empty{padding:30px; text-align:center; color:var(--dim)}
 </style>
 </head>
@@ -2865,12 +2869,18 @@ function gdRenderFilterBar(){
       a.onclick = ()=>{ ts.sectors = a.dataset.act === 'all' ? new Set(GD_SECTOR_COUNTS.map(s=>s.sector)) : new Set(); gdBuildSectorOptions(ts); gdRender(); };
     });
   }
-  document.addEventListener('click', (e)=>{
-    document.querySelectorAll('details.gd-msel[open]').forEach(d=>{
-      if(!d.contains(e.target)) d.removeAttribute('open');
-    });
-  }, {once:true});
 }
+
+// 바깥 클릭 시 열린 드롭다운 닫기 — {once:true}로 렌더할 때마다 새로 걸었더니, 그
+// "한 번"이 드롭다운을 여는 클릭 자체에 소모돼버려서 정작 그 다음 바깥 클릭에는
+// 반응하지 않는 버그가 있었다(2026-09-16 지적). 페이지에 딱 한 번만 상시 리스너를
+// 걸어두고(위임 방식이라 필터바가 다시 그려져도 계속 유효), 열려 있는 .gd-msel을
+// 매번 검사해 바깥 클릭이면 닫는다.
+document.addEventListener('click', (e)=>{
+  document.querySelectorAll('details.gd-msel[open]').forEach(d=>{
+    if(!d.contains(e.target)) d.removeAttribute('open');
+  });
+});
 
 function gdBuildCountryOptions(ts){
   const wrap = document.getElementById('gd-country-options');
@@ -3092,22 +3102,30 @@ function gdRenderAnalysis(rows, currency){
   if(!wrap) return;
   if(!rows.length){ wrap.innerHTML = `<div class="stat-card note">분석할 데이터가 없습니다.</div>`; return; }
 
+  // 전부 "최고" 기준으로 통일한다(2026-09-16 지적) — 원래 EV/EBITDA만 "최저(저평가)"로
+  // 반대 방향을 썼었는데, PER 카드는 그대로 "최고"(=가장 비싼 곳)라 카드마다 기준이 달라
+  // 헷갈렸다. 저평가 종목을 보고 싶으면 표에서 직접 오름차순으로 보면 되니, 여기서는
+  // 전부 "이 지표가 가장 큰 곳"으로 맞춘다.
   const items = [
     { label: '시가총액 최고', pick: gdTopBy(rows, r=>r.mktcap), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
     { label: '밸류에이션(PER, 0FY) 최고', pick: gdTopBy(rows, r=>r.per[0]), fmt: (v)=> gdFmt1(v) + '배' },
     { label: '매출(0FY) 최고', pick: gdTopBy(rows, r=>r.revenue[0]), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
     { label: '영업이익률(0FY) 최고', pick: gdTopBy(rows, r=>r.opm[0]), fmt: (v)=> gdFmt1(v) + '%' },
     { label: '매출성장률(1FY) 최고', pick: gdTopBy(rows, r=>r.rev_growth[0]), fmt: (v)=> gdFmtPct(v) },
-    { label: 'EV/EBITDA(0FY) 최저(저평가)', pick: gdBottomBy(rows, r=>r.ev_ebitda[0]), fmt: (v)=> gdFmt1(v) + '배' },
+    { label: 'EV/EBITDA(0FY) 최고', pick: gdTopBy(rows, r=>r.ev_ebitda[0]), fmt: (v)=> gdFmt1(v) + '배' },
   ];
 
+  // 수치와 국가를 한 줄("18.2배 · 미국")에 같이 쓰면 카드마다 줄바꿈 여부가 들쭉날쭉해
+  // 서식이 지저분해 보였다(2026-09-16 지적) — 국가를 항상 별도 줄로 고정해 카드 높이가
+  // 균일하게 맞도록 한다.
   wrap.innerHTML = items.map(it=>{
     if(!it.pick) return `<div class="stat-card"><div class="lbl">${it.label}</div><div class="val">-</div></div>`;
     return `
       <div class="stat-card">
         <div class="lbl">${it.label}</div>
         <div class="val">${escapeHtml(it.pick.row.name)}</div>
-        <div class="sub">${it.fmt(it.pick.val)} · ${escapeHtml(it.pick.row.country)}</div>
+        <div class="sub">${it.fmt(it.pick.val)}</div>
+        <div class="gd-country-badge">${escapeHtml(it.pick.row.country)}</div>
       </div>
     `;
   }).join('');
