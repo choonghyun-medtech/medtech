@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-16T06:57:14Z",
+ "updated": "2026-09-16T08:34:14Z",
  "count": 259,
- "ok_count": 251,
+ "ok_count": 258,
  "stocks": [
   {
    "ticker": "ROP.SW",
@@ -14,7 +14,7 @@
    "target_price_high": 434.5,
    "target_price_low": 230.0,
    "analyst_count": 19,
-   "per_fwd": 16.405817,
+   "per_fwd": 16.551403,
    "eps_fwd": 21.98001,
    "earnings": {
     "annual": [
@@ -736,7 +736,7 @@
    "target_price_high": 100.0,
    "target_price_low": 66.0,
    "analyst_count": 14,
-   "per_fwd": 15.629026,
+   "per_fwd": 15.478746,
    "eps_fwd": 4.658,
    "earnings": {
     "annual": [
@@ -1034,7 +1034,7 @@
    "target_price_high": 90.0,
    "target_price_low": 55.0,
    "analyst_count": 14,
-   "per_fwd": 17.349775,
+   "per_fwd": 17.373163,
    "eps_fwd": 4.27556,
    "earnings": {
     "annual": [
@@ -2854,7 +2854,7 @@
    "target_price_high": 51.14,
    "target_price_low": 51.14,
    "analyst_count": 1,
-   "per_fwd": 230.4375,
+   "per_fwd": 230.62502,
    "eps_fwd": 0.16,
    "earnings": {
     "annual": [
@@ -3074,7 +3074,7 @@
    "target_price_high": 225.0,
    "target_price_low": 135.0,
    "analyst_count": 11,
-   "per_fwd": -21.06734,
+   "per_fwd": -21.401518,
    "eps_fwd": -0.07514,
    "earnings": {
     "annual": [
@@ -3445,9 +3445,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 190700000.0,
-      "operating_income": -38900000.0,
-      "net_income": -43200000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": -0.46
      },
      {
@@ -4400,7 +4400,7 @@
    "target_price_high": 136.0,
    "target_price_low": 86.0,
    "analyst_count": 18,
-   "per_fwd": 25.07375,
+   "per_fwd": 24.765423,
    "eps_fwd": 3.82711,
    "earnings": {
     "annual": [
@@ -4918,7 +4918,7 @@
    "target_price_high": 24.0,
    "target_price_low": 16.5,
    "analyst_count": 4,
-   "per_fwd": 14.894231,
+   "per_fwd": 14.903847,
    "eps_fwd": 1.04,
    "earnings": {
     "annual": [
@@ -5028,7 +5028,7 @@
    "target_price_high": 122.0,
    "target_price_low": 92.22,
    "analyst_count": 10,
-   "per_fwd": 27.24403,
+   "per_fwd": 27.369291,
    "eps_fwd": 3.19336,
    "earnings": {
     "annual": [
@@ -5106,7 +5106,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 11.772727,
+   "per_fwd": 11.878788,
    "eps_fwd": 0.66,
    "earnings": {
     "annual": [
@@ -5145,101 +5145,125 @@
    "name": "그래피",
    "market": "KR",
    "source": "naver",
-   "opinion": "매수",
-   "opinion_score": 4.0,
-   "target_price": 40000,
-   "target_price_high": 69000,
-   "target_price_low": 8210,
+   "opinion": null,
+   "opinion_score": null,
+   "target_price": null,
+   "target_price_high": null,
+   "target_price_low": null,
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
    "earnings": {
     "annual": [
      {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 42.6,
+      "operating_income_eok": -74.6,
+      "net_income_eok": -176.6,
+      "eps": -2489
+     },
+     {
       "period": "2023.12",
       "is_estimate": false,
-      "revenue_eok": 104,
-      "operating_income_eok": -70,
-      "net_income_eok": -54,
+      "revenue_eok": 104.5,
+      "operating_income_eok": -69.8,
+      "net_income_eok": -54.3,
       "eps": -732
      },
      {
       "period": "2024.12",
       "is_estimate": false,
-      "revenue_eok": 161,
-      "operating_income_eok": -92,
-      "net_income_eok": -327,
+      "revenue_eok": 161.2,
+      "operating_income_eok": -91.7,
+      "net_income_eok": -326.6,
       "eps": -4269
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 205,
-      "operating_income_eok": -111,
-      "net_income_eok": -117,
+      "revenue_eok": 205.3,
+      "operating_income_eok": -110.5,
+      "net_income_eok": -116.7,
       "eps": -1189
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 351,
-      "operating_income_eok": -34,
-      "net_income_eok": -36,
+      "revenue_eok": 351.0,
+      "operating_income_eok": -34.0,
+      "net_income_eok": -36.0,
       "eps": -314
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 484.0,
+      "operating_income_eok": 70.0,
+      "net_income_eok": 54.0,
+      "eps": 456
+     },
+     {
+      "period": "2028.12",
+      "is_estimate": true,
+      "revenue_eok": 694.0,
+      "operating_income_eok": 224.0,
+      "net_income_eok": 187.0,
+      "eps": 1578
      }
     ],
     "quarterly": [
      {
-      "period": "2025.06",
-      "is_estimate": false,
-      "revenue_eok": 44,
-      "operating_income_eok": -25,
-      "net_income_eok": -29,
-      "eps": -325
-     },
-     {
       "period": "2025.09",
       "is_estimate": false,
-      "revenue_eok": 34,
-      "operating_income_eok": -37,
-      "net_income_eok": -36,
+      "revenue_eok": 34.4,
+      "operating_income_eok": -37.2,
+      "net_income_eok": -35.8,
       "eps": -355
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 104,
-      "operating_income_eok": -12,
-      "net_income_eok": -13,
+      "revenue_eok": 104.4,
+      "operating_income_eok": -11.7,
+      "net_income_eok": -13.4,
       "eps": -121
      },
      {
       "period": "2026.03",
       "is_estimate": false,
-      "revenue_eok": 34,
-      "operating_income_eok": -32,
-      "net_income_eok": -28,
+      "revenue_eok": 33.5,
+      "operating_income_eok": -31.9,
+      "net_income_eok": -28.2,
       "eps": -254
      },
      {
       "period": "2026.06",
       "is_estimate": false,
-      "revenue_eok": 63,
-      "operating_income_eok": -37,
-      "net_income_eok": -36,
+      "revenue_eok": 62.8,
+      "operating_income_eok": -36.9,
+      "net_income_eok": -35.6,
       "eps": -319
      },
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 86,
-      "operating_income_eok": -9,
-      "net_income_eok": -12,
+      "revenue_eok": 86.0,
+      "operating_income_eok": -9.0,
+      "net_income_eok": null,
+      "eps": null
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 168.0,
+      "operating_income_eok": 44.0,
+      "net_income_eok": null,
       "eps": null
      }
     ]
    },
-   "as_of": "2026-09-10",
+   "as_of": "2026-09-16",
    "error": null
   },
   {
@@ -5381,9 +5405,78 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 1290.0,
+      "operating_income_eok": 162.1,
+      "net_income_eok": 79.6,
+      "eps": 551
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 1458.8,
+      "operating_income_eok": 61.2,
+      "net_income_eok": -21.5,
+      "eps": -141
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 798.4,
+      "operating_income_eok": -442.5,
+      "net_income_eok": -604.3,
+      "eps": -3885
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 1113.2,
+      "operating_income_eok": -97.9,
+      "net_income_eok": 31.4,
+      "eps": 201
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 303.3,
+      "operating_income_eok": 1.8,
+      "net_income_eok": 138.6,
+      "eps": 887
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 290.2,
+      "operating_income_eok": -83.4,
+      "net_income_eok": -98.0,
+      "eps": -627
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 256.7,
+      "operating_income_eok": -34.2,
+      "net_income_eok": 29.5,
+      "eps": 189
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 341.5,
+      "operating_income_eok": 56.5,
+      "net_income_eok": 26.2,
+      "eps": 167
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=228670&finGubun=MAIN&frq=0&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc24b593d0>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "043150.KS",
@@ -5770,11 +5863,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.64706,
-   "target_price": 195.37758,
-   "target_price_high": 263.30365,
-   "target_price_low": 130.21957,
+   "target_price": 195.39668,
+   "target_price_high": 263.32938,
+   "target_price_low": 130.2323,
    "analyst_count": 17,
-   "per_fwd": 28.057339,
+   "per_fwd": 27.84686,
    "eps_fwd": 5.4638114,
    "earnings": {
     "annual": [
@@ -7288,11 +7381,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 4.408266,
-   "target_price_high": 4.5102367,
-   "target_price_low": 4.306296,
+   "target_price": 4.408339,
+   "target_price_high": 4.510311,
+   "target_price_low": 4.306367,
    "analyst_count": 2,
-   "per_fwd": 2.9973214,
+   "per_fwd": 3.0047777,
    "eps_fwd": 0.67059875,
    "earnings": {
     "annual": [
@@ -8030,7 +8123,7 @@
    "target_price_high": 21.0,
    "target_price_low": 16.0,
    "analyst_count": 4,
-   "per_fwd": 18.464935,
+   "per_fwd": 18.453316,
    "eps_fwd": 0.86055,
    "earnings": {
     "annual": [
@@ -8556,7 +8649,7 @@
    "target_price_high": 460.0,
    "target_price_low": 340.0,
    "analyst_count": 24,
-   "per_fwd": 25.58628,
+   "per_fwd": 25.388275,
    "eps_fwd": 14.89861,
    "earnings": {
     "annual": [
@@ -9014,9 +9107,126 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 16001.3,
+      "operating_income_eok": 531.0,
+      "net_income_eok": 208.5,
+      "eps": 1837
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 17774.9,
+      "operating_income_eok": 1156.9,
+      "net_income_eok": 571.4,
+      "eps": 5034
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 21660.9,
+      "operating_income_eok": 1754.0,
+      "net_income_eok": 858.0,
+      "eps": 7560
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 23987.6,
+      "operating_income_eok": 1957.9,
+      "net_income_eok": 1230.6,
+      "eps": 10843
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 29699.3,
+      "operating_income_eok": 2568.9,
+      "net_income_eok": 1695.3,
+      "eps": 14937
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 34632.1,
+      "operating_income_eok": 3156.9,
+      "net_income_eok": 2069.8,
+      "eps": 18237
+     },
+     {
+      "period": "2028.12",
+      "is_estimate": true,
+      "revenue_eok": 39255.7,
+      "operating_income_eok": 3706.2,
+      "net_income_eok": 2485.2,
+      "eps": 21897
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 5856.2,
+      "operating_income_eok": 427.3,
+      "net_income_eok": 89.6,
+      "eps": 789
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 6010.1,
+      "operating_income_eok": 409.1,
+      "net_income_eok": 850.5,
+      "eps": 7494
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 6820.2,
+      "operating_income_eok": 530.3,
+      "net_income_eok": 415.8,
+      "eps": 3663
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 7948.9,
+      "operating_income_eok": 737.4,
+      "net_income_eok": 486.9,
+      "eps": 4290
+     },
+     {
+      "period": "2026.09",
+      "is_estimate": true,
+      "revenue_eok": 7633.3,
+      "operating_income_eok": 675.5,
+      "net_income_eok": 409.7,
+      "eps": 3610
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 7332.3,
+      "operating_income_eok": 624.6,
+      "net_income_eok": 411.4,
+      "eps": 3625
+     },
+     {
+      "period": "2027.03",
+      "is_estimate": true,
+      "revenue_eok": 8331.5,
+      "operating_income_eok": 710.5,
+      "net_income_eok": 472.0,
+      "eps": 4159
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=192820&finGubun=MAIN&frq=1&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc37a393d0>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "161890.KS",
@@ -9763,9 +9973,78 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 1018.4,
+      "operating_income_eok": 244.9,
+      "net_income_eok": 173.0,
+      "eps": 1225
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 1050.0,
+      "operating_income_eok": 158.6,
+      "net_income_eok": 116.3,
+      "eps": 749
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 1279.2,
+      "operating_income_eok": 185.6,
+      "net_income_eok": 163.7,
+      "eps": 999
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 1130.2,
+      "operating_income_eok": 104.6,
+      "net_income_eok": 91.3,
+      "eps": 557
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 287.0,
+      "operating_income_eok": 40.2,
+      "net_income_eok": 26.9,
+      "eps": 164
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 257.5,
+      "operating_income_eok": 20.3,
+      "net_income_eok": 17.5,
+      "eps": 107
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 269.1,
+      "operating_income_eok": 60.5,
+      "net_income_eok": 61.0,
+      "eps": 372
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 258.1,
+      "operating_income_eok": 25.2,
+      "net_income_eok": 28.1,
+      "eps": 171
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=439090&finGubun=MAIN&frq=0&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc2487a390>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "078520.KS",
@@ -10068,7 +10347,7 @@
    "target_price_high": 57.4,
    "target_price_low": 36.0,
    "analyst_count": 19,
-   "per_fwd": 16.467827,
+   "per_fwd": 16.361912,
    "eps_fwd": 2.36036,
    "earnings": {
     "annual": [
@@ -10398,7 +10677,7 @@
    "target_price_high": 300.0,
    "target_price_low": 195.0,
    "analyst_count": 17,
-   "per_fwd": 19.979656,
+   "per_fwd": 19.969545,
    "eps_fwd": 7.91355,
    "earnings": {
     "annual": [
@@ -10838,7 +11117,7 @@
    "target_price_high": 218.0,
    "target_price_low": 127.0,
    "analyst_count": 13,
-   "per_fwd": 29.027836,
+   "per_fwd": 28.982155,
    "eps_fwd": 3.5025,
    "earnings": {
     "annual": [
@@ -11256,8 +11535,8 @@
    "name": "코니카 미놀타",
    "market": "JP",
    "source": "yfinance",
-   "opinion": "hold",
-   "opinion_score": 2.75,
+   "opinion": "none",
+   "opinion_score": null,
    "target_price": 662.5,
    "target_price_high": 800.0,
    "target_price_low": 550.0,
@@ -11686,7 +11965,7 @@
    "target_price_high": 0.8,
    "target_price_low": 0.4,
    "analyst_count": 2,
-   "per_fwd": 9.597216,
+   "per_fwd": 9.572351,
    "eps_fwd": 0.04022,
    "earnings": {
     "annual": [
@@ -12028,9 +12307,9 @@
    "source": "yfinance",
    "opinion": "hold",
    "opinion_score": 2.71429,
-   "target_price": 47.02429,
-   "target_price_high": 63.733948,
-   "target_price_low": 39.79842,
+   "target_price": 47.02276,
+   "target_price_high": 63.731876,
+   "target_price_low": 39.797127,
    "analyst_count": 12,
    "per_fwd": 12.566419,
    "eps_fwd": 3.3844168,
@@ -12578,11 +12857,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.0,
-   "target_price": 11.939928,
-   "target_price_high": 14.787754,
-   "target_price_low": 8.806493,
+   "target_price": 11.942992,
+   "target_price_high": 14.791549,
+   "target_price_low": 8.808752,
    "analyst_count": 3,
-   "per_fwd": 14.214514,
+   "per_fwd": 14.161711,
    "eps_fwd": 0.47345975,
    "earnings": {
     "annual": [
@@ -12874,9 +13153,86 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 91.5,
+      "operating_income_eok": -138.8,
+      "net_income_eok": 18.7,
+      "eps": 159
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 124.2,
+      "operating_income_eok": -73.8,
+      "net_income_eok": 166.0,
+      "eps": 1398
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 131.1,
+      "operating_income_eok": -55.7,
+      "net_income_eok": -76.5,
+      "eps": -630
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 262.5,
+      "operating_income_eok": 4.5,
+      "net_income_eok": -28.5,
+      "eps": -196
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 535.0,
+      "operating_income_eok": -74.0,
+      "net_income_eok": -60.0,
+      "eps": -348
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 69.5,
+      "operating_income_eok": 0.8,
+      "net_income_eok": -11.6,
+      "eps": -75
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 95.8,
+      "operating_income_eok": 6.0,
+      "net_income_eok": -3.6,
+      "eps": -23
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 80.6,
+      "operating_income_eok": -23.5,
+      "net_income_eok": -18.3,
+      "eps": -116
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 82.2,
+      "operating_income_eok": -134.5,
+      "net_income_eok": -93.4,
+      "eps": -558
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=376900&finGubun=MAIN&frq=0&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc24e538d0>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "SENS",
@@ -13219,7 +13575,7 @@
    "target_price_high": 361.0,
    "target_price_low": 174.0,
    "analyst_count": 23,
-   "per_fwd": 17.795435,
+   "per_fwd": 17.70917,
    "eps_fwd": 8.11444,
    "earnings": {
     "annual": [
@@ -13611,7 +13967,7 @@
    "target_price_high": 35.0,
    "target_price_low": 18.1,
    "analyst_count": 15,
-   "per_fwd": 20.33733,
+   "per_fwd": 20.391562,
    "eps_fwd": 1.47512,
    "earnings": {
     "annual": [
@@ -14556,9 +14912,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 5442000000.0,
-      "operating_income": 1246000000.0,
-      "net_income": 907000000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.61
      },
      {
@@ -14776,9 +15132,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 1741000000.0,
-      "operating_income": 519500000.0,
-      "net_income": 241900000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.42
      },
      {
@@ -15119,7 +15475,7 @@
    "target_price_high": 63.5,
    "target_price_low": 50.0,
    "analyst_count": 14,
-   "per_fwd": 11.47757,
+   "per_fwd": 11.429525,
    "eps_fwd": 3.95467,
    "earnings": {
     "annual": [
@@ -15718,9 +16074,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 464110000.0,
-      "operating_income": 44613000.0,
-      "net_income": 23605000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.69
      },
      {
@@ -16509,7 +16865,7 @@
    "target_price_high": 24.0,
    "target_price_low": 11.9,
    "analyst_count": 4,
-   "per_fwd": 15.75,
+   "per_fwd": 15.791666,
    "eps_fwd": 0.72,
    "earnings": {
     "annual": [
@@ -16615,11 +16971,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.45455,
-   "target_price": 5.305123,
-   "target_price_high": 8.195158,
-   "target_price_low": 3.869059,
+   "target_price": 5.306484,
+   "target_price_high": 8.197261,
+   "target_price_low": 3.8700519,
    "analyst_count": 9,
-   "per_fwd": 6.532209,
+   "per_fwd": 6.5426774,
    "eps_fwd": 0.4776332,
    "earnings": {
     "annual": [
@@ -16693,9 +17049,9 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 36.37149,
-   "target_price_high": 42.249893,
-   "target_price_low": 24.612358,
+   "target_price": 36.380825,
+   "target_price_high": 42.26073,
+   "target_price_low": 24.618673,
    "analyst_count": 10,
    "per_fwd": 69.71481,
    "eps_fwd": 0.30380917,
@@ -16771,12 +17127,12 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.4,
-   "target_price": 68.43255,
-   "target_price_high": 99.3565,
-   "target_price_low": 51.425755,
+   "target_price": 68.45011,
+   "target_price_high": 99.381996,
+   "target_price_low": 51.43895,
    "analyst_count": 5,
-   "per_fwd": 53.50514,
-   "eps_fwd": 0.639191,
+   "per_fwd": 53.611237,
+   "eps_fwd": 0.6401643,
    "earnings": {
     "annual": [
      {
@@ -16849,9 +17205,9 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 14.11794,
-   "target_price_high": 18.009619,
-   "target_price_low": 9.851952,
+   "target_price": 14.117742,
+   "target_price_high": 18.009365,
+   "target_price_low": 9.851813,
    "analyst_count": 7,
    "per_fwd": 23.280745,
    "eps_fwd": 0.26094526,
@@ -16972,11 +17328,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 4.6031284,
-   "target_price_high": 4.6031284,
-   "target_price_low": 4.6031284,
+   "target_price": 4.6043096,
+   "target_price_high": 4.6043096,
+   "target_price_low": 4.6043096,
    "analyst_count": 1,
-   "per_fwd": 15.169042,
+   "per_fwd": 15.235866,
    "eps_fwd": 0.07482345,
    "earnings": {
     "annual": [
@@ -17050,12 +17406,12 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 9.810286,
-   "target_price_high": 10.714138,
-   "target_price_low": 8.619469,
+   "target_price": 9.812802,
+   "target_price_high": 10.716887,
+   "target_price_low": 8.62168,
    "analyst_count": 4,
-   "per_fwd": 29.542034,
-   "eps_fwd": 0.1636651,
+   "per_fwd": 29.448372,
+   "eps_fwd": 0.16367629,
    "earnings": {
     "annual": [
      {
@@ -17128,9 +17484,9 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 6.8982635,
-   "target_price_high": 7.562783,
-   "target_price_low": 6.233744,
+   "target_price": 6.900034,
+   "target_price_high": 7.5647235,
+   "target_price_low": 6.2353435,
    "analyst_count": 2,
    "per_fwd": 37.886024,
    "eps_fwd": 0.033785544,
@@ -17210,7 +17566,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 22.109474,
+   "per_fwd": 22.09676,
    "eps_fwd": 1.5730813,
    "earnings": {
     "annual": [
@@ -17255,8 +17611,8 @@
    "target_price_high": 465.0,
    "target_price_low": 315.0,
    "analyst_count": 25,
-   "per_fwd": 16.816803,
-   "eps_fwd": 16.73921,
+   "per_fwd": 16.82052,
+   "eps_fwd": 16.73551,
    "earnings": {
     "annual": [
      {
@@ -17769,11 +18125,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.0,
-   "target_price": 7.812694,
-   "target_price_high": 8.432445,
-   "target_price_low": 7.005218,
+   "target_price": 7.8146987,
+   "target_price_high": 8.434608,
+   "target_price_low": 7.007015,
    "analyst_count": 5,
-   "per_fwd": 9.937044,
+   "per_fwd": 9.9472885,
    "eps_fwd": 0.4880727,
    "earnings": {
     "annual": [
@@ -18062,104 +18418,136 @@
   },
   {
    "ticker": "098460.KS",
-   "name": "고영",
+   "name": "고영테크놀러지",
    "market": "KR",
    "source": "naver",
-   "opinion": "매수",
-   "opinion_score": 4.0,
-   "target_price": 43786,
-   "target_price_high": 45000,
-   "target_price_low": 14440,
+   "opinion": null,
+   "opinion_score": null,
+   "target_price": null,
+   "target_price_high": null,
+   "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 33.0,
-   "eps_fwd": 867,
+   "per_fwd": null,
+   "eps_fwd": null,
    "earnings": {
     "annual": [
      {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 2753.6,
+      "operating_income_eok": 442.6,
+      "net_income_eok": 392.8,
+      "eps": 572
+     },
+     {
       "period": "2023.12",
       "is_estimate": false,
-      "revenue_eok": 2256,
-      "operating_income_eok": 204,
-      "net_income_eok": 219,
+      "revenue_eok": 2256.3,
+      "operating_income_eok": 203.7,
+      "net_income_eok": 219.3,
       "eps": 319
      },
      {
       "period": "2024.12",
       "is_estimate": false,
-      "revenue_eok": 2025,
-      "operating_income_eok": 33,
-      "net_income_eok": 210,
+      "revenue_eok": 2025.4,
+      "operating_income_eok": 33.2,
+      "net_income_eok": 210.0,
       "eps": 306
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 2326,
-      "operating_income_eok": 173,
-      "net_income_eok": 148,
+      "revenue_eok": 2326.5,
+      "operating_income_eok": 173.4,
+      "net_income_eok": 147.6,
       "eps": 215
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 3426,
-      "operating_income_eok": 566,
-      "net_income_eok": 594,
+      "revenue_eok": 3426.4,
+      "operating_income_eok": 566.0,
+      "net_income_eok": 593.1,
       "eps": 867
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 4004.6,
+      "operating_income_eok": 741.0,
+      "net_income_eok": 669.1,
+      "eps": 981
+     },
+     {
+      "period": "2028.12",
+      "is_estimate": true,
+      "revenue_eok": 4448.1,
+      "operating_income_eok": 904.0,
+      "net_income_eok": 809.1,
+      "eps": 1186
      }
     ],
     "quarterly": [
      {
-      "period": "2025.06",
-      "is_estimate": false,
-      "revenue_eok": 521,
-      "operating_income_eok": 25,
-      "net_income_eok": -47,
-      "eps": -69
-     },
-     {
       "period": "2025.09",
       "is_estimate": false,
-      "revenue_eok": 603,
-      "operating_income_eok": 47,
-      "net_income_eok": 85,
+      "revenue_eok": 602.9,
+      "operating_income_eok": 47.0,
+      "net_income_eok": 84.5,
       "eps": 123
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 691,
-      "operating_income_eok": 69,
-      "net_income_eok": 78,
+      "revenue_eok": 691.5,
+      "operating_income_eok": 69.5,
+      "net_income_eok": 78.0,
       "eps": 114
      },
      {
       "period": "2026.03",
       "is_estimate": false,
-      "revenue_eok": 727,
-      "operating_income_eok": 99,
-      "net_income_eok": 157,
+      "revenue_eok": 727.3,
+      "operating_income_eok": 98.5,
+      "net_income_eok": 156.8,
       "eps": 228
      },
      {
       "period": "2026.06",
       "is_estimate": false,
-      "revenue_eok": 888,
-      "operating_income_eok": 146,
-      "net_income_eok": 157,
+      "revenue_eok": 887.6,
+      "operating_income_eok": 145.5,
+      "net_income_eok": 157.2,
       "eps": 230
      },
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 878,
-      "operating_income_eok": 151,
-      "net_income_eok": 144,
+      "revenue_eok": 877.8,
+      "operating_income_eok": 150.7,
+      "net_income_eok": 131.2,
       "eps": 192
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 923.6,
+      "operating_income_eok": 163.8,
+      "net_income_eok": 145.5,
+      "eps": 213
+     },
+     {
+      "period": "2027.03",
+      "is_estimate": true,
+      "revenue_eok": 970.8,
+      "operating_income_eok": 175.6,
+      "net_income_eok": 159.8,
+      "eps": 234
      }
     ]
    },
-   "as_of": "2026-09-10",
+   "as_of": "2026-09-16",
    "error": null
   },
   {
@@ -18175,9 +18563,102 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 649.9,
+      "operating_income_eok": 11.1,
+      "net_income_eok": -30.4,
+      "eps": -84
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 728.8,
+      "operating_income_eok": 11.4,
+      "net_income_eok": -48.6,
+      "eps": -120
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 555.3,
+      "operating_income_eok": -58.2,
+      "net_income_eok": -87.6,
+      "eps": -213
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 745.3,
+      "operating_income_eok": 23.6,
+      "net_income_eok": 27.7,
+      "eps": 67
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 807.0,
+      "operating_income_eok": 31.0,
+      "net_income_eok": null,
+      "eps": null
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 172.3,
+      "operating_income_eok": 3.4,
+      "net_income_eok": 8.2,
+      "eps": 20
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 208.0,
+      "operating_income_eok": 13.8,
+      "net_income_eok": 17.5,
+      "eps": 42
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 161.0,
+      "operating_income_eok": -9.1,
+      "net_income_eok": 4.6,
+      "eps": 11
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 236.2,
+      "operating_income_eok": 24.4,
+      "net_income_eok": 24.8,
+      "eps": 60
+     },
+     {
+      "period": "2026.09",
+      "is_estimate": true,
+      "revenue_eok": 187.0,
+      "operating_income_eok": 2.0,
+      "net_income_eok": null,
+      "eps": null
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 224.0,
+      "operating_income_eok": 15.0,
+      "net_income_eok": null,
+      "eps": null
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=060280&finGubun=MAIN&frq=0&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc340e0090>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "049950.KQ",
@@ -18684,7 +19165,7 @@
    "target_price_high": 26.0,
    "target_price_low": 18.0,
    "analyst_count": 2,
-   "per_fwd": 1480.0,
+   "per_fwd": 1484.0,
    "eps_fwd": 0.01,
    "earnings": {
     "annual": [
@@ -19010,11 +19491,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.27778,
-   "target_price": 68.451004,
-   "target_price_high": 95.7937,
-   "target_price_low": 49.823196,
+   "target_price": 68.46857,
+   "target_price_high": 95.818275,
+   "target_price_low": 49.83598,
    "analyst_count": 16,
-   "per_fwd": 11.73391,
+   "per_fwd": 11.672653,
    "eps_fwd": 2.938492,
    "earnings": {
     "annual": [
@@ -19096,11 +19577,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.13333,
-   "target_price": 5.369307,
-   "target_price_high": 7.653957,
-   "target_price_low": 3.132652,
+   "target_price": 5.370685,
+   "target_price_high": 7.655921,
+   "target_price_low": 3.133456,
    "analyst_count": 15,
-   "per_fwd": 14.545023,
+   "per_fwd": 14.4952965,
    "eps_fwd": 0.20109971,
    "earnings": {
     "annual": [
@@ -20038,11 +20519,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.14286,
-   "target_price": 11.331235,
-   "target_price_high": 21.400223,
-   "target_price_low": 6.531813,
+   "target_price": 11.334142,
+   "target_price_high": 21.405714,
+   "target_price_low": 6.533489,
    "analyst_count": 14,
-   "per_fwd": 23.722626,
+   "per_fwd": 23.68289,
    "eps_fwd": 0.25165847,
    "earnings": {
     "annual": [
@@ -21462,104 +21943,128 @@
   },
   {
    "ticker": "458870.KS",
-   "name": "씨어스테크놀로지",
+   "name": "씨어스",
    "market": "KR",
    "source": "naver",
-   "opinion": "매수",
-   "opinion_score": 4.0,
-   "target_price": 43750,
-   "target_price_high": 64235,
-   "target_price_low": 17676,
+   "opinion": null,
+   "opinion_score": null,
+   "target_price": null,
+   "target_price_high": null,
+   "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 16.0,
-   "eps_fwd": 1416,
+   "per_fwd": null,
+   "eps_fwd": null,
    "earnings": {
     "annual": [
      {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 11.5,
+      "operating_income_eok": -79.9,
+      "net_income_eok": -79.9,
+      "eps": -247
+     },
+     {
       "period": "2023.12",
       "is_estimate": false,
-      "revenue_eok": 19,
-      "operating_income_eok": -98,
-      "net_income_eok": -99,
+      "revenue_eok": 18.9,
+      "operating_income_eok": -98.0,
+      "net_income_eok": -99.2,
       "eps": -302
      },
      {
       "period": "2024.12",
       "is_estimate": false,
-      "revenue_eok": 81,
-      "operating_income_eok": -87,
-      "net_income_eok": -89,
+      "revenue_eok": 81.0,
+      "operating_income_eok": -86.8,
+      "net_income_eok": -88.7,
       "eps": -251
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 482,
-      "operating_income_eok": 163,
-      "net_income_eok": 160,
+      "revenue_eok": 481.7,
+      "operating_income_eok": 163.3,
+      "net_income_eok": 160.9,
       "eps": 425
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 1291,
-      "operating_income_eok": 565,
-      "net_income_eok": 540,
+      "revenue_eok": 1290.5,
+      "operating_income_eok": 564.8,
+      "net_income_eok": 540.4,
       "eps": 1416
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 1712.4,
+      "operating_income_eok": 773.5,
+      "net_income_eok": 662.0,
+      "eps": 1726
+     },
+     {
+      "period": "2028.12",
+      "is_estimate": true,
+      "revenue_eok": 2183.0,
+      "operating_income_eok": 1015.4,
+      "net_income_eok": 868.6,
+      "eps": 2265
      }
     ],
     "quarterly": [
      {
-      "period": "2025.06",
-      "is_estimate": false,
-      "revenue_eok": 80,
-      "operating_income_eok": 15,
-      "net_income_eok": 15,
-      "eps": 40
-     },
-     {
       "period": "2025.09",
       "is_estimate": false,
-      "revenue_eok": 157,
-      "operating_income_eok": 67,
-      "net_income_eok": 67,
+      "revenue_eok": 157.4,
+      "operating_income_eok": 67.3,
+      "net_income_eok": 67.4,
       "eps": 178
      },
      {
       "period": "2025.12",
       "is_estimate": false,
-      "revenue_eok": 204,
-      "operating_income_eok": 87,
-      "net_income_eok": 84,
+      "revenue_eok": 204.1,
+      "operating_income_eok": 87.0,
+      "net_income_eok": 84.4,
       "eps": 222
      },
      {
       "period": "2026.03",
       "is_estimate": false,
-      "revenue_eok": 325,
-      "operating_income_eok": 139,
-      "net_income_eok": 137,
+      "revenue_eok": 325.3,
+      "operating_income_eok": 138.5,
+      "net_income_eok": 137.4,
       "eps": 361
      },
      {
       "period": "2026.06",
       "is_estimate": false,
-      "revenue_eok": 284,
-      "operating_income_eok": 130,
-      "net_income_eok": 129,
+      "revenue_eok": 283.8,
+      "operating_income_eok": 129.5,
+      "net_income_eok": 129.6,
       "eps": 340
      },
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 333,
-      "operating_income_eok": 149,
-      "net_income_eok": 126,
+      "revenue_eok": 332.6,
+      "operating_income_eok": 149.1,
+      "net_income_eok": 138.2,
       "eps": 362
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 348.5,
+      "operating_income_eok": 146.7,
+      "net_income_eok": 132.8,
+      "eps": 346
      }
     ]
    },
-   "as_of": "2026-09-10",
+   "as_of": "2026-09-16",
    "error": null
   },
   {
@@ -21575,9 +22080,94 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 13.2,
+      "operating_income_eok": -32.1,
+      "net_income_eok": -69.0,
+      "eps": -1325
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 38.3,
+      "operating_income_eok": -42.5,
+      "net_income_eok": -161.0,
+      "eps": -3082
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 23.7,
+      "operating_income_eok": -59.5,
+      "net_income_eok": -70.7,
+      "eps": -1319
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 73.8,
+      "operating_income_eok": -28.3,
+      "net_income_eok": 27.6,
+      "eps": 416
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 211.0,
+      "operating_income_eok": 45.0,
+      "net_income_eok": 101.0,
+      "eps": 1058
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 441.0,
+      "operating_income_eok": 176.0,
+      "net_income_eok": 235.0,
+      "eps": 2378
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 23.1,
+      "operating_income_eok": -7.3,
+      "net_income_eok": 51.2,
+      "eps": 692
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 20.3,
+      "operating_income_eok": -6.6,
+      "net_income_eok": -5.0,
+      "eps": -60
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 39.1,
+      "operating_income_eok": 9.6,
+      "net_income_eok": 9.6,
+      "eps": 112
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 56.7,
+      "operating_income_eok": 8.7,
+      "net_income_eok": 11.0,
+      "eps": 111
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=0088M0&finGubun=MAIN&frq=0&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc24502910>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "491000.KQ",
@@ -22210,7 +22800,7 @@
    "target_price_high": 179.0,
    "target_price_low": 135.0,
    "analyst_count": 14,
-   "per_fwd": 14.683364,
+   "per_fwd": 14.784321,
    "eps_fwd": 8.91485,
    "earnings": {
     "annual": [
@@ -22320,7 +22910,7 @@
    "target_price_high": 445.0,
    "target_price_low": 68.75,
    "analyst_count": 9,
-   "per_fwd": 29.33015,
+   "per_fwd": 29.422289,
    "eps_fwd": 6.51207,
    "earnings": {
     "annual": [
@@ -22426,11 +23016,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.53571,
-   "target_price": 58.140457,
-   "target_price_high": 79.2222,
-   "target_price_low": 30.894028,
+   "target_price": 58.155373,
+   "target_price_high": 79.24253,
+   "target_price_low": 30.901955,
    "analyst_count": 24,
-   "per_fwd": 23.14838,
+   "per_fwd": 23.051447,
    "eps_fwd": 2.1664584,
    "earnings": {
     "annual": [
@@ -22508,7 +23098,7 @@
    "target_price_high": 835.0,
    "target_price_low": 550.0,
    "analyst_count": 23,
-   "per_fwd": 24.355854,
+   "per_fwd": 24.446531,
    "eps_fwd": 22.0563,
    "earnings": {
     "annual": [
@@ -22588,9 +23178,126 @@
    "analyst_count": null,
    "per_fwd": null,
    "eps_fwd": null,
-   "earnings": null,
+   "earnings": {
+    "annual": [
+     {
+      "period": "2022.12",
+      "is_estimate": false,
+      "revenue_eok": 30013.0,
+      "operating_income_eok": 9836.3,
+      "net_income_eok": 7980.6,
+      "eps": 11411
+     },
+     {
+      "period": "2023.12",
+      "is_estimate": false,
+      "revenue_eok": 36945.9,
+      "operating_income_eok": 11136.8,
+      "net_income_eok": 8576.9,
+      "eps": 12051
+     },
+     {
+      "period": "2024.12",
+      "is_estimate": false,
+      "revenue_eok": 34971.5,
+      "operating_income_eok": 13213.7,
+      "net_income_eok": 10833.2,
+      "eps": 15221
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 45569.7,
+      "operating_income_eok": 20692.2,
+      "net_income_eok": 17843.5,
+      "eps": 26572
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 54951.3,
+      "operating_income_eok": 24162.2,
+      "net_income_eok": 18741.9,
+      "eps": 40487
+     },
+     {
+      "period": "2027.12",
+      "is_estimate": true,
+      "revenue_eok": 64069.0,
+      "operating_income_eok": 28197.6,
+      "net_income_eok": 21809.0,
+      "eps": 47113
+     },
+     {
+      "period": "2028.12",
+      "is_estimate": true,
+      "revenue_eok": 68466.8,
+      "operating_income_eok": 30980.9,
+      "net_income_eok": 24304.6,
+      "eps": 52504
+     }
+    ],
+    "quarterly": [
+     {
+      "period": "2025.09",
+      "is_estimate": false,
+      "revenue_eok": 16602.2,
+      "operating_income_eok": 7288.5,
+      "net_income_eok": 5744.6,
+      "eps": 8071
+     },
+     {
+      "period": "2025.12",
+      "is_estimate": false,
+      "revenue_eok": 3085.7,
+      "operating_income_eok": 3780.8,
+      "net_income_eok": 5099.5,
+      "eps": 9236
+     },
+     {
+      "period": "2026.03",
+      "is_estimate": false,
+      "revenue_eok": 12571.2,
+      "operating_income_eok": 5807.5,
+      "net_income_eok": 4692.5,
+      "eps": 10137
+     },
+     {
+      "period": "2026.06",
+      "is_estimate": false,
+      "revenue_eok": 13209.1,
+      "operating_income_eok": 5864.4,
+      "net_income_eok": 4306.5,
+      "eps": 9303
+     },
+     {
+      "period": "2026.09",
+      "is_estimate": true,
+      "revenue_eok": 13379.3,
+      "operating_income_eok": 6040.1,
+      "net_income_eok": 4516.0,
+      "eps": 9756
+     },
+     {
+      "period": "2026.12",
+      "is_estimate": true,
+      "revenue_eok": 15353.9,
+      "operating_income_eok": 6966.0,
+      "net_income_eok": 5698.0,
+      "eps": 12309
+     },
+     {
+      "period": "2027.03",
+      "is_estimate": true,
+      "revenue_eok": 14806.5,
+      "operating_income_eok": 6507.0,
+      "net_income_eok": 4752.0,
+      "eps": 10266
+     }
+    ]
+   },
    "as_of": "2026-09-16",
-   "error": "HTTPSConnectionPool(host='navercomp.wisereport.co.kr', port=443): Max retries exceeded with url: /v3/company/ajax/c1050001_data.aspx?flag=2&cmp_cd=207940&finGubun=MAIN&frq=1&sDT=20260916&chartType=svg (Caused by ConnectTimeoutError(<HTTPSConnection(host='navercomp.wisereport.co.kr', port=443) at 0x7efc24f37890>, 'Connection to navercomp.wisereport.co.kr timed out. (connect timeout=15)'))"
+   "error": null
   },
   {
    "ticker": "2359.HK",
@@ -22599,12 +23306,12 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.16667,
-   "target_price": 219.26428,
-   "target_price_high": 262.45663,
-   "target_price_low": 138.8548,
+   "target_price": 219.32054,
+   "target_price_high": 262.524,
+   "target_price_low": 138.89043,
    "analyst_count": 22,
-   "per_fwd": 18.81696,
-   "eps_fwd": 10.400192,
+   "per_fwd": 18.757986,
+   "eps_fwd": 10.400904,
    "earnings": {
     "annual": [
      {
@@ -22929,11 +23636,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.66667,
-   "target_price": 51.12213,
-   "target_price_high": 73.22574,
-   "target_price_low": 28.963005,
+   "target_price": 51.13525,
+   "target_price_high": 73.24453,
+   "target_price_low": 28.970436,
    "analyst_count": 12,
-   "per_fwd": 33.758068,
+   "per_fwd": 33.605526,
    "eps_fwd": 1.3110939,
    "earnings": {
     "annual": [
@@ -23259,11 +23966,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.25,
-   "target_price": 30.657375,
-   "target_price_high": 41.007965,
-   "target_price_low": 15.915295,
+   "target_price": 30.657803,
+   "target_price_high": 41.008537,
+   "target_price_low": 15.915517,
    "analyst_count": 7,
-   "per_fwd": 57.62789,
+   "per_fwd": 57.66331,
    "eps_fwd": 0.56465715,
    "earnings": {
     "annual": [
@@ -23527,7 +24234,7 @@
       "revenue": 106096000000.0,
       "operating_income": 4703000000.0,
       "net_income": 2979000000.0,
-      "eps": 2.31
+      "eps": null
      },
      {
       "period": "이번분기(0Q)",
@@ -24069,7 +24776,7 @@
       "revenue": 10796000000.0,
       "operating_income": 176000000.0,
       "net_income": 14000000.0,
-      "eps": 0.269231
+      "eps": 0.27
      },
      {
       "period": "2026-06-30",
@@ -24077,7 +24784,7 @@
       "revenue": 10874000000.0,
       "operating_income": 145000000.0,
       "net_income": 60000000.0,
-      "eps": 1.153846
+      "eps": 1.19
      },
      {
       "period": "이번분기(0Q)",
@@ -24325,12 +25032,12 @@
    "name": "클로버 헬스 인베스트먼츠",
    "market": "US",
    "source": "yfinance",
-   "opinion": "buy",
-   "opinion_score": 2.0,
-   "target_price": 5.375,
-   "target_price_high": 6.0,
+   "opinion": "none",
+   "opinion_score": null,
+   "target_price": 5.16667,
+   "target_price_high": 5.5,
    "target_price_low": 5.0,
-   "analyst_count": 4,
+   "analyst_count": 3,
    "per_fwd": 29.417334,
    "eps_fwd": 0.15841,
    "earnings": {
@@ -24362,18 +25069,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2954177650.0,
+      "revenue": 2954028440.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.09962
+      "eps": 0.14
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 3525482000.0,
+      "revenue": 3563984050.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.15841
+      "eps": 0.15
      }
     ],
     "quarterly": [
@@ -26091,7 +26798,7 @@
    "target_price_high": 100.0,
    "target_price_low": 41.0,
    "analyst_count": 14,
-   "per_fwd": 10.773196,
+   "per_fwd": 10.6907215,
    "eps_fwd": 4.85,
    "earnings": {
     "annual": [
