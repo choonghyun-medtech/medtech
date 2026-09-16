@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 tickers.json 유니버스 종목의 애널리스트 컨센서스(목표주가, 투자의견, Forward PER, 향후
-실적 추정치 — 국내는 최대 3개년/3개분기, 해외는 1개년/1개분기)를 consensus.json으로 저장한다.
+실적 추정치 — 국내는 최대 3개년/3개분기까지 수집하되 index.html에서 이번+다음 2개만
+표시, 해외는 소스 자체가 이번+다음 2개까지만 제공)를 consensus.json으로 저장한다.
 
 - 국내(KR) 종목: finance.naver.com 종목 메인 페이지(에프앤가이드 제공 컨센서스)를 스크래핑.
   - 목표주가/투자의견: <caption>투자의견</caption> 표의 첫 행.
@@ -21,8 +22,11 @@ tickers.json 유니버스 종목의 애널리스트 컨센서스(목표주가, �
 - 해외 종목: yfinance의 `Ticker.info`에서 targetMeanPrice/targetHighPrice/targetLowPrice/
   numberOfAnalystOpinions/forwardPE를, `Ticker.income_stmt`/`quarterly_income_stmt`에서 최근
   실제 실적(매출액/영업이익/순이익/EPS)을, `Ticker.earnings_estimate`/`revenue_estimate`에서
-  차년도(+1y)/차분기(+1q) 매출·EPS 컨센서스 평균을 가져와 한 흐름으로 이어붙인다. 영업이익은
-  yfinance 컨센서스에 추정치가 없어 확정 실적 구간에만 채워진다(추정 구간은 null).
+  이번연도/분기(0y/0q, 아직 마감 전이라 그 자체가 추정치)·차년도/차분기(+1y/+1q) 매출·EPS
+  컨센서스 평균을 가져와 한 흐름으로 이어붙인다(2026-09-17 — 예전엔 +1y/+1q만 가져와 이번
+  구간을 빠뜨렸었다). yfinance의 earningsTrend는 이 2구간이 한계로, 그 이상(+2y/+2q)은
+  Yahoo Finance 자체에 없다. 영업이익은 yfinance 컨센서스에 추정치가 없어 확정 실적
+  구간에만 채워진다(추정 구간은 null).
 - 이전엔 PDF 리포트에서 목표주가/밸류에이션을 정규식으로 추출하려 했으나(scrape_report_estimates.py),
   실제 리포트 PDF가 텍스트 레이어 없이 페이지 전체를 이미지로 렌더링한 형태라 원리적으로 추출이
   불가능해 전면 폐기하고 시장 컨센서스로 대체했다.
@@ -218,7 +222,14 @@ def fetch_yfinance_earnings_table(t):
             "eps": _safe_float(eps_avg),
         })
 
+    # yfinance의 earningsTrend는 "0y/0q"(이번 회계연도·이번 분기 — 아직 마감 전이라 그
+    # 자체가 컨센서스 추정치)와 "+1y/+1q"(다음 연도·다음 분기) 딱 2구간만 제공한다(그 이상은
+    # Yahoo Finance 자체에 없음, 2026-09-17 확인). 예전엔 "+1y/+1q"만 가져와 "0y/0q"(이번
+    # 구간)를 빠뜨리고 있었는데, 국내(WiseReport)가 이번 분기·연도부터 추정치를 내려주는 것과
+    # 맞춰 여기도 0y/0q부터 이어붙인다 — 국내와 동일하게 총 2개 추정 구간이 된다.
+    append_estimate(annual, "0y", "이번연도(0Y)")
     append_estimate(annual, "+1y", "차년도(+1Y)")
+    append_estimate(quarterly, "0q", "이번분기(0Q)")
     append_estimate(quarterly, "+1q", "차분기(+1Q)")
 
     if not annual and not quarterly:
