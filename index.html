@@ -455,7 +455,7 @@ tr:last-child td{border-bottom:none}
     <!-- 검색/카테고리/기업/국내·해외 — 오늘의 클리핑·뉴스 플로우 두 하위 탭이 공통으로 쓰는 필터 -->
     <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
       <input id="news-search-input" class="filter-select" style="flex:0 1 320px;min-width:160px" placeholder="기업명, 키워드로 검색..." autocomplete="off" />
-      <select id="news-category-select" class="filter-select"><option value="">전체 카테고리</option></select>
+      <select id="news-category-select" class="filter-select"><option value="">전체 섹터</option></select>
       <select id="news-company-select" class="filter-select"><option value="">전체 기업</option></select>
       <div class="toggle" id="news-region-tabs">
         <button class="region-tab active" data-region="domestic">국내 뉴스</button>
@@ -479,18 +479,18 @@ tr:last-child td{border-bottom:none}
       <div class="note" id="news-filter-summary" style="margin-bottom:10px"></div>
 
       <div id="news-domestic-block">
-        <div class="sec-h"><h2>오늘의 클리핑 · 국내</h2><span class="note">네이버뉴스 기준 · 카테고리별 트래킹 기업</span></div>
+        <div class="sec-h"><h2>오늘의 클리핑 · 국내</h2><span class="note">네이버뉴스 기준 · 섹터별 트래킹 기업</span></div>
         <div id="news-domestic-wrap"></div>
       </div>
 
       <div id="news-global-block" style="display:none">
-        <div class="sec-h"><h2>오늘의 클리핑 · 해외</h2><span class="note">medtech·헬스케어·로보틱스 매체 RSS 기준 · 카테고리별 트래킹 기업</span></div>
+        <div class="sec-h"><h2>오늘의 클리핑 · 해외</h2><span class="note">medtech·헬스케어·로보틱스 매체 RSS 기준 · 섹터별 트래킹 기업</span></div>
         <div id="news-global-wrap"></div>
       </div>
     </div>
 
     <div id="news-sub-archive" style="display:none">
-      <div class="sec-h"><h2>뉴스 아카이브</h2><span class="note">위 검색·카테고리·기업·국내해외 필터 기준 · 아래에서 기간을 골라 그동안 누적된 기사를 원문으로 조회합니다</span></div>
+      <div class="sec-h"><h2>뉴스 아카이브</h2><span class="note">위 검색·섹터·기업·국내해외 필터 기준 · 아래에서 기간을 골라 그동안 누적된 기사를 원문으로 조회합니다</span></div>
 
       <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px">
         <div class="toggle" id="news-period-toggle">
@@ -509,7 +509,7 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div id="news-sub-briefing" style="display:none">
-      <div class="sec-h"><h2>브리핑</h2><span class="note">카테고리별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 카테고리를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
+      <div class="sec-h"><h2>브리핑</h2><span class="note">섹터별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 섹터를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
       <div class="toggle" id="news-briefing-period-toggle" style="margin-bottom:12px">
         <button data-days="7">주간(최근 7일)</button>
         <button data-days="30" class="active">월간(최근 30일)</button>
@@ -1232,7 +1232,7 @@ function populateNewsCategorySelect(){
   const sel = document.getElementById('news-category-select');
   if(!sel) return;
   const cats = newsAllCategories();
-  sel.innerHTML = '<option value="">전체 카테고리</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  sel.innerHTML = '<option value="">전체 섹터</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
 }
 
 // 여러 기업에 동시에 매칭된 기사는 scrape_news.py가 co 필드를 "클래시스, 휴젤"처럼
@@ -1382,7 +1382,7 @@ async function loadNews(){
     if(flag){
       const dt = data.updated ? new Date(data.updated) : null;
       const whenStr = dt ? `마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST` : '';
-      const srcStr = data.source || '뉴스클리핑 가이드라인 카테고리 기준';
+      const srcStr = data.source || '뉴스클리핑 가이드라인 섹터 기준';
       flag.textContent = `ⓘ ${srcStr} · ${whenStr}`;
     }
   }catch(e){
@@ -1804,7 +1804,7 @@ function renderMonthlyBriefing(){
     .slice().sort((a,b)=> a.key.localeCompare(b.key));
   const periodLabel = NEWS_BRIEFING_PERIOD_DAYS === 7 ? '주간' : '월간';
   if(matches.length === 0){
-    wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 ${periodLabel} 브리핑이 없습니다(최근 ${NEWS_BRIEFING_PERIOD_DAYS}일 기사가 카테고리당 기준 건수 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
+    wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 ${periodLabel} 브리핑이 없습니다(최근 ${NEWS_BRIEFING_PERIOD_DAYS}일 기사가 섹터당 기준 건수 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
     return;
   }
   wrap.innerHTML = matches.map(t=>`
