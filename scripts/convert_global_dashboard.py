@@ -8,9 +8,12 @@
   GitHub Actions 같은 클라우드 서버에서 자동으로 값을 갱신할 방법이 없다(2026-09-15 확인).
   그래서 이 스크립트는 스케줄 워크플로가 아니라, 사용자가 엑셀을 새로 저장한 뒤 수동으로
   실행하는 용도다.
-- 원본 엑셀 구조(Sheet1): A=국적, B=섹터(콤마로 여러 개 묶임), C=사명, D=시가총액(백만달러),
-  E~G=영업이익률(OPM) FY0/1/2, H~J=PER FY0/1/2, K~M=P/S FY0/1/2, N~P=EV/EBITDA FY0/1/2,
-  Q~S=매출(백만달러) FY0/1/2, T~U=매출성장률(%) FY1/2, V=Ticker. 실제 데이터는 4행부터.
+- 원본 엑셀 구조(Sheet1, 2026-09-16 열 재배치 이후): A=(미사용,숨김), B=국적 원본(숨김),
+  C=사명, D=시가총액(백만달러), E~G=영업이익률(OPM) FY0/1/2, H~J=P/E FY0/1/2, K~M=P/S FY0/1/2,
+  N~P=EV/EBITDA FY0/1/2, Q~S=매출(백만달러) FY0/1/2, T~U=매출성장률(%) FY1/2,
+  V=국적(보정), W=섹터(콤마로 여러 개 묶임), X=Ticker. 실제 데이터는 4행부터.
+  (이전에는 A=국적, B=섹터, C=사명 ... V=Ticker였으나, 국적/섹터 열을 매출성장률 뒤로
+  옮기면서 위치가 바뀌었다 — 엑셀 열 구조가 또 바뀌면 아래 컬럼 인덱스도 같이 고칠 것.)
 - 원본 자체에 있는 문제 두 가지를 이 스크립트가 보정한다:
   1) 일부 사명/섹터 문자열이 소스에서부터 특정 글자 수(사명은 28자)에서 잘려 들어온다
      (예: "Shanghai MicroPort MedBot Gr" -> "...Group", "산업용 기계, 용품 및" -> "...및 부품").
@@ -108,13 +111,13 @@ def load_rows(path):
     ws = wb['Sheet1']
     rows = []
     for r in range(4, ws.max_row + 1):
-        country = ws.cell(row=r, column=1).value
-        sector = ws.cell(row=r, column=2).value
         name = ws.cell(row=r, column=3).value
+        country = ws.cell(row=r, column=22).value
+        sector = ws.cell(row=r, column=23).value
         if not name and not country:
             continue
         vals = [clean(ws.cell(row=r, column=c).value) for c in range(4, 22)]  # D..U (18개)
-        ticker = ws.cell(row=r, column=22).value
+        ticker = ws.cell(row=r, column=24).value
 
         name = NAME_FIXES.get(name, name)
         sector_joined = SECTOR_FIXES.get(sector, sector) if sector else sector

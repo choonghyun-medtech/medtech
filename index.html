@@ -417,6 +417,12 @@ tr:last-child td{border-bottom:none}
 .gd-col-div{border-left:1px solid var(--border)}
 .gd-sector-tag{color:var(--dim); font-size:10.5px}
 .gd-country-badge{font-size:10px; color:var(--dim)}
+.gd-center{text-align:center !important}
+.gd-sortable{cursor:pointer; user-select:none}
+.gd-sortable:hover{color:var(--accent)}
+.gd-sortable .gd-sort-arrow{margin-left:4px; font-size:9px; color:var(--accent)}
+.gd-sortable .gd-sort-hint{margin-left:4px; font-size:9px; color:var(--sub); opacity:.6}
+.gd-sortable:hover .gd-sort-hint{opacity:1; color:var(--accent)}
 /* 주요 지표 요약 카드 — 수치와 국가를 한 줄에 같이 쓰면 카드마다 줄바꿈 여부가 들쭉날쭉해
    서식이 지저분해 보였다(2026-09-16 지적) — 국가를 항상 별도 줄로 고정한다. */
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
@@ -611,7 +617,7 @@ tr:last-child td{border-bottom:none}
          변환 스크립트를 돌려 커밋해야 한다). -->
     <div id="stock-sub-global" style="display:none">
       <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note" id="gd-source-note">Bloomberg 컨센서스 기반 Peer Table · global_dashboard.json</span></div>
-      <div class="note" style="margin-bottom:14px">함수 오류(#N/A 등)로 값이 비어있는 셀은 "-"로 표시됩니다. 환율은 고정 가정치(1,400원/달러, 7.1위안/달러)를 쓴 초안 값이라 실시간 환율과 다를 수 있습니다 — 위안화 시총 구간은 원화와 동일한 1/3/5/10 배수를 그대로 위안화 단위로 재사용한 것으로, 환율 환산값이 아닙니다. 엔비디아 이하 반도체·산업자동화·로봇부품 등 참고용 산업재 비교군은 의료기기 피어사가 아니라서 별도 섹터 탭 없이 "전체" 탭에서만 표시됩니다.</div>
+      <div class="note" style="margin-bottom:14px">함수 오류(#N/A 등)로 값이 비어있는 셀은 "-"로 표시됩니다. 환율은 고정 가정치(1,400원/달러, 7.1위안/달러)를 쓴 초안 값이라 실시간 환율과 다를 수 있습니다 — 위안화 시총 구간은 원화와 동일한 1/3/5/10 배수를 그대로 위안화 단위로 재사용한 것으로, 환율 환산값이 아닙니다. 전년 실적(0FY) 열은 화면이 복잡해지지 않도록 표에서는 숨겼고 1FY/2FY 추정치만 표시합니다.</div>
 
       <div class="gd-tab-bar" id="gd-tab-bar"></div>
       <div class="gd-filter-bar" id="gd-filter-bar"></div>
@@ -2711,6 +2717,8 @@ function gdMakeDefaultTabState(){
     capMax: null,
     excluded: new Set(),
     search: '',
+    sortKey: null, // 첫 번째 열(사명) 클릭 정렬 — 2026-09-16 요청
+    sortDir: 1, // 1=오름차순, -1=내림차순
   };
 }
 function gdGetTabState(tabId){
@@ -2766,7 +2774,16 @@ async function gdInit(){
   }catch(e){
     GD_RAW = [];
   }
-  GD_COUNTRIES = Array.from(new Set(GD_RAW.map(r=>r.country))).sort((a,b)=> a==='대한민국'?-1 : b==='대한민국'?1 : a.localeCompare(b,'ko'));
+  // 국가 드롭다운 표시 순서 고정(2026-09-16 요청): 대한민국(디폴트 선택) 다음
+  // 미국-일본-중국-기타(미국)-기타 순. 목록에 없는 국가가 새로 생기면 맨 뒤에 붙는다.
+  const GD_COUNTRY_ORDER = ['대한민국', '미국', '일본', '중국', '기타(미국)', '기타'];
+  GD_COUNTRIES = Array.from(new Set(GD_RAW.map(r=>r.country))).sort((a,b)=>{
+    const ia = GD_COUNTRY_ORDER.indexOf(a), ib = GD_COUNTRY_ORDER.indexOf(b);
+    if(ia !== -1 && ib !== -1) return ia - ib;
+    if(ia !== -1) return -1;
+    if(ib !== -1) return 1;
+    return a.localeCompare(b, 'ko');
+  });
 
   // 엔비디아 이하 반도체·산업자동화·로봇부품 등 참고용 산업재 비교군(misc:true)은 의료기기
   // 피어사가 아니라서 자기 섹터로 별도 탭을 만들지 않는다 — "전체" 탭에서만 노출한다.
@@ -2961,15 +2978,15 @@ function gdRowHtml(r, currency, showSectorCol){
     <tr class="${excluded?'gd-excluded':''}" data-idx="${r._idx}">
       <td class="gd-sticky-col gd-sticky-1"><input type="checkbox" class="gd-excl-cb" data-idx="${r._idx}" ${excluded?'checked':''} title="평균 계산에서 제외"></td>
       <td class="gd-sticky-col gd-sticky-2 gd-lh" title="${escapeHtml(r.name)}${r.ticker?(' · '+escapeHtml(r.ticker)):''}">${escapeHtml(r.name)}</td>
+      <td>${gdFmt0(cap)}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(r.opm[1])}</td><td class="gd-center">${gdFmt1(r.opm[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(r.per[1])}</td><td class="gd-center">${gdFmt1(r.per[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(r.ps[1])}</td><td class="gd-center">${gdFmt1(r.ps[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(r.ev_ebitda[1])}</td><td class="gd-center">${gdFmt1(r.ev_ebitda[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt0(rev[1])}</td><td class="gd-center">${gdFmt0(rev[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmtPct(r.rev_growth[0])}</td><td class="gd-center">${gdFmtPct(r.rev_growth[1])}</td>
       <td class="gd-lh gd-country-badge">${escapeHtml(r.country)}</td>
       ${showSectorCol ? `<td class="gd-lh gd-sector-tag">${escapeHtml((r.sectors||[]).join(', '))}</td>` : ''}
-      <td>${gdFmt0(cap)}</td>
-      <td class="gd-col-div">${gdFmt1(r.opm[0])}</td><td>${gdFmt1(r.opm[1])}</td><td>${gdFmt1(r.opm[2])}</td>
-      <td class="gd-col-div">${gdFmt1(r.per[0])}</td><td>${gdFmt1(r.per[1])}</td><td>${gdFmt1(r.per[2])}</td>
-      <td class="gd-col-div">${gdFmt1(r.ps[0])}</td><td>${gdFmt1(r.ps[1])}</td><td>${gdFmt1(r.ps[2])}</td>
-      <td class="gd-col-div">${gdFmt1(r.ev_ebitda[0])}</td><td>${gdFmt1(r.ev_ebitda[1])}</td><td>${gdFmt1(r.ev_ebitda[2])}</td>
-      <td class="gd-col-div">${gdFmt0(rev[0])}</td><td>${gdFmt0(rev[1])}</td><td>${gdFmt0(rev[2])}</td>
-      <td class="gd-col-div">${gdFmtPct(r.rev_growth[0])}</td><td>${gdFmtPct(r.rev_growth[1])}</td>
     </tr>
   `;
 }
@@ -2992,48 +3009,52 @@ function gdAvgRowHtml(rows, currency, label, showSectorCol){
     <tr class="gd-avg-row">
       <td class="gd-sticky-col gd-sticky-1"></td>
       <td class="gd-sticky-col gd-sticky-2 gd-lh">${escapeHtml(label)}</td>
+      <td>${gdFmt0(gdConvertAmount(capAvg, currency))}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(opmAvg[1])}</td><td class="gd-center">${gdFmt1(opmAvg[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(perAvg[1])}</td><td class="gd-center">${gdFmt1(perAvg[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(psAvg[1])}</td><td class="gd-center">${gdFmt1(psAvg[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt1(evAvg[1])}</td><td class="gd-center">${gdFmt1(evAvg[2])}</td>
+      <td class="gd-col-div gd-center">${gdFmt0(gdConvertAmount(revAvg[1], currency))}</td><td class="gd-center">${gdFmt0(gdConvertAmount(revAvg[2], currency))}</td>
+      <td class="gd-col-div gd-center">${gdFmtPct(growthAvg[0])}</td><td class="gd-center">${gdFmtPct(growthAvg[1])}</td>
       <td class="gd-lh"></td>
       ${showSectorCol ? `<td class="gd-lh"></td>` : ''}
-      <td>${gdFmt0(gdConvertAmount(capAvg, currency))}</td>
-      <td class="gd-col-div">${gdFmt1(opmAvg[0])}</td><td>${gdFmt1(opmAvg[1])}</td><td>${gdFmt1(opmAvg[2])}</td>
-      <td class="gd-col-div">${gdFmt1(perAvg[0])}</td><td>${gdFmt1(perAvg[1])}</td><td>${gdFmt1(perAvg[2])}</td>
-      <td class="gd-col-div">${gdFmt1(psAvg[0])}</td><td>${gdFmt1(psAvg[1])}</td><td>${gdFmt1(psAvg[2])}</td>
-      <td class="gd-col-div">${gdFmt1(evAvg[0])}</td><td>${gdFmt1(evAvg[1])}</td><td>${gdFmt1(evAvg[2])}</td>
-      <td class="gd-col-div">${gdFmt0(gdConvertAmount(revAvg[0], currency))}</td><td>${gdFmt0(gdConvertAmount(revAvg[1], currency))}</td><td>${gdFmt0(gdConvertAmount(revAvg[2], currency))}</td>
-      <td class="gd-col-div">${gdFmtPct(growthAvg[0])}</td><td>${gdFmtPct(growthAvg[1])}</td>
     </tr>
   `;
 }
 
 function gdTableHeadHtml(currency, showSectorCol){
   const unit = gdCurrencyUnitLabel(currency);
+  const ts = gdGetTabState(GD_STATE.activeTab);
+  const arrow = ts.sortKey === 'name'
+    ? `<span class="gd-sort-arrow">${ts.sortDir===1?'▲':'▼'}</span>`
+    : `<span class="gd-sort-hint">▲▼</span>`;
   return `
     <thead>
       <tr class="gd-grp">
         <th class="gd-sticky-col gd-sticky-1"></th>
         <th class="gd-sticky-col gd-sticky-2 gd-lh"></th>
+        <th>시가총액(${unit})</th>
+        <th class="gd-col-div" colspan="2">영업이익률(OPM,%)</th>
+        <th class="gd-col-div" colspan="2">P/E(배)</th>
+        <th class="gd-col-div" colspan="2">P/S(배)</th>
+        <th class="gd-col-div" colspan="2">EV/EBITDA(배)</th>
+        <th class="gd-col-div" colspan="2">매출(${unit})</th>
+        <th class="gd-col-div" colspan="2">매출성장률(%)</th>
         <th class="gd-lh">국가</th>
         ${showSectorCol ? `<th class="gd-lh">섹터</th>` : ''}
-        <th>시가총액(${unit})</th>
-        <th class="gd-col-div" colspan="3">영업이익률(OPM,%)</th>
-        <th class="gd-col-div" colspan="3">PER(배)</th>
-        <th class="gd-col-div" colspan="3">P/S(배)</th>
-        <th class="gd-col-div" colspan="3">EV/EBITDA(배)</th>
-        <th class="gd-col-div" colspan="3">매출(${unit})</th>
-        <th class="gd-col-div" colspan="2">매출성장률(%)</th>
       </tr>
       <tr class="gd-sub">
         <th class="gd-sticky-col gd-sticky-1"></th>
-        <th class="gd-sticky-col gd-sticky-2 gd-lh">사명</th>
+        <th class="gd-sticky-col gd-sticky-2 gd-lh gd-sortable" id="gd-sort-name" title="클릭해서 사명 기준 정렬">사명${arrow}</th>
+        <th></th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
+        <th class="gd-col-div gd-center">1FY</th><th class="gd-center">2FY</th>
         <th class="gd-lh"></th>
         ${showSectorCol ? `<th class="gd-lh"></th>` : ''}
-        <th></th>
-        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
-        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
-        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
-        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
-        <th class="gd-col-div">0FY</th><th>1FY</th><th>2FY</th>
-        <th class="gd-col-div">1FY</th><th>2FY</th>
       </tr>
     </thead>
   `;
@@ -3042,8 +3063,11 @@ function gdTableHeadHtml(currency, showSectorCol){
 function gdRender(){
   const isAll = GD_STATE.activeTab === 'ALL';
   const ts = gdGetTabState(GD_STATE.activeTab);
-  const filtered = gdGetFilteredForActiveTab();
+  let filtered = gdGetFilteredForActiveTab();
   const included = filtered.filter(r => !ts.excluded.has(r._idx));
+  if(ts.sortKey === 'name'){
+    filtered = filtered.slice().sort((a,b)=> a.name.localeCompare(b.name, 'ko') * ts.sortDir);
+  }
   const currency = ts.currency;
   const unit = gdCurrencyUnitLabel(currency);
   const showSectorCol = isAll;
@@ -3075,6 +3099,13 @@ function gdRender(){
         gdRender();
       };
     });
+    const sortHeader = wrap.querySelector('#gd-sort-name');
+    if(sortHeader){
+      sortHeader.onclick = ()=>{
+        if(ts.sortKey === 'name') ts.sortDir *= -1; else { ts.sortKey = 'name'; ts.sortDir = 1; }
+        gdRender();
+      };
+    }
   }
 
   gdRenderAnalysis(included, currency);
@@ -3108,11 +3139,11 @@ function gdRenderAnalysis(rows, currency){
   // 전부 "이 지표가 가장 큰 곳"으로 맞춘다.
   const items = [
     { label: '시가총액 최고', pick: gdTopBy(rows, r=>r.mktcap), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
-    { label: '밸류에이션(PER, 0FY) 최고', pick: gdTopBy(rows, r=>r.per[0]), fmt: (v)=> gdFmt1(v) + '배' },
-    { label: '매출(0FY) 최고', pick: gdTopBy(rows, r=>r.revenue[0]), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
-    { label: '영업이익률(0FY) 최고', pick: gdTopBy(rows, r=>r.opm[0]), fmt: (v)=> gdFmt1(v) + '%' },
+    { label: '밸류에이션(P/E, 1FY) 최고', pick: gdTopBy(rows, r=>r.per[1]), fmt: (v)=> gdFmt1(v) + '배' },
+    { label: '매출(1FY) 최고', pick: gdTopBy(rows, r=>r.revenue[1]), fmt: (v)=> gdFmt0(gdConvertAmount(v, currency)) + ' ' + gdCurrencyUnitLabel(currency) },
+    { label: '영업이익률(1FY) 최고', pick: gdTopBy(rows, r=>r.opm[1]), fmt: (v)=> gdFmt1(v) + '%' },
     { label: '매출성장률(1FY) 최고', pick: gdTopBy(rows, r=>r.rev_growth[0]), fmt: (v)=> gdFmtPct(v) },
-    { label: 'EV/EBITDA(0FY) 최고', pick: gdTopBy(rows, r=>r.ev_ebitda[0]), fmt: (v)=> gdFmt1(v) + '배' },
+    { label: 'EV/EBITDA(1FY) 최고', pick: gdTopBy(rows, r=>r.ev_ebitda[1]), fmt: (v)=> gdFmt1(v) + '배' },
   ];
 
   // 수치와 국가를 한 줄("18.2배 · 미국")에 같이 쓰면 카드마다 줄바꿈 여부가 들쭉날쭉해
