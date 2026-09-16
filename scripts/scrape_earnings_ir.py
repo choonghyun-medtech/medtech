@@ -92,10 +92,6 @@ EDGAR_SOURCES = {
 # 실제 운영 시 프로젝트 관리자의 실제 연락처로 바꾸는 게 SEC 정책 취지에 더 맞는다.
 SEC_HEADERS = {"User-Agent": "medtech-dashboard research contact@example.com"}
 
-# 8-K/6-K 첨부문서 파일명에서 "Exhibit 99.x"(관례적으로 보도자료 원문)를 찾는 패턴.
-# 파일명 표기가 회사마다 달라("ex99_1.htm", "ex-99.1.htm", "exhibit_99-1.htm",
-# "d38597dex991.htm" 등) "ex"와 "99" 사이 글자 수를 넉넉히 허용한다.
-EXHIBIT_99_RE = re.compile(r"ex.{0,10}99", re.I)
 
 
 def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, min_date=None):
@@ -152,21 +148,40 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, m
         if found >= max_candidates:
             return
         accession_nodash = accessions[i].replace("-", "")
-        index_url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/index.json"
+        # [2026-09-17] 예전엔 index.json의 파일명에서 정규식으로 "ex...99"를 찾았는데,
+        # HIMS처럼 첨부문서 파일명이 회사 고유 네이밍(예: "hims-20260630x8xkearningsr.htm",
+        # "finalq42025shareholderle.htm")을 쓰는 경우 파일명에 "99"가 전혀 안 들어있어
+        # 실적 발표가 있어도 영영 못 찾는 버그가 있었다(사용자 리포트로 발견 — HIMS만
+        # earnings_ir.json에 단 한 건도 안 쌓이고 있었음). 파일명 대신 EDGAR가 제공하는
+        # "-index.html" 문서 목록 페이지의 Type 컬럼을 본다 — 여긴 파일명과 무관하게
+        # SEC가 직접 분류한 "EX-99.1" 같은 공식 문서 타입이 명시돼있어 회사별 파일명
+        # 관례를 안 타고 안정적으로 찾을 수 있다.
+        index_url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/{accessions[i]}-index.html"
         try:
             idx_r = requests.get(index_url, timeout=20, headers=SEC_HEADERS)
             idx_r.raise_for_status()
-            idx_data = idx_r.json()
         except Exception as e:
             print(f"[WARN] {ticker} EDGAR filing index 조회 실패({index_url}): {e}", file=sys.stderr)
             continue
-        for item in idx_data.get("directory", {}).get("item", []):
-            fname = item.get("name", "")
-            if EXHIBIT_99_RE.search(fname):
-                url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/{fname}"
-                found += 1
-                yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i]}
-                break  # 이 공시에서 하나 찾았으면 다음 공시로(같은 공시 안 다른 99 첨부문서는 안 봄)
+        idx_soup = BeautifulSoup(idx_r.text, "html.parser")
+        table = idx_soup.find("table", class_="tableFile")
+        fname = None
+        if table:
+            for row in table.find_all("tr"):
+                cols = row.find_all("td")
+                if len(cols) < 4:
+                    continue
+                doc_type = cols[3].get_text(strip=True)
+                if doc_type.upper().startswith("EX-99"):
+                    link = cols[2].find("a")
+                    href = link.get("href") if link else None
+                    if href:
+                        fname = href.rsplit("/", 1)[-1]
+                        break
+        if fname:
+            url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/{fname}"
+            found += 1
+            yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i]}
     if found == 0:
         print(f"[INFO] {ticker} 최근 {form_type} 공시 중 실적 보도자료로 보이는 첨부문서를 찾지 못함", file=sys.stderr)
 
