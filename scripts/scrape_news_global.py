@@ -18,10 +18,12 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
   Hims&Hers/Teladoc 5개사) 전담 고빈도 소스를 추가로 보강했다.
     · MobiHealthNews          https://www.mobihealthnews.com/rss.xml
       (2026-08-20 추가 — 하루 여러 건씩 올라오는 디지털헬스 전문 매체.)
-  [Surgical Robot 채널] — 기존에는 이 카테고리를 전담하는 소스가 없어 수집량이 0에
-  가까웠다. 신규 추가로 보강.
+  [로보틱스(수술로봇) 채널] — 기존에는 이 카테고리를 전담하는 소스가 없어 수집량이 0에
+  가까웠다. 신규 추가로 보강. (2026-09-17: Intuitive Surgical 등은 카테고리가 "수술로봇"
+  →"로보틱스"로 재배치됐지만, 이 소스가 주로 다루는 주제 자체는 그대로라 이름만 갱신)
     · Surgical Robotics Technology https://www.surgicalroboticstechnology.com/feed/
-  [Aesthetics/Cash Pay 채널] — InMode/Align/Straumann 등 미용·자비부담 시장 뉴스 보강용.
+  [치과/미용 채널] — InMode/Align/Straumann 등 미용·자비부담 시장 뉴스 보강용(2026-09-17:
+  이 3사는 카테고리가 "비급여시장"→치과/미용으로 재배치됐다).
     · Dermatology Times       https://www.dermatologytimes.com/rss.xml
   [Robotics 채널] — medtech_news_clipping_rules.md(2026-08-18 최신본)에서 신규 추가된
   휴머노이드/산업용·서비스 로봇/로보틱스 밸류체인 3개 카테고리를 커버하기 위해 추가.
@@ -115,52 +117,61 @@ HEADERS = {
 }
 
 # 해외 기업명 -> 뉴스 카테고리. medtech_news_clipping_rules.md(2026-08-18 최신본)의
-# 공식 기업 리스트를 그대로 반영. MedTech 채널(1~6)은 기존과 동일, Robotics 채널(7~9)이
-# 신규 추가됨.
+# 공식 기업 리스트를 기반으로, 2026-09-17에 tickers.json 마스터 섹터에 맞춰 카테고리를
+# 재배치했다(아래 GLOBAL_COMPANY_CATEGORY 상단 주석 참고). 로보틱스 채널(휴머노이드 등)은
+# 신규 추가됐던 부분 그대로 유지.
 GLOBAL_COMPANY_CATEGORY = {
-    # [MedTech 채널]
-    # 1. MedTech
-    "Abbott": "MedTech",
-    "Stryker": "MedTech",
-    "Medtronic": "MedTech",
-    "Boston Scientific": "MedTech",
-    "Edwards Lifesciences": "MedTech",
-    # 2. Surgical Robot
-    "Intuitive Surgical": "Surgical Robot",
-    "Edge Medical": "Surgical Robot",
-    "Microport MedBot": "Surgical Robot",
-    # 3. IVD
-    "Thermo Fisher": "IVD",
-    "Natera": "IVD",
-    "Guardant Health": "IVD",
-    "Tempus AI": "IVD",
-    # 4. Digital Health
-    "Dexcom": "Digital Health",
-    "RadNet": "Digital Health",
-    "iRhythm": "Digital Health",
-    "Hims & Hers": "Digital Health",
-    "Hims and Hers": "Digital Health",
-    "Teladoc": "Digital Health",
-    # 5. Healthcare Provider
-    "UnitedHealth": "Healthcare Provider",
-    # 6. Cash Pay Market
-    "Align Technology": "Cash Pay Market",
-    "InMode": "Cash Pay Market",
-    "Straumann": "Cash Pay Market",
-    # [Robotics 채널]
-    # 7. 휴머노이드 — 카테고리명은 "Humanoid"(영문)로 통일한다. 국내 md는 "Humanoid"(영문)로
-    # 적혀있고 해외 md는 "휴머노이드"(한글)로 적혀있어 표기가 다른데, index.html에서 국내/해외
-    # 뉴스를 같은 카테고리로 묶어 보여주려면(이미 IVD/Digital Health가 이렇게 공유되는 중)
-    # 두 스크립트가 정확히 같은 문자열을 써야 한다. 국내 md의 영문 표기를 기준으로 삼았다.
-    "Tesla": "Humanoid",
-    "Figure AI": "Humanoid",
-    "Agility Robotics": "Humanoid",
-    "Boston Dynamics": "Humanoid",
-    "Unitree": "Humanoid",
-    "AgiBot": "Humanoid",
-    "UBTECH": "Humanoid",
-    "Leju": "Humanoid",
-    # 8. 산업용·서비스 로봇 (국내/해외 md 공통 한글 표기)
+    # 2026-09-17: tickers.json에 있는 실제 메드텍 기업은 주가 Performance/기업 스냅샷과
+    # 같은 마스터 섹터로 재배치했다(티커 기준으로 확인 — 예: Abbott은 회사명만 보면
+    # 종합 의료기기 같지만 tickers.json엔 "체외진단"으로 분류돼 있어 그대로 따랐다).
+    # "수술로봇"·"비급여시장" 카테고리는 소속 기업이 전부 다른 마스터 섹터로 옮겨가며
+    # 빈 카테고리가 돼 폐지했다(Intuitive Surgical→로보틱스, Align/Straumann→치과,
+    # InMode→미용 등). 휴머노이드/산업용·서비스 로봇/로보틱스 밸류체인은 tickers.json에
+    # 없는 로보틱스 비교군이라 그대로 둔다.
+    # [의료기기 채널]
+    # 1. 의료기기
+    "Stryker": "의료기기",
+    "Medtronic": "의료기기",
+    "Boston Scientific": "의료기기",
+    "Edwards Lifesciences": "의료기기",
+    "Edge Medical": "의료기기",
+    "Microport MedBot": "의료기기",
+    "Dexcom": "의료기기",
+    "RadNet": "의료기기",
+    # 2. 로보틱스
+    "Intuitive Surgical": "로보틱스",
+    # 3. 체외진단
+    "Abbott": "체외진단",
+    "Thermo Fisher": "체외진단",
+    # 4. 생명공학
+    "Natera": "생명공학",
+    "Guardant Health": "생명공학",
+    "Tempus AI": "생명공학",
+    # 5. 디지털헬스
+    "iRhythm": "디지털헬스",
+    "Hims & Hers": "디지털헬스",
+    "Hims and Hers": "디지털헬스",
+    "Teladoc": "디지털헬스",
+    # 6. 의료서비스
+    "UnitedHealth": "의료서비스",
+    # 7. 치과
+    "Align Technology": "치과",
+    "Straumann": "치과",
+    # 8. 미용
+    "InMode": "미용",
+    # [로보틱스 채널]
+    # 9. 휴머노이드 (2026-09-17 국내/해외/index.html 표기를 전부 한글로 통일 — 예전엔
+    # 국내 md가 "Humanoid"(영문), 해외가 "휴머노이드"(한글)로 갈려있어 국내 md 표기를
+    # 기준으로 영문을 썼었는데, 이제 셋 다 "휴머노이드"로 맞췄다)
+    "Tesla": "휴머노이드",
+    "Figure AI": "휴머노이드",
+    "Agility Robotics": "휴머노이드",
+    "Boston Dynamics": "휴머노이드",
+    "Unitree": "휴머노이드",
+    "AgiBot": "휴머노이드",
+    "UBTECH": "휴머노이드",
+    "Leju": "휴머노이드",
+    # 10. 산업용·서비스 로봇 (국내/해외 md 공통 한글 표기)
     "FANUC": "산업용·서비스 로봇",
     "ABB": "산업용·서비스 로봇",
     "KUKA": "산업용·서비스 로봇",
@@ -168,7 +179,7 @@ GLOBAL_COMPANY_CATEGORY = {
     "Universal Robots": "산업용·서비스 로봇",
     "Estun": "산업용·서비스 로봇",
     "Inovance": "산업용·서비스 로봇",
-    # 9. 로보틱스 밸류체인 (국내/해외 md 공통 한글 표기)
+    # 11. 로보틱스 밸류체인 (국내/해외 md 공통 한글 표기)
     "Harmonic Drive Systems": "로보틱스 밸류체인",
     "Nabtesco": "로보틱스 밸류체인",
     "Schaeffler": "로보틱스 밸류체인",
@@ -177,8 +188,8 @@ GLOBAL_COMPANY_CATEGORY = {
 }
 
 CATEGORY_ORDER = [
-    "MedTech", "Surgical Robot", "IVD", "Digital Health", "Healthcare Provider", "Cash Pay Market",
-    "Humanoid", "산업용·서비스 로봇", "로보틱스 밸류체인",
+    "의료기기", "로보틱스", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
+    "휴머노이드", "산업용·서비스 로봇", "로보틱스 밸류체인",
 ]
 
 # 모기업/제품명이 함께 언급되는 회사 — 별칭 중 하나라도 있으면 매칭으로 인정.

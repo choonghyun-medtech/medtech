@@ -72,13 +72,20 @@ REQUEST_TIMEOUT = 20
 # 그대로. site: 검색이라 RSS 피드 유무와 무관하게(massdevice.com처럼 RSS가 없던 곳도)
 # 커버할 수 있다.
 CATEGORY_SITES = {
-    "MedTech": ["fiercebiotech.com", "medtechdive.com", "massdevice.com"],
-    "Surgical Robot": ["surgicalroboticstechnology.com", "medchina.tech"],
-    "IVD": ["360dx.com"],
-    "Digital Health": ["fiercehealthcare.com"],
-    "Healthcare Provider": ["fiercehealthcare.com", "healthcaredive.com"],
-    "Cash Pay Market": ["dental-tribune.com", "dermatologytimes.com", "theaestheticguide.com"],
-    "Humanoid": ["therobotreport.com", "roboticstomorrow.com", "reuters.com", "techcrunch.com",
+    # 2026-09-17: 키는 scrape_news_global.py의 CATEGORY_ORDER 값과 정확히 같아야 한다
+    # (build_query_list가 CATEGORY_ORDER를 순회하며 이 딕셔너리를 조회) — 그쪽 카테고리를
+    # tickers.json 마스터 섹터에 맞춰 재배치하면서(수술로봇→로보틱스, 비급여시장 폐지 후
+    # 소속 기업은 치과/미용으로 흡수) 여기도 같이 맞췄다. "생명공학"은 이 목록에 전담
+    # 사이트가 없지만(회사명 검색만으로 커버) build_query_list가 .get(cat, [])로 조회해
+    # 키가 없어도 에러 없이 넘어간다.
+    "의료기기": ["fiercebiotech.com", "medtechdive.com", "massdevice.com"],
+    "로보틱스": ["surgicalroboticstechnology.com", "medchina.tech"],
+    "체외진단": ["360dx.com"],
+    "디지털헬스": ["fiercehealthcare.com"],
+    "의료서비스": ["fiercehealthcare.com", "healthcaredive.com"],
+    "치과": ["dental-tribune.com"],
+    "미용": ["dermatologytimes.com", "theaestheticguide.com"],
+    "휴머노이드": ["therobotreport.com", "roboticstomorrow.com", "reuters.com", "techcrunch.com",
                  "semafor.com", "irobotnews.com"],
     "산업용·서비스 로봇": ["therobotreport.com", "roboticstomorrow.com", "reuters.com",
                        "techcrunch.com", "semafor.com", "irobotnews.com"],

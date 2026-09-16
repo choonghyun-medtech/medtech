@@ -1150,42 +1150,50 @@ const NEWS_STATE = { q:'', company:'', category:'', region:'domestic', from:null
 // 채운다 — 그래야 오늘 기사가 0건인 기업/카테고리도 드롭다운에 계속 보인다.
 // scripts/scrape_news.py의 NEWS_COMPANY_CATEGORY / CATEGORY_ORDER, scripts/scrape_news_global.py의
 // GLOBAL_COMPANY_CATEGORY / CATEGORY_ORDER와 정확히 동일해야 한다(md가 갱신되면 3곳 모두 같이 반영).
+// 2026-09-17: 영/한 혼용이던 카테고리 라벨을 전부 한글로 통일(Digital Health→디지털헬스 등).
+// 처음엔 라벨만 바꾸고 회사-카테고리 매칭은 그대로 뒀었는데(뉴스 탭이 8개 마스터보다
+// 세분화된 테마를 쓴다는 이유로), 사용자 피드백으로 방향이 명확해졌다: 실제 메드텍
+// 기업(tickers.json에 있는 회사)은 주가 Performance/기업 스냅샷과 동일한 마스터 섹터로
+// 맞춘다(예: 넥스트바이오메디컬은 어디서든 "의료기기"). 반면 휴머노이드/산업용·서비스
+// 로봇/로보틱스 밸류체인 카테고리는 tickers.json에 아예 없는 로보틱스 비교군(현대차·
+// 테슬라·FANUC 등)을 의도적으로 다루는 별도 트랙이라 그대로 둔다. tickers.json에 없는
+// 소형/비상장 회사(메디아나·GC메디아이 등)도 맞춰볼 마스터 기준이 없어 기존 라벨 유지.
 const NEWS_TRACKED_DOMESTIC = {
-  "씨어스": "Digital Health", "메쥬": "Digital Health", "메디아나": "Digital Health",
-  "아이센스": "Digital Health", "루닛": "Digital Health", "인바디": "Digital Health",
-  "뉴로핏": "Digital Health", "GC메디아이": "Digital Health", "에어스메디컬": "Digital Health",
-  "스카이랩스": "Digital Health", "카카오헬스케어": "Digital Health",
-  "클래시스": "Aesthetics", "휴젤": "Aesthetics", "파마리서치": "Aesthetics",
-  "시지메드텍": "Aesthetics", "한스바이오메드": "Aesthetics", "엘앤씨바이오": "Aesthetics",
-  "에이피알": "Aesthetics", "메디톡스": "Aesthetics", "리센스메디컬": "Aesthetics",
-  "고영": "Robotics", "큐렉소": "Robotics", "리브스메드": "Robotics",
-  "현대차그룹": "Humanoid", "레인보우로보틱스": "Humanoid", "삼성전자": "Humanoid",
+  "씨어스": "디지털헬스", "메쥬": "디지털헬스", "메디아나": "디지털헬스",
+  "아이센스": "의료기기", "루닛": "디지털헬스", "인바디": "디지털헬스",
+  "뉴로핏": "디지털헬스", "GC메디아이": "디지털헬스", "에어스메디컬": "디지털헬스",
+  "스카이랩스": "디지털헬스", "카카오헬스케어": "디지털헬스",
+  "클래시스": "미용", "휴젤": "미용", "파마리서치": "미용",
+  "시지메드텍": "미용", "한스바이오메드": "미용", "엘앤씨바이오": "미용",
+  "에이피알": "미용", "메디톡스": "미용", "리센스메디컬": "미용",
+  "고영": "로보틱스", "큐렉소": "로보틱스", "리브스메드": "의료기기",
+  "현대차그룹": "휴머노이드", "레인보우로보틱스": "휴머노이드", "삼성전자": "휴머노이드",
   "두산로보틱스": "산업용·서비스 로봇", "HL홀딩스": "산업용·서비스 로봇",
   "로보티즈": "로보틱스 밸류체인", "에스비비테크": "로보틱스 밸류체인",
   "에스피지": "로보틱스 밸류체인", "나우로보틱스": "로보틱스 밸류체인",
-  "넥스트바이오메디컬": "Therapeutics", "로킷헬스케어": "Therapeutics", "시지바이오": "Therapeutics",
-  "씨젠": "IVD", "에스디바이오센서": "IVD", "지노믹트리": "IVD", "바이오다인": "IVD", "바디텍메드": "IVD",
-  "큐리오시스": "Bio-Processing", "토모큐브": "Bio-Processing",
-  "큐리옥스바이오시스템즈": "Bio-Processing", "뷰웍스": "Bio-Processing",
-  "그래피": "Dental", "바텍": "Dental", "디오": "Dental", "덴티움": "Dental",
+  "넥스트바이오메디컬": "의료기기", "로킷헬스케어": "의료기기", "시지바이오": "치료제",
+  "씨젠": "체외진단", "에스디바이오센서": "체외진단", "지노믹트리": "생명공학", "바이오다인": "체외진단", "바디텍메드": "체외진단",
+  "큐리오시스": "생명공학", "토모큐브": "생명공학",
+  "큐리옥스바이오시스템즈": "생명공학", "뷰웍스": "의료기기",
+  "그래피": "치과", "바텍": "치과", "디오": "치과", "덴티움": "치과",
 };
 const NEWS_CATEGORY_ORDER_DOMESTIC = [
-  "Digital Health", "Aesthetics", "Robotics", "Humanoid", "산업용·서비스 로봇",
-  "로보틱스 밸류체인", "Therapeutics", "IVD", "Bio-Processing", "Dental",
+  "디지털헬스", "미용", "로보틱스", "휴머노이드", "산업용·서비스 로봇",
+  "로보틱스 밸류체인", "치료제", "체외진단", "생명공학", "의료기기", "치과",
 ];
 
 const NEWS_TRACKED_GLOBAL = {
-  "Abbott": "MedTech", "Stryker": "MedTech", "Medtronic": "MedTech",
-  "Boston Scientific": "MedTech", "Edwards Lifesciences": "MedTech",
-  "Intuitive Surgical": "Surgical Robot", "Edge Medical": "Surgical Robot", "Microport MedBot": "Surgical Robot",
-  "Thermo Fisher": "IVD", "Natera": "IVD", "Guardant Health": "IVD", "Tempus AI": "IVD",
-  "Dexcom": "Digital Health", "RadNet": "Digital Health", "iRhythm": "Digital Health",
-  "Hims & Hers": "Digital Health", "Teladoc": "Digital Health",
-  "UnitedHealth": "Healthcare Provider",
-  "Align Technology": "Cash Pay Market", "InMode": "Cash Pay Market", "Straumann": "Cash Pay Market",
-  "Tesla": "Humanoid", "Figure AI": "Humanoid", "Agility Robotics": "Humanoid",
-  "Boston Dynamics": "Humanoid", "Unitree": "Humanoid", "AgiBot": "Humanoid",
-  "UBTECH": "Humanoid", "Leju": "Humanoid",
+  "Abbott": "체외진단", "Stryker": "의료기기", "Medtronic": "의료기기",
+  "Boston Scientific": "의료기기", "Edwards Lifesciences": "의료기기",
+  "Intuitive Surgical": "로보틱스", "Edge Medical": "의료기기", "Microport MedBot": "의료기기",
+  "Thermo Fisher": "체외진단", "Natera": "생명공학", "Guardant Health": "생명공학", "Tempus AI": "생명공학",
+  "Dexcom": "의료기기", "RadNet": "의료기기", "iRhythm": "디지털헬스",
+  "Hims & Hers": "디지털헬스", "Teladoc": "디지털헬스",
+  "UnitedHealth": "의료서비스",
+  "Align Technology": "치과", "InMode": "미용", "Straumann": "치과",
+  "Tesla": "휴머노이드", "Figure AI": "휴머노이드", "Agility Robotics": "휴머노이드",
+  "Boston Dynamics": "휴머노이드", "Unitree": "휴머노이드", "AgiBot": "휴머노이드",
+  "UBTECH": "휴머노이드", "Leju": "휴머노이드",
   "FANUC": "산업용·서비스 로봇", "ABB": "산업용·서비스 로봇", "KUKA": "산업용·서비스 로봇",
   "Yaskawa": "산업용·서비스 로봇", "Universal Robots": "산업용·서비스 로봇",
   "Estun": "산업용·서비스 로봇", "Inovance": "산업용·서비스 로봇",
@@ -1193,8 +1201,8 @@ const NEWS_TRACKED_GLOBAL = {
   "Schaeffler": "로보틱스 밸류체인", "Bosch": "로보틱스 밸류체인", "Magna": "로보틱스 밸류체인",
 };
 const NEWS_CATEGORY_ORDER_GLOBAL = [
-  "MedTech", "Surgical Robot", "IVD", "Digital Health", "Healthcare Provider", "Cash Pay Market",
-  "Humanoid", "산업용·서비스 로봇", "로보틱스 밸류체인",
+  "의료기기", "로보틱스", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
+  "휴머노이드", "산업용·서비스 로봇", "로보틱스 밸류체인",
 ];
 
 function newsAllCompanies(){
@@ -1202,8 +1210,9 @@ function newsAllCompanies(){
   return [...set].sort((a,b)=>a.localeCompare(b, 'ko'));
 }
 
-// 국내 10개 + 해외 9개 카테고리를 순서 유지하며 중복 제거(IVD/Digital Health/Humanoid는
-// 양쪽에 공통으로 있어 국내+해외 뉴스가 같은 카테고리 버킷에 함께 보인다).
+// 국내·해외 카테고리를 순서 유지하며 중복 제거(체외진단/디지털헬스/휴머노이드 등 여러
+// 카테고리가 국내·해외 양쪽에 공통으로 있어 같은 카테고리 버킷에 함께 보인다 — 2026-09-17
+// 마스터 섹터 정렬 이후 겹치는 카테고리가 더 늘었다).
 function newsAllCategories(){
   const seen = new Set(); const out = [];
   [...NEWS_CATEGORY_ORDER_DOMESTIC, ...NEWS_CATEGORY_ORDER_GLOBAL].forEach(c=>{
@@ -5583,13 +5592,21 @@ const TICKER_NAME_ALIAS = {
   '씨어스': '씨어스테크놀로지',
   '스트라이커': 'Stryker',
   '메드트로닉': 'Medtronic',
-  '보스턴 사이언티픽 코퍼레이션': 'Boston Scientific',
-  '애보트 래보러토리': 'Abbott',
-  '에드워즈 라이프사이언시스': 'Edwards',
   '덱스컴': 'Dexcom',
   '써모 피셔 사이언티픽': 'Thermo Fisher',
   '인튜이티브 서지컬': 'Intuitive Surgical',
-  '유나이티드 헬스 그룹': 'UnitedHealth',
+  // 2026-09-16 sync_ticker_universe.py가 tickers.json의 name을 global_dashboard.json
+  // 기준 한글 표기로 전면 교체하면서, 아래 4개는 이 별칭이 가리키던 영문명이 더 이상
+  // tickers.json에 존재하지 않게 돼 깨져 있었다(정확 일치도, 별칭도 실패 → tickerForCompany가
+  // null 반환). 2026-09-17 카테고리 자동화(sectorForCompany) 도입 과정에서 발견해 한글
+  // 표기로 고쳤다. 고영/쿠퍼 컴퍼니스는 원래 별칭 자체가 없어 정확 일치가 실패하던 것을
+  // 새로 추가(고영은 이 버그 때문에 "디지털헬스"로 잘못 분류돼 있었다 — 실제로는 "로보틱스").
+  '보스턴 사이언티픽 코퍼레이션': '보스턴 사이언티픽',
+  '애보트 래보러토리': '애보트 래버러토리',
+  '에드워즈 라이프사이언시스': '에드워즈 라이프사이언스',
+  '유나이티드 헬스 그룹': '유나이티드헬스 그룹',
+  '고영': '고영테크놀러지',
+  '쿠퍼 컴퍼니스': '쿠퍼',
 };
 function companyLabel(co){
   return co;
@@ -5740,22 +5757,23 @@ function renderReports(filterCo){
     `미래에셋증권 · 김충현, CFA 발간 · 전체 ${rows.length}건 · ${repPage}/${totalPages}페이지`;
 }
 
-// 추적 기업 카테고리 — 필요시 회사명만 추가/이동하면 됨.
-// "산업" 카테고리는 개별 기업이 아니라 산업 전체를 다루는 테마 리포트(예: "헬스케어 산업",
-// "[2026 하반기 전망] 의료기기/디지털헬스")를 모아두는 곳이라 companies를 고정 목록으로 미리
-// 적어두지 않고, renderRepCategoryDropdowns()에서 종목코드(code)가 없는 co를 자동으로 채운다
-// (2026-09-04, 매 반기 리포트 제목이 바뀌어도 매번 여기 손댈 필요 없게).
-const CATEGORIES = [
-  {name:'디지털헬스', companies:['씨어스','인바디','아이센스','고영','리브스메드','루닛','큐렉소']},
-  {name:'미용기기', companies:['클래시스','파마리서치']},
-  {name:'치료용 의료기기', companies:['넥스트바이오메디컬']},
-  {name:'치과', companies:['덴티움','바텍','디오','그래피']},
-  {name:'체외진단', companies:['씨젠','바이오다인']},
-  {name:'생명공학', companies:['큐리오시스']},
-  {name:'기타', companies:['아이엠비디엑스','뷰웍스','뉴로핏']},
-  {name:'해외기업', companies:['보스턴 사이언티픽 코퍼레이션','스트라이커','덱스컴','에드워즈 라이프사이언시스','써모 피셔 사이언티픽','인튜이티브 서지컬','애보트 래보러토리','유나이티드 헬스 그룹','메드트로닉','쿠퍼 컴퍼니스','이그젝트 사이언스','메드봇']},
-  {name:'산업', companies:[]},
-];
+// 추적 기업이 어느 카테고리에 속하는지는 tickers.json(TICKER_UNIVERSE)의 sector를 그대로
+// 따른다(2026-09-17 — 예전엔 여기 회사명을 손으로 나열해서 다른 화면의 분류와 어긋나는
+// 경우가 있었다. 예: 고영이 여기서만 "디지털헬스"였고 다른 화면은 전부 "로보틱스"였음).
+// 국내/해외를 나누지 않고 실제 섹터별로 통합한다 — "해외기업"이라는 국적 기준 카테고리는
+// 폐지, 해외기업도 같은 섹터 버킷에 국내기업과 함께 들어간다. 드롭다운 표시 순서만 여기서
+// 고정한다: 마스터 8개 섹터 다음에 "산업"(종목코드 없는 테마 리포트, renderRepCategoryDropdowns가
+// 자동 판별)과 "기타"(tickers.json에 없는 회사 — 비상장 등)를 마지막에 둔다.
+const CATEGORY_DISPLAY_ORDER = ['디지털헬스','미용','로보틱스','치과','체외진단','생명공학','의료기기','의료서비스','산업','기타'];
+
+// reports.json/reports_bio.json의 co(회사명)로 tickers.json 상의 섹터를 찾는다.
+// tickerForCompany와 동일한 별칭(TICKER_NAME_ALIAS) 경로를 타므로 두 매칭이 항상 일치한다.
+function sectorForCompany(co){
+  if(!TICKER_UNIVERSE.length) return null;
+  let info = TICKER_UNIVERSE.find(t=>t.name===co);
+  if(!info && TICKER_NAME_ALIAS[co]) info = TICKER_UNIVERSE.find(t=>t.name===TICKER_NAME_ALIAS[co]);
+  return info ? info.sector : null;
+}
 
 function resetRepFilter(){
   document.querySelectorAll('.rep-cat-select').forEach(sel=>{ sel.value=''; });
@@ -5775,19 +5793,25 @@ function renderRepCategoryDropdowns(){
   // 종목코드가 있는 리포트가 하나도 없는 co만 "산업" 테마 리포트로 취급(=실제 기업이면
   // 어느 리포트든 code가 있으므로 hasCodeCos에 걸려 제외된다).
   const industrySet = new Set([...emptyCodeCos].filter(co=>!hasCodeCos.has(co)));
-  const categorized = new Set();
-  CATEGORIES.forEach(c=>c.companies.forEach(co=>categorized.add(co)));
-  const leftover = Object.keys(counts).filter(co=>!categorized.has(co) && !industrySet.has(co));
+
+  // co별로 sectorForCompany(co)를 구해 버킷에 담는다. tickers.json에 매칭 안 되는 회사
+  // (비상장 등)는 "기타"로 자동 귀속된다.
+  const buckets = {};
+  Object.keys(counts).forEach(co=>{
+    if(industrySet.has(co)) return; // 산업 테마는 아래서 별도 처리
+    const sector = sectorForCompany(co);
+    const cat = sector || '기타';
+    (buckets[cat] = buckets[cat] || []).push(co);
+  });
+  buckets['산업'] = [...industrySet].filter(co=>counts[co]);
 
   const wrap = document.getElementById('rep-dropdown-wrap');
   let html = '';
-  CATEGORIES.forEach(cat=>{
-    let list = cat.companies.filter(co=>counts[co]);
-    if(cat.name==='산업') list = list.concat([...industrySet].filter(co=>counts[co]));
-    if(cat.name==='기타') list = list.concat(leftover);
+  CATEGORY_DISPLAY_ORDER.forEach(cat=>{
+    const list = buckets[cat] || [];
     if(list.length===0) return;
-    html += `<select class="filter-select rep-cat-select" data-category="${cat.name}">
-      <option value="">${cat.name}</option>
+    html += `<select class="filter-select rep-cat-select" data-category="${cat}">
+      <option value="">${cat}</option>
       ${list.map(co=>`<option value="${co}">${companyLabel(co)} (${counts[co]||0})</option>`).join('')}
     </select>`;
   });
@@ -6181,7 +6205,7 @@ function snapshotReportsFor(ticker){
 // 리서치 보고서 탭의 renderRepCategoryDropdowns()와 같은 패턴이지만, reports.json에 있는
 // 기업만 다루는 CATEGORIES 대신 tickers.json 전체(145개, sector 필드 기준)로 그린다 —
 // 리포트가 아직 없는 기업도 뉴스/주가/공시만으로 스냅샷을 볼 수 있어야 하기 때문.
-const SNAPSHOT_SECTOR_ORDER = ['디지털헬스','미용','로보틱스','치과','IVD','생명공학','MedTech','Healthcare Provider'];
+const SNAPSHOT_SECTOR_ORDER = ['디지털헬스','미용','로보틱스','치과','체외진단','생명공학','의료기기','의료서비스'];
 function renderSnapshotDropdowns(){
   const wrap = document.getElementById('snap-dropdown-wrap');
   if(!wrap) return;
