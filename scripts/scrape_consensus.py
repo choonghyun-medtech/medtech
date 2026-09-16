@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 tickers.json 유니버스 종목의 애널리스트 컨센서스(목표주가, 투자의견, Forward PER, 향후
-1개년/1개분기 실적 추정치)를 consensus.json으로 저장한다.
+실적 추정치 — 국내는 최대 3개년/3개분기, 해외는 1개년/1개분기)를 consensus.json으로 저장한다.
 
 - 국내(KR) 종목: finance.naver.com 종목 메인 페이지(에프앤가이드 제공 컨센서스)를 스크래핑.
   - 목표주가/투자의견: <caption>투자의견</caption> 표의 첫 행.
@@ -9,9 +9,15 @@ tickers.json 유니버스 종목의 애널리스트 컨센서스(목표주가, �
     추정 증권사가 3개 이상인 경우에만 네이버가 제공하므로, 커버리지가 얕은 종목은 null이 된다
     (추정 증권사 3개 미만이면 trailing PER로 대체하지 않고 그냥 비워 둔다 — trailing 값을
     "컨센서스"라고 잘못 표시하지 않기 위함).
-  - 실적 추이(매출액/영업이익/당기순이익/EPS): "기업실적분석" 표를 통째로 가져온다 — 최근
-    3개년 연간 실적 + 향후 1개년 추정, 최근 5개분기 실적 + 향후 1개분기 추정("(E)" 표시가
-    붙은 마지막 컬럼만 컨센서스 추정치, 나머지는 확정 실적).
+    ⚠️ finance.naver.com/item/main.naver가 최근 stock.naver.com(클라이언트 렌더링 SPA)으로
+    302 리다이렉트되도록 바뀌어, 이 페이지 스크래핑은 사실상 항상 실패한다(2026-09-16 확인).
+    opinion/target_price/per_fwd/eps_fwd는 당장은 계속 null로 내려간다 — 별도 후속 작업 필요.
+  - 실적 추이(매출액/영업이익/당기순이익/EPS): navercomp.wisereport.co.kr(에프앤가이드
+    WiseReport, 네이버가 종목분석 탭에서 그대로 임베드하는 소스)의 c1050001_data.aspx?flag=2
+    엔드포인트를 직접 호출한다(fetch_naver_earnings). 로그인/API키/세션 쿠키 전부
+    불필요. 연간은 최근 3~4개년 실적 + 향후 최대 3개년(FY+1~+3) 추정, 분기는 최근 4~5개분기
+    실적 + 향후 최대 3개분기 추정까지 내려준다 — 종목의 애널리스트 커버리지에 따라 먼 미래
+    구간은 값이 전부 비어 있을 수 있는데, 그런 행은 정보가 없으므로 걸러낸다.
 - 해외 종목: yfinance의 `Ticker.info`에서 targetMeanPrice/targetHighPrice/targetLowPrice/
   numberOfAnalystOpinions/forwardPE를, `Ticker.income_stmt`/`quarterly_income_stmt`에서 최근
   실제 실적(매출액/영업이익/순이익/EPS)을, `Ticker.earnings_estimate`/`revenue_estimate`에서
@@ -38,6 +44,7 @@ import yfinance as yf
 from bs4 import BeautifulSoup
 
 NAVER_MAIN_URL = "https://finance.naver.com/item/main.naver?code={code}"
+NAVER_WISEREPORT_URL = "https://navercomp.wisereport.co.kr/v3/company/ajax/c1050001_data.aspx"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 TICKERS_FILE = "tickers.json"
@@ -93,64 +100,47 @@ def fetch_naver_consensus(code: str):
     if cns_eps:
         out["eps_fwd"] = _num(cns_eps.get_text())
 
-    out["earnings"] = fetch_naver_earnings_table(soup)
+    out["earnings"] = fetch_naver_earnings(code)
     return out
 
 
-def fetch_naver_earnings_table(soup):
-    """기업실적분석 표를 있는 그대로 뽑는다: 최근 3개년 실적 + 향후 1개년 추정("(E)" 표시),
-    최근 5개분기 실적 + 향후 1개분기 추정. 컨센서스 추정치인 마지막 컬럼만 골라내던 이전
-    방식과 달리, 실적 추이를 보여주기 위해 확정 실적 컬럼도 전부 포함한다. 단위: 매출액/
-    영업이익/당기순이익은 억원, EPS는 원 (네이버 표기 그대로, 재계산하지 않음).
+def fetch_naver_wisereport_period(code: str, frq: int):
+    """navercomp.wisereport.co.kr의 c1050001_data.aspx?flag=2(실적 컨센서스 표)를 호출한다.
+    frq=0이면 연간, frq=1이면 분기. 값이 전부 비어 있는 행(애널리스트 커버리지가 아직 안
+    닿는 먼 미래 구간)은 렌더링할 정보가 없으므로 걸러낸다. 단위: 매출액/영업이익/당기순이익은
+    억원, EPS는 원 (WiseReport 표기 그대로, 재계산하지 않음).
     """
-    caption = soup.find("caption", string=lambda s: s and s.strip() == "기업실적분석 테이블")
-    if not caption:
-        return None
-    table = caption.find_parent("table")
-    thead_rows = table.find("thead").find_all("tr")
-    if len(thead_rows) < 2:
-        return None
-    group_ths = thead_rows[0].find_all("th")
-    annual_group = next((th for th in group_ths if "연간" in th.get_text()), None)
-    if annual_group is None:
-        return None
-    annual_count = int(annual_group.get("colspan", 0))
-    periods = [th.get_text(strip=True) for th in thead_rows[1].find_all("th")]
-    if annual_count <= 0 or annual_count > len(periods):
-        return None
+    params = {
+        "flag": 2, "cmp_cd": code, "finGubun": "MAIN", "frq": frq,
+        "sDT": datetime.date.today().strftime("%Y%m%d"), "chartType": "svg",
+    }
+    resp = requests.get(NAVER_WISEREPORT_URL, params=params, headers=HEADERS, timeout=15)
+    resp.raise_for_status()
+    rows = resp.json().get("JsonData") or []
 
-    def row_values(label):
-        for tr in table.find("tbody").find_all("tr"):
-            th = tr.find("th")
-            strong = th.find("strong") if th else None
-            if strong and strong.get_text(strip=True) == label:
-                return [_num(td.get_text()) for td in tr.find_all("td")]
-        return None
+    out = []
+    for row in rows:
+        yymm = row.get("YYMM") or ""
+        is_est = "(E)" in yymm
+        period = yymm.replace("(A)", "").replace("(E)", "").strip()
+        entry = {
+            "period": period,
+            "is_estimate": is_est,
+            "revenue_eok": _num(row.get("SALES")),
+            "operating_income_eok": _num(row.get("OP")),
+            "net_income_eok": _num(row.get("NP")),
+            "eps": _num(row.get("EPS")),
+        }
+        if all(entry[k] is None for k in ("revenue_eok", "operating_income_eok", "net_income_eok", "eps")):
+            continue
+        out.append(entry)
+    return out
 
-    revenue = row_values("매출액")
-    op_income = row_values("영업이익")
-    net_income = row_values("당기순이익")
-    eps = row_values("EPS(원)")
 
-    def build_range(idx_range):
-        out = []
-        for i in idx_range:
-            # "(E)"는 is_estimate 플래그로 별도 전달하므로 라벨 문자열에서는 떼어낸다
-            # (index.html이 is_estimate일 때 배지로 "(E)"를 다시 붙이므로, 여기 남겨두면 중복 표시된다).
-            is_est = "(E)" in periods[i]
-            period_label = periods[i].replace("(E)", "").strip()
-            out.append({
-                "period": period_label,
-                "is_estimate": is_est,
-                "revenue_eok": revenue[i] if revenue and i < len(revenue) else None,
-                "operating_income_eok": op_income[i] if op_income and i < len(op_income) else None,
-                "net_income_eok": net_income[i] if net_income and i < len(net_income) else None,
-                "eps": eps[i] if eps and i < len(eps) else None,
-            })
-        return out
-
-    annual = build_range(range(0, annual_count))
-    quarterly = build_range(range(annual_count, len(periods)))
+def fetch_naver_earnings(code: str):
+    """연간·분기 실적 컨센서스를 각각 fetch_naver_wisereport_period로 가져와 이어붙인다."""
+    annual = fetch_naver_wisereport_period(code, frq=0)
+    quarterly = fetch_naver_wisereport_period(code, frq=1)
     if not annual and not quarterly:
         return None
     return {"annual": annual, "quarterly": quarterly}
@@ -279,7 +269,7 @@ def fetch_one(item):
         else:
             result["source"] = "yfinance"
             result.update(fetch_yfinance_consensus(ticker))
-        if result["target_price"] is None and result["per_fwd"] is None:
+        if result["target_price"] is None and result["per_fwd"] is None and result["earnings"] is None:
             result["error"] = "no consensus data found"
     except Exception as e:
         result["error"] = str(e)

@@ -5898,18 +5898,30 @@ function earningsRowValueText(r, v){
     : shown.toLocaleString('ko-KR', r.scale ? {maximumFractionDigits:1} : {});
 }
 
-// 국내(FnGuide/네이버)는 원본 표가 최근 5개 분기 + 추정 1개(총 6개)를 내려주는 반면 해외
-// (yfinance)는 최근 4개 + 추정 1개(총 5개)만 내려온다. 두 시장 모두 3Q25부터 보이도록
-// 마지막 5개만 사용해 범위를 통일한다(2026-09-08 요청). 이 슬라이스가 기준이라 실제
-// 실적이 추가되면(quarterly 배열 자체가 최신 분기로 갱신) 표시 구간도 자동으로 한 분기씩
-// 밀린다 — 분기 라벨을 하드코딩하지 않고 항상 "배열의 마지막 N개" 기준으로 뽑기 때문.
+// 확정 실적은 최근 4개 분기 + 추정치 2개(다음분기/다다음분기, 총 6칸), 연간은 최근 2개년
+// + 추정치 2개(다음해/다다음해, 총 4칸)만 보여준다(2026-09-17 요청 — 국내는 WiseReport가
+// 최대 3개분기/3개년까지 주지만 표가 너무 넓어져 2개로 제한). 실적이 갱신되면(quarterly/
+// annual 배열 자체가 최신 구간으로 밀림) 표시 구간도 자동으로 같이 밀린다 — "배열의 마지막
+// N개" 기준으로 뽑을 뿐 분기·연도를 하드코딩하지 않기 때문(3Q26F/4Q26F → 4Q26F/1Q27F ...).
+function trimQuarterly(quarterly){
+  const actual = quarterly.filter(p => !p.is_estimate);
+  const future = quarterly.filter(p => p.is_estimate);
+  return [...actual.slice(-4), ...future.slice(0, 2)];
+}
+
+function trimAnnual(annual){
+  const actual = annual.filter(p => !p.is_estimate);
+  const future = annual.filter(p => p.is_estimate);
+  return [...actual.slice(-2), ...future.slice(0, 2)];
+}
+
 function renderEarningsForecastTable(cons){
   if(!cons || !cons.earnings) return '';
   const info = TICKER_UNIVERSE.find(t=>t.ticker===cons.ticker);
   const curLabel = info ? (MARKET_CURRENCY_LABEL[info.market]||'') : '';
   const isNaver = cons.source==='naver';
-  const quarterly = (cons.earnings.quarterly || []).slice(-5);
-  const annual = cons.earnings.annual || [];
+  const quarterly = trimQuarterly(cons.earnings.quarterly || []);
+  const annual = trimAnnual(cons.earnings.annual || []);
   if(!quarterly.length && !annual.length) return '';
 
   const periods = [
@@ -5939,15 +5951,14 @@ function renderEarningsForecastTable(cons){
   return forecastHtml + renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, opKey);
 }
 
-// "실적 전망" 표 바로 아래에 다음 발표 분기 하나만 떼어서 전년동기/직전분기 대비를 보여주는
-// 표(2026-09-08 요청). quarterly는 이미 위에서 slice(-5)한 배열을 그대로 넘겨받으므로,
-// 항상 "마지막=다음 분기 추정", "마지막-1=직전 분기", "마지막-4=전년동기"로 계산한다 —
-// 분기 라벨이 아니라 배열 끝을 기준으로 삼기 때문에 실제 실적이 들어와 배열이 한 칸씩
-// 밀려도(3Q25/2Q26/3Q26F → 4Q25/3Q26/4Q26F ...) 코드 수정 없이 자동으로 따라간다.
+// "실적 전망" 표 바로 아래에 가장 가까운 미래 분기 하나만 떼어서 전년동기/직전분기 대비를
+// 보여주는 표(2026-09-08 요청). 국내는 이제 향후 최대 3개분기까지 내려오므로(2026-09-16),
+// "배열의 마지막=다음 분기"가 더 이상 성립하지 않는다(마지막은 가장 먼 미래 추정일 수
+// 있음) — is_estimate가 처음 나오는 인덱스를 "다음 분기"로 삼는다.
 function renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, opKey){
-  const idxCur = quarterly.length - 1;
-  const curP = quarterly[idxCur];
-  if(!curP || !curP.is_estimate) return ''; // 다음 분기 추정치가 없으면 표를 만들 근거가 없음
+  const idxCur = quarterly.findIndex(p => p.is_estimate);
+  const curP = idxCur >= 0 ? quarterly[idxCur] : null;
+  if(!curP) return ''; // 다음 분기 추정치가 없으면 표를 만들 근거가 없음
   const idxPrior = idxCur - 1;
   const idxYearAgo = idxCur - 4;
   const priorP = idxPrior >= 0 ? quarterly[idxPrior] : null;
