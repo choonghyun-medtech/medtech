@@ -5088,6 +5088,39 @@ function medtourPenetrationYearColor(y){
   return MEDTOUR_PENETRATION_YEAR_COLORS[y] || '#8a919c';
 }
 
+// "전체"(전체 방한객 대비 비중, key="all")는 개별 국가 합산치라 다른 국가 막대와 나란히
+// 있으면 헷갈린다는 사용자 피드백(2026-09-17)으로, 해당 막대 위에 점선 테두리를 덧그려
+// 구분한다(처음엔 옅은 흰색 오버레이도 같이 넣었으나 막대 색이 탁해 보인다는 피드백으로
+// 제거, 테두리만 유지). Chart.js의 scriptable backgroundColor로 하면 범례 스와치가 데이터
+// 정렬 순서에 따라(전체가 0번 인덱스로 오면) 엉뚱한 색으로 뜨는 문제가 있어(범례는 보통
+// 0번 인덱스 스타일을 그대로 샘플링한다), dataset 색 자체는 건드리지 않고 afterDatasetsDraw
+// 플러그인으로 막대 위에 별도로 그린다.
+function medtourPenetrationAllHighlightPlugin(withRates){
+  return {
+    id: 'medtourAllHighlight',
+    afterDatasetsDraw(chart){
+      const ctx = chart.ctx;
+      chart.data.datasets.forEach((ds, dsIndex) => {
+        if(!chart.isDatasetVisible(dsIndex)) return;
+        const meta = chart.getDatasetMeta(dsIndex);
+        meta.data.forEach((bar, i) => {
+          if(withRates[i]?.country.key !== 'all') return;
+          const {x, y, base, width} = bar.getProps(['x', 'y', 'base', 'width'], true);
+          if(y == null || base == null || isNaN(y) || isNaN(base)) return;
+          const left = x - width / 2, top = Math.min(y, base), h = Math.abs(base - y);
+          if(h <= 0) return;
+          ctx.save();
+          ctx.setLineDash([4, 3]);
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = textColor();
+          ctx.strokeRect(left, top, width, h);
+          ctx.restore();
+        });
+      });
+    },
+  };
+}
+
 function renderMedtourPenetrationYearChips(){
   const wrap = document.getElementById('medtour-penetration-year-chips');
   if(!wrap) return;
@@ -5160,6 +5193,7 @@ function renderMedtourPenetrationChart(){
         };
       }),
     },
+    plugins: [medtourPenetrationAllHighlightPlugin(withRates)],
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
