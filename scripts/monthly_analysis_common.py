@@ -238,8 +238,15 @@ def fmt_pct(pct):
     return f"{pct:+.1f}%"
 
 
-def fmt_rank(rank, n_total):
-    if rank is None:
+def fmt_rank(rank, n_total, rank_threshold=3):
+    """[2026-09-17] 예전엔 rank가 있기만 하면(예: 40개월 중 15위처럼 전혀 안 두드러지는
+    순위여도) 무조건 "역대 N위" 문구를 만들어 LLM에 넘겼다 — LLM은 주어진 사실을 그대로
+    옮기라고 지시받으므로(환각 방지), 이 안 두드러지는 순위까지 그대로 받아써서 "역대 n위"
+    가 카테고리마다 기계적으로 반복되는 문제가 있었다(사용자 리포트). is_notable()이 항목을
+    고를 때 쓰는 rank_threshold(기본 3위 이내)와 동일한 기준으로, 실제로 상위권일 때만
+    문구를 만든다 — YoY%나 연초누계 기준으로 notable해진 항목은 순위가 평범해도(예: 15위)
+    억지로 순위를 언급하지 않는다."""
+    if rank is None or rank > rank_threshold:
         return ""
     if rank == 1:
         return f"역대 최고({n_total}개월 중 1위)"
