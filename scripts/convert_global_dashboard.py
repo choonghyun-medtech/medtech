@@ -8,29 +8,35 @@
   GitHub Actions 같은 클라우드 서버에서 자동으로 값을 갱신할 방법이 없다(2026-09-15 확인).
   그래서 이 스크립트는 스케줄 워크플로가 아니라, 사용자가 엑셀을 새로 저장한 뒤 수동으로
   실행하는 용도다.
-- 원본 엑셀 구조(Sheet1, 2026-09-16 열 재배치 이후): A=(미사용,숨김), B=국적 원본(숨김),
-  C=사명, D=시가총액(백만달러), E~G=영업이익률(OPM) FY0/1/2, H~J=P/E FY0/1/2, K~M=P/S FY0/1/2,
-  N~P=EV/EBITDA FY0/1/2, Q~S=매출(백만달러) FY0/1/2, T~U=매출성장률(%) FY1/2,
-  V=국적(보정), W=섹터(콤마로 여러 개 묶임), X=Ticker. 실제 데이터는 4행부터.
-  (이전에는 A=국적, B=섹터, C=사명 ... V=Ticker였으나, 국적/섹터 열을 매출성장률 뒤로
-  옮기면서 위치가 바뀌었다 — 엑셀 열 구조가 또 바뀌면 아래 컬럼 인덱스도 같이 고칠 것.)
+- [2026-09-17] 파일 자체가 교체됐다 — 이전엔 프로젝트 루트의 "글로벌 대시보드.xlsx"
+  Sheet1(블룸버그 함수가 그대로 걸려있는 시트)을 직접 읽었는데, 이제 사용자가 별도 폴더
+  ("D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsx")에서 관리하고, 그 안의
+  "raw" 탭(블룸버그 함수, 로컬에서 값을 못 읽음)이 아니라 "값복사" 탭(raw를 값으로
+  붙여넣은 결과)을 읽어야 한다. 컬럼 배치도 완전히 바뀌어서(실제 데이터는 여전히 4행부터):
+  A=미사용, B=국적, C=섹터(콤마로 여러 개 묶임), D=사명, E=시가총액(백만달러),
+  F~H=영업이익률(OPM) FY0/1/2, I~K=P/E FY0/1/2, L~N=P/S FY0/1/2, O~Q=EV/EBITDA FY0/1/2,
+  R~T=매출(백만달러) FY0/1/2, U~V=매출성장률(%) FY1/2, W=Ticker. 국적/섹터가 이제 앞쪽에
+  바로 있어 예전의 "국적(보정)" 열 보정 단계가 필요 없어졌다(국적 오타는 COUNTRY_OVERRIDES로
+  여전히 안전망은 둠). Y~AA(영업이익 절대금액 FY0/1/2)는 새로 추가됐지만 사이트가 아직
+  영업이익률(%)만 쓰고 절대금액은 안 써서 파싱하지 않는다(2026-09-17 사용자 확인 — 필요해지면
+  vals 범위를 W 앞까지가 아니라 Y~AA까지 넓히고 row dict에 op_income 필드를 추가할 것).
+  - 반도체·로봇부품 등 비의료기기 참고 비교군(MISC_TICKERS, 예전엔 "엔비디아" 이후 목록)이
+    이번 "값복사" 탭 범위(4~281행)엔 아예 없다(2026-09-17 확인, 사용자 요청으로 이번엔 그냥
+    비워두고 진행 — 나중에 다시 필요해지면 MISC_TICKERS를 그대로 두었으니 채워 넣으면 됨).
 - 원본 자체에 있는 문제 두 가지를 이 스크립트가 보정한다:
   1) 일부 사명/섹터 문자열이 소스에서부터 특정 글자 수(사명은 28자)에서 잘려 들어온다
      (예: "Shanghai MicroPort MedBot Gr" -> "...Group", "산업용 기계, 용품 및" -> "...및 부품").
      2026-09-15 육안 확인으로 찾은 건들만 NAME_FIXES/SECTOR_FIXES에 정리해뒀다 — 엑셀이
      바뀌면 새로 잘린 값이 생길 수 있으니, 이 매핑에 없는 새로운 이상한 값은 수동으로 추가.
-  2) MicroPort MedBot Group/Shenzhen Edge Medical/글로부스 메디컬 행이 원본에 실수로
-     완전히 중복 입력돼 있어(2026-09-15 확인) (사명,티커) 기준으로 중복 제거한다.
-  3) 국적(A열) 오타 — 스카이랩스(386380 KS Equity, 코스닥 상장)가 한때 "미국"으로 잘못
+  2) MicroPort MedBot Group/Shenzhen Edge Medical 행이 원본에 실수로 완전히 중복
+     입력돼 있어(2026-09-15 확인, 2026-09-17 새 파일에서도 재확인) (사명,티커) 기준으로
+     중복 제거한다.
+  3) 국적(B열) 오타 — 스카이랩스(386380 KS Equity, 코스닥 상장)가 한때 "미국"으로 잘못
      들어있던 걸 발견(2026-09-15), 사용자가 원본 엑셀에서 직접 정정 완료. 혹시 비슷한
      오타가 또 생기면 COUNTRY_OVERRIDES(티커 기준)에 등록해 바로잡을 수 있다(현재는 비어있음).
-- MISC_TICKERS: 원본 엑셀에서 "엔비디아" 이후로 이어지는 반도체·산업자동화·로봇부품 등
-  의료기기와 무관한 참고용 비교 기업들(2026-09-15 사용자 요청 — 이 회사들은 섹터별
-  하위 탭을 따로 만들지 않고 "전체" 탭에서만 보이게 한다, index.html의 GD_RAW misc 필드).
-  엑셀에 새 참고기업이 추가되면 이 목록도 같이 늘려줘야 한다.
 
 사용법:
-    python scripts/convert_global_dashboard.py --source "글로벌 대시보드.xlsx" --out global_dashboard.json
+    python scripts/convert_global_dashboard.py --source "D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsx" --out global_dashboard.json
 """
 import argparse
 import datetime
@@ -108,16 +114,16 @@ def clean(v):
 
 def load_rows(path):
     wb = openpyxl.load_workbook(path, data_only=True)
-    ws = wb['Sheet1']
+    ws = wb['값복사']
     rows = []
     for r in range(4, ws.max_row + 1):
-        name = ws.cell(row=r, column=3).value
-        country = ws.cell(row=r, column=22).value
-        sector = ws.cell(row=r, column=23).value
+        name = ws.cell(row=r, column=4).value
+        country = ws.cell(row=r, column=2).value
+        sector = ws.cell(row=r, column=3).value
         if not name and not country:
             continue
-        vals = [clean(ws.cell(row=r, column=c).value) for c in range(4, 22)]  # D..U (18개)
-        ticker = ws.cell(row=r, column=24).value
+        vals = [clean(ws.cell(row=r, column=c).value) for c in range(5, 23)]  # E..V (18개)
+        ticker = ws.cell(row=r, column=23).value
 
         name = NAME_FIXES.get(name, name)
         sector_joined = SECTOR_FIXES.get(sector, sector) if sector else sector
@@ -156,9 +162,12 @@ def load_rows(path):
     return deduped
 
 
+DEFAULT_SOURCE = r'D:\★사용자 폴더\Desktop\dashboard files\글로벌 대시보드!!.xlsx'
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--source', default='글로벌 대시보드.xlsx', help='원본 Bloomberg 엑셀 파일 경로')
+    ap.add_argument('--source', default=DEFAULT_SOURCE, help='원본 Bloomberg 엑셀 파일 경로("값복사" 탭을 읽음)')
     ap.add_argument('--out', default='global_dashboard.json')
     args = ap.parse_args()
 
@@ -167,11 +176,14 @@ def main():
     except FileNotFoundError:
         print(f'[ERROR] 원본 엑셀을 찾을 수 없습니다: {args.source}', file=sys.stderr)
         sys.exit(1)
+    except KeyError:
+        print(f'[ERROR] "{args.source}"에 "값복사" 시트가 없습니다 — 탭 이름이 바뀌었는지 확인해주세요.', file=sys.stderr)
+        sys.exit(1)
 
     sectors = sorted({s for row in rows for s in row['sectors']})
     out_data = {
         'updated': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        'source': 'Bloomberg 컨센서스(글로벌 대시보드.xlsx, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
+        'source': 'Bloomberg 컨센서스(글로벌 대시보드!!.xlsx "값복사" 탭, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
         'rows': rows,
         'sectors': sectors,
     }
