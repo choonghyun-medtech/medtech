@@ -112,6 +112,24 @@ def classify(report_nm):
     return None, None
 
 
+def dedup_same_day_events(events):
+    """[2026-09-17] 사용자 리포트로 발견: 같은 회사가 같은 날 같은 유형(예: "주주총회")으로
+    캘린더에 2~3건씩 중복 노출되는 문제가 있었다 — 최초 공시 이후 "[기재정정]"으로 정정
+    공시가 또 올라오거나, "주주총회소집공고"/"주주총회소집결의"처럼 실제로는 다른 보고서인데
+    CATEGORY_RULES에서 같은 라벨로 묶이는 게 원인으로 보인다. 사용자 입장에선 "이 회사가
+    이 날 이 유형 이벤트를 공시했다"는 사실 하나면 충분하므로, (회사, 유형, 날짜)가 같으면
+    rcept_no(접수번호)가 가장 큰(=가장 나중에 접수된, 정정이 있으면 정정본) 것 하나만 남긴다."""
+    latest = {}
+    for ev in events:
+        key = (ev["ticker"], ev["type"], ev["date"])
+        if key not in latest or ev["_rcept_no"] > latest[key]["_rcept_no"]:
+            latest[key] = ev
+    out = list(latest.values())
+    for ev in out:
+        del ev["_rcept_no"]
+    return out
+
+
 def fetch_disclosures(api_key, corp_code, bgn_de, end_de, session):
     events = []
     page = 1
@@ -195,12 +213,15 @@ def main():
                     "source_name": "DART 전자공시시스템",
                     "source_url": f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rcept_no}",
                     "estimated": False,
+                    "_rcept_no": rcept_no,  # 중복 제거용 — dedup_same_day_events()에서만 쓰고 출력 전 제거
                 })
                 count += 1
             print(f"[INFO] {t['name']}: {count}건")
         except Exception as e:
             print(f"[WARN] {t['name']} 공시 조회 실패: {e}", file=sys.stderr)
         time.sleep(0.2)
+
+    all_events = dedup_same_day_events(all_events)
 
     all_events.sort(key=lambda e: e["date"])
 
