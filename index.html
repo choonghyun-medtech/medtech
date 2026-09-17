@@ -632,12 +632,6 @@ tr:last-child td{border-bottom:none}
 
     <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
     <div id="stock-sub-flowmap" style="display:none">
-    <div class="sec-h"><h2>수급 포지셔닝</h2>
-      <div class="toggle" id="flowmap-period-toggle">
-        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
-      </div>
-    </div>
-    <div class="note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · investor_flow.json + stock_performance.json 자동 갱신</div>
 
     <!-- 검색/구분/섹터로 보고싶은 종목만 골라볼 수 있는 필터 (2026-09-14 추가) — 산점도/막대/표/전환점
          전 구역에 동일하게 적용된다. -->
@@ -656,18 +650,31 @@ tr:last-child td{border-bottom:none}
       <a href="#" id="flowmap-reset-link" class="note" style="text-decoration:underline;align-self:center">초기화</a>
     </div>
 
+    <!-- [미리보기] 수급 전환점 랭킹 — 최근 며칠 사이 사분면이 바뀐 종목만 모아서
+         정적 산점도보다 "지금 막 방향이 바뀐 곳"을 바로 보여준다. 별로면 이 블록과
+         관련 JS 함수(computeFlowMapTransitions/renderFlowMapTransitions)만 지우면
+         원래대로 돌아감(기존 차트/표는 그대로 둠).
+         [2026-09-17] 원래는 아래 "수급 포지셔닝" 토글 바로 다음(=토글에 반응하는 산점도/
+         표 사이)에 있었는데, 이 섹션은 의도적으로 그 토글과 무관하게 항상 3개월 고정이라
+         (아래 FLOWMAP_TRANSITION_PERIOD_KEY 주석 참고 — "오늘 뭐가 바뀌었나"를 매일 같은
+         잣대로 봐야 함) 토글 대상처럼 보이는 게 어색하다는 사용자 리포트로 탭 맨 위(검색/
+         필터 바로 아래, 토글이 나오기 전)로 옮겼다 — "오늘의 요약을 먼저 보고, 그 아래
+         토글로 자유롭게 탐색"하는 순서가 되도록. -->
+    <div class="sec-h" style="margin:10px 0 6px"><h2 style="font-size:13px">수급 전환점 (3개월 기준) <span class="note" id="flowmap-transitions-note"></span></h2></div>
+    <div id="flowmap-transitions-wrap"></div>
+
+    <div class="sec-h" style="margin:16px 0 6px"><h2>수급 포지셔닝</h2>
+      <div class="toggle" id="flowmap-period-toggle">
+        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
+      </div>
+    </div>
+    <div class="note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · investor_flow.json + stock_performance.json 자동 갱신</div>
+
     <!-- 사분면별 종목 수를 카드 4개로 나열하던 걸 가로 구성비 막대 하나로 교체
          (2026-09-04) — 카드 그리드는 흔한 대시보드 패턴이라 참고 사이트와 형태가
          겹친다는 지적에 따라, "전체 수급 분위기가 사자/팔자 어느 쪽으로 쏠려있나"를
          막대 하나로 즉시 읽히게 바꿨다. 정보량은 동일(사분면별 종목 수), 표현만 다름. -->
     <div id="flowmap-breadth-wrap" style="margin-bottom:14px"></div>
-
-    <!-- [미리보기] 수급 전환점 랭킹 — 최근 며칠 사이 사분면이 바뀐 종목만 모아서
-         정적 산점도보다 "지금 막 방향이 바뀐 곳"을 바로 보여준다. 별로면 이 블록과
-         관련 JS 함수(computeFlowMapTransitions/renderFlowMapTransitions)만 지우면
-         원래대로 돌아감(기존 차트/표는 그대로 둠). -->
-    <div class="sec-h" style="margin:10px 0 6px"><h2 style="font-size:13px">수급 전환점 (3개월 기준) <span class="note" id="flowmap-transitions-note"></span></h2></div>
-    <div id="flowmap-transitions-wrap"></div>
 
     <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600" id="flowmap-axis-label"></h2><span class="note" id="flowmap-note"></span></div>
     <div class="chart-box" style="height:540px"><canvas id="flowMapChart"></canvas></div>
@@ -773,7 +780,11 @@ tr:last-child td{border-bottom:none}
       <div id="export-table-wrap" style="flex:1; min-width:220px"></div>
     </div>
 
-    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note" id="export-monthly-analysis-note">매월 20일 자동 작성</span></div>
+    <!-- [2026-09-17] 의료관광 탭의 "월간 분석"을 독립 그룹으로 분리한 것과 같은 이유로,
+         여기도 위쪽 차트/표 묶음과 시각적으로 구분되도록 medtour-group-h를 준다
+         (사용자 요청 — 두 탭의 월간 분석 섹션 형식을 통일). -->
+    <div class="medtour-group-h">월간 분석</div>
+    <div class="sec-h"><h2 style="font-size:13px">수출 데이터 종합</h2><span class="note" id="export-monthly-analysis-note">매월 20일 자동 작성</span></div>
     <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 20일 자동 작성됩니다.</div>
     </div>
     <!-- /수출 데이터 -->
@@ -903,7 +914,13 @@ tr:last-child td{border-bottom:none}
     <div class="note" id="visitor-country-note" style="margin:-4px 0 8px">월별 비중 · % · 기타 = 중국·일본·대만·미국 제외 전체</div>
     <div class="chart-box"><canvas id="visitorCountryChart"></canvas></div>
 
-    <div class="sec-h"><h2 style="font-size:13px">월간 분석</h2><span class="note" id="medtour-monthly-analysis-note">매월 16일(의료관광)·3일(방한외국인) 자동 작성</span></div>
+    <!-- [2026-09-17] "월간 분석" 카드는 의료관광 소비(analyze_medtour_monthly.py)와
+         방한 외국인(analyze_visitor_monthly.py) 분석을 한 곳에 합쳐서 보여주는데, 바로
+         위 그룹이 "방한 외국인 데이터"라 지금까지는 이 카드가 방한 외국인 섹션 소속처럼
+         보였다(사용자 리포트) — 별도 medtour-group-h를 줘서 두 데이터를 종합하는
+         독립 섹션임을 명확히 한다. -->
+    <div class="medtour-group-h">월간 분석</div>
+    <div class="sec-h"><h2 style="font-size:13px">의료관광·방한 외국인 종합</h2><span class="note" id="medtour-monthly-analysis-note">매월 16일(의료관광)·3일(방한외국인) 자동 작성</span></div>
     <div class="card" id="medtour-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 16일(의료관광)·3일(방한외국인) 자동 작성됩니다.</div>
 
     <div class="medtour-group-h">국가별 의료관광객 비중(침투율)</div>
@@ -3373,7 +3390,7 @@ function renderVisitorTrendChart(){
   visitorTrendChartInstance = new Chart(document.getElementById('visitorChart'), {
     type: 'line',
     data: {
-      labels: rows.map(r => r.label),
+      labels: rows.map(r => fmtPeriodLabel(r.label)),
       datasets: [{
         label: '방한 외국인', data: rows.map(r => r.visitors),
         borderColor: '#7c3aed', backgroundColor: 'rgba(124, 58, 237, 0.15)', fill: true,
@@ -3434,7 +3451,7 @@ function renderVisitorCountryChart(){
   const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
   const rows = aggregateVisitorCountryRows(monthlyRows, gran);
   if(note) note.textContent = `${granLabel} 비중(최근 ${rows.length}${unitLabel}, 10년치 수집분 기준) · % · 기타 = 중국·일본·대만·미국 제외 전체`;
-  const labels = rows.map(r => r.label);
+  const labels = rows.map(r => fmtPeriodLabel(r.label));
   // 인원수(만명)는 표시하지 않고 국가별 비중(%)만 보여준다(2026-09-08 요청) — 분모는 그
   // 구간 방한 외국인 합계(5개 그룹 스택 합).
   const totals = rows.map(r => Object.values(r.countries).reduce((s, v) => s + (v || 0), 0));
@@ -3665,6 +3682,15 @@ function prevYearLabel(label, gran){
   }
   // month: "YYYY-MM"
   return ymMinusYear(label);
+}
+
+// 내부 집계/정렬/YoY 매칭에는 "YYYYQN"(예: "2026Q3") 라벨을 그대로 쓴다(문자열 정렬이
+// 연도-분기 순으로 맞아야 해서 이 순서를 바꾸면 안 됨) — 화면에 보여줄 때만 사용자 요청
+// (2026-09-17)대로 "NQYY"(예: "3Q26") 형태로 바꿔서 표시한다. 월("YYYY-MM")/연("YYYY")
+// 라벨은 매칭되는 게 없어 그대로 반환된다.
+function fmtPeriodLabel(label){
+  const m = /^(\d{4})Q(\d)$/.exec(label);
+  return m ? `${m[2]}Q${m[1].slice(2)}` : label;
 }
 
 function computeYoYSeries(agg, gran){
@@ -3907,14 +3933,14 @@ function renderExportChart(){
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
   const displayFrom = exportDisplayFromLabel(monthly, EXPORT_STATE.gran);
-  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, ${exportAmountUnitWord()}, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${hsCodesLabel(cfg)} · ${displayFrom || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
+  if(note) note.textContent = `${granLabel} · 수출금액(신고미화금액, ${exportAmountUnitWord()}, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · HS ${hsCodesLabel(cfg)} · ${fmtPeriodLabel(displayFrom) || ''}부터 표시(데이터 자체는 ${monthly[0].ym}부터 수집)`;
   const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
   const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
   // mkBar()는 단일 y축 막대 전용이라 YoY 우측 보조축(막대+선 혼합)은 직접 Chart.js를 호출한다.
   exportChartInstance = new Chart(document.getElementById('exportChart'), {
     data: {
-      labels: agg.map(a => a.label),
+      labels: agg.map(a => fmtPeriodLabel(a.label)),
       datasets: [
         {
           type: 'bar', label: `${cfg.label} 수출액(${exportAmountUnitWord()})`, data: agg.map(a => a.expDlr),
@@ -4351,7 +4377,7 @@ function renderMedtourTrendChart(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${tab.label} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${tab.monthly[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab.label} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${tab.monthly[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
       : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -4364,7 +4390,7 @@ function renderMedtourTrendChart(){
 
   medTourAmtChartInstance = new Chart(document.getElementById('medTourAmtChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '의료 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1000),
@@ -4407,7 +4433,7 @@ function renderMedtourTrendChart(){
 
   medTourCntChartInstance = new Chart(document.getElementById('medTourCntChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '의료 소비건수(건)', data: displayRows.map(r => r.cnt),
@@ -4477,7 +4503,7 @@ function renderMedtourTrendChart(){
   }
   medTourAspChartInstance = new Chart(document.getElementById('medTourAspChart'), {
     type: 'line',
-    data: { labels: aspLabels, datasets: aspDatasets },
+    data: { labels: aspLabels.map(fmtPeriodLabel), datasets: aspDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
@@ -4539,7 +4565,7 @@ function renderMedtourDermaTrendChart(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${tab ? tab.label : ''} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${monthlyRows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab ? tab.label : ''} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${monthlyRows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
       : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -4563,7 +4589,7 @@ function renderMedtourDermaTrendChart(){
 
   medTourDermaAmtChartInstance = new Chart(document.getElementById('medTourDermaAmtChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '피부과 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1e6),
@@ -4615,7 +4641,7 @@ function renderMedtourDermaTrendChart(){
 
   medTourDermaCntChartInstance = new Chart(document.getElementById('medTourDermaCntChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '피부과 소비건수(건)', data: displayRows.map(r => r.cnt),
@@ -4682,7 +4708,7 @@ function renderMedtourDermaTrendChart(){
   }
   medTourDermaAspChartInstance = new Chart(document.getElementById('medTourDermaAspChart'), {
     type: 'line',
-    data: { labels: dermaAspLabels, datasets: dermaAspDatasets },
+    data: { labels: dermaAspLabels.map(fmtPeriodLabel), datasets: dermaAspDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
@@ -4748,7 +4774,7 @@ function renderMedtourStackedChartFromDatasets(canvasId, prevInstance, datasets,
   if(!datasets || !datasets.length || !months.length) return null;
   return new Chart(document.getElementById(canvasId), {
     type: 'bar',
-    data: { labels: months, datasets },
+    data: { labels: months.map(fmtPeriodLabel), datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       // 막대 하나(과목/국가 하나)에 커서를 올려도 그 달의 다른 세그먼트 비율까지 한꺼번에
@@ -5344,7 +5370,7 @@ function renderHiraCharts(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${displayRows[0].label} ~ ${displayRows[displayRows.length-1].label}, ${displayRows.length}${unitLabel}) · ${code.code} ${code.name}(${code.admission}) · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${code.monthly[0].ym}부터 수집) · 건강보험심사평가원`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${code.code} ${code.name}(${code.admission}) · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${code.monthly[0].ym}부터 수집) · 건강보험심사평가원`
       : `${granLabel} · 건강보험심사평가원 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -5356,7 +5382,7 @@ function renderHiraCharts(){
 
   hiraUsageChartInstance = new Chart(document.getElementById('hiraUsageChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
@@ -5399,7 +5425,7 @@ function renderHiraCharts(){
 
   hiraAmountChartInstance = new Chart(document.getElementById('hiraAmountChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '진료금액(백만원)', data: displayRows.map(r => r.amount == null ? null : r.amount / 1000),
@@ -5447,7 +5473,7 @@ function renderHiraCharts(){
   // 진료금액=초록)해 세 차트 간 색 의미가 흔들리지 않게 한다.
   hiraComboChartInstance = new Chart(document.getElementById('hiraComboChart'), {
     data: {
-      labels: displayRows.map(r => r.label),
+      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
       datasets: [
         {
           type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
@@ -6325,7 +6351,7 @@ function drawSnapshotExportCharts(cfgs){
     if(note) note.textContent = `월별 · 수출금액(신고미화금액, 달러, 왼쪽 축 막대) · YoY(%, 오른쪽 축 선) · ${displayFrom || ''}부터 표시`;
     snapExportChartInstances[cfg.key] = new Chart(canvas, {
       data: {
-        labels: agg.map(a => a.label),
+        labels: agg.map(a => fmtPeriodLabel(a.label)),
         datasets: [
           { type: 'bar', label: `${cfg.label} 수출액($)`, data: agg.map(a => a.expDlr), backgroundColor: '#2563eb', yAxisID: 'y', order: 2 },
           { type: 'line', label: 'YoY(%)', data: yoy, borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1', spanGaps: true, tension: 0.25, pointRadius: 2, order: 1 },
