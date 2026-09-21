@@ -1,0 +1,49 @@
+name: Update FX rate
+
+on:
+  schedule:
+    # 매일 KST 07:50 = UTC 22:50 (요일 제한 없음 — 주말/공휴일엔 ECB가 새 값을 안 내놓으므로
+    # 자연히 직전 영업일 값을 다시 받아오고, diff가 없으면 커밋도 건너뛴다).
+    - cron: "50 22 * * *"
+  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-fx-rate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch FX rate
+        run: python scripts/fetch_fx_rate.py --out fx_rate.json
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fx_rate.json
+          if git diff --cached --quiet -- fx_rate.json; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: fx_rate.json 자동 갱신 ($(date -u +%Y-%m-%d))"
+            for i in 1 2 3 4 5; do
+              if git push; then
+                echo "푸시 성공"
+                exit 0
+              fi
+              echo "푸시 실패, 재시도 $i/5 (원격 변경사항 반영 후 재시도)"
+              git fetch origin main
+              git rebase origin/main || { echo "리베이스 충돌, 수동 확인 필요"; exit 1; }
+              sleep $((RANDOM % 6 + 2))
+            done
+            echo "5회 재시도에도 푸시 실패"
+            exit 1
+          fi
