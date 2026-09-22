@@ -1,10 +1,12 @@
 # 글로벌 대시보드 Peer Table 갱신 — 로컬 실행용 원클릭 스크립트.
 #
 # 사용법: 블룸버그 터미널 로그인된 PC에서 "D:\★사용자 폴더\Desktop\dashboard files\
-# 글로벌 대시보드!!.xlsx"를 열어 raw 탭 수식을 최신화하고, "값복사" 탭에 값으로
+# 글로벌 대시보드!!.xlsm"을 열어 raw 탭 수식을 최신화하고, "값복사" 탭에 값으로
 # 붙여넣기한 뒤 저장 — 그 다음 이 스크립트(또는 update_global_dashboard.bat)를
 # 더블클릭하면 (1) 엑셀 -> global_dashboard.json 변환, (2) 변경 내용 요약 표시,
 # (3) 검토 후 Y 입력 시에만 커밋 + 푸시까지 진행한다.
+# [2026-09-23] 매크로 추가로 파일 확장자가 .xlsx -> .xlsm으로 바뀜
+# (scripts/convert_global_dashboard.py의 DEFAULT_SOURCE도 함께 갱신됨).
 #
 # [2026-09-17] 블룸버그 함수는 로컬 터미널 세션에서만 계산되므로 GitHub Actions
 # 같은 클라우드에서는 완전 자동화가 불가능하다(scripts/convert_global_dashboard.py

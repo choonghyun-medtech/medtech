@@ -23,6 +23,9 @@
   - 반도체·로봇부품 등 비의료기기 참고 비교군(MISC_TICKERS, 예전엔 "엔비디아" 이후 목록)이
     이번 "값복사" 탭 범위(4~281행)엔 아예 없다(2026-09-17 확인, 사용자 요청으로 이번엔 그냥
     비워두고 진행 — 나중에 다시 필요해지면 MISC_TICKERS를 그대로 두었으니 채워 넣으면 됨).
+- [2026-09-23] 사용자가 이 파일에 매크로 기능을 추가하면서 확장자가 .xlsx -> .xlsm으로
+  바뀌었다. openpyxl은 값만 읽는 용도(data_only=True)라 매크로 유무와 무관하게 그대로
+  동작하므로, DEFAULT_SOURCE 경로 문자열만 갱신했다.
 - 원본 자체에 있는 문제 두 가지를 이 스크립트가 보정한다:
   1) 일부 사명/섹터 문자열이 소스에서부터 특정 글자 수(사명은 28자)에서 잘려 들어온다
      (예: "Shanghai MicroPort MedBot Gr" -> "...Group", "산업용 기계, 용품 및" -> "...및 부품").
@@ -36,7 +39,7 @@
      오타가 또 생기면 COUNTRY_OVERRIDES(티커 기준)에 등록해 바로잡을 수 있다(현재는 비어있음).
 
 사용법:
-    python scripts/convert_global_dashboard.py --source "D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsx" --out global_dashboard.json
+    python scripts/convert_global_dashboard.py --source "D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsm" --out global_dashboard.json
 """
 import argparse
 import datetime
@@ -162,7 +165,7 @@ def load_rows(path):
     return deduped
 
 
-DEFAULT_SOURCE = r'D:\★사용자 폴더\Desktop\dashboard files\글로벌 대시보드!!.xlsx'
+DEFAULT_SOURCE = r'D:\★사용자 폴더\Desktop\dashboard files\글로벌 대시보드!!.xlsm'
 
 
 def main():
@@ -183,7 +186,7 @@ def main():
     sectors = sorted({s for row in rows for s in row['sectors']})
     out_data = {
         'updated': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        'source': 'Bloomberg 컨센서스(글로벌 대시보드!!.xlsx "값복사" 탭, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
+        'source': 'Bloomberg 컨센서스(글로벌 대시보드!!.xlsm "값복사" 탭, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
         'rows': rows,
         'sectors': sectors,
     }
