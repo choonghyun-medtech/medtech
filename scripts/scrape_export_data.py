@@ -121,6 +121,10 @@ REQUEST_RETRIES = 3  # 타임아웃/연결오류 시 재시도 횟수(최초 시
 REQUEST_RETRY_BACKOFF_SEC = 3  # 재시도 간 대기(시도 횟수에 비례해 증가)
 MAX_CONSECUTIVE_EMPTY_YEARS = 2  # 이 횟수만큼 연달아 빈 연도가 나오면 그 이전은 그만 조회
 
+# 호출마다 requests.get()으로 TCP/TLS 연결을 새로 맺으면 해외 리전 러너에서 호출당 시간이 크게
+# 늘어난다(수천 회 호출) — Session 하나를 재사용해 keep-alive 연결을 유지한다(2026-09-22).
+_session = requests.Session()
+
 # 카테고리 정의 — 라벨/HS코드(합산 대상 복수 가능)/참고 종목/국가별·지역별 조회 대상.
 # 2026-08-21 인수인계: 사용자가 index.html EXPORT_CATEGORY_CONFIG에 지정한 8개
 # 품목·HS코드·국가/지역 범위를 스크래퍼 쪽에도 그대로 반영(사용자 확인: "셋 다 지금
@@ -470,6 +474,46 @@ def aggregate_countries_as(by_country, country_names, agg_name):
     return {agg_name: sorted(({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"])}
 
 
+def fetch_config(cat):
+    """이 카테고리의 조회 범위를 결정하는 설정 중 출력 파일에 다른 형태로는 남지 않는 값
+    (조회 국가/유럽 합산 국가/시군구/기간별 HS코드/조회 개월 수)을 JSON 그대로 비교할 수 있는
+    형태로 모은다. 출력의 카테고리마다 "fetchConfig"로 저장해 두었다가 is_up_to_date()에서
+    코드의 현재 값과 비교한다 — 설정이 바뀌면 건너뛰지 않고 전체를 다시 받아 과거 값까지
+    채우기 위해서다(2026-09-22). 튜플은 JSON 저장 시 리스트가 되므로 왕복 변환해 형태를 맞춘다."""
+    cfg = {
+        "countries": cat.get("countries", []),
+        "europeCountries": cat.get("europeCountries", []),
+        "regions": cat.get("regions", []),
+        "hsCodesByPeriod": cat.get("hsCodesByPeriod"),
+        "countryMonths": COUNTRY_BREAKDOWN_MONTHS,
+        "sigunguMonths": SIGUNGU_BREAKDOWN_MONTHS,
+    }
+    return json.loads(json.dumps(cfg, ensure_ascii=False))
+
+
+def is_up_to_date(existing, end_yymm):
+    """기존 파일이 이미 이번 조회 대상 월(end_yymm)까지 반영돼 있으면 True.
+    모든 CATEGORIES가 존재하고, 각각 monthly 마지막 월이 end_yymm 이상이며 hsCodes/companies/
+    fetchConfig(조회 국가·시군구 등)가 코드의 현재 값과 같아야 한다. 하나라도 어긋나면
+    (=관세청 자료가 아직 미반영이거나, 이전 실행에서 일부 카테고리가 실패해 옛 데이터가
+    유지됐거나, CATEGORIES/조회 설정을 수정한 경우) False라서 전체를 다시 받는다. 한 달
+    안에서 15~18일 4일 창으로 매일 시도하는데 2일차부터는 전체 재조회가 불필요하므로 이
+    검사로 건너뛴다(2026-09-22)."""
+    end_ym = f"{end_yymm[:4]}-{end_yymm[4:]}"
+    by_key = {c.get("key"): c for c in existing.get("categories", [])}
+    for cat in CATEGORIES:
+        prev = by_key.get(cat["key"])
+        if not prev or not prev.get("monthly"):
+            return False
+        if prev["monthly"][-1].get("ym", "") < end_ym:
+            return False
+        if prev.get("hsCodes") != cat["hsCodes"] or prev.get("companies") != cat["companies"]:
+            return False
+        if prev.get("fetchConfig") != fetch_config(cat):
+            return False
+    return True
+
+
 def api_get(url, params, debug=False):
     """data.go.kr는 GitHub Actions 러너(해외 리전)에서 호출할 때 TLS 핸드셰이크가
     느리거나 가끔 타임아웃되는 경우가 실제로 관측됐다(2026-08-21, 첫 실행 로그에서
@@ -485,7 +529,7 @@ def api_get(url, params, debug=False):
     "자료가 실제로는 있는데 접속이 안 돼서" 조기 중단해버리는 오판을 할 수 있다."""
     for attempt in range(REQUEST_RETRIES):
         try:
-            resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
+            resp = _session.get(url, params=params, timeout=REQUEST_TIMEOUT)
             resp.raise_for_status()
             break
         except requests.RequestException as e:
@@ -740,6 +784,8 @@ def main():
     ap.add_argument("--out", default="export_data.json")
     ap.add_argument("--start-yymm", default=START_YYMM)
     ap.add_argument("--debug", action="store_true")
+    ap.add_argument("--force", action="store_true",
+                    help="이미 이번 조회 대상 월까지 반영돼 있어도 전체를 다시 조회")
     args = ap.parse_args()
 
     try:
@@ -763,6 +809,11 @@ def main():
     end_yymm = yymm_add_months(now.strftime("%Y%m"), -1)
     country_start_yymm = yymm_add_months(end_yymm, -(COUNTRY_BREAKDOWN_MONTHS - 1))
     sigungu_start_yymm = yymm_add_months(end_yymm, -(SIGUNGU_BREAKDOWN_MONTHS - 1))
+
+    if not args.force and is_up_to_date(existing, end_yymm):
+        print(f"[INFO] 기존 {args.out}이 이미 {end_yymm} 월분까지 반영돼 있어 조회를 건너뜁니다"
+              f"(강제로 다시 받으려면 --force).", file=sys.stderr)
+        return
 
     categories_out = []
     for cat in CATEGORIES:
@@ -809,6 +860,7 @@ def main():
             "label": cat["label"],
             "hsCodes": cat["hsCodes"],
             "companies": cat["companies"],
+            "fetchConfig": fetch_config(cat),  # 건너뛰기 판정용(is_up_to_date), 프런트/분석은 사용 안 함
             "monthly": monthly,
             "byCountry": by_country,
             "byRegion": by_region,  # 월별, 이 카테고리가 지정한 시군구(regions)만 포함
