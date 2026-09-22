@@ -11,11 +11,13 @@ name: Collect news
 
 on:
   schedule:
-    # 매일 평일(KST 월~금) 오전 6시 7분 = UTC 전날 21시 7분. 국내(네이버 API) + 해외(RSS)를
+    # 매일 평일(KST 월~금) 오전 5시 26분 = UTC 전날 20시 26분. 국내(네이버 API) + 해외(RSS)를
     # 한 워크플로에서 순서대로 실행해 같은 news.json에 대한 두 워크플로의 git push 충돌을 없앴다.
     # 분(minute)을 정각에서 살짝 비껴 잡은 이유: GitHub Actions는 매시 정각(0분)에 스케줄 실행이
-    # 몰려 지연/드롭될 확률이 높다고 공식 문서에서 안내함 -> 혼잡을 피하려 07분으로 이동 (2026-08-28).
-    - cron: "7 21 * * 0-4"
+    # 몰려 지연/드롭될 확률이 높다고 공식 문서에서 안내함 -> 혼잡을 피하려 26분으로 이동.
+    # 2026-09-22: GitHub Actions 스케줄 지연이 잦아 8시 데드라인을 못 맞추는 일이 반복돼,
+    # 전체 파이프라인(news/calendar/reports/ir/stock/investor-flow)을 앞당겼다.
+    - cron: "26 20 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:

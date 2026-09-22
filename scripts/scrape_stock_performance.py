@@ -16,6 +16,12 @@
   scrape_*.py 스크립트들과 동일한 "보강" 패턴, 2026-08-31 추가 — 이전엔 실패 시 무조건 null로
   덮어써서, yfinance가 일시적으로 막히면 기존에 정상 저장돼 있던 해외 종목 데이터까지 통째로
   날아가는 문제가 있었다. 로컬 네트워크에서 해외 107종목이 한꺼번에 실패하며 실제로 겪음).
+- 종가 반영 지연 검증(2026-09-22 추가): API가 아직 전날 종가만 주고 당일 종가를 안 준 경우
+  yfinance/네이버 모두 에러 없이 "가장 최근 데이터"를 그대로 반환하기 때문에 이전엔 조용히
+  하루 묵은 데이터를 최신인 것처럼 저장했다. 이를 잡기 위해 새로 받아온 as_of(최신 종가
+  거래일)가 직전 실행 결과의 as_of와 동일하면(= 새 거래일 데이터가 아직 안 올라온 것으로
+  간주) RETRY_WAIT_SECONDS만큼 대기한 뒤 딱 1회만 재조회한다. 재조회 후에도 그대로면(휴장일
+  등 정상적으로 갱신이 없는 경우 포함) 그 값을 그대로 쓴다 — 무한 재시도는 하지 않는다.
 
 사용법:
     python scrape_stock_performance.py --out stock_performance.json
@@ -34,6 +40,7 @@ import yfinance as yf
 
 NAVER_CHART_URL = "https://api.stock.naver.com/chart/domestic/item/{code}/day"
 NAVER_HISTORY_DAYS = 400  # 260 거래일 확보를 위한 여유 캘린더일
+RETRY_WAIT_SECONDS = 300  # as_of가 직전 실행과 동일(=종가 미반영 의심)할 때 재조회 전 대기 시간
 
 TICKERS_FILE = "tickers.json"
 
@@ -166,7 +173,34 @@ def ytd_change(hist_with_dates):
     return round((latest - base) / base * 100, 1)
 
 
-def fetch_one(item):
+def _fetch_close_series(item):
+    """단일 종목의 종가 시리즈를 가져온다 (KR은 네이버 우선, 그 외/실패 시 yfinance).
+    반환: (close 시리즈|None, foreign_ratio_map|None, yf.Ticker|None).
+    """
+    ticker = item["ticker"]
+    t = None
+    close = None
+    foreign_ratio_map = None
+
+    if item["market"] == "KR":
+        try:
+            close, foreign_ratio_map = fetch_naver_kr_series(ticker)
+        except Exception:
+            close, foreign_ratio_map = None, None
+
+    if close is None or close.empty:
+        t = yf.Ticker(ticker)
+        hist = t.history(period="15mo", auto_adjust=False)
+        if hist is not None and not hist.empty:
+            close = hist["Close"].dropna()
+            foreign_ratio_map = None
+        else:
+            close = None
+
+    return close, foreign_ratio_map, t
+
+
+def fetch_one(item, prev_as_of=None):
     ticker = item["ticker"]
     result = {
         "ticker": ticker,
@@ -184,24 +218,24 @@ def fetch_one(item):
         "error": None,
     }
     try:
-        t = None
-        close = None
-        foreign_ratio_map = None
-
-        if item["market"] == "KR":
-            try:
-                close, foreign_ratio_map = fetch_naver_kr_series(ticker)
-            except Exception:
-                close, foreign_ratio_map = None, None
-
+        close, foreign_ratio_map, t = _fetch_close_series(item)
         if close is None or close.empty:
-            t = yf.Ticker(ticker)
-            hist = t.history(period="15mo", auto_adjust=False)
-            if hist is None or hist.empty:
-                result["error"] = "no price history"
-                return result
-            close = hist["Close"].dropna()
-            foreign_ratio_map = None
+            result["error"] = "no price history"
+            return result
+
+        latest_date = str(close.index[-1].date())
+        if prev_as_of is not None and latest_date == prev_as_of:
+            # 새로 받아온 최신 종가 거래일이 직전 실행 결과와 동일 -> 당일 종가가 아직
+            # API에 반영되기 전일 가능성이 있으므로, 잠시 대기 후 딱 1회만 재조회한다.
+            # (휴장일이라 실제로 새 데이터가 없는 경우엔 재조회해도 동일한 값이 나올 뿐이라 무해함)
+            print(f"{ticker}: as_of({latest_date})가 직전 실행과 동일 -> "
+                  f"{RETRY_WAIT_SECONDS}초 대기 후 재조회", file=sys.stderr)
+            time.sleep(RETRY_WAIT_SECONDS)
+            retry_close, retry_fr_map, retry_t = _fetch_close_series(item)
+            if retry_close is not None and not retry_close.empty:
+                close, foreign_ratio_map = retry_close, retry_fr_map
+                if retry_t is not None:
+                    t = retry_t
 
         if len(close) > 0:
             result["as_of"] = str(close.index[-1].date())
@@ -256,11 +290,20 @@ def main():
     except (FileNotFoundError, json.JSONDecodeError):
         existing = {}
     existing_by_ticker = {s.get("ticker"): s for s in existing.get("stocks", [])}
+    # 직전 실행에서 정상 수집된(error 없는) 종목의 as_of만 재조회 판단 기준으로 쓴다.
+    prev_as_of_by_ticker = {
+        ticker: s.get("as_of")
+        for ticker, s in existing_by_ticker.items()
+        if s.get("error") is None
+    }
 
     print(f"fetching {len(items)} tickers with {args.max_workers} workers...")
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_workers) as ex:
-        futures = {ex.submit(fetch_one, item): item for item in items}
+        futures = {
+            ex.submit(fetch_one, item, prev_as_of_by_ticker.get(item["ticker"])): item
+            for item in items
+        }
         done = 0
         for fut in concurrent.futures.as_completed(futures):
             r = fut.result()

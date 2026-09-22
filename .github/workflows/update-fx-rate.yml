@@ -2,9 +2,11 @@ name: Update FX rate
 
 on:
   schedule:
-    # 매일 KST 07:50 = UTC 22:50 (요일 제한 없음 — 주말/공휴일엔 ECB가 새 값을 안 내놓으므로
+    # 매일 KST 06:34 = UTC 21:34 (요일 제한 없음 — 주말/공휴일엔 ECB가 새 값을 안 내놓으므로
     # 자연히 직전 영업일 값을 다시 받아오고, diff가 없으면 커밋도 건너뛴다).
-    - cron: "50 22 * * *"
+    # 2026-09-22: 8시 데드라인 확보를 위해 07:50 → 07:06 → 06:34로 앞당기며 순서도 재조정
+    # (ir 다음, stock-performance/investor-flow 앞).
+    - cron: "34 21 * * *"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:

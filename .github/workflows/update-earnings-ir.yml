@@ -2,12 +2,15 @@ name: Update earnings IR summaries
 
 on:
   schedule:
-    # 매일 평일(KST 월~금) 오전 7시 40분 = UTC 전날 22시 40분 (일~목 22:40 UTC).
+    # 매일 평일(KST 월~금) 오전 6시 17분 = UTC 전날 21시 17분 (일~목 21:17 UTC).
     # 2026-09-14: 기존 "1-5"(UTC 월~금)는 자정을 넘기는 스케줄(UTC 전날→KST 당일)인데
     # 요일을 하루 당겨서 지정하지 않아, 실제로는 KST 화~토요일에 돌고 정작 월요일엔
     # 안 도는 버그였다(사용자 리포트로 발견) — 다른 daily 워크플로(news/calendar/reports/
     # stock-performance/investor-flow)와 동일하게 "0-4"(UTC 일~목)로 수정.
-    - cron: "40 22 * * 0-4"
+    # 2026-09-22: 8시 데드라인 확보를 위해 전체 파이프라인을 앞당기면서, stock-performance/
+    # investor-flow와의 순서도 ir → stock → investor-flow로 재배치 (해외 정규장 마감
+    # 이후 여유를 stock-performance 쪽에 더 주기 위함).
+    - cron: "17 21 * * 0-4"
   workflow_dispatch:  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
     inputs:
       since:
