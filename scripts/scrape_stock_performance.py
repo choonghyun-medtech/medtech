@@ -16,12 +16,18 @@
   scrape_*.py 스크립트들과 동일한 "보강" 패턴, 2026-08-31 추가 — 이전엔 실패 시 무조건 null로
   덮어써서, yfinance가 일시적으로 막히면 기존에 정상 저장돼 있던 해외 종목 데이터까지 통째로
   날아가는 문제가 있었다. 로컬 네트워크에서 해외 107종목이 한꺼번에 실패하며 실제로 겪음).
-- 종가 반영 지연 검증(2026-09-22 추가): API가 아직 전날 종가만 주고 당일 종가를 안 준 경우
-  yfinance/네이버 모두 에러 없이 "가장 최근 데이터"를 그대로 반환하기 때문에 이전엔 조용히
-  하루 묵은 데이터를 최신인 것처럼 저장했다. 이를 잡기 위해 새로 받아온 as_of(최신 종가
-  거래일)가 직전 실행 결과의 as_of와 동일하면(= 새 거래일 데이터가 아직 안 올라온 것으로
-  간주) RETRY_WAIT_SECONDS만큼 대기한 뒤 딱 1회만 재조회한다. 재조회 후에도 그대로면(휴장일
-  등 정상적으로 갱신이 없는 경우 포함) 그 값을 그대로 쓴다 — 무한 재시도는 하지 않는다.
+- 종가 반영 지연 검증(2026-09-22 추가, 2026-09-23 배치 방식으로 수정): API가 아직 전날
+  종가만 주고 당일 종가를 안 준 경우 yfinance/네이버 모두 에러 없이 "가장 최근 데이터"를
+  그대로 반환하기 때문에 이전엔 조용히 하루 묵은 데이터를 최신인 것처럼 저장했다. 이를
+  잡기 위해 1차 조회 후 as_of(최신 종가 거래일)가 직전 실행 결과와 동일한 종목들만 모아,
+  RETRY_WAIT_SECONDS만큼 "한 번만" 대기한 뒤 그 종목들만 일괄 재조회한다. 재조회 후에도
+  그대로면(휴장일 등 정상적으로 갱신이 없는 경우 포함) 1차 값을 그대로 쓴다 — 무한 재시도는
+  하지 않는다. [2026-09-23] 처음엔 종목마다 개별적으로 대기 후 재조회했는데, 워커 풀
+  크기(max_workers)에 막혀 동시에 여러 종목이 걸리면 (걸린 종목 수 / max_workers) *
+  RETRY_WAIT_SECONDS만큼 전체 실행 시간이 불어나는 문제가 실사용 중 발견됐다(대부분의 KR
+  종목이 동시에 걸려 워크플로가 끝나지 않음). "동일 판정된 종목을 모아 딱 한 번만 대기 후
+  일괄 재조회"하는 현재 방식으로 변경해 전체 실행 시간 증가분을 RETRY_WAIT_SECONDS 한 번으로
+  고정했다.
 
 사용법:
     python scrape_stock_performance.py --out stock_performance.json
@@ -200,7 +206,7 @@ def _fetch_close_series(item):
     return close, foreign_ratio_map, t
 
 
-def fetch_one(item, prev_as_of=None):
+def fetch_one(item):
     ticker = item["ticker"]
     result = {
         "ticker": ticker,
@@ -222,20 +228,6 @@ def fetch_one(item, prev_as_of=None):
         if close is None or close.empty:
             result["error"] = "no price history"
             return result
-
-        latest_date = str(close.index[-1].date())
-        if prev_as_of is not None and latest_date == prev_as_of:
-            # 새로 받아온 최신 종가 거래일이 직전 실행 결과와 동일 -> 당일 종가가 아직
-            # API에 반영되기 전일 가능성이 있으므로, 잠시 대기 후 딱 1회만 재조회한다.
-            # (휴장일이라 실제로 새 데이터가 없는 경우엔 재조회해도 동일한 값이 나올 뿐이라 무해함)
-            print(f"{ticker}: as_of({latest_date})가 직전 실행과 동일 -> "
-                  f"{RETRY_WAIT_SECONDS}초 대기 후 재조회", file=sys.stderr)
-            time.sleep(RETRY_WAIT_SECONDS)
-            retry_close, retry_fr_map, retry_t = _fetch_close_series(item)
-            if retry_close is not None and not retry_close.empty:
-                close, foreign_ratio_map = retry_close, retry_fr_map
-                if retry_t is not None:
-                    t = retry_t
 
         if len(close) > 0:
             result["as_of"] = str(close.index[-1].date())
@@ -297,28 +289,51 @@ def main():
         if s.get("error") is None
     }
 
+    def run_batch(batch_items, label):
+        batch_results = {}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_workers) as ex:
+            futures = {ex.submit(fetch_one, item): item for item in batch_items}
+            done = 0
+            for fut in concurrent.futures.as_completed(futures):
+                r = fut.result()
+                done += 1
+                batch_results[r["ticker"]] = r
+                status = "OK" if r["error"] is None else f"FAIL ({r['error']})"
+                print(f"[{label} {done}/{len(batch_items)}] {r['ticker']}: {status}")
+        return batch_results
+
     print(f"fetching {len(items)} tickers with {args.max_workers} workers...")
+    results_by_ticker = run_batch(items, "1차")
+
+    # as_of가 직전 실행과 동일한 종목을 한데 모아 "딱 한 번"만 재조회한다.
+    # (종목마다 개별적으로 대기하면 워커 풀 크기에 막혀 전체 실행 시간이
+    # (걸린 종목 수 / max_workers) * RETRY_WAIT_SECONDS 만큼 불어난다 — 2026-09-23
+    # 실사용 중 KR 종목 다수가 동시에 이 조건에 걸려 워크플로가 끝나지 않는 문제로 발견,
+    # 배치 단위 재조회로 변경. as_of가 같다는 게 항상 오류는 아니다(휴장일 등 정상적으로
+    # 새 종가가 없는 경우도 동일하게 걸리므로, 재조회해도 같은 값이면 그대로 채택한다).
+    stale_tickers = [
+        item for item in items
+        if results_by_ticker[item["ticker"]]["error"] is None
+        and results_by_ticker[item["ticker"]]["as_of"] is not None
+        and results_by_ticker[item["ticker"]]["as_of"] == prev_as_of_by_ticker.get(item["ticker"])
+    ]
+    if stale_tickers:
+        print(f"{len(stale_tickers)}개 종목의 as_of가 직전 실행과 동일 -> "
+              f"{RETRY_WAIT_SECONDS}초 대기 후 해당 종목만 일괄 재조회", file=sys.stderr)
+        time.sleep(RETRY_WAIT_SECONDS)
+        retry_results = run_batch(stale_tickers, "재조회")
+        for ticker, rr in retry_results.items():
+            if rr["error"] is None and rr["as_of"] is not None:
+                results_by_ticker[ticker] = rr
+
     results = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_workers) as ex:
-        futures = {
-            ex.submit(fetch_one, item, prev_as_of_by_ticker.get(item["ticker"])): item
-            for item in items
-        }
-        done = 0
-        for fut in concurrent.futures.as_completed(futures):
-            r = fut.result()
-            done += 1
-            if r["error"] is not None:
-                prev = existing_by_ticker.get(r["ticker"])
-                if prev is not None and prev.get("error") is None:
-                    print(f"[{done}/{len(items)}] {r['ticker']}: FAIL ({r['error']}) — 이전 정상 데이터 보존",
-                          file=sys.stderr)
-                    r = prev
-                    results.append(r)
-                    continue
-            results.append(r)
-            status = "OK" if r["error"] is None else f"FAIL ({r['error']})"
-            print(f"[{done}/{len(items)}] {r['ticker']}: {status}")
+    for r in results_by_ticker.values():
+        if r["error"] is not None:
+            prev = existing_by_ticker.get(r["ticker"])
+            if prev is not None and prev.get("error") is None:
+                print(f"{r['ticker']}: FAIL ({r['error']}) — 이전 정상 데이터 보존", file=sys.stderr)
+                r = prev
+        results.append(r)
 
     order = {item["ticker"]: i for i, item in enumerate(items)}
     results.sort(key=lambda r: order.get(r["ticker"], 0))
