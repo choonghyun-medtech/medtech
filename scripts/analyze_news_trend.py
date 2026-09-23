@@ -37,6 +37,14 @@ index.html의 산업·기업 뉴스 탭 안 "브리핑" 서브탭이 이 결과(
   그 구간 안에서만 종합하게 한다.
 - 이 단계도 요약 단계와 마찬가지로 "보강" 단계다 — 실패해도 news_history.jsonl/news.json
   자체는 이미 저장된 상태이므로 sys.exit(1)로 워크플로를 실패시키지 않는다.
+- [2026-09-23] 실패 시 이전 결과를 보존하지 않고 빈 trends로 덮어쓰는 버그가 있었다 —
+  같은 날 자동 실행 전에 사용자가 지연 때문에 수동으로 먼저 한 번 돌렸는데, 그 직후 자동
+  실행이 또 돌면서 일일 쿼터를 소진해 두 번째 실행이 (카테고리, 기간) 조합 전부에서 빈
+  결과를 냈고, 그대로 news_trend.json에 덮어써 첫 실행의 정상 결과가 통째로 날아갔다
+  (git 히스토리로 복구함). scrape_stock_performance.py의 "실패 시 이전 정상 데이터 보존"
+  패턴과 동일하게, 이번 실행에서 못 채운 (region, key, period_days) 조합은 기존 파일에
+  있던 값으로 채우도록 고쳤다 — 새로 생성된 게 있으면 그걸 쓰고, 없으면 이전 값을 쓰고,
+  둘 다 없으면(완전히 새로운 카테고리) 빈 채로 둔다.
 - 2026-09-09: 실제 워크플로에서 "503 UNAVAILABLE(This model is currently experiencing
   high demand)"로 국내/해외 호출이 둘 다 실패해 브리핑이 매일 0건으로 나오는 문제가
   있었다 — 이건 쿼터 문제가 아니라 Gemini 쪽 일시적 과부하인데, 기존엔 1차+재시도 1회
@@ -237,15 +245,27 @@ def main():
     if provider is None:
         sys.exit(0)  # build_provider가 이미 WARN 로그를 남김
 
+    # 실패한 (region, key, period_days) 조합을 이전 결과로 채우기 위한 보존용 맵.
+    try:
+        with open(args.out, encoding="utf-8") as f:
+            existing_by_key = {
+                (t.get("region"), t.get("key"), t.get("period_days")): t
+                for t in json.load(f).get("trends", [])
+            }
+    except (FileNotFoundError, json.JSONDecodeError):
+        existing_by_key = {}
+
     now = datetime.datetime.now(datetime.timezone.utc)
 
-    trends = []
+    # 지역별 (카테고리, 기간) 후보를 먼저 전부 계산해둔다 — API 호출 도중 일별 쿼터가
+    # 소진돼 break로 중단되더라도, 아직 시도조차 못 한 지역의 후보 목록까지 이미 갖고
+    # 있어야 아래에서 이전 결과로 채워 넣을 수 있다.
+    region_cat_period_items = {}
     for region in REGIONS:
         region_records = [r for r in records if r.get("region") == region]
         if not region_records:
             continue
         categories = sorted({r.get("cat") for r in region_records if r.get("cat")})
-
         cat_period_items = {}
         for cat in categories:
             for period in PERIODS:
@@ -255,30 +275,47 @@ def main():
                     continue
                 items.sort(key=lambda r: r.get("date", ""))
                 cat_period_items[(cat, period["days"])] = items
-        if not cat_period_items:
-            continue
+        if cat_period_items:
+            region_cat_period_items[region] = cat_period_items
 
+    results_by_region = {}
+    for region, cat_period_items in region_cat_period_items.items():
         try:
-            results = generate_trends_batch(provider, region, cat_period_items, debug=args.debug)
+            results_by_region[region] = generate_trends_batch(provider, region, cat_period_items, debug=args.debug)
         except DailyQuotaExhausted:
             print("[WARN] 일별 쿼터가 이미 소진된 상태라 남은 지역의 트렌드 생성을 전부 "
-                  "건너뜁니다(어차피 똑같이 실패하므로 시간 낭비 방지).", file=sys.stderr)
+                  "건너뜁니다(어차피 똑같이 실패하므로 시간 낭비 방지) — 못 채운 구간은 "
+                  "이전 결과로 대체합니다.", file=sys.stderr)
             break
+
+    trends = []
+    for region, cat_period_items in region_cat_period_items.items():
+        results = results_by_region.get(region, {})
         for (cat, days), items in cat_period_items.items():
-            text = results.get((cat, days))
             period_label = next(p["label"] for p in PERIODS if p["days"] == days)
+            text = results.get((cat, days))
+            n_articles = len(items)
             if not text:
-                print(f"[WARN] 트렌드 응답에 구간 누락: [{REGION_LABEL[region]}] {cat} / {period_label}({days}일)", file=sys.stderr)
-                continue
+                prev = existing_by_key.get((region, cat, days))
+                if prev and prev.get("text"):
+                    text = prev["text"]
+                    n_articles = prev.get("n_articles", n_articles)
+                    print(f"[WARN] 트렌드 응답에 구간 누락, 이전 결과로 대체: "
+                          f"[{REGION_LABEL[region]}] {cat} / {period_label}({days}일)", file=sys.stderr)
+                else:
+                    print(f"[WARN] 트렌드 응답에 구간 누락(이전 결과도 없음): "
+                          f"[{REGION_LABEL[region]}] {cat} / {period_label}({days}일)", file=sys.stderr)
+                    continue
+            else:
+                print(f"[INFO] 트렌드 생성 완료: [{REGION_LABEL[region]}] {cat} / {period_label} 최근 {days}일 ({len(items)}건)", file=sys.stderr)
             trends.append({
                 "scope": "category",
                 "key": cat,
                 "region": region,
                 "period_days": days,
                 "text": text,
-                "n_articles": len(items),
+                "n_articles": n_articles,
             })
-            print(f"[INFO] 트렌드 생성 완료: [{REGION_LABEL[region]}] {cat} / {period_label} 최근 {days}일 ({len(items)}건)", file=sys.stderr)
 
     payload = {
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
