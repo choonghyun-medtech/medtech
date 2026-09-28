@@ -379,7 +379,8 @@ tr:last-child td{border-bottom:none}
 .perf-cap-btn.busy{opacity:.5; pointer-events:none}
 /* 캡쳐용 오프스크린 렌더 영역 — 보고서 첨부용이라 테마와 무관하게 항상 라이트 팔레트 */
 .perf-capture-stage{
-  position:fixed; left:-10000px; top:0; width:960px; padding:20px 22px;
+  /* 종목명이 길면(nowrap) 표가 고정폭을 넘어 오른쪽이 잘리므로, 폭을 내용에 맞춰 늘린다 */
+  position:fixed; left:-10000px; top:0; width:max-content; min-width:960px; padding:20px 22px;
   --bg:#ffffff; --bg2:#f7f8fa; --card:#ffffff; --border:#e6e8eb;
   --text:#1a1d21; --sub:#5b6470; --dim:#8a919c;
   background:var(--bg); color:var(--text);
@@ -2869,7 +2870,11 @@ async function capturePerfTables(period, btn){
         <h3>${PERF_CAPTURE_PERIOD_LABEL[period]} ${set.key} Top 10 / Bottom 10</h3>
         <div class="perf-capture-sub">종가 기준일 ${asOf || '-'} · ${list.length}종목 중 · 변화율은 로컬 통화 기준 · 시총 단위 십억원${capRule}${fxNote}</div>
         ${buildPerfGridHtml(list, period)}`;
-      const canvas = await html2canvas(stage, { backgroundColor:'#ffffff', scale:2, logging:false });
+      const canvas = await html2canvas(stage, {
+        backgroundColor:'#ffffff', scale:2, logging:false,
+        width: stage.scrollWidth, height: stage.scrollHeight,
+        windowWidth: Math.max(window.innerWidth, stage.scrollWidth + 40), // 창보다 넓은 표도 잘리지 않게
+      });
       const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
       const fileName = `${asOf || new Date().toISOString().slice(0,10)}_${PERF_CAPTURE_FILE_PERIOD[period]}_${set.key}_Top10_Bottom10.png`;
       await perfSaveBlob(dir, fileName, blob);
