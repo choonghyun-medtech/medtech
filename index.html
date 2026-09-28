@@ -373,6 +373,20 @@ tr:last-child td{border-bottom:none}
 .perf-name-link:hover{text-decoration:underline}
 .perf-table-box table{font-size:12.5px}
 .perf-table-box{border:1px solid var(--border); border-radius:0 0 10px 10px; overflow:hidden}
+/* 필터 행 맨 오른쪽 캡쳐 버튼 — 기간이 1일/5일일 때만 노출 (2026-09-28) */
+.perf-cap-btn{cursor:pointer; font-weight:600}
+.perf-cap-btn:hover{border-color:var(--accent); color:var(--accent)}
+.perf-cap-btn.busy{opacity:.5; pointer-events:none}
+/* 캡쳐용 오프스크린 렌더 영역 — 보고서 첨부용이라 테마와 무관하게 항상 라이트 팔레트 */
+.perf-capture-stage{
+  position:fixed; left:-10000px; top:0; width:960px; padding:20px 22px;
+  --bg:#ffffff; --bg2:#f7f8fa; --card:#ffffff; --border:#e6e8eb;
+  --text:#1a1d21; --sub:#5b6470; --dim:#8a919c;
+  background:var(--bg); color:var(--text);
+}
+.perf-capture-stage h3{margin:0 0 2px; font-size:17px}
+.perf-capture-stage .perf-capture-sub{font-size:11.5px; color:var(--dim); margin-bottom:12px}
+.perf-capture-stage .perf-grid{grid-template-columns:1fr 1fr}
 .news-cat-h{font-size:12px; font-weight:700; color:var(--accent); margin:16px 0 4px}
 .news-cat-h:first-child{margin-top:0}
 .news-co{font-weight:700; margin-right:4px}
@@ -539,6 +553,7 @@ tr:last-child td{border-bottom:none}
       <button data-p="ytd">YTD</button>
     </div>
     <div class="note" id="perf-asof-note" style="margin:4px 0"></div>
+    <div class="note" id="perf-capture-note" style="margin:0 0 4px; font-size:10.5px; color:var(--dim)"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
       <select id="perf-cap-filter" class="filter-select">
         <option value="all">시총 전체</option>
@@ -559,6 +574,7 @@ tr:last-child td{border-bottom:none}
       <select id="perf-sector-filter" class="filter-select">
         <option value="all">섹터 전체</option>
       </select>
+      <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장">📷 1일 표 저장</button>
     </div>
     <div id="perf-body">
       <div class="na-msg">stock_performance.json 로딩 중...</div>
@@ -2642,24 +2658,80 @@ function renderPerfTables(){
     (perfState.sector==='all' || s.sector===perfState.sector) &&
     s.returns[perfState.period] != null
   );
-  const sorted = filtered.slice().sort((a,b)=> b.returns[perfState.period]-a.returns[perfState.period]);
+  body.innerHTML = buildPerfGridHtml(filtered, perfState.period) +
+    `<div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 해당 기업 뉴스 검색(Google) 탭이 새로 열립니다. 해외 종목 시총은 ${PERF_FX.rate_date ? PERF_FX.rate_date+' 기준 전일 환율(fx_rate.json)' : '스크레이퍼 고정 환율'}로 원화 환산한 값입니다.</div>`;
+}
+
+// ---- 시가총액 단위 환산 (2026-09-28) ----
+// 표시 단위는 국내·해외 모두 십억원으로 통일. market_cap_krw_eok는 스크레이퍼가 현지통화
+// 시총 × 고정 환율(stock_performance.json의 fx_to_krw)로 원화 환산해 둔 값이라, 해외 종목은
+// 그 고정 환율로 나눠 현지통화 시총을 복원한 뒤 fx_rate.json의 전일 환율(usd_rates, 글로벌
+// 대시보드와 같은 소스)로 다시 원화 환산한다. ECB 미고시 통화(TWD)는 fetch_fx_rate.py가
+// open.er-api.com에서 보충해 usd_rates에 넣어준다. 환율이 없거나 fx_rate.json 로드 실패 시에는
+// 스크레이퍼 고정 환율 값을 그대로 쓴다.
+// 메가캡/중소형주 구분 기준: 시총 $10B(사용자 지정) — 같은 전일 환율로 달러 환산해 판정.
+let PERF_SCRAPER_FX = { USD:1370, KRW:1 };
+const PERF_FX = { rate_date:null, usd_rates:null };
+const PERF_MEGACAP_USD_B = 10;
+function perfLocalCap(s){ // 현지통화 시총(원 단위 아님, 통화 단위 그대로)과 통화 코드
+  const cur = s.market==='KR' ? 'KRW' : s.currency;
+  const fixed = PERF_SCRAPER_FX[cur];
+  if(s.market_cap_krw_eok==null || !fixed) return null;
+  return { cur, amount: s.market_cap_krw_eok * 1e8 / fixed };
+}
+function perfDailyUsdRate(cur){ // 1달러당 해당 통화(전일 환율), 없으면 null
+  if(cur==='USD') return 1;
+  const r = PERF_FX.usd_rates;
+  return r && typeof r[cur]==='number' ? r[cur] : null;
+}
+function perfCapKrwB(s){
+  if(s.market_cap_krw_eok==null) return null;
+  if(s.market==='KR') return s.market_cap_krw_eok / 10;
+  const lc = perfLocalCap(s);
+  const toUsd = lc && perfDailyUsdRate(lc.cur);
+  const usdKrw = perfDailyUsdRate('KRW');
+  if(!toUsd || !usdKrw) return s.market_cap_krw_eok / 10; // 폴백: 스크레이퍼 고정 환율 값
+  return lc.amount / toUsd * usdKrw / 1e9;
+}
+function perfCapUsdB(s){
+  const krwB = perfCapKrwB(s);
+  if(krwB==null) return null;
+  const usdKrw = perfDailyUsdRate('KRW') || PERF_SCRAPER_FX.USD;
+  return krwB / usdKrw;
+}
+function perfFmtKrwB(v){ return v==null ? '-' : Math.round(v).toLocaleString('ko-KR'); }
+
+async function loadPerfFx(){
+  try{
+    const res = await fetch('fx_rate.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const fx = await res.json();
+    // 구버전 fx_rate.json(usd_rates 없음)이어도 USD 종목은 usd_krw로 환산 가능
+    PERF_FX.usd_rates = Object.assign({}, fx.usd_rates || {}, typeof fx.usd_krw==='number' ? {KRW: fx.usd_krw} : {});
+    PERF_FX.rate_date = fx.rate_date || null;
+    if(STOCK_PERF.length) renderPerfTables();
+  }catch(e){ /* 스크레이퍼 고정 환율 값으로 폴백 */ }
+}
+loadPerfFx();
+
+// Top10/Bottom10 표 한 쌍 — 화면 렌더와 이미지 캡쳐가 같은 마크업을 쓴다.
+function buildPerfGridHtml(list, period){
+  const sorted = list.slice().sort((a,b)=> b.returns[period]-a.returns[period]);
   const top10 = sorted.slice(0,10);
   const bottom10 = sorted.slice(-10).reverse();
-
-  function buildTable(list){
-    const header = '<thead><tr><th>#</th><th>종목</th><th>섹터</th><th>시총(조원)</th><th>변화율(%)</th></tr></thead>';
-    const rows = list.map((s,i)=>`
+  function buildTable(rowsList){
+    const header = `<thead><tr><th>#</th><th>종목</th><th>섹터</th><th>시총(십억원)</th><th>변화율(%)</th></tr></thead>`;
+    const rows = rowsList.map((s,i)=>`
       <tr title="${s.as_of ? '종가 기준일 '+s.as_of : '기준일 정보 없음'}">
         <td>${i+1}</td>
         <td><a class="perf-name-link" href="${newsUrl(s.name)}" target="_blank" rel="noopener">${s.name}</a><span class="market-badge">${s.market}</span></td>
         <td>${s.sector}</td>
-        <td>${s.market_cap_krw_tril!=null ? s.market_cap_krw_tril.toFixed(1) : '-'}</td>
-        <td class="${pctClass(s.returns[perfState.period])}">${fmtPct(s.returns[perfState.period])}</td>
+        <td>${perfFmtKrwB(perfCapKrwB(s))}</td>
+        <td class="${pctClass(s.returns[period])}">${fmtPct(s.returns[period])}</td>
       </tr>`).join('');
     return `<table>${header}<tbody>${rows || '<tr><td colspan="5" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>'}</tbody></table>`;
   }
-
-  body.innerHTML = `
+  return `
     <div class="perf-grid">
       <div>
         <div class="perf-table-title top">Top 10</div>
@@ -2669,15 +2741,168 @@ function renderPerfTables(){
         <div class="perf-table-title bottom">Bottom 10</div>
         <div class="perf-table-box">${buildTable(bottom10)}</div>
       </div>
-    </div>
-    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 해당 기업 뉴스 검색(Google) 탭이 새로 열립니다.</div>`;
+    </div>`;
 }
+
+// ---- Top/Bottom 표 이미지 캡쳐 (2026-09-28) ----
+// 기간이 1일/5일일 때 필터 행 오른쪽에 나타나는 📷 버튼 → 국내/메가캡/중소형주 3장을 PNG로 저장. 섹터·시총·지역
+// 필터와 무관하게 전체 유니버스 기준. 저장 위치는 File System Access API로 처음 한 번
+// 폴더를 고르면 IndexedDB에 핸들을 기억해 다음부터 그 폴더에 바로 쓴다(Chrome/Edge).
+// 미지원 브라우저는 기본 다운로드 폴더로 저장.
+const PERF_CAPTURE_SETS = [
+  { key:'국내', filter:s=>s.market==='KR' },
+  { key:'메가캡', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c>=PERF_MEGACAP_USD_B; } },
+  { key:'중소형주', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c<PERF_MEGACAP_USD_B; } },
+];
+const PERF_CAPTURE_PERIOD_LABEL = { d1:'전일 종가 기준', d5:'지난 5일 기준' };
+const PERF_CAPTURE_FILE_PERIOD = { d1:'1일', d5:'5일' };
+
+function perfIdb(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open('medtech-dashboard', 1);
+    req.onupgradeneeded = ()=> req.result.createObjectStore('kv');
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function perfIdbGet(key){
+  try{
+    const db = await perfIdb();
+    return await new Promise((res, rej)=>{ const r = db.transaction('kv').objectStore('kv').get(key); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); });
+  }catch(e){ return null; }
+}
+async function perfIdbSet(key, val){
+  try{
+    const db = await perfIdb();
+    await new Promise((res, rej)=>{ const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').put(val, key); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); });
+  }catch(e){}
+}
+
+// 클릭 직후(사용자 제스처가 살아있을 때) 호출해야 권한 요청/폴더 선택 창이 뜬다.
+async function perfGetCaptureDir(forcePick){
+  if(!window.showDirectoryPicker) return null;
+  if(!forcePick){
+    const saved = await perfIdbGet('perfCaptureDir');
+    if(saved){
+      const opts = {mode:'readwrite'};
+      if(await saved.queryPermission(opts)==='granted' || await saved.requestPermission(opts)==='granted') return saved;
+    }
+  }
+  const dir = await window.showDirectoryPicker({ id:'perf-capture', mode:'readwrite', startIn:'desktop' });
+  await perfIdbSet('perfCaptureDir', dir);
+  renderPerfCaptureNote();
+  return dir;
+}
+
+async function renderPerfCaptureNote(){
+  const el = document.getElementById('perf-capture-note');
+  if(!el) return;
+  if(!window.showDirectoryPicker){
+    el.textContent = '📷 표 캡쳐: 이 브라우저는 폴더 지정 저장을 지원하지 않아 기본 다운로드 폴더에 저장됩니다(Chrome/Edge 권장).';
+    return;
+  }
+  const saved = await perfIdbGet('perfCaptureDir');
+  el.innerHTML = saved
+    ? `📷 표 캡쳐 저장 폴더: <b>${escapeHtml(saved.name)}</b> · <a href="#" id="perf-capture-change">폴더 변경</a>`
+    : '📷 표 캡쳐: 처음 한 번 저장 폴더를 선택하면 다음부터 그 폴더에 바로 저장됩니다.';
+  const link = document.getElementById('perf-capture-change');
+  if(link) link.addEventListener('click', async e=>{
+    e.preventDefault();
+    try{ await perfGetCaptureDir(true); }catch(err){ /* 선택 취소 */ }
+  });
+}
+
+let perfHtml2canvasPromise = null;
+function perfLoadHtml2canvas(){
+  if(window.html2canvas) return Promise.resolve();
+  if(!perfHtml2canvasPromise){
+    perfHtml2canvasPromise = new Promise((resolve, reject)=>{
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      sc.onload = resolve;
+      sc.onerror = ()=>{ perfHtml2canvasPromise = null; reject(new Error('html2canvas 로드 실패')); };
+      document.head.appendChild(sc);
+    });
+  }
+  return perfHtml2canvasPromise;
+}
+
+async function perfSaveBlob(dir, fileName, blob){
+  if(dir){
+    const fh = await dir.getFileHandle(fileName, {create:true});
+    const w = await fh.createWritable();
+    await w.write(blob);
+    await w.close();
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+}
+
+async function capturePerfTables(period, btn){
+  if(!STOCK_PERF.length){ alert('주가 데이터가 아직 로드되지 않았습니다.'); return; }
+  let dir = null;
+  try{
+    dir = await perfGetCaptureDir(false);
+  }catch(e){
+    if(e && e.name==='AbortError') return; // 폴더 선택 취소
+    dir = null;
+  }
+  btn.classList.add('busy');
+  const stage = document.createElement('div');
+  stage.className = 'perf-capture-stage';
+  document.body.appendChild(stage);
+  const saved = [];
+  try{
+    await perfLoadHtml2canvas();
+    for(const set of PERF_CAPTURE_SETS){
+      const list = STOCK_PERF.filter(s=> set.filter(s) && s.returns[period] != null);
+      const asOf = list.reduce((m,s)=> s.as_of && s.as_of > m ? s.as_of : m, '');
+      const capRule = set.key==='메가캡' ? ' · 메가캡: 시총 $10B 이상' : set.key==='중소형주' ? ' · 중소형주: 시총 $10B 미만' : '';
+      const fxNote = set.key!=='국내' && PERF_FX.rate_date ? ` · 해외 시총은 ${PERF_FX.rate_date} 환율로 원화 환산` : '';
+      stage.innerHTML = `
+        <h3>${PERF_CAPTURE_PERIOD_LABEL[period]} ${set.key} Top 10 / Bottom 10</h3>
+        <div class="perf-capture-sub">종가 기준일 ${asOf || '-'} · ${list.length}종목 중 · 변화율은 로컬 통화 기준 · 시총 단위 십억원${capRule}${fxNote}</div>
+        ${buildPerfGridHtml(list, period)}`;
+      const canvas = await html2canvas(stage, { backgroundColor:'#ffffff', scale:2, logging:false });
+      const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
+      const fileName = `${asOf || new Date().toISOString().slice(0,10)}_${PERF_CAPTURE_FILE_PERIOD[period]}_${set.key}_Top10_Bottom10.png`;
+      await perfSaveBlob(dir, fileName, blob);
+      saved.push(fileName);
+    }
+    alert(`${saved.length}장 저장 완료${dir ? ' ('+dir.name+' 폴더)' : ' (다운로드 폴더)'}\n\n` + saved.join('\n'));
+  }catch(e){
+    alert('캡쳐 저장 중 오류: ' + e.message + (saved.length ? `\n(저장된 파일: ${saved.join(', ')})` : ''));
+  }finally{
+    stage.remove();
+    btn.classList.remove('busy');
+  }
+}
+
+// 캡쳐 대상 기간은 1일/5일뿐이라 그 외 기간에서는 버튼을 숨긴다.
+function updatePerfCaptureBtn(){
+  const btn = document.getElementById('perf-capture-btn');
+  const label = PERF_CAPTURE_FILE_PERIOD[perfState.period];
+  btn.hidden = !label;
+  if(label) btn.textContent = `📷 ${label} 표 저장`;
+}
+document.getElementById('perf-capture-btn').addEventListener('click', e=>{
+  capturePerfTables(perfState.period, e.currentTarget);
+});
+updatePerfCaptureBtn();
+renderPerfCaptureNote();
 
 document.querySelectorAll('#perf-period-toggle button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#perf-period-toggle button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     perfState.period = b.dataset.p;
+    updatePerfCaptureBtn();
     renderPerfTables();
   });
 });
@@ -2691,6 +2916,7 @@ async function loadStockPerformance(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     STOCK_PERF = data.stocks || [];
+    if(data.fx_to_krw) PERF_SCRAPER_FX = Object.assign({KRW:1}, data.fx_to_krw);
     populatePerfSectorFilter();
     renderPerfAsOfNote();
     renderPerfTables();
