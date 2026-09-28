@@ -29,6 +29,9 @@
 - [2026-09-28] 파일이 다시 .xlsx("글로벌 대시보드!!.xlsx")로 바뀌었다. 시트가 여러 개
   늘었지만(raw, 값복사, Peer Valuation, 섹터별 탭 등) 읽는 탭은 여전히 "값복사" 하나다.
   DEFAULT_SOURCE를 .xlsx로 되돌리고, 파일이 없으면 .xlsm을 자동으로 찾도록 폴백을 넣었다.
+  또 이 파일에선 4행이 머리글(국적/섹터/사명/.../Ticker)이고 데이터가 5행부터라, 4행 고정으로
+  읽던 탓에 머리글 행이 회사 1건으로 섞여 들어갔다 → find_header_row()로 머리글 행을 찾아
+  그 다음 행부터 읽도록 변경(열 배치 B/C/D/E~V/W는 그대로).
 - 원본 자체에 있는 문제 두 가지를 이 스크립트가 보정한다:
   1) 일부 사명/섹터 문자열이 소스에서부터 특정 글자 수(사명은 28자)에서 잘려 들어온다
      (예: "Shanghai MicroPort MedBot Gr" -> "...Group", "산업용 기계, 용품 및" -> "...및 부품").
@@ -119,11 +122,35 @@ def clean(v):
     return v
 
 
+# "값복사" 탭 머리글 행에 있어야 하는 열 이름(열 번호 -> 머리글). 데이터 시작 행이 파일마다
+# 달라져서(2026-09-28: 4행이던 데이터가 5행으로 밀리고 4행이 머리글이 됨 → 머리글 행이
+# 국적 "국적"/섹터 "섹터"인 회사 1건으로 잘못 들어갔었다) 행 번호를 고정하지 않고 이 머리글
+# 행을 찾아 그 다음 행부터 읽는다. 열 배치까지 바뀌었으면 잘못된 값을 내보내지 않도록 중단.
+HEADER_COLUMNS = {2: '국적', 3: '섹터', 4: '사명', 23: 'Ticker'}
+HEADER_SEARCH_ROWS = 20
+
+
+def find_header_row(ws):
+    def label(r, c):
+        v = ws.cell(row=r, column=c).value
+        return v.strip() if isinstance(v, str) else v
+    for r in range(1, HEADER_SEARCH_ROWS + 1):
+        if label(r, 4) == '사명':
+            mismatched = {c: (want, label(r, c)) for c, want in HEADER_COLUMNS.items() if label(r, c) != want}
+            if mismatched:
+                detail = ', '.join(f'{openpyxl.utils.get_column_letter(c)}열 기대 "{w}" / 실제 "{g}"' for c, (w, g) in mismatched.items())
+                raise ValueError(f'"값복사" 탭 {r}행 머리글의 열 배치가 예상과 다릅니다({detail}). 열이 이동했다면 스크립트 열 매핑을 수정해야 합니다.')
+            return r
+    raise ValueError(f'"값복사" 탭 1~{HEADER_SEARCH_ROWS}행에서 D열 "사명" 머리글을 찾지 못했습니다.')
+
+
 def load_rows(path):
     wb = openpyxl.load_workbook(path, data_only=True)
     ws = wb['값복사']
+    header_row = find_header_row(ws)
+    print(f'"값복사" 탭 머리글 {header_row}행 확인 → {header_row + 1}행부터 데이터로 읽습니다.', file=sys.stderr)
     rows = []
-    for r in range(4, ws.max_row + 1):
+    for r in range(header_row + 1, ws.max_row + 1):
         name = ws.cell(row=r, column=4).value
         country = ws.cell(row=r, column=2).value
         sector = ws.cell(row=r, column=3).value
@@ -191,6 +218,9 @@ def main():
         sys.exit(1)
     except KeyError:
         print(f'[ERROR] "{args.source}"에 "값복사" 시트가 없습니다 — 탭 이름이 바뀌었는지 확인해주세요.', file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f'[ERROR] {e}', file=sys.stderr)
         sys.exit(1)
 
     sectors = sorted({s for row in rows for s in row['sectors']})
