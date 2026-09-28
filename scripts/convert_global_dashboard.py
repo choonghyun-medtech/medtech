@@ -26,6 +26,9 @@
 - [2026-09-23] 사용자가 이 파일에 매크로 기능을 추가하면서 확장자가 .xlsx -> .xlsm으로
   바뀌었다. openpyxl은 값만 읽는 용도(data_only=True)라 매크로 유무와 무관하게 그대로
   동작하므로, DEFAULT_SOURCE 경로 문자열만 갱신했다.
+- [2026-09-28] 파일이 다시 .xlsx("글로벌 대시보드!!.xlsx")로 바뀌었다. 시트가 여러 개
+  늘었지만(raw, 값복사, Peer Valuation, 섹터별 탭 등) 읽는 탭은 여전히 "값복사" 하나다.
+  DEFAULT_SOURCE를 .xlsx로 되돌리고, 파일이 없으면 .xlsm을 자동으로 찾도록 폴백을 넣었다.
 - 원본 자체에 있는 문제 두 가지를 이 스크립트가 보정한다:
   1) 일부 사명/섹터 문자열이 소스에서부터 특정 글자 수(사명은 28자)에서 잘려 들어온다
      (예: "Shanghai MicroPort MedBot Gr" -> "...Group", "산업용 기계, 용품 및" -> "...및 부품").
@@ -39,11 +42,12 @@
      오타가 또 생기면 COUNTRY_OVERRIDES(티커 기준)에 등록해 바로잡을 수 있다(현재는 비어있음).
 
 사용법:
-    python scripts/convert_global_dashboard.py --source "D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsm" --out global_dashboard.json
+    python scripts/convert_global_dashboard.py --source "D:/★사용자 폴더/Desktop/dashboard files/글로벌 대시보드!!.xlsx" --out global_dashboard.json
 """
 import argparse
 import datetime
 import json
+import os
 import sys
 
 import openpyxl
@@ -165,14 +169,20 @@ def load_rows(path):
     return deduped
 
 
-DEFAULT_SOURCE = r'D:\★사용자 폴더\Desktop\dashboard files\글로벌 대시보드!!.xlsm'
+DEFAULT_SOURCE = r'D:\★사용자 폴더\Desktop\dashboard files\글로벌 대시보드!!.xlsx'
+# 확장자가 .xlsx <-> .xlsm으로 오간 이력이 있어(2026-09-23 .xlsm, 2026-09-28 다시 .xlsx),
+# --source를 따로 주지 않았고 기본 경로 파일이 없으면 다른 확장자를 자동으로 찾아본다.
+DEFAULT_SOURCE_ALTERNATES = [os.path.splitext(DEFAULT_SOURCE)[0] + ext for ext in ('.xlsm',)]
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--source', default=DEFAULT_SOURCE, help='원본 Bloomberg 엑셀 파일 경로("값복사" 탭을 읽음)')
+    ap.add_argument('--source', default=None, help='원본 Bloomberg 엑셀 파일 경로("값복사" 탭을 읽음, 기본: 글로벌 대시보드!!.xlsx → 없으면 .xlsm)')
     ap.add_argument('--out', default='global_dashboard.json')
     args = ap.parse_args()
+    if args.source is None:
+        args.source = next((p for p in [DEFAULT_SOURCE] + DEFAULT_SOURCE_ALTERNATES if os.path.exists(p)), DEFAULT_SOURCE)
+    print(f'원본 엑셀: {args.source}', file=sys.stderr)
 
     try:
         rows = load_rows(args.source)
@@ -186,7 +196,7 @@ def main():
     sectors = sorted({s for row in rows for s in row['sectors']})
     out_data = {
         'updated': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        'source': 'Bloomberg 컨센서스(글로벌 대시보드!!.xlsm "값복사" 탭, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
+        'source': f'Bloomberg 컨센서스({os.path.basename(args.source)} "값복사" 탭, 로컬 터미널 세션에서 수동 갱신) 기반, 자동 스케줄 갱신 아님',
         'rows': rows,
         'sectors': sectors,
     }

@@ -1,7 +1,7 @@
 {
  "updated": "2026-09-25T13:55:45Z",
- "count": 259,
- "ok_count": 258,
+ "count": 258,
+ "ok_count": 257,
  "stocks": [
   {
    "ticker": "ROP.SW",
@@ -18866,84 +18866,6 @@
       "operating_income": null,
       "net_income": null,
       "eps": -0.045
-     }
-    ]
-   },
-   "as_of": "2026-09-25",
-   "error": null
-  },
-  {
-   "ticker": "RBOT",
-   "name": "Vicarious Surgical Inc",
-   "market": "US",
-   "source": "yfinance",
-   "opinion": "none",
-   "opinion_score": null,
-   "target_price": null,
-   "target_price_high": null,
-   "target_price_low": null,
-   "analyst_count": null,
-   "per_fwd": -0.027649768,
-   "eps_fwd": -2.17,
-   "earnings": {
-    "annual": [
-     {
-      "period": "2023-12-31",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -80666000.0,
-      "net_income": -71071000.0,
-      "eps": -14.6
-     },
-     {
-      "period": "2024-12-31",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -66555000.0,
-      "net_income": -63223000.0,
-      "eps": -10.742001
-     },
-     {
-      "period": "2025-12-31",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -50968000.0,
-      "net_income": -50182000.0,
-      "eps": -8.19
-     }
-    ],
-    "quarterly": [
-     {
-      "period": "2025-06-30",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -13519000.0,
-      "net_income": -13215000.0,
-      "eps": -2.23
-     },
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -11503000.0,
-      "net_income": -11058000.0,
-      "eps": -1.86
-     },
-     {
-      "period": "2025-12-31",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -10199000.0,
-      "net_income": -10515000.0,
-      "eps": -1.57
-     },
-     {
-      "period": "2026-03-31",
-      "is_estimate": false,
-      "revenue": 0.0,
-      "operating_income": -7502000.0,
-      "net_income": -7329000.0,
-      "eps": -1.03
      }
     ]
    },
