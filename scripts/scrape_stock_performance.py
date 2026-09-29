@@ -28,6 +28,9 @@
   종목이 동시에 걸려 워크플로가 끝나지 않음). "동일 판정된 종목을 모아 딱 한 번만 대기 후
   일괄 재조회"하는 현재 방식으로 변경해 전체 실행 시간 증가분을 RETRY_WAIT_SECONDS 한 번으로
   고정했다.
+  [2026-09-30] 이 대기·재조회는 제거했다. 대신 장중(마감 전) 일봉을 버리는
+  drop_unfinished_session()이 들어가, 몇 시에 실행하든 1일 변화율 = "수집 시점 기준 가장 최근
+  마감 종가 vs 그 전 거래일 종가"가 된다.
 
 사용법:
     python scrape_stock_performance.py --out stock_performance.json
@@ -38,7 +41,6 @@ import datetime
 import json
 import re
 import sys
-import time
 
 import pandas as pd
 import requests
@@ -46,7 +48,6 @@ import yfinance as yf
 
 NAVER_CHART_URL = "https://api.stock.naver.com/chart/domestic/item/{code}/day"
 NAVER_HISTORY_DAYS = 400  # 260 거래일 확보를 위한 여유 캘린더일
-RETRY_WAIT_SECONDS = 300  # as_of가 직전 실행과 동일(=종가 미반영 의심)할 때 재조회 전 대기 시간
 
 TICKERS_FILE = "tickers.json"
 
@@ -83,6 +84,50 @@ MARKET_TO_CURRENCY = {
     "TW": "TWD",
     "IL": "ILS",
 }
+
+# 시장별 (거래소 시간대, 정규장 마감 시각). 네이버/yfinance 모두 장중에는 "오늘 날짜의 진행 중인
+# 일봉(=현재가)"을 최신 행으로 돌려주기 때문에, 그대로 쓰면 1일 변화율이 전일 종가 대비가 아니라
+# 장중 등락률이 된다(2026-09-30 발견: GitHub 예약 지연으로 한국 장 시작 후 실행되며 국내 종목이
+# 장중 가격으로 계산됨 — 같은 날 삼성바이오로직스 d1이 수집 시각에 따라 -1.4/-0.5/+1.2로 바뀜).
+# 수집 시점에 그 시장의 오늘 일봉이 마감+CLOSE_BUFFER 전이면 버리고 마지막 마감 종가를 쓴다.
+MARKET_SESSION = {
+    "KR": ("Asia/Seoul", 15, 30),
+    "JP": ("Asia/Tokyo", 15, 30),
+    "CN": ("Asia/Shanghai", 15, 0),
+    "HK": ("Asia/Hong_Kong", 16, 10),  # 종가 단일가(CAS) 포함
+    "TW": ("Asia/Taipei", 13, 30),
+    "US": ("America/New_York", 16, 0),
+    "GB": ("Europe/London", 16, 35),
+    "DE": ("Europe/Berlin", 17, 35),
+    "FR": ("Europe/Paris", 17, 35),
+    "IT": ("Europe/Rome", 17, 35),
+    "BE": ("Europe/Brussels", 17, 35),
+    "CH": ("Europe/Zurich", 17, 30),
+    "SE": ("Europe/Stockholm", 17, 30),
+    "IL": ("Asia/Jerusalem", 17, 25),
+}
+# 마감 직후 종가 확정·API 반영까지의 여유(2026-09-30: 30분 일괄 → 소스별로 조정).
+# - KR(네이버): 15:30 동시호가로 종가 확정, 실시간 시세라 거의 즉시 반영 → 10분
+# - 그 외(yfinance/야후): 거래소에 따라 시세가 15~20분 지연되고 미국 공식 종가·홍콩/유럽 마감
+#   동시호가 확정에도 몇 분 걸림 → 20분
+CLOSE_BUFFER_KR = datetime.timedelta(minutes=10)
+CLOSE_BUFFER_DEFAULT = datetime.timedelta(minutes=20)
+
+
+def drop_unfinished_session(close, market):
+    """close(오름차순 종가 시리즈)의 마지막 행이 아직 마감 전인 '오늘' 일봉이면 제거해 반환."""
+    session = MARKET_SESSION.get(market)
+    if close is None or close.empty or session is None:
+        return close
+    tz, hh, mm = session
+    now_local = pd.Timestamp.now(tz=tz)
+    today_local = now_local.date()
+    buffer = CLOSE_BUFFER_KR if market == "KR" else CLOSE_BUFFER_DEFAULT
+    close_at = now_local.normalize() + pd.Timedelta(hours=hh, minutes=mm) + buffer
+    last_date = close.index[-1].date()  # 네이버는 naive(현지 날짜), yfinance는 거래소 tz-aware
+    if last_date > today_local or (last_date == today_local and now_local < close_at):
+        return close.iloc[:-1]
+    return close
 
 # 거래일 기준 오프셋 (요구사항 3-2)
 PERIOD_OFFSETS = {
@@ -235,6 +280,7 @@ def fetch_one(item):
     }
     try:
         close, foreign_ratio_map, t = _fetch_close_series(item)
+        close = drop_unfinished_session(close, item["market"])
         if close is None or close.empty:
             result["error"] = "no price history"
             return result
@@ -315,26 +361,19 @@ def main():
     print(f"fetching {len(items)} tickers with {args.max_workers} workers...")
     results_by_ticker = run_batch(items, "1차")
 
-    # as_of가 직전 실행과 동일한 종목을 한데 모아 "딱 한 번"만 재조회한다.
-    # (종목마다 개별적으로 대기하면 워커 풀 크기에 막혀 전체 실행 시간이
-    # (걸린 종목 수 / max_workers) * RETRY_WAIT_SECONDS 만큼 불어난다 — 2026-09-23
-    # 실사용 중 KR 종목 다수가 동시에 이 조건에 걸려 워크플로가 끝나지 않는 문제로 발견,
-    # 배치 단위 재조회로 변경. as_of가 같다는 게 항상 오류는 아니다(휴장일 등 정상적으로
-    # 새 종가가 없는 경우도 동일하게 걸리므로, 재조회해도 같은 값이면 그대로 채택한다).
-    stale_tickers = [
-        item for item in items
+    # [2026-09-30] 예전엔 as_of가 직전 실행과 같은 종목을 모아 RETRY_WAIT_SECONDS(300초) 대기 후
+    # 재조회했다. 이제 drop_unfinished_session()이 마감+여유(국내 10분/해외 20분) 전 일봉을 버리므로 "종가 미반영"
+    # 위험은 그쪽에서 막고, 휴장일·장중 수동 실행처럼 정상적으로 as_of가 같은 경우에도 매번
+    # 5분씩 기다리던 대기는 없앴다. 참고용 로그만 남긴다.
+    stale_count = sum(
+        1 for item in items
         if results_by_ticker[item["ticker"]]["error"] is None
         and results_by_ticker[item["ticker"]]["as_of"] is not None
         and results_by_ticker[item["ticker"]]["as_of"] == prev_as_of_by_ticker.get(item["ticker"])
-    ]
-    if stale_tickers:
-        print(f"{len(stale_tickers)}개 종목의 as_of가 직전 실행과 동일 -> "
-              f"{RETRY_WAIT_SECONDS}초 대기 후 해당 종목만 일괄 재조회", file=sys.stderr)
-        time.sleep(RETRY_WAIT_SECONDS)
-        retry_results = run_batch(stale_tickers, "재조회")
-        for ticker, rr in retry_results.items():
-            if rr["error"] is None and rr["as_of"] is not None:
-                results_by_ticker[ticker] = rr
+    )
+    if stale_count:
+        print(f"[참고] {stale_count}개 종목의 as_of가 직전 실행과 동일(휴장일이거나 새 종가 없음) — 재조회 없이 진행",
+              file=sys.stderr)
 
     results = []
     for r in results_by_ticker.values():
