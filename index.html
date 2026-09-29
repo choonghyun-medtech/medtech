@@ -2865,10 +2865,14 @@ async function capturePerfTables(period, btn){
       const list = STOCK_PERF.filter(s=> set.filter(s) && s.returns[period] != null);
       const asOf = list.reduce((m,s)=> s.as_of && s.as_of > m ? s.as_of : m, '');
       const capRule = set.key==='메가캡' ? ' · 메가캡: 시총 $10B 이상' : set.key==='중소형주' ? ' · 중소형주: 시총 $10B 미만' : '';
-      const fxNote = set.key!=='국내' && PERF_FX.rate_date ? ` · 해외 시총은 ${PERF_FX.rate_date} 환율로 원화 환산` : '';
+      // 제목: "국내 Top 10 / Bottom 10 (전일 종가 기준)" — 기간 문구는 괄호로 뒤에(2026-09-30 요청).
+      // 안내문구: 종목 수·시총 단위(표 머리글에 있음)는 빼고, 환율 문구는 짧게.
+      // 통화 기준 문구는 해외 종목이 섞이는 표에만(국내는 전부 원화라 불필요).
+      const ccyNote = set.key!=='국내' ? ' · 변화율 현지통화 기준' : '';
+      const fxNote = set.key!=='국내' && PERF_FX.rate_date ? ` · 해외 시총 ${PERF_FX.rate_date} 환율 적용` : '';
       stage.innerHTML = `
-        <h3>${PERF_CAPTURE_PERIOD_LABEL[period]} ${set.key} Top 10 / Bottom 10</h3>
-        <div class="perf-capture-sub">종가 기준일 ${asOf || '-'} · ${list.length}종목 중 · 변화율은 로컬 통화 기준 · 시총 단위 십억원${capRule}${fxNote}</div>
+        <h3>${set.key} Top 10 / Bottom 10 (${PERF_CAPTURE_PERIOD_LABEL[period]})</h3>
+        <div class="perf-capture-sub">종가 기준일 ${asOf || '-'}${ccyNote}${capRule}${fxNote}</div>
         ${buildPerfGridHtml(list, period)}`;
       const canvas = await html2canvas(stage, {
         backgroundColor:'#ffffff', scale:2, logging:false,
