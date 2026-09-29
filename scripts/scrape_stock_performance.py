@@ -8,9 +8,11 @@
 - 기간은 거래일수 기준: 5일/21일(1개월)/66일(3개월)/132일(6개월)/220일(1년), YTD는 올해 첫 거래일 대비
 - 시가총액은 KRW 환산 조원 단위 (환산에만 환율 적용, 변화율에는 미적용)
 - 1차 소스: yfinance, 한국 시총은 Daum Finance API 우선 시도 후 yfinance fallback
-- 국내(KR) 종목의 주가 히스토리·외국인 지분율은 api.stock.naver.com 차트 API에서 가져온다
-  (yfinance가 일부 KRX 종목에서 짧은 히스토리를 반환하는 문제 회피 + 외국인보유율 필드 제공).
-  실패 시 yfinance 히스토리로 폴백한다.
+- 국내(KR) 종목의 외국인 지분율은 api.stock.naver.com 차트 API에서 가져온다.
+  [2026-09-30] 국내 종가는 yfinance(KRX 공식 종가)를 1순위로 변경 — 네이버 종가가 NXT 애프터마켓
+  포함 통합 시세라 블룸버그와 달랐음(_fetch_close_series 주석 참고). 예전에 네이버로 옮긴 이유였던
+  "yfinance 짧은 히스토리" 문제는 재확인 결과 짧은 5종목 모두 실제 최근 상장 종목이었다(네이버와
+  행 수 동일). 야후 실패 시 네이버 종가로 폴백한다.
 - 병렬 수집 ThreadPoolExecutor(max_workers=10), 실패 종목은 이전 실행에서 정상 수집된 데이터가
   있으면 그걸 그대로 보존하고, 처음부터 한 번도 성공한 적 없는 종목만 null로 남긴다(다른
   scrape_*.py 스크립트들과 동일한 "보강" 패턴, 2026-08-31 추가 — 이전엔 실패 시 무조건 null로
@@ -106,23 +108,27 @@ MARKET_SESSION = {
     "SE": ("Europe/Stockholm", 17, 30),
     "IL": ("Asia/Jerusalem", 17, 25),
 }
+# 네이버 국내 일봉은 대체거래소 NXT(08:00~20:00)까지 합친 통합 시세라, 오늘 일봉이 20:00까지
+# 계속 바뀐다. 네이버 폴백을 쓸 때만 국내 마감 기준을 20:00으로 본다.
+NAVER_KR_SESSION = ("Asia/Seoul", 20, 0)
 # 마감 직후 종가 확정·API 반영까지의 여유(2026-09-30: 30분 일괄 → 소스별로 조정).
-# - KR(네이버): 15:30 동시호가로 종가 확정, 실시간 시세라 거의 즉시 반영 → 10분
-# - 그 외(yfinance/야후): 거래소에 따라 시세가 15~20분 지연되고 미국 공식 종가·홍콩/유럽 마감
+# - yfinance/야후(국내 포함): 거래소에 따라 시세가 15~20분 지연되고 미국 공식 종가·홍콩/유럽 마감
 #   동시호가 확정에도 몇 분 걸림 → 20분
-CLOSE_BUFFER_KR = datetime.timedelta(minutes=10)
+# - 네이버(국내 폴백): 실시간 시세 → 10분
+CLOSE_BUFFER_NAVER = datetime.timedelta(minutes=10)
 CLOSE_BUFFER_DEFAULT = datetime.timedelta(minutes=20)
 
 
-def drop_unfinished_session(close, market):
-    """close(오름차순 종가 시리즈)의 마지막 행이 아직 마감 전인 '오늘' 일봉이면 제거해 반환."""
-    session = MARKET_SESSION.get(market)
+def drop_unfinished_session(close, market, source="yfinance"):
+    """close(오름차순 종가 시리즈)의 마지막 행이 아직 마감 전인 '오늘' 일봉이면 제거해 반환.
+    source: 종가를 가져온 소스("yfinance" | "naver") — 마감 기준 시각·여유 시간이 다르다."""
+    session = NAVER_KR_SESSION if source == "naver" else MARKET_SESSION.get(market)
     if close is None or close.empty or session is None:
         return close
     tz, hh, mm = session
     now_local = pd.Timestamp.now(tz=tz)
     today_local = now_local.date()
-    buffer = CLOSE_BUFFER_KR if market == "KR" else CLOSE_BUFFER_DEFAULT
+    buffer = CLOSE_BUFFER_NAVER if source == "naver" else CLOSE_BUFFER_DEFAULT
     close_at = now_local.normalize() + pd.Timedelta(hours=hh, minutes=mm) + buffer
     last_date = close.index[-1].date()  # 네이버는 naive(현지 날짜), yfinance는 거래소 tz-aware
     if last_date > today_local or (last_date == today_local and now_local < close_at):
@@ -234,31 +240,54 @@ def ytd_change(hist_with_dates):
     return round((latest - base) / base * 100, 1)
 
 
+def _yf_close(symbol):
+    t = yf.Ticker(symbol)
+    hist = t.history(period="15mo", auto_adjust=False)
+    if hist is None or hist.empty:
+        return None, t
+    close = hist["Close"].dropna()
+    return (close if not close.empty else None), t
+
+
 def _fetch_close_series(item):
-    """단일 종목의 종가 시리즈를 가져온다 (KR은 네이버 우선, 그 외/실패 시 yfinance).
-    반환: (close 시리즈|None, foreign_ratio_map|None, yf.Ticker|None).
+    """단일 종목의 종가 시리즈를 가져온다.
+    반환: (close 시리즈|None, foreign_ratio_map|None, yf.Ticker|None, source "yfinance"|"naver").
+
+    [2026-09-30] 국내(KR) 종가도 yfinance(야후)를 1순위로 바꿨다. 네이버 일봉/일별시세의 종가는
+    KRX 정규장 종가가 아니라 대체거래소 NXT(15:30~20:00 애프터마켓 포함) 통합 시세의 마지막
+    가격이라, 블룸버그 CHG_PCT_1D(KRX 공식 종가 기준)와 값이 달랐다(예: 뷰노 9/29 블룸버그·야후
+    +22.0% vs 네이버 +14.9% — 9/28 KRX 종가 6,820원 vs NXT 마감가 7,240원). 야후는 KRX 공식
+    종가와 일치함을 10종목으로 확인. 외국인 지분율은 야후에 없어 계속 네이버에서 가져오고,
+    야후 조회가 실패하면 네이버 종가로 폴백한다.
+    tickers.json의 코스닥 13종목이 .KS로 잘못 적혀 있던 걸 2026-09-30에 .KQ로 정정했다(네이버는
+    접미사를 안 봐서 그동안 드러나지 않았음). 새 종목이 잘못 들어올 때를 대비해, 야후 조회가
+    비면 .KS <-> .KQ를 바꿔 한 번 더 시도하는 안전장치는 남겨둔다.
     """
     ticker = item["ticker"]
-    t = None
-    close = None
     foreign_ratio_map = None
 
     if item["market"] == "KR":
+        naver_close = None
         try:
-            close, foreign_ratio_map = fetch_naver_kr_series(ticker)
+            naver_close, foreign_ratio_map = fetch_naver_kr_series(ticker)
         except Exception:
-            close, foreign_ratio_map = None, None
-
-    if close is None or close.empty:
-        t = yf.Ticker(ticker)
-        hist = t.history(period="15mo", auto_adjust=False)
-        if hist is not None and not hist.empty:
-            close = hist["Close"].dropna()
-            foreign_ratio_map = None
-        else:
+            naver_close, foreign_ratio_map = None, None
+        close, t = None, None
+        try:
+            close, t = _yf_close(ticker)
+            if close is None and re.search(r"\.(KS|KQ)$", ticker):
+                alt = ticker[:-2] + ("KQ" if ticker.endswith("KS") else "KS")
+                close, t = _yf_close(alt)
+        except Exception:
             close = None
+        if close is not None:
+            return close, foreign_ratio_map, t, "yfinance"
+        if naver_close is not None and not naver_close.empty:
+            return naver_close, foreign_ratio_map, None, "naver"
+        return None, foreign_ratio_map, t, "yfinance"
 
-    return close, foreign_ratio_map, t
+    close, t = _yf_close(ticker)
+    return close, None, t, "yfinance"
 
 
 def fetch_one(item):
@@ -273,14 +302,16 @@ def fetch_one(item):
         "market_cap_krw_eok": None,  # 억원 단위 정밀값 (조원 1자리 반올림 후 재환산 시 발생하는 정밀도 손실 방지용)
         "returns": {"d1": None, "d5": None, "m1": None, "m3": None, "m6": None, "y1": None, "ytd": None},
         "as_of": None,  # 변화율 계산에 쓰인 최신 종가의 거래일 (YYYY-MM-DD, 해당 거래소 현지 날짜)
+        "price_source": None,  # 종가 소스 "yfinance"(KRX 공식 종가 포함) | "naver"(국내 폴백, NXT 통합 시세)
         "price_history": None,  # {"dates":[...], "close":[...]} 최근 약 12개월(거래일 기준) 종가
         "foreign_ratio": None,  # 외국인 지분율(%) 최신값 (KR 종목만)
         "foreign_ratio_history": None,  # {"dates":[...], "values":[...]} (KR 종목만)
         "error": None,
     }
     try:
-        close, foreign_ratio_map, t = _fetch_close_series(item)
-        close = drop_unfinished_session(close, item["market"])
+        close, foreign_ratio_map, t, source = _fetch_close_series(item)
+        result["price_source"] = source
+        close = drop_unfinished_session(close, item["market"], source)
         if close is None or close.empty:
             result["error"] = "no price history"
             return result

@@ -2107,7 +2107,7 @@ function renderFlowChart(ticker, months){
     {label:'개인(누적,추정)', data: retail, borderColor:'#65a30d', backgroundColor:'rgba(101,163,13,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2}
   ]);
 }
-renderFlowChart('039840.KS', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
+renderFlowChart('039840.KQ', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
 document.querySelectorAll('#flow-period-toggle button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#flow-period-toggle button').forEach(x=>x.classList.remove('active'));
@@ -3501,7 +3501,7 @@ function renderGlobalDashboard(){
 // ==================================================================
 // 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
 // ==================================================================
-const TRACKED_DEFAULT = ['039840.KS','096530.KS','214450.KS','100120.KS','098460.KS','041830.KS','043150.KS','099190.KS','145720.KS','214150.KS']; // 디오,씨젠,파마리서치,뷰웍스,고영,인바디,바텍,아이센스,덴티움,클래시스
+const TRACKED_DEFAULT = ['039840.KQ','096530.KQ','214450.KQ','100120.KQ','098460.KQ','041830.KQ','043150.KQ','099190.KQ','145720.KS','214150.KS']; // 디오,씨젠,파마리서치,뷰웍스,고영,인바디,바텍,아이센스,덴티움,클래시스
 let TICKER_UNIVERSE = [];
 let extraTrackedTickers = [];
 let selectedStockTicker = TRACKED_DEFAULT[0];
