@@ -52,13 +52,17 @@ index.html의 산업·기업 뉴스 탭 안 "브리핑" 서브탭이 이 결과(
   summarize_news.is_transient_server_error()로 429(쿼터)와 구분해 감지하고, 재시도 횟수를
   4회로 늘리고 20s→40s→80s로 지수적으로 늘어나는 백오프를 쓰도록 고쳤다(아래
   generate_trends_batch 참고). summarize_news.py의 동일한 재시도 루프도 같이 고쳤다.
+- [2026-09-30] 카테고리 라벨 영문→한글 변경(2026-09-16~17) 이전 기사가 옛 라벨로 따로 묶여
+  월간 브리핑이 섹터당 두 장으로 쪼개지던 문제 수정 — normalize_category() 참고.
 
 사용법:
     python analyze_news_trend.py --history news_history.jsonl --out news_trend.json
 """
 import argparse
+import ast
 import datetime
 import json
+import os
 import re
 import sys
 import time
@@ -87,6 +91,68 @@ MAX_LINES_PER_CATEGORY = 15  # 카테고리×기간 한 구간당 프롬프트�
 MAX_TOKENS_PER_SECTION = 300  # 카테고리×기간 한 구간당 배정하는 출력 토큰 예산(불릿 3~5개 기준)
 REGIONS = ["domestic", "global"]
 REGION_LABEL = {"domestic": "국내", "global": "해외"}
+
+# [2026-09-30] 2026-09-16~17에 뉴스 카테고리 라벨을 영문→한글로 바꾸면서 일부 기업의 소속
+# 카테고리도 재배치됐는데(실제 메드텍 기업은 주가 Performance와 같은 마스터 섹터로), 이 스크립트는
+# news_history.jsonl에 기사별로 저장된 당시 cat을 그대로 묶었다. 그래서 30일 월간 브리핑이
+# "Aesthetics"(9/16 이전 기사)와 "미용"(이후 기사)처럼 같은 섹터를 두 장으로 쪼개 보여줬다
+# (국내 19장/해외 18장, 각 장은 사실상 2주치만 분석). 현재 카테고리명이 아닌 기사만 현재
+# 기업→카테고리 표로 다시 분류하고, 그래도 안 되면 아래 라벨 대응표로 옮긴다. 현재 카테고리명이
+# 붙은 기사는 수집 당시 분류를 그대로 존중한다(여러 기업이 묶인 기사 등).
+# 기업 표는 scrape_news*.py를 import하지 않고 파일에서 상수만 파싱해 읽는다 — process-news
+# 워크플로는 AI 라이브러리만 설치해서 import하면 feedparser 등이 없어 실패한다.
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CATEGORY_SOURCES = {
+    "domestic": ("scrape_news.py", "NEWS_COMPANY_CATEGORY"),
+    "global": ("scrape_news_global.py", "GLOBAL_COMPANY_CATEGORY"),
+}
+LEGACY_CATEGORY_ALIASES = {
+    "Aesthetics": "미용", "Bio-Processing": "생명공학", "Dental": "치과",
+    "Digital Health": "디지털헬스", "Humanoid": "휴머노이드", "IVD": "체외진단",
+    "Robotics": "로보틱스", "Therapeutics": "치료제", "MedTech": "의료기기",
+    "Surgical Robot": "로보틱스", "Healthcare Provider": "의료서비스", "Cash Pay Market": "미용",
+}
+
+
+def load_script_constants(filename, names):
+    """scripts/의 다른 파일에서 모듈 최상위 상수(dict/list 리터럴)만 import 없이 읽는다."""
+    with open(os.path.join(SCRIPT_DIR, filename), encoding="utf-8") as f:
+        tree = ast.parse(f.read())
+    out = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            name = getattr(node.targets[0], "id", None)
+            if name in names:
+                out[name] = ast.literal_eval(node.value)
+    return out
+
+
+def load_current_categories():
+    """{region: (기업→카테고리 dict, 현재 카테고리명 set)}. 읽기 실패 시 해당 region은 빠진다."""
+    result = {}
+    for region, (filename, map_name) in CATEGORY_SOURCES.items():
+        try:
+            consts = load_script_constants(filename, {map_name, "CATEGORY_ORDER"})
+            company_map = consts[map_name]
+            current = set(consts.get("CATEGORY_ORDER") or company_map.values())
+            result[region] = (company_map, current)
+        except Exception as e:
+            print(f"[WARN] {filename}에서 카테고리 표를 읽지 못해 {REGION_LABEL[region]} 기사는 "
+                  f"라벨 대응표로만 재분류합니다: {e}", file=sys.stderr)
+    return result
+
+
+def normalize_category(record, current_categories):
+    """기사 기록의 cat이 현재 카테고리명이 아니면(옛 영문 라벨 등) 현재 기준으로 바꿔 반환."""
+    cat = record.get("cat")
+    company_map, current = current_categories.get(record.get("region"), ({}, set()))
+    if not cat or cat in current:
+        return cat
+    for co in str(record.get("co") or "").split(","):
+        co = co.strip()
+        if co in company_map:
+            return company_map[co]
+    return LEGACY_CATEGORY_ALIASES.get(cat, cat)
 
 TREND_SYSTEM = """당신은 한국 증권사의 의료기기/디지털헬스/로보틱스 담당 애널리스트를 돕는
 리서치 보조원입니다. 아래에 여러 카테고리 각각의 최근 기사 목록(날짜/기업/맥락/제목 또는
@@ -256,6 +322,20 @@ def main():
         existing_by_key = {}
 
     now = datetime.datetime.now(datetime.timezone.utc)
+
+    # 옛 카테고리 라벨이 붙은 기사를 현재 카테고리로 재분류(원본 records의 cat은 건드리지 않고 사본에만).
+    current_categories = load_current_categories()
+    remapped = 0
+    normalized = []
+    for r in records:
+        new_cat = normalize_category(r, current_categories)
+        if new_cat != r.get("cat"):
+            remapped += 1
+            r = dict(r, cat=new_cat)
+        normalized.append(r)
+    records = normalized
+    if remapped:
+        print(f"[INFO] 옛 카테고리 라벨 기사 {remapped}건을 현재 카테고리로 재분류", file=sys.stderr)
 
     # 지역별 (카테고리, 기간) 후보를 먼저 전부 계산해둔다 — API 호출 도중 일별 쿼터가
     # 소진돼 break로 중단되더라도, 아직 시도조차 못 한 지역의 후보 목록까지 이미 갖고
