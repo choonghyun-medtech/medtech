@@ -141,7 +141,13 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, m
     if form_type == "8-K":
         earnings_first = [i for i in candidates if "2.02" in (items_list[i] if i < len(items_list) else "")]
         other = [i for i in candidates if i not in earnings_first]
-        candidates = earnings_first + other  # 2.02(실적) 표시된 것부터, 없으면 나머지도 시도
+        # [2026-10-01] 예전엔 earnings_first + other로 2.02 아닌 8-K까지 이어서 시도했는데,
+        # 회사당 2025-10 이후 8-K가 9~19건인데 실적(2.02)은 4~5건뿐이라 나머지가 전부 LLM
+        # 판정으로 넘어가 하루 무료 쿼터(20회)를 다 태웠다 — 백필이 HIMS 이후로 한 건도 못
+        # 나아간 원인. 2.02가 하나라도 있으면 그것만 쓰고, 아예 없을 때만 나머지로 폴백한다.
+        # (2.02가 아닌 SYK 2026-06-26 연간 재무 재게시 공시가 "4분기 실적"으로 오인돼 들어온
+        # 것도 이 폴백 때문이었다.)
+        candidates = earnings_first if earnings_first else other
 
     found = 0
     for i in candidates:
@@ -372,25 +378,45 @@ def _parse_translation_response(raw):
     return json.loads(text)
 
 
+# [2026-10-01] LLM에 보내기 전 값싼 사전 검사 — 분기 실적 보도자료라면 본문에 거의 반드시
+# "second quarter"/"quarter ended"/"Q2 2026" 같은 표현과 매출(revenue/sales)이 같이 나온다.
+# items 분류가 없는 6-K(InMode, 2025-10 이후 17건)에서 특히 쿼터 낭비를 막는다.
+_QUARTER_RE = re.compile(r"\b(first|second|third|fourth)[- ]quarter\b|\bquarter ended\b|\bQ[1-4]\s*(FY)?\s*'?\d{2,4}\b",
+                         re.IGNORECASE)
+_REVENUE_RE = re.compile(r"\b(revenue|revenues|sales)\b", re.IGNORECASE)
+
+
+def looks_like_earnings_release(body):
+    return bool(_QUARTER_RE.search(body) and _REVENUE_RE.search(body))
+
+
+# process_release() 반환값
+OK, NOT_EARNINGS, FAILED = "ok", "not_earnings", "failed"
+
+
 def process_release(ticker, name, release, provider, out_data):
     """보도자료 본문을 가져와 번역하고, out_data["companies"]에 항목을 추가한다.
-    성공하면 True, 건너뛰면(본문 없음/번역 실패/실적 발표가 아닌 공시로 판정) False를 반환한다."""
+    OK(추가됨) / NOT_EARNINGS(실적 발표가 아닌 공시로 판정 — 다시 시도할 필요 없음) /
+    FAILED(본문 조회·번역 실패 — 일시적일 수 있어 다음 실행 때 재시도) 중 하나를 반환한다."""
     body = fetch_release_text(release["url"])
     if not body:
         print(f"[WARN] {ticker} 보도자료 본문을 가져오지 못함: {release['url']}", file=sys.stderr)
-        return False
+        return FAILED
+    if not looks_like_earnings_release(body):
+        print(f"[INFO] {ticker} 본문에 분기 실적 표현이 없어 번역 없이 건너뜀: {release['url']}", file=sys.stderr)
+        return NOT_EARNINGS
     try:
         parsed = translate_release(provider, body)
     except DailyQuotaExhausted:
         raise  # main()이 잡아서 이번 실행에서 남은 회사들도 전부 건너뛰도록 위로 전달
     except Exception as e:
         print(f"[WARN] {ticker} 번역 실패: {e}", file=sys.stderr)
-        return False
+        return FAILED
     if not parsed.get("summary_ko"):
         # items="2.02" 필터를 못 쓰는 6-K이거나, 8-K인데도 첨부문서가 실적 발표가 아닌
         # 경우(SYSTEM_PROMPT가 이럴 때 모든 필드를 비워서 응답하도록 지시해뒀다) — 조용히 건너뜀.
         print(f"[INFO] {ticker} 첨부문서가 실적 발표 보도자료가 아닌 것으로 판정되어 건너뜀: {release['url']}", file=sys.stderr)
-        return False
+        return NOT_EARNINGS
     entry = {
         "ticker": ticker,
         "name": name,
@@ -405,7 +431,65 @@ def process_release(ticker, name, release, provider, out_data):
     }
     out_data.setdefault("companies", []).append(entry)
     print(f"[OK] {ticker} {entry['date']} 실적 보도자료 번역 완료", file=sys.stderr)
-    return True
+    return OK
+
+
+MAX_SKIPPED_URLS = 1000
+
+
+def _quarter_key(entry):
+    """"2025년 4분기(Q4)" -> ("2025", "4"). 형식이 다르면 None."""
+    m = re.search(r"(\d{4})\D{0,10}?([1-4])\s*분기", entry.get("quarter") or "")
+    return (m.group(1), m.group(2)) if m else None
+
+
+def dedupe_and_trim(out_data):
+    """같은 회사·같은 분기가 여러 번 들어온 경우 정리하고, 회사별 최근 8개 분기만 남긴다.
+    정리로 빠진 항목의 URL은 skipped_urls에 기록해 다음 실행 때 다시 번역하지 않게 한다."""
+    # (ticker, date) 중복 — 이전에 회사 자체 웹사이트 URL로 수동 시딩해둔 분기를 EDGAR가
+    # 같은 분기를 다른(sec.gov) URL로 새로 찾아 중복 추가하는 경우(2026-09-08, RDNT/ALGN/TEM/
+    # ABT/ISRG). 나중에 추가된 쪽(EDGAR 항목)을 남긴다.
+    by_date = {}
+    for c in out_data.get("companies", []):
+        by_date[(c["ticker"], c.get("date"))] = c
+    rows = list(by_date.values())
+
+    # [2026-10-01] (ticker, 분기) 중복 — 1월 JP모건 헬스케어 컨퍼런스 때 내는 "잠정 실적"
+    # 8-K(2.02)가 2월 확정 실적과 같은 분기로 이중 등록됐다(DXCM 2026-01-12 / 02-12;
+    # NTRA·GH·TEM·ISRG도 같은 공시가 있음). 발표일이 늦은 쪽(=확정 실적)만 남긴다.
+    rows.sort(key=lambda c: c.get("date") or "")
+    by_quarter = {}
+    no_key = []
+    for c in rows:
+        k = _quarter_key(c)
+        if k is None:
+            no_key.append(c)
+        else:
+            by_quarter[(c["ticker"],) + k] = c  # 날짜순으로 덮어쓰므로 마지막(최신)이 남음
+    kept = list(by_quarter.values()) + no_key
+
+    # 회사 순서는 기존 파일 순서를 유지한다(화면은 자체 정렬하지만 git diff가 불필요하게 커지지 않게).
+    by_ticker = {c["ticker"]: [] for c in out_data.get("companies", [])}
+    for c in kept:
+        by_ticker.setdefault(c["ticker"], []).append(c)
+    trimmed = []
+    for ticker, trows in by_ticker.items():
+        trows.sort(key=lambda c: c.get("date") or "")
+        trimmed.extend(trows[-MAX_QUARTERS_PER_TICKER:])
+
+    kept_urls = {c.get("source_url") for c in trimmed}
+    dropped = [c.get("source_url") for c in out_data.get("companies", []) if c.get("source_url") not in kept_urls]
+    mark_skipped(out_data, [u for u in dropped if u])
+    out_data["companies"] = trimmed
+    return len(dropped)
+
+
+def mark_skipped(out_data, urls):
+    skipped = out_data.setdefault("skipped_urls", [])
+    for u in urls:
+        if u not in skipped:
+            skipped.append(u)
+    del skipped[:-MAX_SKIPPED_URLS]
 
 
 def main():
@@ -425,6 +509,9 @@ def main():
         out_data = {"updated": None, "source": "각 기업 SEC 공시(8-K/6-K Exhibit 99) 기반 실적 보도자료, 한국어 번역·요약은 Gemini/Claude 자동 처리", "companies": []}
 
     existing_urls = {c.get("source_url") for c in out_data.get("companies", [])}
+    # [2026-10-01] 이전 실행에서 "실적 아님"으로 판정됐거나 중복 정리로 빠진 공시 — 다시
+    # 번역하지 않는다(이걸 기억 안 해서 매 백필 실행마다 같은 공시에 쿼터를 다시 썼다).
+    existing_urls |= set(out_data.get("skipped_urls", []))
     provider = get_provider()
     if provider is None:
         print("[WARN] GEMINI_API_KEY/ANTHROPIC_API_KEY가 없어 번역을 건너뜁니다 — 기존 데이터만 유지합니다.", file=sys.stderr)
@@ -447,7 +534,11 @@ def main():
             if provider is None:
                 continue
             try:
-                if process_release(ticker, info["name"], release, provider, out_data):
+                status = process_release(ticker, info["name"], release, provider, out_data)
+                if status == NOT_EARNINGS:
+                    mark_skipped(out_data, [release["url"]])
+                    changed = True
+                elif status == OK:
                     changed = True
                     if not since_date:
                         break
@@ -459,26 +550,9 @@ def main():
                 quota_exhausted = True
                 break
 
+    if dedupe_and_trim(out_data):
+        changed = True
     if changed:
-        # 같은 분기가 서로 다른 URL로 두 번 들어올 수 있다 — 예: 이전에 회사 자체 웹사이트
-        # URL로 수동 시딩해둔 분기를, 이번 실행에서 EDGAR가 같은 분기를 다른(sec.gov) URL로
-        # 새로 찾아 중복 추가하는 경우(2026-09-08, 실제 실행에서 RDNT/ALGN/TEM/ABT/ISRG가
-        # 이 케이스였음 — source_url 기준 중복 체크만으로는 못 거른다). (ticker, date) 기준으로
-        # 합쳐서 나중에 추가된 쪽(=이번에 새로 수집된 EDGAR 항목)을 남긴다.
-        dedup = {}
-        for c in out_data["companies"]:
-            dedup[(c["ticker"], c.get("date"))] = c
-        out_data["companies"] = list(dedup.values())
-
-        # 회사별 최근 8개 분기만 유지(오래된 분기는 자연히 정리).
-        by_ticker = {}
-        for c in out_data["companies"]:
-            by_ticker.setdefault(c["ticker"], []).append(c)
-        trimmed = []
-        for ticker, rows in by_ticker.items():
-            rows.sort(key=lambda c: c.get("date") or "")
-            trimmed.extend(rows[-MAX_QUARTERS_PER_TICKER:])
-        out_data["companies"] = trimmed
         out_data["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     with open(args.out, "w", encoding="utf-8") as f:
