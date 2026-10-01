@@ -204,11 +204,14 @@ DEFAULT_SOURCE_ALTERNATES = [os.path.splitext(DEFAULT_SOURCE)[0] + ext for ext i
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--source', default=None, help='원본 Bloomberg 엑셀 파일 경로("값복사" 탭을 읽음, 기본: 글로벌 대시보드!!.xlsx → 없으면 .xlsm)')
+    ap.add_argument('--source', default=None, help='원본 Bloomberg 엑셀 파일 경로("값복사" 탭을 읽음, 기본: 글로벌 대시보드!!.xlsx/.xlsm 중 최근 저장본)')
     ap.add_argument('--out', default='global_dashboard.json')
     args = ap.parse_args()
     if args.source is None:
-        args.source = next((p for p in [DEFAULT_SOURCE] + DEFAULT_SOURCE_ALTERNATES if os.path.exists(p)), DEFAULT_SOURCE)
+        # 2026-10-01: 다시 .xlsm으로 바뀜. .xlsx/.xlsm이 둘 다 남아 있으면 예전처럼 .xlsx를
+        # 무조건 우선하면 옛 파일을 조용히 읽게 되므로, 가장 최근에 저장된 파일을 고른다.
+        existing = [p for p in [DEFAULT_SOURCE] + DEFAULT_SOURCE_ALTERNATES if os.path.exists(p)]
+        args.source = max(existing, key=os.path.getmtime) if existing else DEFAULT_SOURCE
     print(f'원본 엑셀: {args.source}', file=sys.stderr)
 
     try:

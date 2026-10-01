@@ -9,6 +9,8 @@
 # (scripts/convert_global_dashboard.py의 DEFAULT_SOURCE도 함께 갱신됨).
 # [2026-09-28] 다시 .xlsx로 바뀜 — convert_global_dashboard.py가 .xlsx를 먼저 찾고
 # 없으면 .xlsm으로 폴백하므로 이 스크립트는 경로를 따로 넘기지 않는다.
+# [2026-10-01] 다시 .xlsm으로 바뀜 — 변환 스크립트가 둘 중 최근 저장본을 고르도록 바꿔
+# 확장자가 또 바뀌어도 이 스크립트는 손댈 필요 없다.
 #
 # [2026-09-17] 블룸버그 함수는 로컬 터미널 세션에서만 계산되므로 GitHub Actions
 # 같은 클라우드에서는 완전 자동화가 불가능하다(scripts/convert_global_dashboard.py
