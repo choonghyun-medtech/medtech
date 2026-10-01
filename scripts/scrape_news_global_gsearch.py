@@ -52,13 +52,11 @@ from scrape_news_global import (
     CATEGORY_ORDER,
     GLOBAL_COMPANY_CATEGORY,
     COMPANY_SEARCH_ALIASES,
-    CONTEXT_REQUIRED_GLOBAL,
     MAX_ITEMS_PER_CATEGORY,
     HEADERS,
     recency_hours_for_today,
     parse_entry_date,
-    company_mentioned,
-    context_ok,
+    match_company,
     is_duplicate_title,
     is_excluded_article_type_global,
     clean_text,
@@ -205,15 +203,10 @@ def main():
             if is_excluded_article_type_global(title, summary):
                 continue
 
-            haystack = f"{title} {summary}"
-            candidates = [
-                (company, category)
-                for company, category in GLOBAL_COMPANY_CATEGORY.items()
-                if company_mentioned(company, haystack) and context_ok(company, haystack)
-            ]
-            if not candidates:
+            matched = match_company(title, summary, src)
+            if matched is None:
                 continue
-            company, category = min(candidates, key=lambda c: (c[0] in CONTEXT_REQUIRED_GLOBAL, -len(c[0])))
+            company, category = matched
 
             bucket = by_category.setdefault(category, [])
             if any(is_duplicate_title(title, it.get("t", "")) for it in bucket):

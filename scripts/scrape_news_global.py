@@ -223,6 +223,11 @@ LAW_FIRM_SPAM_KEYWORDS = [
     "securities fraud", "lead plaintiff", "rosen law", "pomerantz", "bragar eagel",
     "kahn swick", "levi & korsinsky", "glancy prongay", "halper sadeh", "schall law",
     "faruqi", "johnson fistel", "law firm",
+    # 2026-10-01: 제목이 잘린 채 들어와 위 키워드를 피해간 로펌 보도자료. 원문 확인 결과
+    # (Bronstein의 Stryker 건) 9월 한 달에만 같은 내용이 거의 이틀마다 재배포됐고, 인용하는
+    # 사건(공급 차질·사이버공격)은 이미 일반 기사로 수집된 과거 이벤트였다.
+    "bronstein", "gewirtz", "kaplan fox", "hagens berman", "hbss", "deadline alert",
+    "leading national firm", "with losses", "leadership role",
 ]
 RANKING_TITLE_PATTERNS_GLOBAL = [
     # "top 10"만 보고 걸렀더니 "Thermo Fisher Junior Innovators Challenge Top 300
@@ -235,13 +240,106 @@ RANKING_TITLE_PATTERNS_GLOBAL = [
 ]
 
 
+# --- 비사업성 기사 필터 (2026-10-01 추가) --------------------------------------------
+# 사용자 검토(2026-10-01)에서 "주가 등락에 유의미한 영향이 없는" 기사가 다수 지적됐다 —
+# 은퇴 임원 부고, 동명 고교 스포츠팀 경기 결과, 히스패닉 유산의 달 기념, 로타리 기부 등.
+# 누적 아카이브 전체를 훑어보니 같은 유형이 반복돼서 제목 패턴으로 통째로 제외한다
+# (제목 기준 — Google 뉴스 RSS는 desc가 사실상 제목+매체명이라 제목만 봐도 충분).
+NON_BUSINESS_TITLE_PATTERNS_GLOBAL = [
+    # 부고
+    re.compile(r"\bobituary\b|\bdie[sd] at \d+|\bpassed away\b|\bfuneral\b", re.IGNORECASE),
+    # 스포츠(동명 학교/선수/경기장 — "Stryker Volleyball", "Dexcom Stadium" 등)
+    re.compile(r"\b(volleyball|football|basketball|baseball|softball|rugby|varsity|stadium)\b"
+               r"|\blive score\b|\bplayer stats\b|\bstat leader", re.IGNORECASE),
+    # CSR/기념행사/학생 경진대회
+    re.compile(r"\bheritage month\b|\brotary\b|\bdonat(e|es|ed|ion)\b|\bjunior innovators\b"
+               r"|\bscience fair\b", re.IGNORECASE),
+    # 시세·데이터 페이지(토큰화 주식, 환율 변환기, 파생/채권 시세표)
+    re.compile(r"\btokeni[sz]ed\b|\bxstock\b|\brstock\b|\bmexc\b|\bconvert(er)?\b"
+               r"|\bprice today\b|\bbond rates\b|\bbtic\b", re.IGNORECASE),
+    # "... Revenue Breakdown – HAM:FUC"처럼 제목 끝에 거래소:코드가 붙는 데이터 페이지
+    re.compile(r"[–—-]\s*[A-Z]{2,5}:[A-Z0-9.]+\s*$"),
+    # 랜덤 ID가 붙은 스팸 페이지("... (UCVSyQVw74)", "... - View pvlhGZiwl")
+    re.compile(r"\([A-Za-z0-9]{10}\)|\bView [A-Za-z0-9]{9}\s*$"),
+    # 쇼핑/굿즈
+    re.compile(r"\bebay\b|\bpreorder\b|\bmodel kit\b", re.IGNORECASE),
+]
+
+# --- 새 이벤트 없는 주가/지분 단신 필터 (2026-10-01 추가) --------------------------------
+# 기준: "주가를 움직이는 새 이벤트가 있는가". 아래 유형은 원문을 표본 확인한 결과 모두
+# 이벤트의 '결과'를 틀에 맞춰 자동 생성한 글이고, 원인 이벤트는 일반 기사로 이미 수집된다.
+#  · ad-hoc-news.de "X stock holds/trades steady as ..." — 같은 제목 틀로 며칠마다 반복,
+#    본문은 지난 분기(심지어 2024 연간) 실적 재탕
+#  · MarketWatch 자동 기사 "stock underperforms Tuesday when compared to competitors" — 일일
+#    등락률·거래량 나열
+#  · MarketBeat 13F "OO Has $7.6M Position in Stryker $SYK" — 이미 끝난 분기 보유현황
+#  · 세금 원천징수/주식보상 지급 등 비재량적 내부자 신고, Form 4/144 공시 목록 페이지
+#    (반면 임원의 재량적 대규모 매도는 신호가 될 수 있어 남겨둔다)
+#  · Zacks "$1000 invested 10 years ago", 밸류에이션 서사(fair value/undervalued), 종목 비교형
+#    칼럼, 시장조사 보고서 판매 보도자료("... Market 2026-2030 Featuring Profiles of ...")
+STOCK_FILLER_TITLE_PATTERNS_GLOBAL = [
+    re.compile(r"\bstock (holds|trades|steadies|steady|stays|stabilizes|finds support|digests|reports)\b",
+               re.IGNORECASE),
+    re.compile(r"\bstock (gains|rises|falls|slips|eases|edges \w+|dips|advances)( modestly| slightly)?"
+               r"( [\d.]+ percent)? as\b", re.IGNORECASE),
+    re.compile(r"\b(under|out)performs?\b.*\b(competitors|market)\b"
+               r"|\b(under|out)performing the (nasdaq|dow|s&p|market)\b", re.IGNORECASE),
+    re.compile(r"\$[A-Z]{1,5}\s*$"),  # MarketBeat 13F 제목 형식 "... Corporation $SYK"
+    re.compile(r"\bholding history\b|\bbuys new \$[\d.]+[MB]? stake\b", re.IGNORECASE),
+    re.compile(r"^form (3|4|144)\b|\bschedule 13d\b|\binitial statement of beneficial ownership\b"
+               r"|\btax[- ]withholding\b|\bto cover (the )?(exercise price|taxes)\b|\bcover taxes\b"
+               r"|\bstock units\b|\bstock awards?\b|\bmatrimonial\b|\bemployee stock plan\b",
+               re.IGNORECASE),
+    re.compile(r"\binvest\w*\b.*\byears ago\b|\breturns [\d.]+% annually\b", re.IGNORECASE),
+    re.compile(r"\bfair value\b|\bundervalued\b|\bovervalued\b|\bbargain\b|\bgf score\b|\bgf val",
+               re.IGNORECASE),
+    re.compile(r"\btop research reports\b|\bfinal trades\b|\banalyst blog highlights\b"
+               r"|\bbrokers suggest investing\b|\bwall street bulls look optimistic\b"
+               r"|\battracting investor attention\b|\binvestors heavily search\b|\btoo late to buy\b"
+               r"|\bshould you buy\b|\breasons to retain\b|\bbetter buy\b|\brevisiting stock picks\b"
+               r"|\blatest stock news\b", re.IGNORECASE),
+    re.compile(r"\bvs\.?\b.*\bwhich\b", re.IGNORECASE),  # "Abbott vs. DexCom: Which CGM Stock ..."
+    re.compile(r"\bmarket (report|outlook|global report)\b|\bfeaturing profiles\b|\bkey players\b"
+               r"|\bmarket,? \d{4}\s*-\s*\d{4}\b", re.IGNORECASE),
+]
+
+# 회사명이 흔한 성(姓)/단어/다른 브랜드와 겹쳐 오탐이 반복 확인된 경우의 제외 키워드
+# (haystack 소문자 substring). 이 키워드가 있으면 "그 회사" 매칭만 무효 처리한다.
+COMPANY_NEGATIVE_KEYWORDS = {
+    # "Optimus" 별칭이 트랜스포머 옵티머스 프라임/샌디스크 SSD 기사에 걸림
+    "Tesla": ["optimus prime", "transformers", "hasbro", "peter cullen", "sandisk"],
+    # 인물(Tad/Susan Stryker), 학교, 미 육군 스트라이커 장갑차(General Dynamics)
+    "Stryker": ["tad stryker", "susan stryker", "mary anne stryker", "stryker berglund",
+                "stryker schools", "general dynamics", "dvha", "stryker brigade"],
+    # 호주 통신사(ASX:ABB), 아제르바이잔 은행, 볼리비아 축구팀, 블록딜(ABB=accelerated bookbuild)
+    "ABB": ["aussie broadband", "asx:abb", "abb bank", "davr bank", "real oruro",
+            "bookrunner", "bookbuild", "han:abb"],
+    "Dexcom": ["dexcom stadium"],
+    "Natera": ["samy natera", "victor ray natera"],
+    "KUKA": ["kuka home"],  # 가구 브랜드
+    "Edge Medical": ["cutting-edge medical", "cutting edge medical"],
+    "Abbott": ["greg abbott", "tony abbott"],
+}
+
+# 이름이 짧아 본문(desc)에만 우연히 등장하는 오탐이 많은 회사 — 제목에 있어야만 인정.
+# (ABB: 파키스탄 정치·인도네시아 산불 기사 등이 desc 매칭으로 딸려 들어온 사례 확인)
+# 단, 매체명(src)이 회사명과 정확히 같으면(= ABB 자사 뉴스룸) 제목에 없어도 인정한다 —
+# ABB 뉴스룸은 "How direct current is rewiring power infrastructure"처럼 제목에 자사명을
+# 안 쓰는 경우가 많다(2026-10-01 news.json 이력에서 src="ABB" 3건 확인).
+TITLE_MATCH_REQUIRED = {"ABB"}
+
+
 def is_excluded_article_type_global(title: str, desc: str) -> bool:
-    """소송 유치 스팸/랭킹형 리스티클인지 판별(회사명 매칭과 무관하게 제외).
+    """소송 유치 스팸/랭킹형 리스티클/비사업성 기사인지 판별(회사명 매칭과 무관하게 제외).
     scrape_news.py의 is_excluded_article_type()과 동일한 역할의 영문 버전."""
     hay = f"{title} {desc}".lower()
     if any(kw in hay for kw in LAW_FIRM_SPAM_KEYWORDS):
         return True
     if any(p.search(title) for p in RANKING_TITLE_PATTERNS_GLOBAL):
+        return True
+    if any(p.search(title) for p in NON_BUSINESS_TITLE_PATTERNS_GLOBAL):
+        return True
+    if any(p.search(title) for p in STOCK_FILLER_TITLE_PATTERNS_GLOBAL):
         return True
     return False
 
@@ -293,6 +391,36 @@ def context_ok(company: str, haystack: str) -> bool:
         return True
     hay = haystack.lower()
     return any(kw.lower() in hay for kw in required)
+
+
+def has_negative_keyword(company: str, haystack: str) -> bool:
+    hay = haystack.lower()
+    return any(kw in hay for kw in COMPANY_NEGATIVE_KEYWORDS.get(company, []))
+
+
+def _title_match_ok(company: str, title: str, src: str) -> bool:
+    return company_mentioned(company, title) or src.strip() == company
+
+
+def match_company(title: str, summary: str, src: str = ""):
+    """기사에 해당하는 (회사, 카테고리)를 고른다. 없으면 None.
+    scrape_news_global_gsearch.py도 이 함수를 그대로 써서 두 수집 경로의 기준을 맞춘다."""
+    haystack = f"{title} {summary}"
+    candidates = [
+        (company, category)
+        for company, category in GLOBAL_COMPANY_CATEGORY.items()
+        if (_title_match_ok(company, title, src) if company in TITLE_MATCH_REQUIRED
+            else company_mentioned(company, haystack))
+        and context_ok(company, haystack)
+        and not has_negative_keyword(company, haystack)
+    ]
+    if not candidates:
+        return None
+    # 한 기사에 여러 회사명이 동시에 매칭되면(예: "Agility Robotics ... Tesla's
+    # backyard"), 안전장치가 걸린(초대형 대기업) 회사보다 그렇지 않은·이름이 더
+    # 구체적인(긴) 회사를 우선한다 — 그래야 이 기사가 Tesla로 오귀속되지 않고
+    # 실제 주인공인 Agility Robotics로 붙는다.
+    return min(candidates, key=lambda c: (c[0] in CONTEXT_REQUIRED_GLOBAL, -len(c[0])))
 
 
 def _title_tokens(title: str):
@@ -363,19 +491,10 @@ def main():
             if is_excluded_article_type_global(title, summary):
                 continue
 
-            haystack = f"{title} {summary}"
-            candidates = [
-                (company, category)
-                for company, category in GLOBAL_COMPANY_CATEGORY.items()
-                if company_mentioned(company, haystack) and context_ok(company, haystack)
-            ]
-            if not candidates:
+            matched = match_company(title, summary)
+            if matched is None:
                 continue
-            # 한 기사에 여러 회사명이 동시에 매칭되면(예: "Agility Robotics ... Tesla's
-            # backyard"), 안전장치가 걸린(초대형 대기업) 회사보다 그렇지 않은·이름이 더
-            # 구체적인(긴) 회사를 우선한다 — 그래야 이 기사가 Tesla로 오귀속되지 않고
-            # 실제 주인공인 Agility Robotics로 붙는다.
-            company, category = min(candidates, key=lambda c: (c[0] in CONTEXT_REQUIRED_GLOBAL, -len(c[0])))
+            company, category = matched
             by_category.setdefault(category, []).append({
                 "co": company,
                 "ctx": "News",
