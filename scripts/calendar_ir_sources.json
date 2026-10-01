@@ -4,7 +4,7 @@
   {"ticker": "SYK", "name": "Stryker", "ir_url": "https://investors.stryker.com/", "scraper": "q4_feed", "scraper_url": "https://investors.stryker.com/"},
   {"ticker": "DXCM", "name": "Dexcom", "ir_url": "https://investors.dexcom.com/", "scraper": "q4_feed", "scraper_url": "https://investors.dexcom.com/"},
   {"ticker": "UNH", "name": "UnitedHealth Group", "ir_url": "https://www.unitedhealthgroup.com/investors.html", "scraper": "unh_events", "scraper_url": "https://www.unitedhealthgroup.com/investors.html"},
-  {"ticker": "ABT", "name": "Abbott", "ir_url": "https://www.abbottinvestor.com/", "scraper": "nir_table_abt", "scraper_url": "https://www.abbottinvestor.com/news-and-events/events"},
+  {"ticker": "ABT", "name": "Abbott", "ir_url": "https://www.abbottinvestor.com/news-and-events/events", "scraper": "nir_table_abt", "scraper_url": "https://www.abbottinvestor.com/news-and-events/events"},
   {"ticker": "MDT", "name": "Medtronic", "ir_url": "https://investorrelations.medtronic.com/", "scraper": "mdt_wd", "scraper_url": "https://investorrelations.medtronic.com/events-presentations"},
   {"ticker": "EW", "name": "Edwards Lifesciences", "ir_url": "https://ir.edwards.com/", "scraper": "q4_feed", "scraper_url": "https://ir.edwards.com/"},
   {"ticker": "TMO", "name": "Thermo Fisher Scientific", "ir_url": "https://ir.thermofisher.com/", "scraper": "q4_feed", "scraper_url": "https://ir.thermofisher.com/"},

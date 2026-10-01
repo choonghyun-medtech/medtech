@@ -257,19 +257,28 @@ def scrape_unh_events(scraper_url, ticker, name, ir_url, today):
     if not m:
         return events
 
-    header = m.group(1).strip()
-    date_m = re.match(r'([A-Za-z]+ \d{1,2}):\s*(.+)', header)
+    header = html.unescape(m.group(1).strip())
+    # [2026-10-01] "October 13:"만 인식하던 걸, 실제로 쓰이는 줄임 표기 "Oct. 13:"("Sept. 9:"
+    # 포함)도 받도록 고쳤다 — 이 형식이라 Q3 실적발표(10/13)가 수집되지 않았다(사용자 리포트).
+    date_m = re.match(r'([A-Za-z]+)\.?\s+(\d{1,2}):\s*(.+)', header)
     if not date_m:
         return events  # "No upcoming events" 등 날짜가 없는 경우
 
-    date_str, title = date_m.group(1).strip(), date_m.group(2).strip()
+    month_str, day_str, title = date_m.group(1), date_m.group(2), date_m.group(3).strip()
+    # 제목 끝의 시각 표기(", 8 a.m. ET") 제거
+    title = re.sub(r",\s*\d{1,2}(:\d{2})?\s*[ap]\.?m\.?.*$", "", title, flags=re.I).strip()
     ev_type = classify_global(title)
     if not ev_type:
         return events
 
-    try:
-        md = datetime.datetime.strptime(date_str, "%B %d").date()
-    except ValueError:
+    md = None
+    for fmt in ("%B %d", "%b %d"):
+        try:
+            md = datetime.datetime.strptime(f"{month_str[:3] if fmt == '%b %d' else month_str} {day_str}", fmt).date()
+            break
+        except ValueError:
+            continue
+    if md is None:
         return events
     d = md.replace(year=today.year)
     if d < today:
