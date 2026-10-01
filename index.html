@@ -2701,6 +2701,16 @@ function perfCapUsdB(s){
   return krwB / usdKrw;
 }
 function perfFmtKrwB(v){ return v==null ? '-' : Math.round(v).toLocaleString('ko-KR'); }
+// 십억달러는 소수 첫째 자리(1,031.4), 1 미만 소형주는 0.0으로 뭉개지지 않게 둘째 자리(0.04)까지 표시.
+function perfFmtUsdB(v){
+  if(v==null) return '-';
+  const d = v < 1 ? 2 : 1;
+  return v.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+}
+const PERF_CAP_UNITS = {
+  krw: { label:'시총(십억원)',   value:s=> perfFmtKrwB(perfCapKrwB(s)) },
+  usd: { label:'시총(십억달러)', value:s=> perfFmtUsdB(perfCapUsdB(s)) },
+};
 
 async function loadPerfFx(){
   try{
@@ -2716,18 +2726,20 @@ async function loadPerfFx(){
 loadPerfFx();
 
 // Top10/Bottom10 표 한 쌍 — 화면 렌더와 이미지 캡쳐가 같은 마크업을 쓴다.
-function buildPerfGridHtml(list, period){
+// capUnit: 'krw'(기본, 화면·국내 캡쳐) | 'usd'(메가캡/중소형주 캡쳐, 2026-10-01 요청)
+function buildPerfGridHtml(list, period, capUnit='krw'){
+  const unit = PERF_CAP_UNITS[capUnit] || PERF_CAP_UNITS.krw;
   const sorted = list.slice().sort((a,b)=> b.returns[period]-a.returns[period]);
   const top10 = sorted.slice(0,10);
   const bottom10 = sorted.slice(-10).reverse();
   function buildTable(rowsList){
-    const header = `<thead><tr><th>#</th><th>종목</th><th>섹터</th><th>시총(십억원)</th><th>변화율(%)</th></tr></thead>`;
+    const header = `<thead><tr><th>#</th><th>종목</th><th>섹터</th><th>${unit.label}</th><th>변화율(%)</th></tr></thead>`;
     const rows = rowsList.map((s,i)=>`
       <tr title="${s.as_of ? '종가 기준일 '+s.as_of : '기준일 정보 없음'}">
         <td>${i+1}</td>
         <td><a class="perf-name-link" href="${newsUrl(s.name)}" target="_blank" rel="noopener">${s.name}</a><span class="market-badge">${s.market}</span></td>
         <td>${s.sector}</td>
-        <td>${perfFmtKrwB(perfCapKrwB(s))}</td>
+        <td>${unit.value(s)}</td>
         <td class="${pctClass(s.returns[period])}">${fmtPct(s.returns[period])}</td>
       </tr>`).join('');
     return `<table>${header}<tbody>${rows || '<tr><td colspan="5" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>'}</tbody></table>`;
@@ -2751,9 +2763,10 @@ function buildPerfGridHtml(list, period){
 // 폴더를 고르면 IndexedDB에 핸들을 기억해 다음부터 그 폴더에 바로 쓴다(Chrome/Edge).
 // 미지원 브라우저는 기본 다운로드 폴더로 저장.
 const PERF_CAPTURE_SETS = [
-  { key:'국내', filter:s=>s.market==='KR' },
-  { key:'메가캡', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c>=PERF_MEGACAP_USD_B; } },
-  { key:'중소형주', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c<PERF_MEGACAP_USD_B; } },
+  // capUnit: 국내는 십억원 유지, 메가캡/중소형주는 십억달러로 표기(2026-10-01 요청 — 화면 표는 그대로 십억원).
+  { key:'국내', capUnit:'krw', filter:s=>s.market==='KR' },
+  { key:'메가캡', capUnit:'usd', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c>=PERF_MEGACAP_USD_B; } },
+  { key:'중소형주', capUnit:'usd', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c<PERF_MEGACAP_USD_B; } },
 ];
 const PERF_CAPTURE_PERIOD_LABEL = { d1:'전일 종가 기준', d5:'지난 5일 기준' };
 const PERF_CAPTURE_FILE_PERIOD = { d1:'1일', d5:'5일' };
@@ -2869,11 +2882,13 @@ async function capturePerfTables(period, btn){
       // 안내문구: 종목 수·시총 단위(표 머리글에 있음)는 빼고, 환율 문구는 짧게.
       // 통화 기준 문구는 해외 종목이 섞이는 표에만(국내는 전부 원화라 불필요).
       const ccyNote = set.key!=='국내' ? ' · 변화율 현지통화 기준' : '';
-      const fxNote = set.key!=='국내' && PERF_FX.rate_date ? ` · 해외 시총 ${PERF_FX.rate_date} 환율 적용` : '';
+      // 달러 표기 표는 원화 종목(국내 메가캡 등)도 같은 환율로 달러 환산되므로 문구를 그에 맞춘다.
+      const fxNote = set.key==='국내' || !PERF_FX.rate_date ? ''
+        : set.capUnit==='usd' ? ` · 시총 ${PERF_FX.rate_date} 환율로 달러 환산` : ` · 해외 시총 ${PERF_FX.rate_date} 환율 적용`;
       stage.innerHTML = `
         <h3>${set.key} Top 10 / Bottom 10 (${PERF_CAPTURE_PERIOD_LABEL[period]})</h3>
         <div class="perf-capture-sub">종가 기준일 ${asOf || '-'}${ccyNote}${capRule}${fxNote}</div>
-        ${buildPerfGridHtml(list, period)}`;
+        ${buildPerfGridHtml(list, period, set.capUnit)}`;
       const canvas = await html2canvas(stage, {
         backgroundColor:'#ffffff', scale:2, logging:false,
         width: stage.scrollWidth, height: stage.scrollHeight,
