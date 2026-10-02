@@ -1004,7 +1004,7 @@ tr:last-child td{border-bottom:none}
     <div class="tabs" id="reports-subtabs" style="margin-bottom:14px">
       <button class="region-tab active" data-sub="research">리서치 보고서</button>
       <button class="region-tab" data-sub="concall">해외기업 컨콜</button>
-      <button class="region-tab" data-sub="revision">컨센서스 리비전</button>
+      <button class="region-tab" data-sub="revision">컨센서스 변화</button>
       <button class="region-tab" data-sub="surprise">실적 서프라이즈</button>
     </div>
 
@@ -1048,12 +1048,12 @@ tr:last-child td{border-bottom:none}
       <div id="earnings-ir-wrap"></div>
     </div>
 
-    <!-- ---- 컨센서스 리비전 (2026-10-02 초안) ----
+    <!-- ---- 컨센서스 변화(리비전) (2026-10-02 초안, 탭 이름 "컨센서스 리비전" → "컨센서스 변화") ----
          consensus_history.json(scripts/update_consensus_history.py가 매일 consensus.json
          스냅샷을 누적)으로 추정치가 기간 동안 얼마나 상향/하향됐는지 보여준다.
          국내(네이버)는 EPS·매출·영업이익만, 해외(yfinance)는 EPS·매출·목표주가만 제공된다. -->
     <div id="reports-sub-revision" style="display:none">
-      <div class="sec-h"><h2>컨센서스 리비전</h2><span class="note" id="rev-source-note">출처: 네이버 컨센서스(국내) · Yahoo Finance(해외)</span></div>
+      <div class="sec-h"><h2>컨센서스 변화 <span class="note" style="font-weight:400">· 추정치가 기간 중 얼마나 상향·하향됐는지(리비전)</span></h2><span class="note" id="rev-source-note">출처: 네이버 컨센서스(국내) · Yahoo Finance(해외)</span></div>
       <div class="note" id="rev-range-note" style="margin:-4px 0 10px"></div>
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
@@ -3061,7 +3061,7 @@ async function loadStockPerformance(){
     if(typeof renderFlowMap === 'function') renderFlowMap();
     if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
     if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
-    // 컨센서스 리비전은 종목명·섹터·주가를 여기서 가져오므로, 먼저 로드됐으면 다시 그린다.
+    // 컨센서스 변화 탭은 종목명·섹터·주가를 여기서 가져오므로, 먼저 로드됐으면 다시 그린다.
     if(CONS_HIST){ populateRevFilters(); renderRevision(); }
     if(SUP_DATA){ populateSupSectorFilter(); renderSurprise(); } // 실적 서프라이즈의 주가 반응·섹터
   }catch(e){
@@ -7395,7 +7395,7 @@ async function loadBioReports(){
 loadBioReports();
 
 // ==================================================================
-// 컨센서스 리비전 — 기업 분석 › 컨센서스 리비전 (2026-10-02 초안)
+// 컨센서스 변화(리비전) — 기업 분석 › 컨센서스 변화 (2026-10-02 초안)
 // consensus_history.json: {dates:[...], stocks:{ticker:{name, market, tp:[], n:[],
 //   eps:{"2026":[]}, rev:{...}, op:{...}}}} — 배열은 dates와 같은 길이, 값 없으면 null.
 // 회계연도 키는 실제 연도(스크립트에서 해외 "0Y/+1Y" 상대 표기를 환산해 둠)라 연초에
