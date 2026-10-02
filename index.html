@@ -1130,6 +1130,11 @@ tr:last-child td{border-bottom:none}
   <!-- ================= COMPANY SNAPSHOT ================= -->
   <section class="view" id="view-snapshot">
     <div class="sec-h"><h2>기업 스냅샷</h2><span class="note">기업 하나를 고르면 뉴스·공시·주가·리포트·실적을 한 화면에 모아 보여줍니다 (HS코드로 매칭되는 수출 데이터가 있으면 함께 표시)</span></div>
+    <!-- 기업명·티커 검색 (2026-10-02 추가) — 섹터 드롭다운을 몰라도 바로 찾을 수 있게. 주가 탭 종목 검색과 같은 형태 -->
+    <div style="position:relative;margin-bottom:8px;max-width:320px">
+      <input id="snap-search-input" class="filter-select" style="width:100%;box-sizing:border-box" placeholder="종목명 또는 티커 검색..." autocomplete="off" />
+      <div id="snap-search-results" class="card" style="display:none;position:absolute;top:36px;left:0;z-index:10;width:100%;max-height:260px;overflow-y:auto;padding:4px"></div>
+    </div>
     <div id="snap-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
     <div id="snap-company-detail"><div class="card note">위에서 기업을 선택하면 스냅샷이 표시됩니다.</div></div>
   </section>
@@ -6554,36 +6559,76 @@ function buildStockBoxHtml(ticker, label){
     return `<div class="stat-card"><div class="lbl">${labelMap[k]}</div><div class="val">${fmtPct(r[k])}%</div><div class="delta ${pctClass(r[k])}"></div></div>`;
   }).join('');
 
-  const targetBlock = (targetPrice!=null) ? `
-    <div class="stat-card"><div class="lbl">목표주가</div><div class="val">${targetPrice.toLocaleString('ko-KR')}${curSuffix}</div><div class="delta">컨센서스 · ${cons.as_of||''}</div></div>
-    <div class="stat-card"><div class="lbl">현재주가</div><div class="val">${currentPrice!=null?currentPrice.toLocaleString('ko-KR')+curSuffix:'-'}</div><div class="delta">최근 종가</div></div>
+  // [2026-10-02] 국내는 네이버 종목 페이지 개편(9월 중순)으로 목표주가·투자의견·Forward PER 수집이
+  // 계속 실패해 64종목 전부 이 칸들이 "-"로 비어 있었다. 목표주가 소스를 복구하기 전까지는
+  //  - 현재주가 카드는 목표주가 유무와 상관없이 항상 표시
+  //  - 목표주가·상승여력은 값이 있을 때만 표시(국내는 숨김)
+  //  - 국내 PER은 현재가 ÷ 컨센서스 FY1 EPS(WiseReport 연간 추정치)로 직접 계산
+  const priceCard = `<div class="stat-card"><div class="lbl">현재주가</div><div class="val">${currentPrice!=null?currentPrice.toLocaleString('ko-KR', {maximumFractionDigits:2})+curSuffix:'-'}</div><div class="delta">최근 종가</div></div>`;
+  const targetCards = (targetPrice!=null) ? `
+    <div class="stat-card"><div class="lbl">목표주가</div><div class="val">${targetPrice.toLocaleString('ko-KR', {maximumFractionDigits:2})}${curSuffix}</div><div class="delta">컨센서스 평균${cons.analyst_count ? ` · ${cons.analyst_count}명` : ''}</div></div>
     <div class="stat-card"><div class="lbl">상승여력</div><div class="val">${upside!=null?fmtPct(upside)+'%':'-'}</div><div class="delta ${upside!=null?pctClass(upside):''}">목표가 대비</div></div>
-  ` : `<div class="stat-card"><div class="lbl">목표주가</div><div class="val">-</div><div class="delta">컨센서스 데이터 없음</div></div>`;
+  ` : '';
 
-  // 국내(네이버)는 페이지 표기가 이미 소수점 2자리(예: "20.00")인데, 해외(yfinance)는
-  // forwardPE가 원시값(예: 18.382051)이라 그대로 찍으면 자릿수가 안 맞았다 — 둘 다
-  // 소수점 2자리로 통일해서 표시(2026-09-04).
-  const per = cons ? cons.per_fwd : null;
-  const perBlock = per!=null ? `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${per.toFixed(2)}배</div><div class="delta">Forward PER(컨센서스)</div></div>`
-    : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">컨센서스 PER 없음(커버리지 부족)</div></div>`;
+  let perVal = '-', perNote = '컨센서스 없음(커버리지 부족)';
+  if(cons && cons.per_fwd != null){
+    // 해외(yfinance)는 forwardPE 원시값(예: 18.382051) — 소수점 2자리로 통일
+    perVal = `${cons.per_fwd.toFixed(2)}배`;
+    perNote = 'Forward PER(컨센서스)';
+  }else if(cons && currentPrice != null){
+    const fy1 = ((cons.earnings && cons.earnings.annual) || []).find(a=>a.is_estimate && a.eps != null);
+    if(fy1){
+      const fy = String(fy1.period).slice(0, 4);
+      if(fy1.eps > 0){
+        perVal = `${(currentPrice / fy1.eps).toFixed(2)}배`;
+        perNote = `현재가 ÷ ${fy}E EPS(${Math.round(fy1.eps).toLocaleString()}원)`;
+      }else{
+        perVal = 'N/A';
+        perNote = `${fy}E EPS 적자 예상`;
+      }
+    }
+  }
+  const perBlock = `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">${perVal}</div><div class="delta">${perNote}</div></div>`;
+  const consSrc = !cons ? '' : cons.source === 'naver' ? 'FnGuide(WiseReport)' : 'Yahoo Finance';
+  const srcNote = consSrc ? `컨센서스 출처: ${consSrc}${cons.as_of ? ' · '+cons.as_of : ''} — 글로벌 대시보드(Bloomberg)와 수치가 다를 수 있음` : '컨센서스 없음';
 
   return `
-    <div class="sec-h"><h2 style="font-size:14px">${label} · 주가 데이터</h2><span class="note">목표주가/PER은 시장 컨센서스</span></div>
+    <div class="sec-h"><h2 style="font-size:14px">${label} · 주가 데이터</h2><span class="note">${srcNote}</span></div>
     <div class="cards" style="margin-bottom:8px">
       <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
       ${perfRow}
     </div>
     <div class="cards">
-      ${targetBlock}
+      ${priceCard}
+      ${targetCards}
       ${perBlock}
     </div>
   `;
 }
 
+// [2026-10-02] 리서치 보고서 탭에서는 주가 카드(시총·수익률·목표주가·PER)를 직접 그리지 않고
+// 기업 스냅샷으로 가는 링크만 둔다 — 스냅샷과 완전히 같은 내용이 리포트 목록 아래에 반복돼
+// 화면만 길어졌기 때문. 주가 카드는 스냅샷(buildStockBoxHtml → #snap-stock-box)에만 남는다.
 function renderRepStockBox(co){
   const box = document.getElementById('rep-stock-box');
   if(!box) return;
-  box.innerHTML = buildStockBoxHtml(tickerForCompany(co), companyLabel(co));
+  const ticker = tickerForCompany(co);
+  box.innerHTML = ticker ? `
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px">
+      <span class="note">${escapeHtml(companyLabel(co))}의 주가·시가총액·밸류에이션·뉴스·공시는 기업 스냅샷에서 한 번에 볼 수 있습니다.</span>
+      <button type="button" class="snap-jump-btn" onclick='jumpToSnapshot(${jsAttrJson(ticker)})'>기업 스냅샷에서 보기 →</button>
+    </div>` : '';
+}
+
+// 다른 탭에서 기업 스냅샷으로 이동 — 섹터 드롭다운 선택 상태까지 해당 기업으로 맞춘다.
+function jumpToSnapshot(ticker){
+  activateTab('snapshot');
+  if(!ticker) return;
+  document.querySelectorAll('#snap-dropdown-wrap .snap-sector-select').forEach(sel=>{
+    sel.value = [...sel.options].some(o=>o.value === ticker) ? ticker : '';
+  });
+  selectedSnapshotTicker = ticker;
+  renderSnapshot(ticker);
 }
 
 // 컨센서스 실적 전망 표는 기업 상세 패널(#rep-company-detail) 안, 기존 텔레그램 채널
@@ -6726,6 +6771,63 @@ function renderSnapshotDropdowns(){
     });
   });
 }
+
+// 기업 스냅샷 검색 — 기업명(현재 사명 포함)·티커·종목코드로 찾아 바로 스냅샷을 연다.
+// 고르면 섹터 드롭다운 선택 상태도 같은 기업으로 맞춘다(jumpToSnapshot과 동일한 처리).
+function snapSearchMatches(query){
+  const q = query.toLowerCase();
+  return TICKER_UNIVERSE.filter(t=>
+    t.name.toLowerCase().includes(q) || stockDisplayName(t.ticker).toLowerCase().includes(q) || t.ticker.toLowerCase().includes(q)
+  ).sort((a,b)=>{
+    // 앞부분이 일치하는 기업을 위로(예: "클" → 클래시스, 클리오가 "…클…"보다 먼저)
+    const sa = stockDisplayName(a.ticker).toLowerCase().startsWith(q) || a.ticker.toLowerCase().startsWith(q) ? 0 : 1;
+    const sb = stockDisplayName(b.ticker).toLowerCase().startsWith(q) || b.ticker.toLowerCase().startsWith(q) ? 0 : 1;
+    return sa - sb || stockDisplayName(a.ticker).localeCompare(stockDisplayName(b.ticker), 'ko');
+  }).slice(0, 10);
+}
+function pickSnapshotFromSearch(ticker){
+  const input = document.getElementById('snap-search-input');
+  const results = document.getElementById('snap-search-results');
+  if(input) input.value = '';
+  if(results){ results.style.display = 'none'; results.innerHTML = ''; }
+  document.querySelectorAll('#snap-dropdown-wrap .snap-sector-select').forEach(sel=>{
+    sel.value = [...sel.options].some(o=>o.value === ticker) ? ticker : '';
+  });
+  selectedSnapshotTicker = ticker;
+  renderSnapshot(ticker);
+}
+function renderSnapSearchResults(query){
+  const results = document.getElementById('snap-search-results');
+  if(!query){ results.style.display = 'none'; results.innerHTML = ''; return; }
+  const matches = snapSearchMatches(query);
+  results.innerHTML = matches.length
+    ? matches.map(t=>`<div class="snap-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${escapeHtml(stockDisplayName(t.ticker))} <span class="note">${t.ticker} · ${t.market} · ${escapeHtml(t.sector)}</span></div>`).join('')
+    : '<div class="note" style="padding:8px">일치하는 기업이 없습니다</div>';
+  results.querySelectorAll('.snap-search-item').forEach(item=>{
+    item.addEventListener('mouseenter', ()=> item.style.background = 'var(--bg2)');
+    item.addEventListener('mouseleave', ()=> item.style.background = '');
+    item.addEventListener('click', ()=> pickSnapshotFromSearch(item.dataset.ticker));
+  });
+  results.style.display = 'block';
+}
+(function setupSnapSearch(){
+  const input = document.getElementById('snap-search-input');
+  const results = document.getElementById('snap-search-results');
+  if(!input || !results) return;
+  input.addEventListener('input', ()=> renderSnapSearchResults(input.value.trim()));
+  input.addEventListener('focus', ()=>{ if(input.value.trim()) renderSnapSearchResults(input.value.trim()); });
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      const first = snapSearchMatches(input.value.trim())[0];
+      if(input.value.trim() && first) pickSnapshotFromSearch(first.ticker);
+    }else if(e.key === 'Escape'){
+      results.style.display = 'none';
+    }
+  });
+  document.addEventListener('click', e=>{
+    if(!results.contains(e.target) && e.target !== input) results.style.display = 'none';
+  });
+})();
 
 // onclick='...(${JSON.stringify(v)})' 형태로 값을 인라인 핸들러에 박아 넣을 때, v 안에
 // 작은따옴표가 있으면(예: 영문 기업명) 속성값을 감싼 작은따옴표와 충돌해 마크업이 깨진다 —
