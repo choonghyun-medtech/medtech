@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-01T05:04:53.695475+00:00",
+  "updated": "2026-10-02T00:46:47.264725+00:00",
   "source": "SEC 공시(8-K/6-K Exhibit 99, 회사가 제출 의무를 지는 실적 보도자료 원문) 기반, 한국어 번역·요약은 Gemini/Claude 자동 처리(scripts/scrape_earnings_ir.py) 또는 수동 검수",
   "note": "TIKR 등 유료 컨콜 스크립트 사이트를 스크래핑해 무료 열람 제한을 우회하는 방식 대신, 기업이 직접 공개한 IR 보도자료를 근거로 한다 — Q&A 상세 스크립트까지는 포함하지 않고 매출·수익성·가이던스 등 핵심 수치와 경영진 코멘트 위주로 요약한다.",
   "companies": [
@@ -1515,6 +1515,8 @@
   ],
   "skipped_urls": [
     "https://www.sec.gov/Archives/edgar/data/310764/000031076426000041/syk-20260626_d2.htm",
-    "https://www.sec.gov/Archives/edgar/data/1093557/000109355726000003/dxcm20260112-exhibit991.htm"
+    "https://www.sec.gov/Archives/edgar/data/1093557/000109355726000003/dxcm20260112-exhibit991.htm",
+    "https://www.sec.gov/Archives/edgar/data/1742692/000117891326003540/exhibit_99-1.htm",
+    "https://www.sec.gov/Archives/edgar/data/1742692/000117891326003456/exhibit_99-1.htm"
   ]
 }
