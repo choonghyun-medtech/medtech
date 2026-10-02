@@ -1005,6 +1005,7 @@ tr:last-child td{border-bottom:none}
       <button class="region-tab active" data-sub="research">리서치 보고서</button>
       <button class="region-tab" data-sub="concall">해외기업 컨콜</button>
       <button class="region-tab" data-sub="revision">컨센서스 리비전</button>
+      <button class="region-tab" data-sub="surprise">실적 서프라이즈</button>
     </div>
 
     <!-- ---- 리서치 보고서 ---- -->
@@ -1090,6 +1091,39 @@ tr:last-child td{border-bottom:none}
       <div class="cards" id="rev-detail-cards"></div>
       <div class="note" id="rev-detail-note" style="margin:0 0 8px"></div>
       <div class="chart-box" id="rev-detail-chart-box"><canvas id="revDetailChart"></canvas></div>
+    </div>
+
+    <!-- ---- 실적 서프라이즈 (2026-10-02 초안) ----
+         earnings_surprise.json(scripts/scrape_earnings_surprise.py): 국내는 WiseReport 어닝서프라이즈
+         (매출액·영업이익, 발표 직전 컨센서스 대비), 해외는 Yahoo Finance EPS 서프라이즈.
+         시즌별로 발표 완료 기업은 결과 표·분포 차트, 아직 발표 전인 기업은 예정일·컨센서스를 함께 보여준다. -->
+    <div id="reports-sub-surprise" style="display:none">
+      <div class="sec-h"><h2>실적 서프라이즈</h2><span class="note" id="sup-source-note">출처: WiseReport(국내) · Yahoo Finance(해외)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+        <div class="toggle" id="sup-season-toggle"></div>
+        <div class="toggle" id="sup-region-toggle">
+          <button data-region="KR" class="active">국내</button><button data-region="GLOBAL">해외</button>
+        </div>
+        <select id="sup-sector-filter" class="filter-select"><option value="all">섹터 전체</option></select>
+      </div>
+      <div class="note" id="sup-rule-note" style="margin:0 0 12px"></div>
+
+      <div id="sup-result-view">
+        <div class="cards" id="sup-summary-cards"></div>
+        <div class="sec-h" style="margin:14px 0 6px"><h2 style="font-size:13px" id="sup-dist-title">서프라이즈 분포</h2><span class="note" id="sup-dist-note"></span></div>
+        <div class="chart-box" id="sup-dist-box"><canvas id="supDistChart"></canvas></div>
+        <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">기업별 결과</h2>
+          <div class="toggle" id="sup-sort-toggle"><button data-sort="date" class="active">발표일순</button><button data-sort="surprise">서프라이즈순</button></div>
+        </div>
+        <div id="sup-table-wrap"></div>
+      </div>
+
+      <!-- 진행 중인 시즌에서 아직 실적이 안 나온 기업 — 발표 예정일·컨센서스. 발표 일정 자체는
+           이벤트 캘린더와 겹치므로 요약 카드는 두지 않고, 서프라이즈 판정 전 대기 목록 역할만 한다. -->
+      <div id="sup-preview-view" hidden>
+        <div class="sec-h" style="margin:18px 0 6px"><h2 style="font-size:13px" id="sup-preview-title">발표 예정</h2><span class="note" id="sup-preview-note"></span></div>
+        <div id="sup-preview-wrap"></div>
+      </div>
     </div>
   </section>
 
@@ -3024,6 +3058,7 @@ async function loadStockPerformance(){
     if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
     // 컨센서스 리비전은 종목명·섹터·주가를 여기서 가져오므로, 먼저 로드됐으면 다시 그린다.
     if(CONS_HIST){ populateRevFilters(); renderRevision(); }
+    if(SUP_DATA){ populateSupSectorFilter(); renderSurprise(); } // 실적 서프라이즈의 주가 반응·섹터
   }catch(e){
     document.getElementById('perf-body').innerHTML =
       '<div class="na-msg">주가 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
@@ -3716,6 +3751,7 @@ async function loadTickerUniverse(){
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
   if(typeof renderSnapshotDropdowns === 'function') renderSnapshotDropdowns();
   if(CONS_HIST){ populateRevFilters(); renderRevision(); } // 종목명·섹터 표기 갱신
+  if(SUP_DATA){ populateSupSectorFilter(); renderSurprise(); }
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
   if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
   const input = document.getElementById('stock-search-input');
@@ -7637,6 +7673,329 @@ async function loadConsensusHistory(){
   }
 }
 loadConsensusHistory();
+
+// ==================================================================
+// 실적 서프라이즈 — 기업 분석 › 실적 서프라이즈 (2026-10-02 초안)
+// earnings_surprise.json: {stocks:{ticker:{name, market, unit, quarters:[{period:"2026-06",
+//   report_date, rev/op/eps:{actual, est, surprise}}], next:{period, date, date_confirmed,
+//   rev_est, op_est, eps_est}}}}
+// 시즌 화면은 "발표 완료(결과)" + "발표 예정(컨센서스)" 두 부분 — 매일 갱신 때 실적이 나온 기업이 아래에서 위로 옮겨간다.
+// ==================================================================
+let SUP_DATA = null;
+let supDistChartInstance = null;
+const SUP_STATE = { season:null, region:'KR', sector:'all', sort:'date' };
+// 판정 용어는 국내·해외 모두 Beat / In-line / Miss로 통일. 기준 폭만 다르다(국내 영업이익은 변동성이
+// 커서 ±10% — 국내 관행, 해외 EPS는 ±5%).
+const SUP_LABELS = { beat:'Beat', inline:'In-line', miss:'Miss' };
+const SUP_RULES = {
+  KR:     { metric:'op',  label:'영업이익', band:10 },
+  GLOBAL: { metric:'eps', label:'EPS',     band:5 },
+};
+const SUP_REV_BAND = 3;     // 매출 차이 색 표시 기준(%)
+const SUP_HISTORY_N = 3;    // "최근 N분기" 점 개수 — 국내 소스가 3개 분기만 줘서 3으로 통일(이력이 쌓이면 늘릴 수 있음)
+const SUP_BEAT_COLOR = '#0F6E56', SUP_MISS_COLOR = '#A32D2D', SUP_INLINE_COLOR = '#8a919c';
+
+// 분기 말 월 → 시즌 키 "2026Q2". 결산월이 다른 기업은 "분기 3개월 중 다수가 속한 달력 분기"로
+// 묶는다(가운데 달 기준 — 5~7월 분기는 2Q, 6~8월 분기는 3Q). 7월 말 종료 분기가 10월 전에
+// 3Q로 잡혀 시즌이 "진행 중"으로 보이던 문제 방지.
+function supSeasonOf(period){
+  let [y, m] = period.split('-').map(Number);
+  m -= 1;
+  if(m === 0){ m = 12; y--; }
+  return `${y}Q${Math.ceil(m/3)}`;
+}
+function supSeasonLabel(key){ const [y, q] = key.split('Q'); return `${q}Q${y.slice(2)}`; }
+function supSeasonEnd(key){ const [y, q] = key.split('Q').map(Number); return new Date(Date.UTC(y, q*3, 0)).toISOString().slice(0, 10); }
+// 현재 실적 시즌 = 오늘 기준으로 가장 최근에 끝난 달력 분기(10/2면 3Q26). 다음 분기가 끝나면(1/1) 자동으로 4Q26으로 넘어간다.
+function supCurrentSeason(){
+  const d = new Date();
+  let y = d.getFullYear(), q = Math.ceil((d.getMonth()+1)/3) - 1;
+  if(q === 0){ q = 4; y--; }
+  return `${y}Q${q}`;
+}
+function supClass(s, band){ return s == null ? null : s >= band ? 'beat' : s <= -band ? 'miss' : 'inline'; }
+function supColor(cls){ return cls === 'beat' ? SUP_BEAT_COLOR : cls === 'miss' ? SUP_MISS_COLOR : SUP_INLINE_COLOR; }
+function supInRegion(s, region){ return region === 'KR' ? s.market === 'KR' : s.market !== 'KR'; }
+function supStocks(){
+  return Object.entries(SUP_DATA.stocks).filter(([t, s])=>
+    supInRegion(s, SUP_STATE.region) && (SUP_STATE.sector === 'all' || revStockMeta(t, s).sector === SUP_STATE.sector));
+}
+// 이 시즌에 아직 실적이 안 나온(발표 예정) 종목인지 — 그 분기 실적이 없고, 다음 분기 정보가 그 시즌을 가리킬 때
+function supIsPending(s, season){
+  if((s.quarters||[]).some(q=>supSeasonOf(q.period) === season)) return false;
+  const n = s.next || {};
+  if(!n.period || supSeasonOf(n.period) !== season) return false;
+  return [n.rev_est, n.op_est, n.eps_est, n.date].some(v=>v != null);
+}
+function supSeasonList(){
+  const cur = supCurrentSeason();
+  const count = {};
+  Object.values(SUP_DATA.stocks).forEach(s=>(s.quarters||[]).forEach(q=>{ const k = supSeasonOf(q.period); count[k] = (count[k]||0) + 1; }));
+  const past = Object.keys(count).filter(k=>k < cur && count[k] >= 10).sort().reverse().slice(0, 3);
+  return { cur, list:[cur, ...past] };
+}
+// 현재 시즌 버튼 이름: 발표 0건이면 "프리뷰", 일부 발표면 "진행 중", 대상 전부 발표면 분기명만
+function supSeasonButtonLabel(key, cur){
+  const label = supSeasonLabel(key);
+  if(key !== cur) return label;
+  const all = Object.values(SUP_DATA.stocks);
+  const reported = all.filter(s=>(s.quarters||[]).some(q=>supSeasonOf(q.period) === key)).length;
+  const pending = all.filter(s=>supIsPending(s, key)).length;
+  return reported === 0 ? `${label} 프리뷰` : pending > 0 ? `${label} 진행 중` : label;
+}
+
+// 발표 예정일: 이벤트 캘린더(회사 IR 페이지에서 직접 확인한 일정)를 우선 쓰고, 없을 때만 Yahoo 예정일을 쓴다.
+function supUpcomingDate(ticker, s, season){
+  const end = supSeasonEnd(season);
+  const limit = new Date(new Date(end).getTime() + 120*86400000).toISOString().slice(0, 10);
+  const ev = (CAL_DATA.global || []).find(e=>e.type === 'earn' && e.ticker === ticker && e.date > end && e.date <= limit);
+  if(ev) return { date:ev.date, src:'IR', confirmed:!ev.estimated, yahoo:(s.next||{}).date || null };
+  const n = s.next || {};
+  // Yahoo 예정일이 며칠 전으로 지났는데 실적이 없으면 갱신 안 된 낡은 일정 — 미정으로 취급
+  const stale = new Date(Date.now() - 3*86400000).toISOString().slice(0, 10);
+  return n.date && n.date >= stale ? { date:n.date, src:'Yahoo', confirmed:!!n.date_confirmed } : null;
+}
+
+// 발표 전후 주가 반응: 발표일 직전 거래일 종가 대비 발표 다음 거래일(1D)·5번째 거래일(5D) 종가.
+// 장전/장중/장후 발표가 섞여 있어 발표 당일 대신 다음 거래일까지 포함한 구간으로 본다.
+function supPriceReaction(ticker, date){
+  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
+  if(!perf || !perf.price_history || !date) return { d1:null, d5:null };
+  const pd = perf.price_history.dates, pc = perf.price_history.close;
+  let before = -1;
+  for(let i=0; i<pd.length; i++){ if(pd[i] < date) before = i; else break; }
+  if(before < 0) return { d1:null, d5:null };
+  let after = before + 1;
+  while(after < pd.length && pd[after] <= date) after++; // 발표 당일은 건너뛰고 다음 거래일부터
+  const at = n => (after + n - 1 < pd.length) ? (pc[after + n - 1] / pc[before] - 1) * 100 : null;
+  return { d1: at(1), d5: at(5) };
+}
+function supFmtVal(v, metric, market){
+  if(v == null) return '-';
+  if(market === 'KR') return (Math.abs(v) < 10 ? v.toFixed(1) : Math.round(v).toLocaleString()) + '억'; // 10억 미만은 1억/1억처럼 뭉개지지 않게 소수 1자리
+  if(metric === 'rev'){ const a = Math.abs(v); return a >= 1e9 ? (v/1e9).toFixed(2)+'B' : a >= 1e6 ? (v/1e6).toFixed(1)+'M' : v.toLocaleString(); }
+  return v.toLocaleString(undefined, {maximumFractionDigits: Math.abs(v) < 1 ? 3 : 2});
+}
+function supPctHtml(v, band){
+  if(v == null) return '<span class="note">-</span>';
+  const cls = supClass(v, band);
+  return `<span style="color:${cls === 'inline' ? 'var(--sub)' : supColor(cls)};font-weight:700">${fmtPct(v)}%</span>`;
+}
+// 최근 N분기 서프라이즈 이력 점(왼쪽이 과거) — 초록 Beat · 회색 In-line · 빨강 Miss · 빈 원은 컨센 없음
+function supHistoryDots(s, rule, uptoPeriod){
+  const qs = (s.quarters||[]).filter(q=>!uptoPeriod || q.period <= uptoPeriod).slice(0, SUP_HISTORY_N).reverse();
+  return qs.map(q=>{
+    const v = q[rule.metric] && q[rule.metric].surprise;
+    const cls = supClass(v, rule.band);
+    const color = cls ? supColor(cls) : 'transparent';
+    return `<span class="chip-tip" data-tip="${supSeasonLabel(supSeasonOf(q.period))} ${v == null ? '컨센 없음' : SUP_LABELS[cls]+' '+fmtPct(v)+'%'}" style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:3px;background:${color};border:1px solid ${cls ? color : 'var(--border)'}"></span>`;
+  }).join('');
+}
+
+function renderSupSeasonToggle(){
+  const { cur, list } = supSeasonList();
+  const wrap = document.getElementById('sup-season-toggle');
+  if(!SUP_STATE.season || !list.includes(SUP_STATE.season)) SUP_STATE.season = cur;
+  wrap.innerHTML = list.map(k=>`<button data-season="${k}" class="${k === SUP_STATE.season ? 'active' : ''}">${supSeasonButtonLabel(k, cur)}</button>`).join('');
+  wrap.querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{ SUP_STATE.season = b.dataset.season; renderSurprise(); }));
+}
+
+// 한 시즌 화면 = 발표 완료 기업(결과) + 아직 발표 전 기업(컨센서스·예정일). 시즌이 진행되면서
+// 매일 갱신 때 실적이 나온 기업이 아래 "발표 예정"에서 위 "결과"로 자동으로 옮겨간다.
+function renderSurprise(){
+  if(!SUP_DATA) return;
+  renderSupSeasonToggle();
+  const season = SUP_STATE.season;
+  const rule = SUP_RULES[SUP_STATE.region];
+  document.getElementById('sup-rule-note').textContent =
+    `판정: ${rule.label}가 발표 직전 컨센서스 대비 +${rule.band}% 이상 Beat, -${rule.band}% 이하 Miss, 그 사이 In-line`
+    + (SUP_STATE.region === 'KR' ? ' (국내는 영업이익 변동성이 커 ±10% 적용) · 금액 단위 억원' : ' · 반기 실적만 내는 일부 유럽·홍콩·중국 기업은 빠짐')
+    + ' · 컨센서스가 0 이하(적자 예상)면 판정 제외';
+
+  const reported = [], noCons = [], negEst = [];
+  supStocks().forEach(([t, s])=>{
+    const q = (s.quarters||[]).find(q=>supSeasonOf(q.period) === season);
+    if(!q) return;
+    const m = q[rule.metric];
+    const meta = revStockMeta(t, s);
+    if(!m || m.surprise == null){
+      if(m && m.actual != null) (m.est != null ? negEst : noCons).push(meta.name);
+      return;
+    }
+    reported.push({ t, s, q, meta, sur:m.surprise, cls:supClass(m.surprise, rule.band), react:supPriceReaction(t, q.report_date) });
+  });
+  const pending = season === supCurrentSeason()
+    ? supStocks().filter(([t, s])=>supIsPending(s, season)).map(([t, s])=>({ t, s, meta:revStockMeta(t, s), when:supUpcomingDate(t, s, season) }))
+    : [];
+  const doneCount = reported.length + noCons.length + negEst.length;
+  document.getElementById('sup-result-view').hidden = doneCount === 0;
+  document.getElementById('sup-preview-view').hidden = pending.length === 0;
+  if(doneCount) renderSupResults(rule, reported, noCons, negEst, pending.length);
+  if(pending.length) renderSupPending(rule, pending, doneCount);
+  if(!doneCount && !pending.length){
+    document.getElementById('sup-result-view').hidden = false;
+    document.getElementById('sup-summary-cards').innerHTML = '';
+    document.getElementById('sup-dist-box').hidden = true;
+    document.getElementById('sup-table-wrap').innerHTML = '<div class="na-msg">해당 조건의 기업이 없습니다.</div>';
+  }
+}
+
+function renderSupResults(rule, rows, noCons, negEst, pendingCount){
+  const season = SUP_STATE.season;
+  const c = { beat:0, inline:0, miss:0 };
+  rows.forEach(r=>c[r.cls]++);
+  const avgReact = cls => {
+    const v = rows.filter(r=>r.cls === cls && r.react.d1 != null).map(r=>r.react.d1);
+    return v.length ? v.reduce((a,b)=>a+b, 0) / v.length : null;
+  };
+  const card = (lbl, val, delta, color) => `<div class="stat-card"><div class="lbl">${lbl}</div><div class="val" style="${color ? 'color:'+color : ''}">${val}</div><div class="delta">${delta || '&nbsp;'}</div></div>`;
+  const reactTxt = v => v == null ? '' : `발표 후 1D 평균 <span class="${pctClass(v)}">${fmtPct(v)}%</span>`;
+  const done = rows.length + noCons.length + negEst.length;
+  const excluded = [noCons.length ? `컨센 없음 ${noCons.length}` : '', negEst.length ? `적자 예상 ${negEst.length}` : ''].filter(Boolean).join(' · ');
+  document.getElementById('sup-summary-cards').innerHTML = [
+    card(`${supSeasonLabel(season)} 발표 완료`, pendingCount ? `${done} / ${done + pendingCount}개사` : `${done}개사`,
+      `판정 ${rows.length}개사${excluded ? ` (${excluded} 제외)` : ''}`),
+    card(SUP_LABELS.beat, `${c.beat}개사`, reactTxt(avgReact('beat')), SUP_BEAT_COLOR),
+    card(SUP_LABELS.inline, `${c.inline}개사`, reactTxt(avgReact('inline'))),
+    card(SUP_LABELS.miss, `${c.miss}개사`, reactTxt(avgReact('miss')), SUP_MISS_COLOR),
+  ].join('');
+
+  // 분포 차트 — 많으면 상·하위 각 15개만
+  const sorted = rows.slice().sort((a,b)=>b.sur - a.sur);
+  const shown = sorted.length > 30 ? [...sorted.slice(0,15), ...sorted.slice(-15)] : sorted;
+  document.getElementById('sup-dist-title').textContent = `${rule.label} 서프라이즈 분포`;
+  document.getElementById('sup-dist-note').textContent = sorted.length > 30 ? `상·하위 각 15개사 (전체 ${sorted.length}개사는 아래 표)` : `${sorted.length}개사`;
+  const box = document.getElementById('sup-dist-box');
+  box.hidden = !shown.length;
+  box.style.height = Math.max(160, shown.length * 20 + 50) + 'px';
+  if(supDistChartInstance){ supDistChartInstance.destroy(); supDistChartInstance = null; }
+  if(shown.length){
+    // ±100% 넘는 값은 막대만 잘라 그리고 툴팁에 실제 값을 보여준다(소액 EPS 종목 등이 축을 망가뜨리지 않게)
+    const CLIP = 100;
+    supDistChartInstance = new Chart(document.getElementById('supDistChart'), {
+      type:'bar',
+      data:{ labels: shown.map(r=>r.meta.name), datasets:[{
+        data: shown.map(r=>Math.max(-CLIP, Math.min(CLIP, r.sur))),
+        backgroundColor: shown.map(r=>hexToRgba(supColor(r.cls), 0.75)),
+        borderRadius:3, barThickness:12,
+      }]},
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${SUP_LABELS[shown[ctx.dataIndex].cls]} · ${rule.label} ${fmtPct(shown[ctx.dataIndex].sur)}%` } } },
+        scales:{
+          x:{ grid:{color:gridColor()}, ticks:{color:textColor(), callback:v=>v+'%'}, title:{display:true, text:`발표 직전 컨센서스 대비 ${rule.label} 차이(%) · ±${CLIP}% 초과는 잘라서 표시`, color:textColor(), font:{size:11}} },
+          y:{ grid:{display:false}, ticks:{color:textColor(), autoSkip:false, font:{size:11}} },
+        },
+      },
+    });
+  }
+
+  // 결과 표 — 국내·해외 모두 매출 + 핵심 이익 지표(국내 영업이익, 해외 EPS)
+  const list = rows.slice().sort(SUP_STATE.sort === 'surprise'
+    ? (a,b)=>b.sur - a.sur
+    : (a,b)=>(b.q.report_date||'').localeCompare(a.q.report_date||'') || b.sur - a.sur);
+  const metricCells = (q, s) => ['rev', rule.metric].map(k=>{
+    const m = q[k] || {};
+    return `<td style="white-space:nowrap">${supFmtVal(m.actual, k, s.market)} <span class="note">/ ${supFmtVal(m.est, k, s.market)}</span></td><td>${supPctHtml(m.surprise, k === 'rev' ? SUP_REV_BAND : rule.band)}</td>`;
+  }).join('');
+  const badge = cls => `<span class="badge" style="background:${hexToRgba(supColor(cls), .15)};color:${cls === 'inline' ? 'var(--sub)' : supColor(cls)}">${SUP_LABELS[cls]}</span>`;
+  const body = list.map(r=>`
+    <tr title="${escapeHtml(r.meta.sector)}${r.s.market !== 'KR' && r.meta.currency ? ' · '+r.meta.currency : ''}">
+      <td style="white-space:nowrap">${r.q.report_date ? revShortDate(r.q.report_date) : '<span class="note">-</span>'}</td>
+      <td style="white-space:nowrap"><span style="font-weight:600;display:inline-block;max-width:9em;overflow:hidden;text-overflow:ellipsis;vertical-align:middle">${escapeHtml(r.meta.name)}</span><span class="market-badge">${r.s.market}</span></td>
+      <td>${badge(r.cls)}</td>
+      ${metricCells(r.q, r.s)}
+      <td class="${pctClass(r.react.d1)}">${r.react.d1 == null ? '-' : fmtPct(r.react.d1)+'%'}</td>
+      <td class="${pctClass(r.react.d5)}">${r.react.d5 == null ? '-' : fmtPct(r.react.d5)+'%'}</td>
+      <td style="white-space:nowrap">${supHistoryDots(r.s, rule, r.q.period)}</td>
+    </tr>`).join('');
+  const isKR = SUP_STATE.region === 'KR';
+  document.getElementById('sup-table-wrap').innerHTML = `
+    <div class="perf-table-box" style="border-radius:10px; overflow-x:auto">
+      <table style="font-size:12.5px"><thead><tr><th>발표일</th><th>기업</th><th>판정</th><th>매출 실제 / 컨센</th><th>차이</th><th>${rule.label} 실제 / 컨센</th><th>차이</th><th title="발표 직전 거래일 종가 대비 발표 다음 거래일 종가">주가 1D</th><th title="발표 직전 거래일 종가 대비 발표 후 5번째 거래일 종가">주가 5D</th><th title="최근 ${SUP_HISTORY_N}개 분기 ${rule.label} 판정(왼쪽이 과거)">최근 ${SUP_HISTORY_N}분기</th></tr></thead>
+      <tbody>${body || `<tr><td colspan="10" class="note" style="padding:14px">해당 분기에 컨센서스와 비교 가능한 실적이 없습니다</td></tr>`}</tbody></table>
+    </div>
+    <div class="note" style="margin-top:4px; font-size:10.5px">실제 / 컨센 = 확정 실적 / 발표 직전 컨센서스. 판정은 ${rule.label} 기준, 매출 차이는 ±${SUP_REV_BAND}%로 색 표시.${isKR ? '' : ' 해외 매출 컨센서스는 Yahoo가 과거치를 주지 않아 이 대시보드가 발표 전에 기록해 둔 값으로 계산 — 3Q26부터 채워짐(그 전 분기는 "-").'} 주가 1D·5D = 발표 직전 거래일 종가 대비(장전·장후 발표가 섞여 있어 발표 다음 거래일까지 포함). 최근 ${SUP_HISTORY_N}분기 점: 초록 Beat · 회색 In-line · 빨강 Miss · 빈 원 컨센 없음.${noCons.length ? ` 컨센서스 없이 실적만 있는 기업: ${noCons.map(escapeHtml).join(', ')}.` : ''}${negEst.length ? ` 컨센서스가 적자 예상이라 판정에서 뺀 기업: ${negEst.map(escapeHtml).join(', ')}.` : ''}</div>`;
+}
+
+function renderSupPending(rule, rows, doneCount){
+  const season = SUP_STATE.season;
+  const today = new Date().toISOString().slice(0, 10);
+  const isKR = SUP_STATE.region === 'KR';
+  rows.sort((a,b)=>((a.when||{}).date||'9999').localeCompare((b.when||{}).date||'9999') || a.meta.name.localeCompare(b.meta.name, 'ko'));
+  document.getElementById('sup-preview-title').textContent = `${supSeasonLabel(season)} 발표 예정 (${rows.length}개사)`;
+  document.getElementById('sup-preview-note').textContent = isKR
+    ? '국내는 잠정실적 공시 전까지 발표일이 공개되지 않아 컨센서스만 표시(기업명순) · 실적이 나오면 다음 날 갱신 때 위 결과로 이동'
+    : '발표 예정일순 · 실적이 나오면 다음 날 갱신 때 위 결과로 이동 · 일정 상세는 이벤트 캘린더 탭';
+  const body = rows.map(r=>{
+    const n = r.s.next || {};
+    const w = r.when;
+    let dateCell = '<span class="note">미정</span>';
+    if(w){
+      const dday = Math.round((new Date(w.date) - new Date(today)) / 86400000);
+      const tag = w.src === 'IR'
+        ? `<span class="note" title="회사 IR 페이지에서 확인한 일정(이벤트 캘린더)${w.yahoo && w.yahoo !== w.date ? ' · Yahoo 예정일 '+w.yahoo+'와 다름' : ''}">IR 확인${w.yahoo && w.yahoo !== w.date ? ' ⚠' : ''}</span>`
+        : `<span class="note" title="Yahoo Finance 예정일">${w.confirmed ? 'Yahoo' : 'Yahoo 추정'}</span>`;
+      dateCell = `${revShortDate(w.date)} <span class="note">${dday >= 0 ? 'D-'+dday : '발표됨·반영 대기'}</span> ${tag}`;
+    }
+    const cells = isKR
+      ? `<td>${supFmtVal(n.rev_est, 'rev', 'KR')}</td><td>${supFmtVal(n.op_est, 'op', 'KR')}</td>`
+      : `<td>${supFmtVal(n.rev_est, 'rev', r.s.market)}</td><td>${supFmtVal(n.eps_est, 'eps', r.s.market)}</td>`;
+    return `<tr title="${escapeHtml(r.meta.sector)}${!isKR && r.meta.currency ? ' · '+r.meta.currency : ''}">
+      <td style="white-space:nowrap">${dateCell}</td>
+      <td style="white-space:nowrap"><span style="font-weight:600">${escapeHtml(r.meta.name)}</span><span class="market-badge">${r.s.market}</span></td>
+      ${cells}
+      <td style="white-space:nowrap">${supHistoryDots(r.s, rule)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('sup-preview-wrap').innerHTML = `
+    <div class="perf-table-box" style="border-radius:10px; overflow-x:auto">
+      <table style="font-size:12.5px"><thead><tr><th>발표 예정</th><th>기업</th><th>매출 컨센</th><th>${rule.label} 컨센</th><th title="최근 ${SUP_HISTORY_N}개 분기 ${rule.label} 판정(왼쪽이 과거)">최근 ${SUP_HISTORY_N}분기 ${rule.label} 판정</th></tr></thead>
+      <tbody>${body}</tbody></table>
+    </div>
+    <div class="note" style="margin-top:4px; font-size:10.5px">컨센 = 현재 시점 컨센서스(국내 억원, 해외 현지 통화). 발표 예정일은 이벤트 캘린더(회사 IR 페이지 확인) 일정이 있으면 그것을, 없으면 Yahoo Finance 예정일을 표시 — 두 값이 다르면 ⚠ 표시.</div>`;
+}
+
+function populateSupSectorFilter(){
+  const sel = document.getElementById('sup-sector-filter');
+  const cur = sel.value;
+  const sectors = new Set(Object.entries(SUP_DATA.stocks).map(([t, s])=>revStockMeta(t, s).sector).filter(s=>s !== '-'));
+  sel.innerHTML = '<option value="all">섹터 전체</option>' + [...sectors].sort((a,b)=>a.localeCompare(b,'ko')).map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  if([...sel.options].some(o=>o.value===cur)) sel.value = cur;
+}
+
+(function setupSurpriseControls(){
+  document.querySelectorAll('#sup-region-toggle button').forEach(b=>b.addEventListener('click', ()=>{
+    document.querySelectorAll('#sup-region-toggle button').forEach(x=>x.classList.toggle('active', x === b));
+    SUP_STATE.region = b.dataset.region;
+    renderSurprise();
+  }));
+  document.querySelectorAll('#sup-sort-toggle button').forEach(b=>b.addEventListener('click', ()=>{
+    document.querySelectorAll('#sup-sort-toggle button').forEach(x=>x.classList.toggle('active', x === b));
+    SUP_STATE.sort = b.dataset.sort;
+    renderSurprise();
+  }));
+  document.getElementById('sup-sector-filter').addEventListener('change', e=>{ SUP_STATE.sector = e.target.value; renderSurprise(); });
+  const btn = document.querySelector('#reports-subtabs [data-sub="surprise"]');
+  if(btn) btn.addEventListener('click', ()=> setTimeout(renderSurprise, 0)); // 숨겨진 상태에서 그린 차트 크기 보정
+})();
+
+async function loadEarningsSurprise(){
+  try{
+    const res = await fetch('earnings_surprise.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    SUP_DATA = await res.json();
+    const note = document.getElementById('sup-source-note');
+    if(note) note.textContent = `출처: WiseReport(국내) · Yahoo Finance(해외) · ${updatedLabel(SUP_DATA.updated)}`;
+    populateSupSectorFilter();
+    renderSurprise();
+  }catch(e){
+    SUP_DATA = null;
+    const wrap = document.getElementById('sup-table-wrap');
+    if(wrap) wrap.innerHTML = '<div class="card note">실적 서프라이즈 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
+  }
+}
+loadEarningsSurprise();
 </script>
 </body>
 </html>
