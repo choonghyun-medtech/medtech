@@ -45,6 +45,15 @@ h1 .brand-lead{color:var(--sub); font-weight:700; font-size:15px; display:block;
 h1 .brand-main{color:var(--text); font-weight:800}
 h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; letter-spacing:-.3px}
 .subtitle{color:var(--sub); font-size:11.5px; margin-bottom:16px}
+/* 글로벌 대시보드 업데이트일 배지 — Bloomberg 수동 갱신 데이터라 회색 note보다 눈에 띄게
+   표시하고, 7일 이상 지나면 주황색으로 바꿔 오래된 데이터임을 알린다(2026-10-02). */
+.data-updated-badge{
+  display:inline-flex; align-items:center; gap:5px; margin-left:8px; vertical-align:middle;
+  padding:2px 9px; border-radius:999px; font-size:11.5px; font-weight:700;
+  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent);
+}
+.data-updated-badge[hidden]{display:none}
+.data-updated-badge.stale{background:rgba(217,119,6,.12); color:#d97706; border-color:#d97706}
 .theme-toggle{
   border:1px solid var(--border); background:var(--card); color:var(--text);
   border-radius:20px; padding:6px 14px; font-size:12px; cursor:pointer;
@@ -454,7 +463,7 @@ tr:last-child td{border-bottom:none}
     </div>
     <button class="theme-toggle" onclick="toggleTheme()">☀️ 라이트 모드</button>
   </div>
-  <div class="subtitle">전 탭이 GitHub Actions로 평일 자동 갱신되는 실데이터입니다</div>
+  <div class="subtitle">평일 자동 갱신</div>
 
   <div class="tabs" id="main-tabs">
     <button class="tab active" data-view="news">산업·기업 뉴스</button>
@@ -490,7 +499,7 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div id="news-sub-clipping">
-      <div class="mock-flag" id="news-mock-flag">ⓘ news.json 로딩 중...</div>
+      <div class="mock-flag" id="news-mock-flag">ⓘ 뉴스 불러오는 중...</div>
       <div class="note" id="news-filter-summary" style="margin-bottom:10px"></div>
 
       <div id="news-domestic-block">
@@ -559,10 +568,9 @@ tr:last-child td{border-bottom:none}
       <select id="perf-cap-filter" class="filter-select">
         <option value="all">시총 전체</option>
         <option value="lt1">1조 미만</option>
-        <option value="gt1">1조 이상</option>
-        <option value="lt2">2조 미만</option>
-        <option value="lt3">3조 미만</option>
-        <option value="gt10">10조 이상</option>
+        <option value="1to5">1~5조</option>
+        <option value="5to20">5~20조</option>
+        <option value="gt20">20조 이상</option>
       </select>
       <select id="perf-region-filter" class="filter-select">
         <option value="all">지역 전체</option>
@@ -578,10 +586,10 @@ tr:last-child td{border-bottom:none}
       <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장">📷 1일 표 저장</button>
     </div>
     <div id="perf-body">
-      <div class="na-msg">stock_performance.json 로딩 중...</div>
+      <div class="na-msg">주가 데이터 불러오는 중...</div>
     </div>
 
-    <div class="sec-h"><h2>외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목 · stock_performance.json 기준</span></div>
+    <div class="sec-h"><h2>외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목</span></div>
     <div id="foreign-rank-table-wrap"></div>
 
     <div class="sec-h"><h2>추적 종목</h2><span class="note" id="tracked-scope-note">칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가</span></div>
@@ -599,7 +607,7 @@ tr:last-child td{border-bottom:none}
         <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
       </div>
     </div>
-    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가 · 실데이터(stock_performance.json 기준)</div>
+    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가</div>
     <div class="chart-box"><canvas id="priceChart"></canvas></div>
 
     <div id="foreign-ratio-section">
@@ -608,7 +616,7 @@ tr:last-child td{border-bottom:none}
           <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
         </div>
       </div>
-      <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준)</div>
+      <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%)</div>
       <div class="chart-box"><canvas id="foreignChart"></canvas></div>
     </div>
 
@@ -618,7 +626,7 @@ tr:last-child td{border-bottom:none}
           <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
         </div>
       </div>
-      <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인 · 샘플 데이터</div>
+      <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인</div>
       <div class="chart-box"><canvas id="flowChart"></canvas></div>
     </div>
     </div>
@@ -633,8 +641,8 @@ tr:last-child td{border-bottom:none}
          *.json처럼 GitHub Actions로 자동 갱신되지 않고, 엑셀을 새로 저장한 뒤 수동으로
          변환 스크립트를 돌려 커밋해야 한다). -->
     <div id="stock-sub-global" style="display:none">
-      <div class="sec-h"><h2>글로벌 대시보드</h2><span class="note" id="gd-source-note">Bloomberg 컨센서스 기반 Peer Table · global_dashboard.json</span></div>
-      <div class="note" style="margin-bottom:14px">함수 오류(#N/A 등)로 값이 비어있는 셀은 "-"로 표시됩니다. <span id="gd-fx-note">환율은 고정 가정치(1,400원/달러, 7.1위안/달러)를 쓴 초안 값입니다.</span> 위안화 시총 구간은 원화와 동일한 1/3/5/10 배수를 그대로 위안화 단위로 재사용한 것으로, 환율 환산값이 아닙니다. 전년 실적(0FY) 열은 화면이 복잡해지지 않도록 표에서는 숨겼고 1FY/2FY 추정치만 표시합니다.</div>
+      <div class="sec-h"><h2>글로벌 대시보드<span class="data-updated-badge" id="gd-updated-badge" hidden></span></h2><span class="note" id="gd-source-note">출처: Bloomberg 컨센서스 · 수동 갱신</span></div>
+      <div class="note" style="margin-bottom:14px">값이 없는 셀은 "-" · 표에는 1FY/2FY 추정치만 표시 · <span id="gd-fx-note">환율: 고정 가정치(1,400원/달러, 7.1위안/달러)</span> · 위안화 시총 구간은 원화 구간(1/3/5/10)을 그대로 적용</div>
 
       <div class="gd-tab-bar" id="gd-tab-bar"></div>
       <div class="gd-filter-bar" id="gd-filter-bar"></div>
@@ -685,7 +693,7 @@ tr:last-child td{border-bottom:none}
         <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
       </div>
     </div>
-    <div class="note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · investor_flow.json + stock_performance.json 자동 갱신</div>
+    <div class="note" id="flowmap-source-note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · 출처: 네이버증권</div>
 
     <!-- 사분면별 종목 수를 카드 4개로 나열하던 걸 가로 구성비 막대 하나로 교체
          (2026-09-04) — 카드 그리드는 흔한 대시보드 패턴이라 참고 사이트와 형태가
@@ -705,7 +713,7 @@ tr:last-child td{border-bottom:none}
 
   <!-- ================= CALENDAR ================= -->
   <section class="view" id="view-calendar">
-    <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note" id="cal-source-note">실적발표 · IR · 공시 · 주총 · calendar_events.json 자동 갱신</span></div>
+    <div class="sec-h"><h2>이벤트 캘린더</h2><span class="note" id="cal-source-note">실적발표 · IR · 공시 · 주총</span></div>
 
     <!-- 검색 + 국내/해외 필터 — 뉴스 탭 필터 줄 패턴 재사용(2026-09-03, 기업명/키워드 검색 추가) -->
     <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
@@ -754,7 +762,7 @@ tr:last-child td{border-bottom:none}
 
     <!-- ---- 수출 데이터 ---- -->
     <div id="industry-sub-export">
-    <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신</span></div>
+    <div class="sec-h"><h2>수출 데이터</h2><span class="note" id="export-source-note">출처: 관세청 수출입무역통계 · HS코드 기준</span></div>
     <div class="chips" id="export-cat-chips"></div>
     <div class="note" id="export-hs-note" style="margin:8px 0 2px"></div>
     <div class="note" id="export-companies-note" style="margin:0 0 10px"></div>
@@ -827,7 +835,7 @@ tr:last-child td{border-bottom:none}
           <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
         </div>
       </div>
-      <div class="note" id="medtour-trend-note" style="margin:-4px 0 8px">월별 · 한국관광 데이터랩 · medical_tour.json 자동 갱신</div>
+      <div class="note" id="medtour-trend-note" style="margin:-4px 0 8px">월별 · 출처: 한국관광 데이터랩</div>
       <div class="sec-h" style="margin:0 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비액</h2></div>
       <div class="chart-box"><canvas id="medTourAmtChart"></canvas></div>
       <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600">외국인 의료 소비건수</h2></div>
@@ -924,7 +932,7 @@ tr:last-child td{border-bottom:none}
         <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
       </div>
     </div>
-    <div class="note" id="visitor-trend-note" style="margin:-4px 0 8px">만명 · 한국관광 데이터랩 · visitor_stats.json 자동 갱신</div>
+    <div class="note" id="visitor-trend-note" style="margin:-4px 0 8px">만명 · 출처: 한국관광 데이터랩</div>
     <div class="chart-box"><canvas id="visitorChart"></canvas></div>
 
     <div class="sec-h"><h2 style="font-size:13px">국가별 방한 외국인 비중</h2></div>
@@ -941,7 +949,7 @@ tr:last-child td{border-bottom:none}
     <div class="card" id="medtour-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 16일(의료관광)·3일(방한외국인) 자동 작성됩니다.</div>
 
     <div class="medtour-group-h">국가별 의료관광객 비중(침투율)</div>
-    <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광객 비중</h2><span class="note" id="medtour-penetration-note">연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100 · medtour_penetration.json</span></div>
+    <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광객 비중</h2><span class="note" id="medtour-penetration-note">연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100</span></div>
     <div class="chips" id="medtour-penetration-year-chips"></div>
     <div class="chart-box tall"><canvas id="medTourPenetrationChart"></canvas></div>
     <div id="medtour-penetration-table-wrap" style="margin-top:6px"></div>
@@ -950,7 +958,7 @@ tr:last-child td{border-bottom:none}
 
     <!-- ---- 진료행위 통계 ---- -->
     <div id="industry-sub-procedure" style="display:none">
-      <div class="sec-h"><h2>진료행위 통계</h2><span class="note">건강보험심사평가원 보건의료빅데이터개방시스템(opendata.hira.or.kr) · hira_procedure.json 자동 갱신(매월 3일)</span></div>
+      <div class="sec-h"><h2>진료행위 통계</h2><span class="note" id="hira-source-note">출처: 건강보험심사평가원 보건의료빅데이터 · 매월 3일 갱신</span></div>
       <div class="tabs" id="hira-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
 
       <div class="sec-h" style="margin:0 0 6px">
@@ -1000,7 +1008,7 @@ tr:last-child td{border-bottom:none}
 
     <!-- ---- 리서치 보고서 ---- -->
     <div id="reports-sub-research">
-    <div class="sec-h"><h2>리서치 보고서</h2><span class="note" id="rep-source-note">미래에셋증권 · 실데이터 연동</span></div>
+    <div class="sec-h"><h2>리서치 보고서</h2><span class="note" id="rep-source-note">미래에셋증권</span></div>
 
     <div class="sec-h"><h2>추적 기업</h2><span class="note">카테고리별 드롭다운에서 종목 선택 시 해당 리포트만 필터 · <a href="#" id="rep-reset-link" style="color:var(--accent);text-decoration:none;font-weight:600">전체 보기</a></span></div>
     <div id="rep-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
@@ -1013,7 +1021,7 @@ tr:last-child td{border-bottom:none}
 
     <div id="rep-stock-box" style="margin-top:14px"></div>
 
-    <div class="sec-h" style="margin-top:24px"><h2>바이오/로보틱스</h2><span class="note">김승민·서미화·박선영 애널리스트 발간분 · reports_bio.json 자동 갱신</span></div>
+    <div class="sec-h" style="margin-top:24px"><h2>바이오/로보틱스</h2><span class="note">김승민·서미화·박선영 애널리스트 발간분</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
       <div id="bio-author-tabs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
       <span class="note" id="bio-source-note"></span>
@@ -1029,7 +1037,7 @@ tr:last-child td{border-bottom:none}
          번역·요약해 보여준다(scripts/scrape_earnings_ir.py, earnings_ir.json).
          Q&A 전체 스크립트까지는 포함하지 않는다(2026-09-08). -->
     <div id="reports-sub-concall" style="display:none">
-      <div class="sec-h"><h2>해외기업 컨콜</h2><span class="note" id="earnings-ir-source-note">각 기업 IR 공식 보도자료 기반 · earnings_ir.json 자동 갱신</span></div>
+      <div class="sec-h"><h2>해외기업 컨콜</h2><span class="note" id="earnings-ir-source-note">출처: 각 기업 IR 공식 보도자료</span></div>
       <div class="note" style="margin-bottom:12px">Q&A까지 담긴 완전한 컨콜 스크립트가 아니라, 기업이 공식 공개한 실적 보도자료(매출·수익성·가이던스·경영진 코멘트)를 한국어로 번역·요약한 것입니다. TIKR 등 유료 사이트를 스크래핑하는 방식은 이용약관·저작권 문제로 채택하지 않았습니다.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
         <select id="earnings-ir-company-select" class="filter-select"></select>
@@ -1049,6 +1057,17 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <script>
+// 화면 안내 문구용 갱신일 표기 — 데이터 파일의 updated(ISO, UTC)를 KST 기준 "M/D 갱신"으로.
+// 안내 문구는 "출처 · M/D 갱신" 형식으로 통일한다(파일명·내부 API명은 화면에 노출하지 않음).
+function updatedLabel(iso){
+  if(!iso) return '';
+  const dt = new Date(iso);
+  if(isNaN(dt)) return '';
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {timeZone:'Asia/Seoul', month:'numeric', day:'numeric'})
+    .formatToParts(dt).map(p => [p.type, p.value]));
+  return `${parts.month}/${parts.day} 갱신`;
+}
+
 // ---- theme ---- 기본값은 다크 모드(html data-theme="dark"). 사용자가 라이트로 바꾸면
 // localStorage에 저장해 다음 방문 때도 유지한다(별도 저장이 없으면 항상 다크로 시작).
 (function initTheme(){
@@ -1414,17 +1433,16 @@ async function loadNews(){
     applyNewsFilters();
     const flag = document.getElementById('news-mock-flag');
     if(flag){
-      const dt = data.updated ? new Date(data.updated) : null;
-      const whenStr = dt ? `마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST` : '';
-      const srcStr = data.source || '뉴스클리핑 가이드라인 섹터 기준';
-      flag.textContent = `ⓘ ${srcStr} · ${whenStr}`;
+      // data.source는 수집 방식까지 적힌 긴 내부용 설명이라 화면에는 요약된 출처만 쓴다.
+      const when = updatedLabel(data.updated);
+      flag.textContent = `ⓘ 출처: 네이버뉴스(국내) · 해외 medtech/헬스케어 매체 · 요약은 AI 자동 생성${when ? ' · ' + when : ''}`;
     }
   }catch(e){
     NEWS_DOMESTIC = [];
     NEWS_GLOBAL = [];
     applyNewsFilters();
     const wrap = document.getElementById('news-domestic-wrap');
-    if(wrap) wrap.innerHTML = '<div class="card">news.json을 불러오지 못했습니다 ('+e.message+').</div>';
+    if(wrap) wrap.innerHTML = '<div class="card">뉴스 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
   }
   refreshSnapshotIfActive();
 }
@@ -1707,9 +1725,8 @@ async function loadCalendar(){
     CAL_DATA.global = data.global || [];
     const note = document.getElementById('cal-source-note');
     if(note){
-      const dt = data.updated ? new Date(data.updated) : null;
-      const whenStr = dt ? `마지막 갱신 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST` : '';
-      note.textContent = `실적발표 · IR · 공시 · 주총 · calendar_events.json 자동 갱신 · ${whenStr}`;
+      const when = updatedLabel(data.updated);
+      note.textContent = `실적발표 · IR · 공시 · 주총 · 출처: DART·기업 IR${when ? ' · ' + when : ''}`;
     }
     // 기본 화면은 항상 이번달로 연다(기존 동작 유지) — 7월 등 과거 백필 데이터는
     // ‹ 버튼으로 이전달을 눌러 확인한다.
@@ -1717,7 +1734,7 @@ async function loadCalendar(){
   }catch(e){
     renderCalendar();
     const list = document.getElementById('cal-up-list');
-    if(list) list.innerHTML = '<div class="card">calendar_events.json을 불러오지 못했습니다 ('+e.message+').</div>';
+    if(list) list.innerHTML = '<div class="card">일정 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
   }
   refreshSnapshotIfActive();
 }
@@ -2004,11 +2021,11 @@ function renderPriceChart(ticker, months){
   const sliced = perf ? sliceSeriesByMonths(perf.price_history, months) : null;
   if(!sliced){
     if(priceChartInstance){ priceChartInstance.destroy(); priceChartInstance=null; }
-    note.textContent = 'stock_performance.json에 이 종목의 일별 종가가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
+    note.textContent = '이 종목의 일별 종가가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
     return;
   }
   const labels = sliced.dates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
-  note.textContent = `일별 종가 · 실데이터(stock_performance.json 기준) · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]}`;
+  note.textContent = `일별 종가 · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]} · 출처: ${isKrTicker(ticker) ? 'KRX' : 'Yahoo Finance'}`;
   if(priceChartInstance){ priceChartInstance.destroy(); }
   priceChartInstance = mkLine('priceChart', labels, [{
     label:'종가', data: sliced.values,
@@ -2040,7 +2057,7 @@ function renderForeignRatioChart(ticker, months){
     return;
   }
   const labels = sliced.dates.map(d=>{ const p = d.split('-'); return `${p[1]}/${p[2]}`; });
-  note.textContent = `일별 외국인 보유율(%) · 실데이터(stock_performance.json 기준) · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]}`;
+  note.textContent = `일별 외국인 보유율(%) · ${sliced.dates[0]} ~ ${sliced.dates[sliced.dates.length-1]} · 출처: 네이버증권`;
   if(foreignChartInstance){ foreignChartInstance.destroy(); }
   foreignChartInstance = mkLine('foreignChart', labels, [{
     label:'외국인 지분율(%)', data: sliced.values,
@@ -2094,7 +2111,7 @@ function renderFlowChart(ticker, months){
     inst = cumulativeSum(real.inst_eok.slice(-days));
     foreign = cumulativeSum(real.foreign_eok.slice(-days));
     retail = cumulativeSum(real.retail_eok.slice(-days));
-    note.textContent = `일별 순매수 누적 · 억원 · 실데이터(investor_flow.json, 네이버증권 기준) · ${dates[0]} ~ ${dates[dates.length-1]}`;
+    note.textContent = `일별 순매수 누적 · 억원 · ${dates[0]} ~ ${dates[dates.length-1]} · 출처: 네이버증권`;
   }else{
     note.textContent = '이 종목의 투자자 수급 데이터가 아직 없습니다 (다음 자동 갱신 후 표시됩니다).';
     if(flowChartInstance){ flowChartInstance.destroy(); flowChartInstance = null; }
@@ -2123,6 +2140,9 @@ async function loadInvestorFlow(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     INVESTOR_FLOW = data.stocks || {};
+    const srcNote = document.getElementById('flowmap-source-note');
+    const when = updatedLabel(data.updated);
+    if(srcNote && when) srcNote.textContent += ' · ' + when;
   }catch(e){
     INVESTOR_FLOW = {};
   }
@@ -2541,11 +2561,11 @@ function capFilterPass(capTril, filterVal){
   if(filterVal==='all') return true;
   if(capTril == null) return false;
   switch(filterVal){
+    // 구간이 서로 겹치지 않도록 정리(2026-10-02) — 유니버스 분포상 대략 81/69/48/59종목.
     case 'lt1': return capTril < 1;
-    case 'gt1': return capTril >= 1;
-    case 'lt2': return capTril < 2;
-    case 'lt3': return capTril < 3;
-    case 'gt10': return capTril >= 10;
+    case '1to5': return capTril >= 1 && capTril < 5;
+    case '5to20': return capTril >= 5 && capTril < 20;
+    case 'gt20': return capTril >= 20;
     default: return true;
   }
 }
@@ -2600,7 +2620,7 @@ function renderForeignRatioTop10(){
   if(!wrap) return;
   const note = document.getElementById('foreign-rank-note');
   const krCount = STOCK_PERF.filter(s => s.market === 'KR').length;
-  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목) 중 지분율 상위 10개 · stock_performance.json 기준`;
+  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목) 중 지분율 상위 10개 · 출처: 네이버증권`;
   const rows = computeForeignRatioTop10();
   if(!rows.length){
     wrap.innerHTML = '<div class="na-msg">아직 데이터가 없습니다.</div>';
@@ -2660,7 +2680,7 @@ function renderPerfTables(){
     s.returns[perfState.period] != null
   );
   body.innerHTML = buildPerfGridHtml(filtered, perfState.period) +
-    `<div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 해당 기업 뉴스 검색(Google) 탭이 새로 열립니다. 해외 종목 시총은 ${PERF_FX.rate_date ? PERF_FX.rate_date+' 기준 전일 환율(fx_rate.json)' : '스크레이퍼 고정 환율'}로 원화 환산한 값입니다.</div>`;
+    `<div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 해당 기업 뉴스 검색(Google) 탭이 새로 열립니다. 해외 종목 시총은 ${PERF_FX.rate_date ? PERF_FX.rate_date+' ECB 기준 환율' : '고정 가정 환율'}로 원화 환산한 값입니다.</div>`;
 }
 
 // ---- 시가총액 단위 환산 (2026-09-28) ----
@@ -2946,8 +2966,7 @@ async function loadStockPerformance(){
     renderPerfTables();
     if(data.updated){
       const note = document.getElementById('perf-source-note');
-      const dt = new Date(data.updated);
-      note.textContent = `글로벌 헬스케어 유니버스(${STOCK_PERF.length}종목) · 로컬 통화 기준 · ${data.ok_count}/${data.count}종목 수집 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+      note.textContent = `글로벌 헬스케어 유니버스(${STOCK_PERF.length}종목) · 로컬 통화 기준 · 출처: KRX·Yahoo Finance · ${updatedLabel(data.updated)}`;
     }
     if(typeof renderStockStatCards === 'function') renderStockStatCards(selectedStockTicker);
     if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
@@ -2959,7 +2978,7 @@ async function loadStockPerformance(){
     if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
   }catch(e){
     document.getElementById('perf-body').innerHTML =
-      '<div class="na-msg">stock_performance.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions에서 "Update stock performance" 워크플로를 수동 실행(Run workflow)해주세요.</div>';
+      '<div class="na-msg">주가 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
   }
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
@@ -3059,11 +3078,11 @@ async function gdLoadFxRate(){
     if(typeof fx.usd_krw === 'number') GD_FX.krw = fx.usd_krw;
     if(typeof fx.usd_cny === 'number') GD_FX.cny = fx.usd_cny;
     if(note){
-      note.textContent = `환율은 ${fx.rate_date} 기준 전일 환율(1달러=${gdFmt1(fx.usd_krw)}원, ${gdFmt1(fx.usd_cny)}위안, ${fx.source})입니다.`;
+      note.textContent = `환율: ${fx.rate_date} ECB 기준(1달러=${gdFmt1(fx.usd_krw)}원, ${gdFmt1(fx.usd_cny)}위안)`;
     }
   }catch(e){
     // fx_rate.json이 없거나 실패하면 GD_FX 기본값(고정 가정치)을 그대로 쓴다 — 조용히 폴백.
-    if(note) note.textContent = '환율은 고정 가정치(1,400원/달러, 7.1위안/달러)를 쓴 값입니다(전일 환율 조회 실패).';
+    if(note) note.textContent = '환율: 고정 가정치(1,400원/달러, 7.1위안/달러, 전일 환율 조회 실패)';
   }
 }
 
@@ -3074,10 +3093,17 @@ async function gdInit(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     GD_RAW = data.rows.map((r, idx)=> ({...r, _idx: idx}));
-    const note = document.getElementById('gd-source-note');
-    if(note && data.updated){
+    // 업데이트일은 회색 note 대신 제목 옆 배지로 표시 — 로컬 PC에서 수동 갱신하는 데이터라
+    // 갱신이 밀리면 오래된 컨센서스를 최신으로 오인할 수 있어, 7일 이상 지나면 경고색으로 바꾼다.
+    const badge = document.getElementById('gd-updated-badge');
+    if(badge && data.updated){
       const dt = new Date(data.updated);
-      note.textContent = `Bloomberg 컨센서스 기반 Peer Table · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+      const ageDays = Math.floor((Date.now() - dt.getTime()) / 86400000);
+      const stale = ageDays >= 7;
+      badge.textContent = `${stale ? '⚠ ' : ''}${updatedLabel(data.updated)}${stale ? ` · ${ageDays}일 경과` : ''}`;
+      badge.title = `마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+      badge.classList.toggle('stale', stale);
+      badge.hidden = false;
     }
   }catch(e){
     GD_RAW = [];
@@ -3573,7 +3599,7 @@ function renderStockStatCards(ticker){
   const cardsWrap = document.getElementById('stock-stat-cards');
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   if(!perf){
-    cardsWrap.innerHTML = `<div class="stat-card"><div class="lbl">${name}</div><div class="val">데이터 없음</div><div class="delta">stock_performance.json 대기 중</div></div>`;
+    cardsWrap.innerHTML = `<div class="stat-card"><div class="lbl">${name}</div><div class="val">데이터 없음</div><div class="delta">주가 데이터 대기 중</div></div>`;
     return;
   }
   const r = perf.returns;
@@ -3701,7 +3727,10 @@ function renderVisitorTrendChart(){
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[gran];
   const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
   const rows = aggregateMonthlyRows(monthlyRows, gran, ['visitors']);
-  if(note) note.textContent = `${granLabel}(최근 ${rows.length}${unitLabel}, 10년치 수집분 기준) · 한국관광 데이터랩 · getTempleteData.do 자동 갱신`;
+  if(note){
+    const when = updatedLabel(VISITOR_STATS_DATA && VISITOR_STATS_DATA.updated);
+    note.textContent = `${granLabel}(최근 ${rows.length}${unitLabel}) · 만명 · 출처: 한국관광 데이터랩${when ? ' · ' + when : ''}`;
+  }
   visitorTrendChartInstance = new Chart(document.getElementById('visitorChart'), {
     type: 'line',
     data: {
@@ -4407,9 +4436,8 @@ async function loadExportData(){
   }
   const sourceNote = document.getElementById('export-source-note');
   if(sourceNote){
-    sourceNote.textContent = EXPORT_DATA.source
-      ? EXPORT_DATA.source
-      : '관세청 수출입무역통계(공공데이터포털) · 카테고리별 HS코드 기준 · export_data.json 자동 갱신 (일부 품목·범위는 하위 탭 구조만 우선 구성 — 실제 데이터 수집 전)';
+    const when = updatedLabel(EXPORT_DATA.updated);
+    sourceNote.textContent = `출처: 관세청 수출입무역통계 · HS코드 기준${when ? ' · ' + when : ''}`;
   }
   // 표시할 품목 목록·순서는 이제 fetch된 EXPORT_DATA가 아니라 EXPORT_CATEGORY_CONFIG(정적
   // 설정)가 기준 — 새 8개 품목 중 상당수는 아직 export_data.json에 없기 때문(2026-08-21).
@@ -5917,6 +5945,9 @@ async function loadHiraProcedureData(){
     const res = await fetch('hira_procedure.json', { cache: 'no-store' });
     if(!res.ok) throw new Error('no hira_procedure.json yet');
     HIRA_DATA = await res.json();
+    const srcNote = document.getElementById('hira-source-note');
+    const when = updatedLabel(HIRA_DATA.updated);
+    if(srcNote && when) srcNote.textContent = `출처: 건강보험심사평가원 보건의료빅데이터 · 매월 3일 갱신(최근 ${when.replace(' 갱신', '')})`;
   }catch(e){
     HIRA_DATA = { codes: [] };
   }
@@ -5942,6 +5973,7 @@ document.querySelectorAll('#hira-period-toggle button').forEach(b => {
 // 실제 배포본(index.html)에서는 이 배열을 reports.json fetch로 대체합니다.
 // ==================================================================
 let REPORTS = [];
+let REPORTS_UPDATED_LABEL = ''; // "M/D 갱신" — 페이지를 넘길 때마다 안내 문구를 새로 쓰므로 따로 보관
 let CONSENSUS = {}; // consensus.json · ticker별 애널리스트 컨센서스(목표주가/투자의견/Forward PER). 티커 기준 키.
 let selectedRepCompany = null; // 보고서 탭에서 현재 선택된 기업 — 늦게 도착하는 stock_performance/tickers 데이터가 도착하면 이 값 기준으로 재렌더링
 
@@ -6129,7 +6161,7 @@ function renderReports(filterCo){
 
   // source note
   document.getElementById('rep-source-note').textContent =
-    `미래에셋증권 · 김충현, CFA 발간 · 전체 ${rows.length}건 · ${repPage}/${totalPages}페이지`;
+    `미래에셋증권 · 김충현, CFA 발간 · 전체 ${rows.length}건 · ${repPage}/${totalPages}페이지${REPORTS_UPDATED_LABEL ? ' · ' + REPORTS_UPDATED_LABEL : ''}`;
 }
 
 // 추적 기업이 어느 카테고리에 속하는지는 tickers.json(TICKER_UNIVERSE)의 sector를 그대로
@@ -6413,11 +6445,11 @@ function renderNextQuarterForecastTable(quarterly, isNaver, curLabel, revKey, op
 // 바로 넘긴다). label은 박스 제목에 쓸 표시용 기업명.
 function buildStockBoxHtml(ticker, label){
   if(!ticker){
-    return `<div class="card note">이 기업은 주가데이터 유니버스(tickers.json)에 등록되어 있지 않아 주가 박스를 표시할 수 없습니다.</div>`;
+    return `<div class="card note">이 기업은 주가 추적 종목에 등록되어 있지 않아 주가 박스를 표시할 수 없습니다.</div>`;
   }
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   if(!perf){
-    return `<div class="card note">stock_performance.json 로딩 대기 중이거나 해당 종목 데이터가 없습니다.</div>`;
+    return `<div class="card note">주가 데이터 로딩 대기 중이거나 해당 종목 데이터가 없습니다.</div>`;
   }
   const r = perf.returns;
   const capEok = perf.market_cap_krw_eok!=null ? perf.market_cap_krw_eok
@@ -6451,7 +6483,7 @@ function buildStockBoxHtml(ticker, label){
     : `<div class="stat-card"><div class="lbl">밸류에이션</div><div class="val">-</div><div class="delta">컨센서스 PER 없음(커버리지 부족)</div></div>`;
 
   return `
-    <div class="sec-h"><h2 style="font-size:14px">${label} · 주가 데이터</h2><span class="note">stock_performance.json 실데이터 · 목표주가/PER은 시장 컨센서스</span></div>
+    <div class="sec-h"><h2 style="font-size:14px">${label} · 주가 데이터</h2><span class="note">목표주가/PER은 시장 컨센서스</span></div>
     <div class="cards" style="margin-bottom:8px">
       <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
       ${perfRow}
@@ -6478,7 +6510,7 @@ function earningsForecastBlockHtml(ticker){
   const cons = ticker ? CONSENSUS[ticker] : null;
   const consNote = cons
     ? `<div class="note" style="margin-bottom:6px">시장 컨센서스(${cons.as_of||''} 기준, ${cons.source==='naver'?'FnGuide/네이버':'Yahoo Finance'})${cons.opinion?` · 투자의견 ${cons.opinion}`:''}</div>`
-    : `<div class="note">시장 컨센서스 데이터가 아직 없습니다 (consensus.json 미연동 또는 해당 종목 커버리지 부족).</div>`;
+    : `<div class="note">시장 컨센서스 데이터가 아직 없습니다 (해당 종목 커버리지 부족).</div>`;
   return `<div style="margin-top:12px">${consNote}${renderEarningsForecastTable(cons)}</div>`;
 }
 
@@ -6935,17 +6967,13 @@ async function loadReports(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     REPORTS = (data.reports || []).map(r => ({ ...r, co: COMPANY_ALIASES[r.co] || r.co }));
+    REPORTS_UPDATED_LABEL = updatedLabel(data.updated);
     renderRepCategoryDropdowns();
     renderReports('전체');
     renderCompanyDetail('전체');
-    if(data.updated){
-      const note = document.getElementById('rep-source-note');
-      const dt = new Date(data.updated);
-      note.textContent += ` · 마지막 업데이트 ${dt.toLocaleString('ko-KR', {timeZone:'Asia/Seoul'})} KST`;
-    }
   }catch(e){
     document.getElementById('rep-table-wrap').innerHTML =
-      '<div class="card">reports.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions가 아직 한 번도 실행되지 않았다면 Actions 탭에서 워크플로를 수동 실행(Run workflow)해주세요.</div>';
+      '<div class="card">리서치 보고서를 불러오지 못했습니다 ('+e.message+').</div>';
   }
   refreshSnapshotIfActive();
 }
@@ -7054,7 +7082,7 @@ function renderEarningsIR(){
   if(!wrap) return;
   const all = EARNINGS_IR.companies || [];
   if(!all.length){
-    wrap.innerHTML = '<div class="card note">아직 수집된 실적 IR 요약이 없습니다 — earnings_ir.json 자동 갱신 워크플로가 아직 실행되지 않았을 수 있습니다.</div>';
+    wrap.innerHTML = '<div class="card note">아직 수집된 실적 IR 요약이 없습니다.</div>';
     return;
   }
   if(selectedEarningsIrTicker){
@@ -7095,7 +7123,7 @@ async function loadEarningsIR(){
     const note = document.getElementById('earnings-ir-source-note');
     if(note && EARNINGS_IR.updated){
       const dt = new Date(EARNINGS_IR.updated);
-      note.textContent = `각 기업 IR 공식 보도자료 기반 · 마지막 업데이트 ${dt.toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} KST`;
+      note.textContent = `출처: 각 기업 IR 공식 보도자료 · ${updatedLabel(EARNINGS_IR.updated)}`;
     }
   }catch(e){
     EARNINGS_IR = { companies: [] };
@@ -7111,6 +7139,7 @@ loadEarningsIR();
 // 김충현 CFA 본인 발간분(REPORTS)과는 별도 트랙으로 관리 · scrape_reports.py --authors로 수집
 // ==================================================================
 let BIO_REPORTS = [];
+let BIO_UPDATED_LABEL = '';
 const BIO_AUTHORS = ['김승민', '서미화', '박선영'];
 let bioAuthorFilter = '';
 let bioPage = 1;
@@ -7141,7 +7170,7 @@ function renderBioReports(filterAuthor){
     renderPager('bio-pager', bioPage, totalPages, (p)=>{ bioPage = p; renderBioReports(filterAuthor); });
   }
   const note = document.getElementById('bio-source-note');
-  if(note) note.textContent = `전체 ${rows.length}건 · ${bioPage}/${totalPages}페이지`;
+  if(note) note.textContent = `전체 ${rows.length}건 · ${bioPage}/${totalPages}페이지${BIO_UPDATED_LABEL ? ' · ' + BIO_UPDATED_LABEL : ''}`;
 }
 
 function renderBioAuthorTabs(){
@@ -7167,17 +7196,13 @@ async function loadBioReports(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     BIO_REPORTS = data.reports || [];
+    BIO_UPDATED_LABEL = updatedLabel(data.updated);
     renderBioAuthorTabs();
     renderBioReports(bioAuthorFilter);
-    if(data.updated){
-      const note = document.getElementById('bio-source-note');
-      const dt = new Date(data.updated);
-      if(note) note.textContent += ` · 마지막 업데이트 ${dt.toLocaleString('ko-KR', {timeZone:'Asia/Seoul'})} KST`;
-    }
   }catch(e){
     BIO_REPORTS = [];
     const wrap = document.getElementById('bio-table-wrap');
-    if(wrap) wrap.innerHTML = '<div class="card note">reports_bio.json을 불러오지 못했습니다 ('+e.message+'). GitHub Actions가 아직 한 번도 실행되지 않았다면 Actions 탭에서 update-reports 워크플로를 수동 실행(Run workflow)해주세요.</div>';
+    if(wrap) wrap.innerHTML = '<div class="card note">바이오/로보틱스 보고서를 불러오지 못했습니다 ('+e.message+').</div>';
   }
 }
 loadBioReports();

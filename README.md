@@ -1,58 +1,70 @@
 # 의료기기·디지털헬스 모니터링 대시보드
 
-리서치 보고서 탭은 미래에셋증권 리서치 게시판에서 작성자 "김충현, CFA" 발간분을, 주가 데이터 탭의 수익률 Top10/Bottom10은
-글로벌 헬스케어 145종목의 가격·시가총액을 매일 자동으로 긁어와 갱신합니다.
-나머지 부분(뉴스·개별종목 수급차트·이벤트 캘린더·산업데이터)은 아직 샘플 데이터입니다.
+GitHub Pages로 서빙되는 단일 페이지 대시보드(`index.html`)입니다. 화면에 보이는 데이터는 모두 실데이터이며,
+GitHub Actions가 매일(평일) 또는 매월 자동으로 수집해 `*.json`으로 커밋합니다.
+**예외:** 글로벌 대시보드(`global_dashboard.json`)는 Bloomberg 터미널이 있는 로컬 PC에서 수동으로 갱신합니다.
+
+## 탭 구성과 데이터
+
+| 탭 | 내용 | 데이터 파일 | 출처 | 갱신 주기 |
+|---|---|---|---|---|
+| 산업·기업 뉴스 | 오늘의 클리핑(국내/해외), 아카이브, AI 브리핑 | `news.json`, `news_history.jsonl`, `news_trend.json` | 네이버 뉴스검색 API, 해외 매체 RSS | 평일 |
+| 주가 데이터 › 주가 Performance | 수익률 Top/Bottom10, 외국인 지분율, 종목별 주가·지분율·수급 차트 | `stock_performance.json`, `investor_flow.json`, `fx_rate.json` | yfinance, Daum, 네이버증권, ECB | 평일 |
+| 주가 데이터 › 글로벌 대시보드 | Peer Table(밸류에이션·실적 추정) | `global_dashboard.json` | Bloomberg 컨센서스 | **수동** |
+| 주가 데이터 › 수급 판독기 | 국내 종목 수급 포지셔닝·전환점 | `investor_flow.json` | 네이버증권 | 평일 |
+| 이벤트 캘린더 | 실적·IR·공시·주총 일정 | `calendar_events.json` | DART, 해외 기업 IR 페이지 | 평일 |
+| 산업 데이터 › 수출 | HS코드별 수출 추이·월간 분석 | `export_data.json`, `export_monthly_analysis.json` | 관세청(공공데이터포털) | 매월 15~18일, 분석 19일 |
+| 산업 데이터 › 의료관광 | 외국인 의료소비·방한객·침투율 | `medical_tour.json`, `visitor_stats.json`, `medtour_penetration.json`, `medtour_monthly_analysis.json` | 한국관광 데이터랩 | 매월 |
+| 산업 데이터 › 진료행위 통계 | 심평원 진료행위 사용량·금액 | `hira_procedure.json` | 건강보험심사평가원 | 매월 2~5일 |
+| 기업 분석 | 리서치 보고서(+텔레그램 코멘트), 해외기업 실적 요약 | `reports.json`, `reports_bio.json`, `telegram_comments.json`, `earnings_ir.json` | 미래에셋증권 게시판, SEC 8-K/6-K | 평일 |
+| 기업 스냅샷 | 한 기업의 주가·실적 전망·리포트·수출·뉴스·일정 | 위 데이터 + `consensus.json` | 네이버 컨센서스(WiseReport) | 평일 |
+
+종목 유니버스는 `scripts/tickers.json`(현재 258종목, 국내 64종목)입니다.
 
 ## 폴더 구성
 
 ```
-index.html                                  대시보드 페이지 (GitHub Pages가 서빙)
-reports.json                                리서치 보고서 데이터 (자동 갱신 대상)
-stock_performance.json                      종목별 수익률·시가총액 데이터 (자동 갱신 대상, 최초 1회 Actions 실행 전까지는 없음)
-scripts/scrape_reports.py                   미래에셋 게시판 스크래퍼
-scripts/scrape_stock_performance.py         yfinance/Daum 기반 주가 퍼포먼스 스크래퍼
-scripts/tickers.json                        종목 유니버스 (145종목, 섹터/거래소 포함)
-.github/workflows/update-reports.yml               매일 자동 실행 (리서치 보고서)
-.github/workflows/update-stock-performance.yml     매일 자동 실행 (주가 퍼포먼스)
+index.html                 대시보드 페이지
+*.json / *.jsonl           각 탭 데이터 (위 표 참고, 자동 커밋 대상)
+scripts/                   수집·분석 스크립트 (scrape_*.py, analyze_*.py 등)
+scripts/tickers.json       종목 유니버스 (ticker/name/sector/market)
+.github/workflows/         자동 갱신 워크플로 (데이터별 1개씩)
+update_global_dashboard.bat / scripts/update_global_dashboard.ps1
+                           글로벌 대시보드 수동 갱신용 (로컬 Bloomberg PC)
 ```
 
-## 처음 설정하는 방법 (한 번만 하면 됨)
+## 처음 설정하는 방법
 
-1. GitHub에서 새 저장소를 만듭니다 (Public이어야 GitHub Pages 무료로 사용 가능).
-2. 이 폴더의 파일 전체를 그 저장소에 올립니다 (그대로 커밋 & 푸시).
-3. 저장소 **Settings → Pages** 로 이동해서 Source를 "Deploy from a branch", Branch를 `main` / `/(root)` 로 설정합니다.
-   - 몇 분 뒤 `https://<사용자아이디>.github.io/<저장소이름>/` 주소로 대시보드가 뜹니다.
-4. **Settings → Actions → General** 에서 "Workflow permissions"를 **Read and write permissions**로 설정합니다.
-   (자동 커밋이 저장소에 push할 수 있어야 하기 때문입니다.)
-5. **Actions** 탭에서 두 워크플로("Update research reports", "Update stock performance")를 각각 **Run workflow** 버튼으로 한 번씩 수동 실행해서 정상 동작하는지 확인합니다.
-   - 성공하면 `reports.json` / `stock_performance.json`이 자동으로 커밋되고, 대시보드에 반영됩니다.
-   - `stock_performance.json`은 145종목을 하나씩 조회하기 때문에 첫 실행에 몇 분 걸릴 수 있습니다.
+1. 저장소 **Settings → Pages**에서 Source를 "Deploy from a branch", Branch를 `main` / `/(root)`로 설정합니다.
+2. **Settings → Actions → General**에서 "Workflow permissions"를 **Read and write permissions**로 설정합니다
+   (워크플로가 데이터 파일을 커밋할 수 있어야 함).
+3. **Settings → Secrets and variables → Actions**에 아래 키를 등록합니다. 키가 없는 워크플로는 해당 수집을 건너뜁니다.
 
-이후로는 평일(월~금) 한국시간 오전에 자동으로 재실행되어 데이터를 갱신하고 커밋합니다.
-토큰이나 비밀번호를 따로 등록할 필요는 없습니다 — GitHub Actions가 기본 제공하는 권한(`GITHUB_TOKEN`)으로 같은 저장소에 커밋합니다.
+| Secret | 사용처 |
+|---|---|
+| `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET` | 국내 뉴스 수집 |
+| `DART_API_KEY` | 국내 공시 캘린더 |
+| `DATA_GO_KR_SERVICE_KEY` | 관세청 수출 데이터 |
+| `GEMINI_API_KEY` (+ `GEMINI_API_KEY_EARNINGS`), `ANTHROPIC_API_KEY` | 뉴스 요약·브리핑, 월간 분석, 해외 실적 요약 |
 
-## 수동으로 다시 긁어오고 싶을 때
+4. **Actions** 탭에서 각 워크플로를 **Run workflow**로 한 번씩 수동 실행해 정상 동작을 확인합니다.
 
-로컬에서:
+## 글로벌 대시보드 수동 갱신
+
+Bloomberg 엑셀(값복사 탭)을 저장한 뒤 `update_global_dashboard.bat`을 실행하면
+`scripts/convert_global_dashboard.py`로 `global_dashboard.json`을 만들고, 변경 내역을 보여준 뒤 커밋·푸시까지 진행합니다.
+대시보드 제목 옆 배지에 업데이트일이 표시되고, 7일 이상 지나면 주황색 경고로 바뀝니다.
+
+## 로컬에서 미리보기
+
+`index.html`이 JSON을 `fetch`로 불러오므로 파일을 더블클릭해 열면 데이터가 뜨지 않습니다. 로컬 서버로 여세요.
 ```bash
-pip install requests beautifulsoup4 yfinance
-python scripts/scrape_reports.py --out reports.json
-python scripts/scrape_stock_performance.py --tickers scripts/tickers.json --out stock_performance.json
+py -m http.server 8000
+# 브라우저에서 http://localhost:8000/
 ```
-
-다른 작성자로 바꾸고 싶다면:
-```bash
-python scripts/scrape_reports.py --author "홍길동" --out reports.json
-```
-
-종목 유니버스를 바꾸고 싶다면 `scripts/tickers.json`을 직접 편집하면 됩니다 (ticker/name/sector/market 4개 필드).
-거래소 접미사 규칙: 미국 없음 · 한국 `.KS`(코스피)/`.KQ`(코스닥) · 홍콩 `.HK` · 일본 `.T` · 중국 `.SZ`/`.SS` · 독일 `.DE` · 스위스 `.SW` · 영국 `.L` · 프랑스 `.PA` (yfinance 표기 기준).
 
 ## 자동화가 실패했을 때 확인할 것
 
-- Actions 탭에서 워크플로 로그 확인 (작성자 검색어가 게시판 표기와 다르면 0건이 나올 수 있음)
-- 게시판 구조가 바뀌면 `scripts/scrape_reports.py`의 파싱 로직 조정이 필요할 수 있음
-- PDF 원문 링크는 `https://securities.miraeasset.com/bbs/download/{pdf}.pdf?attachmentId={pdf}` 형식이며 로그인 없이 접근 가능함을 확인했습니다.
-- 주가 퍼포먼스 스크래퍼는 제 작업 환경(네트워크 제한된 샌드박스)에서는 Yahoo Finance 접속 자체가 막혀 있어 직접 실행 검증을 못 했습니다. 로직은 단위 테스트로 검증했지만, GitHub Actions에서의 첫 실행 결과는 꼭 확인해주세요. 실패하는 종목은 `stock_performance.json`의 `error` 필드에 사유가 남습니다.
-- 한국 종목 시가총액은 Daum Finance API를 우선 사용하고 실패하면 yfinance로 대체합니다. Daum API 응답 구조가 바뀌면 `daum_market_cap()` 함수를 손봐야 할 수 있습니다.
+- Actions 탭에서 해당 워크플로 로그를 확인합니다.
+- 소스 사이트(미래에셋 게시판, 네이버, Daum, 한국관광 데이터랩 등)의 구조가 바뀌면 해당 `scripts/scrape_*.py`의 파싱 로직을 조정해야 할 수 있습니다.
+- 주가 스크래퍼에서 실패한 종목은 `stock_performance.json`의 `error` 필드에 사유가 남습니다.
