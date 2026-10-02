@@ -29,12 +29,23 @@ jobs:
       - name: Extract consensus
         run: python scripts/scrape_consensus.py --tickers scripts/tickers.json --out consensus.json
 
+      # 컨센서스 리비전 추적용 — 오늘 스냅샷을 consensus_history.json에 날짜별로 누적
+      # (이력 파일이 아직 없으면 git 히스토리의 과거 consensus.json으로 처음부터 재구성).
+      - name: Append consensus history
+        run: |
+          if [ -f consensus_history.json ]; then
+            python scripts/update_consensus_history.py
+          else
+            git fetch --unshallow || true
+            python scripts/update_consensus_history.py --backfill
+          fi
+
       - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add consensus.json
-          if git diff --cached --quiet -- consensus.json; then
+          git add consensus.json consensus_history.json
+          if git diff --cached --quiet -- consensus.json consensus_history.json; then
             echo "변경 없음, 커밋 건너뜀"
           else
             git commit -m "chore: consensus.json 자동 갱신 ($(date -u +%Y-%m-%d))"
