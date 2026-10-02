@@ -2,8 +2,10 @@ name: Update consensus
 
 on:
   schedule:
-    # 국내 장 마감 이후, 다른 update-*.yml과 겹치지 않는 시간대에 실행 (UTC 08:20 = KST 17:20)
-    - cron: "20 8 * * 1-5"
+    # KST 06:04 (평일) = 21:04 UTC (일~목, 전날).
+    # 2026-10-02: 원래 KST 17:20에 혼자 돌았는데, 다른 일일 갱신과 같은 새벽 파이프라인으로 편입.
+    # 다른 파일에 의존하지 않으므로 reports(05:54)와 ir(06:17) 사이 빈 슬롯에 배치했다.
+    - cron: "4 21 * * 0-4"
   workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
 
 permissions:
