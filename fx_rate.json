@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-04T00:00:08.571237+00:00",
+  "updated": "2026-10-05T00:07:07.014536+00:00",
   "source": "frankfurter.app (ECB 기준 환율, 무료·키 불필요)",
   "rate_date": "2026-10-02",
   "usd_krw": 1348.28,
@@ -34,7 +34,7 @@
     "THB": 33.595,
     "TRY": 49.145,
     "ZAR": 16.734,
-    "TWD": 31.859608
+    "TWD": 31.854061
   },
   "fallback": {
     "krw": 1400.0,
@@ -42,7 +42,7 @@
   },
   "usd_rates_supplement": {
     "source": "open.er-api.com (무료·키 불필요, ECB 미고시 통화 보충)",
-    "updated": "Sat, 03 Oct 2026 00:02:32 +0000",
+    "updated": "Sun, 04 Oct 2026 00:02:32 +0000",
     "currencies": [
       "TWD"
     ]
