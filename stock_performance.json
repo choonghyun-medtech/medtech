@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-05T22:27:34Z",
+ "updated": "2026-10-06T01:53:09Z",
  "fx_to_krw": {
   "USD": 1370,
   "HKD": 175,
@@ -25,19 +25,18 @@
    "market_cap_krw_tril": 428.1,
    "market_cap_krw_eok": 4281071.0,
    "returns": {
-    "d1": -0.9,
-    "d5": -4.1,
-    "m1": -3.0,
-    "m3": 1.2,
-    "m6": 10.8,
-    "y1": 19.2,
-    "ytd": 6.2
+    "d1": 0.9,
+    "d5": -1.8,
+    "m1": -2.3,
+    "m3": 2.4,
+    "m6": 11.5,
+    "y1": 22.0,
+    "ytd": 7.2
    },
-   "as_of": "2026-10-02",
+   "as_of": "2026-10-05",
    "price_source": "yfinance",
    "price_history": {
     "dates": [
-     "2025-09-19",
      "2025-09-22",
      "2025-09-23",
      "2025-09-24",
@@ -296,10 +295,10 @@
      "2026-09-29",
      "2026-09-30",
      "2026-10-01",
-     "2026-10-02"
+     "2026-10-02",
+     "2026-10-05"
     ],
     "close": [
-     265.1,
      271.1,
      265.2,
      259.9,
@@ -558,7 +557,8 @@
      349.3,
      349.1,
      349.0,
-     345.7
+     345.7,
+     348.9
     ]
    },
    "foreign_ratio": null,
@@ -3316,8 +3316,8 @@
    "sector": "체외진단",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 10.0,
-   "market_cap_krw_eok": 99757.8,
+   "market_cap_krw_tril": 10.2,
+   "market_cap_krw_eok": 102154.4,
    "returns": {
     "d1": 0.7,
     "d5": -3.6,
@@ -7160,7 +7160,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.8,
-   "market_cap_krw_eok": 7655.5,
+   "market_cap_krw_eok": 7788.3,
    "returns": {
     "d1": 0.5,
     "d5": 4.4,
@@ -7698,7 +7698,7 @@
      6340.0
     ]
    },
-   "foreign_ratio": 6.11,
+   "foreign_ratio": 6.12,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -8222,7 +8222,7 @@
      6.07,
      6.05,
      6.11,
-     6.11
+     6.12
     ]
    },
    "error": null
@@ -8772,7 +8772,7 @@
      36900.0
     ]
    },
-   "foreign_ratio": 22.89,
+   "foreign_ratio": 22.88,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -9296,7 +9296,7 @@
      22.39,
      22.6,
      22.89,
-     22.89
+     22.88
     ]
    },
    "error": null
@@ -9308,7 +9308,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2211.9,
+   "market_cap_krw_eok": 2250.7,
    "returns": {
     "d1": 0.6,
     "d5": 4.8,
@@ -9846,7 +9846,7 @@
      8570.0
     ]
    },
-   "foreign_ratio": 3.24,
+   "foreign_ratio": 3.32,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -10370,7 +10370,7 @@
      3.28,
      3.11,
      3.24,
-     3.24
+     3.32
     ]
    },
    "error": null
@@ -10382,7 +10382,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 915.8,
+   "market_cap_krw_eok": 920.1,
    "returns": {
     "d1": -0.3,
     "d5": 0.3,
@@ -13079,7 +13079,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2032.9,
+   "market_cap_krw_eok": 2026.9,
    "returns": {
     "d1": -1.2,
     "d5": 2.4,
@@ -13617,7 +13617,7 @@
      6830.0
     ]
    },
-   "foreign_ratio": 4.14,
+   "foreign_ratio": 4.13,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -14141,7 +14141,7 @@
      4.07,
      4.06,
      4.14,
-     4.14
+     4.13
     ]
    },
    "error": null
@@ -14153,7 +14153,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2136.0,
+   "market_cap_krw_eok": 2142.6,
    "returns": {
     "d1": 0.5,
     "d5": 4.3,
@@ -14691,7 +14691,7 @@
      9750.0
     ]
    },
-   "foreign_ratio": 3.37,
+   "foreign_ratio": 3.36,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -15215,7 +15215,7 @@
      3.37,
      3.37,
      3.37,
-     3.37
+     3.36
     ]
    },
    "error": null
@@ -20170,18 +20170,19 @@
    "market_cap_krw_tril": 3.7,
    "market_cap_krw_eok": 37239.7,
    "returns": {
-    "d1": -1.4,
-    "d5": 20.5,
-    "m1": 36.3,
-    "m3": 77.8,
-    "m6": 86.6,
-    "y1": 78.6,
-    "ytd": 71.9
+    "d1": 4.3,
+    "d5": 22.9,
+    "m1": 28.8,
+    "m3": 70.5,
+    "m6": 83.6,
+    "y1": 80.6,
+    "ytd": 74.4
    },
-   "as_of": "2026-10-05",
+   "as_of": "2026-10-02",
    "price_source": "yfinance",
    "price_history": {
     "dates": [
+     "2025-09-24",
      "2025-09-25",
      "2025-09-26",
      "2025-09-29",
@@ -20440,10 +20441,10 @@
      "2026-09-29",
      "2026-09-30",
      "2026-10-01",
-     "2026-10-02",
-     "2026-10-05"
+     "2026-10-02"
     ],
     "close": [
+     154.5,
      147.8,
      149.3,
      151.0,
@@ -20702,8 +20703,7 @@
      199.4,
      217.6,
      214.0,
-     223.2,
-     220.0
+     223.2
     ]
    },
    "foreign_ratio": null,
@@ -23462,7 +23462,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 3032.8,
+   "market_cap_krw_eok": 3008.0,
    "returns": {
     "d1": -4.2,
     "d5": 10.9,
@@ -24000,7 +24000,7 @@
      12200.0
     ]
    },
-   "foreign_ratio": 2.33,
+   "foreign_ratio": 2.21,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -24524,7 +24524,7 @@
      2.28,
      2.32,
      2.33,
-     2.33
+     2.21
     ]
    },
    "error": null
@@ -24536,7 +24536,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.0,
-   "market_cap_krw_eok": 415.7,
+   "market_cap_krw_eok": 429.3,
    "returns": {
     "d1": -2.8,
     "d5": 5.6,
@@ -25074,7 +25074,7 @@
      2900.0
     ]
    },
-   "foreign_ratio": 5.7,
+   "foreign_ratio": 5.64,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -25598,7 +25598,7 @@
      5.69,
      5.73,
      5.7,
-     5.7
+     5.64
     ]
    },
    "error": null
@@ -25610,7 +25610,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 1922.1,
+   "market_cap_krw_eok": 1934.8,
    "returns": {
     "d1": -6.9,
     "d5": 4.1,
@@ -26148,7 +26148,7 @@
      6040.0
     ]
    },
-   "foreign_ratio": 8.45,
+   "foreign_ratio": 9.38,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -26672,7 +26672,7 @@
      7.86,
      7.54,
      8.45,
-     8.45
+     9.38
     ]
    },
    "error": null
@@ -32174,7 +32174,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 2.5,
-   "market_cap_krw_eok": 25011.1,
+   "market_cap_krw_eok": 24936.0,
    "returns": {
     "d1": -1.5,
     "d5": -1.2,
@@ -33272,7 +33272,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 1810.1,
+   "market_cap_krw_eok": 1807.9,
    "returns": {
     "d1": -0.7,
     "d5": 1.2,
@@ -33810,7 +33810,7 @@
      16170.0
     ]
    },
-   "foreign_ratio": 3.07,
+   "foreign_ratio": 2.63,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -34334,7 +34334,7 @@
      2.99,
      3.15,
      3.07,
-     3.07
+     2.63
     ]
    },
    "error": null
@@ -34346,7 +34346,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 3341.8,
+   "market_cap_krw_eok": 3419.4,
    "returns": {
     "d1": 4.4,
     "d5": 5.9,
@@ -34884,7 +34884,7 @@
      38750.0
     ]
    },
-   "foreign_ratio": 13.12,
+   "foreign_ratio": 13.15,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -35408,7 +35408,7 @@
      13.07,
      13.06,
      13.12,
-     13.12
+     13.15
     ]
    },
    "error": null
@@ -35420,7 +35420,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 677.2,
+   "market_cap_krw_eok": 669.7,
    "returns": {
     "d1": -0.3,
     "d5": -0.5,
@@ -35958,7 +35958,7 @@
      4330.0
     ]
    },
-   "foreign_ratio": 0.08,
+   "foreign_ratio": 0.01,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -36482,7 +36482,7 @@
      0.11,
      0.12,
      0.08,
-     0.08
+     0.01
     ]
    },
    "error": null
@@ -36494,7 +36494,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 2641.1,
+   "market_cap_krw_eok": 2629.2,
    "returns": {
     "d1": -0.4,
     "d5": 1.8,
@@ -37032,7 +37032,7 @@
      17780.0
     ]
    },
-   "foreign_ratio": 21.52,
+   "foreign_ratio": 21.5,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -37556,7 +37556,7 @@
      21.59,
      21.58,
      21.52,
-     21.52
+     21.5
     ]
    },
    "error": null
@@ -37568,7 +37568,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1360.4,
+   "market_cap_krw_eok": 1352.3,
    "returns": {
     "d1": 6.5,
     "d5": 7.5,
@@ -38106,7 +38106,7 @@
      10140.0
     ]
    },
-   "foreign_ratio": 14.76,
+   "foreign_ratio": 14.12,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -38630,7 +38630,7 @@
      14.75,
      14.76,
      14.76,
-     14.76
+     14.12
     ]
    },
    "error": null
@@ -38642,7 +38642,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 1.4,
-   "market_cap_krw_eok": 14482.7,
+   "market_cap_krw_eok": 13943.3,
    "returns": {
     "d1": -4.6,
     "d5": 13.8,
@@ -39180,7 +39180,7 @@
      53700.0
     ]
    },
-   "foreign_ratio": 23.75,
+   "foreign_ratio": 23.12,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -39704,7 +39704,7 @@
      24.38,
      24.23,
      23.75,
-     23.75
+     23.12
     ]
    },
    "error": null
@@ -39718,19 +39718,18 @@
    "market_cap_krw_tril": 58.0,
    "market_cap_krw_eok": 579784.7,
    "returns": {
-    "d1": -0.2,
-    "d5": -1.5,
-    "m1": -1.4,
-    "m3": -11.0,
-    "m6": 8.3,
-    "y1": 6.8,
-    "ytd": 0.3
+    "d1": 0.6,
+    "d5": -0.3,
+    "m1": 1.8,
+    "m3": -10.1,
+    "m6": 6.8,
+    "y1": 8.0,
+    "ytd": 0.8
    },
-   "as_of": "2026-10-02",
+   "as_of": "2026-10-05",
    "price_source": "yfinance",
    "price_history": {
     "dates": [
-     "2025-09-19",
      "2025-09-22",
      "2025-09-23",
      "2025-09-24",
@@ -39989,10 +39988,10 @@
      "2026-09-29",
      "2026-09-30",
      "2026-10-01",
-     "2026-10-02"
+     "2026-10-02",
+     "2026-10-05"
     ],
     "close": [
-     144.0,
      141.6,
      139.7,
      140.0,
@@ -40251,7 +40250,8 @@
      165.85,
      165.85,
      160.8,
-     160.55
+     160.55,
+     161.45
     ]
    },
    "foreign_ratio": null,
@@ -40265,7 +40265,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 1.0,
-   "market_cap_krw_eok": 10289.9,
+   "market_cap_krw_eok": 9882.8,
    "returns": {
     "d1": 2.7,
     "d5": 6.6,
@@ -40803,7 +40803,7 @@
      22750.0
     ]
    },
-   "foreign_ratio": 10.7,
+   "foreign_ratio": 10.11,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -41327,7 +41327,7 @@
      10.98,
      10.76,
      10.7,
-     10.7
+     10.11
     ]
    },
    "error": null
@@ -41339,7 +41339,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.5,
-   "market_cap_krw_eok": 4860.8,
+   "market_cap_krw_eok": 4882.7,
    "returns": {
     "d1": -1.2,
     "d5": -1.2,
@@ -41877,7 +41877,7 @@
      66600.0
     ]
    },
-   "foreign_ratio": 12.35,
+   "foreign_ratio": 12.28,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -42401,7 +42401,7 @@
      12.39,
      12.36,
      12.35,
-     12.35
+     12.28
     ]
    },
    "error": null
@@ -42413,7 +42413,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 2.3,
-   "market_cap_krw_eok": 22539.8,
+   "market_cap_krw_eok": 22552.3,
    "returns": {
     "d1": -0.3,
     "d5": -3.7,
@@ -42951,7 +42951,7 @@
      180100.0
     ]
    },
-   "foreign_ratio": 56.54,
+   "foreign_ratio": 56.5,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -43475,7 +43475,7 @@
      56.68,
      56.56,
      56.54,
-     56.54
+     56.5
     ]
    },
    "error": null
@@ -44585,7 +44585,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 2.0,
-   "market_cap_krw_eok": 19994.7,
+   "market_cap_krw_eok": 20190.4,
    "returns": {
     "d1": -2.2,
     "d5": -0.2,
@@ -46207,8 +46207,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 3.2,
-   "market_cap_krw_eok": 31792.3,
+   "market_cap_krw_tril": 3.1,
+   "market_cap_krw_eok": 31324.8,
    "returns": {
     "d1": -2.7,
     "d5": -5.1,
@@ -46746,7 +46746,7 @@
      306000.0
     ]
    },
-   "foreign_ratio": 13.64,
+   "foreign_ratio": 13.31,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -47270,7 +47270,7 @@
      12.89,
      13.23,
      13.64,
-     13.64
+     13.31
     ]
    },
    "error": null
@@ -48356,7 +48356,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 963.6,
+   "market_cap_krw_eok": 973.5,
    "returns": {
     "d1": -6.8,
     "d5": -9.8,
@@ -48626,7 +48626,7 @@
      8760.0
     ]
    },
-   "foreign_ratio": 4.14,
+   "foreign_ratio": 3.97,
    "foreign_ratio_history": {
     "dates": [
      "2026-03-31",
@@ -48882,7 +48882,7 @@
      4.15,
      3.75,
      4.14,
-     4.14
+     3.97
     ]
    },
    "error": null
@@ -48894,7 +48894,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2396.9,
+   "market_cap_krw_eok": 2332.9,
    "returns": {
     "d1": 2.4,
     "d5": 22.0,
@@ -49432,7 +49432,7 @@
      6370.0
     ]
    },
-   "foreign_ratio": 0.87,
+   "foreign_ratio": 0.89,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -49956,7 +49956,7 @@
      1.09,
      0.85,
      0.87,
-     0.87
+     0.89
     ]
    },
    "error": null
@@ -49968,7 +49968,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 776.5,
+   "market_cap_krw_eok": 775.7,
    "returns": {
     "d1": -3.5,
     "d5": -3.3,
@@ -50506,7 +50506,7 @@
      4515.0
     ]
    },
-   "foreign_ratio": 1.16,
+   "foreign_ratio": 1.15,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -51030,7 +51030,7 @@
      1.15,
      1.14,
      1.16,
-     1.16
+     1.15
     ]
    },
    "error": null
@@ -51042,7 +51042,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 1606.4,
+   "market_cap_krw_eok": 1610.5,
    "returns": {
     "d1": 2.6,
     "d5": 0.8,
@@ -51590,8 +51590,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 0.4,
-   "market_cap_krw_eok": 4473.0,
+   "market_cap_krw_tril": 0.5,
+   "market_cap_krw_eok": 4562.2,
    "returns": {
     "d1": 0.2,
     "d5": 3.4,
@@ -52129,7 +52129,7 @@
      5010.0
     ]
    },
-   "foreign_ratio": 3.48,
+   "foreign_ratio": 3.41,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -52653,7 +52653,7 @@
      3.21,
      3.3,
      3.48,
-     3.48
+     3.41
     ]
    },
    "error": null
@@ -53214,7 +53214,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 3030.5,
+   "market_cap_krw_eok": 3123.2,
    "returns": {
     "d1": -5.8,
     "d5": 19.5,
@@ -53752,7 +53752,7 @@
      21250.0
     ]
    },
-   "foreign_ratio": 6.77,
+   "foreign_ratio": 6.78,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -54276,7 +54276,7 @@
      6.31,
      6.33,
      6.77,
-     6.77
+     6.78
     ]
    },
    "error": null
@@ -54288,7 +54288,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1329.3,
+   "market_cap_krw_eok": 1356.5,
    "returns": {
     "d1": -0.5,
     "d5": 4.8,
@@ -54826,7 +54826,7 @@
      6350.0
     ]
    },
-   "foreign_ratio": 1.68,
+   "foreign_ratio": 1.64,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -55350,7 +55350,7 @@
      1.62,
      1.65,
      1.68,
-     1.68
+     1.64
     ]
    },
    "error": null
@@ -55362,7 +55362,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1105.8,
+   "market_cap_krw_eok": 1084.4,
    "returns": {
     "d1": 0.9,
     "d5": 1.3,
@@ -55900,7 +55900,7 @@
      2320.0
     ]
    },
-   "foreign_ratio": 2.64,
+   "foreign_ratio": 2.62,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -56424,7 +56424,7 @@
      2.61,
      2.57,
      2.64,
-     2.64
+     2.62
     ]
    },
    "error": null
@@ -58082,8 +58082,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 13.7,
-   "market_cap_krw_eok": 137023.6,
+   "market_cap_krw_tril": 13.5,
+   "market_cap_krw_eok": 134590.2,
    "returns": {
     "d1": 0.0,
     "d5": -0.7,
@@ -58621,7 +58621,7 @@
      366000.0
     ]
    },
-   "foreign_ratio": 38.36,
+   "foreign_ratio": 38.4,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -59145,7 +59145,7 @@
      38.22,
      38.32,
      38.36,
-     38.36
+     38.4
     ]
    },
    "error": null
@@ -59157,7 +59157,7 @@
    "market": "JP",
    "currency": "JPY",
    "market_cap_krw_tril": 0.4,
-   "market_cap_krw_eok": 3842.7,
+   "market_cap_krw_eok": 3822.9,
    "returns": {
     "d1": 0.6,
     "d5": -1.3,
@@ -61352,8 +61352,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 7.8,
-   "market_cap_krw_eok": 77619.9,
+   "market_cap_krw_tril": 7.6,
+   "market_cap_krw_eok": 76040.6,
    "returns": {
     "d1": -2.2,
     "d5": -6.9,
@@ -61891,7 +61891,7 @@
      132700.0
     ]
    },
-   "foreign_ratio": 26.11,
+   "foreign_ratio": 26.05,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -62415,7 +62415,7 @@
      26.14,
      26.11,
      26.11,
-     26.11
+     26.05
     ]
    },
    "error": null
@@ -62426,8 +62426,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 4.1,
-   "market_cap_krw_eok": 40583.7,
+   "market_cap_krw_tril": 4.0,
+   "market_cap_krw_eok": 39610.3,
    "returns": {
     "d1": -0.2,
     "d5": -7.4,
@@ -62965,7 +62965,7 @@
      271000.0
     ]
    },
-   "foreign_ratio": 31.46,
+   "foreign_ratio": 31.49,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -63489,7 +63489,7 @@
      31.49,
      31.36,
      31.46,
-     31.46
+     31.49
     ]
    },
    "error": null
@@ -63500,8 +63500,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 3.1,
-   "market_cap_krw_eok": 30643.7,
+   "market_cap_krw_tril": 3.0,
+   "market_cap_krw_eok": 30246.4,
    "returns": {
     "d1": -3.2,
     "d5": -0.7,
@@ -64039,7 +64039,7 @@
      270000.0
     ]
    },
-   "foreign_ratio": 35.39,
+   "foreign_ratio": 35.26,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -64563,7 +64563,7 @@
      35.46,
      35.41,
      35.39,
-     35.39
+     35.26
     ]
    },
    "error": null
@@ -64575,7 +64575,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 3.2,
-   "market_cap_krw_eok": 32244.5,
+   "market_cap_krw_eok": 31654.4,
    "returns": {
     "d1": -6.8,
     "d5": -7.1,
@@ -65113,7 +65113,7 @@
      136600.0
     ]
    },
-   "foreign_ratio": 41.18,
+   "foreign_ratio": 40.66,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -65637,7 +65637,7 @@
      41.14,
      41.24,
      41.18,
-     41.18
+     40.66
     ]
    },
    "error": null
@@ -66747,7 +66747,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.4,
-   "market_cap_krw_eok": 4399.2,
+   "market_cap_krw_eok": 4364.2,
    "returns": {
     "d1": 0.0,
     "d5": 13.2,
@@ -67285,7 +67285,7 @@
      12590.0
     ]
    },
-   "foreign_ratio": 6.0,
+   "foreign_ratio": 6.01,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -67809,7 +67809,7 @@
      5.85,
      5.9,
      6.0,
-     6.0
+     6.01
     ]
    },
    "error": null
@@ -67821,7 +67821,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2164.9,
+   "market_cap_krw_eok": 2145.1,
    "returns": {
     "d1": -1.1,
     "d5": 0.7,
@@ -68359,7 +68359,7 @@
      11980.0
     ]
    },
-   "foreign_ratio": 2.8,
+   "foreign_ratio": 2.74,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -68883,7 +68883,7 @@
      2.94,
      2.72,
      2.8,
-     2.8
+     2.74
     ]
    },
    "error": null
@@ -68895,7 +68895,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1399.6,
+   "market_cap_krw_eok": 1401.2,
    "returns": {
     "d1": 1.0,
     "d5": 0.2,
@@ -69433,7 +69433,7 @@
      8390.0
     ]
    },
-   "foreign_ratio": 4.28,
+   "foreign_ratio": 4.29,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -69957,7 +69957,7 @@
      4.42,
      4.31,
      4.28,
-     4.28
+     4.29
     ]
    },
    "error": null
@@ -69968,8 +69968,8 @@
    "sector": "미용",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 2478.7,
+   "market_cap_krw_tril": 0.3,
+   "market_cap_krw_eok": 2567.2,
    "returns": {
     "d1": 0.0,
     "d5": -1.8,
@@ -70507,7 +70507,7 @@
      15120.0
     ]
    },
-   "foreign_ratio": 2.75,
+   "foreign_ratio": 2.89,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -71031,7 +71031,7 @@
      2.7,
      2.7,
      2.75,
-     2.75
+     2.89
     ]
    },
    "error": null
@@ -71043,7 +71043,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 2721.0,
+   "market_cap_krw_eok": 2738.5,
    "returns": {
     "d1": -3.3,
     "d5": 3.5,
@@ -71581,7 +71581,7 @@
      10900.0
     ]
    },
-   "foreign_ratio": 10.16,
+   "foreign_ratio": 10.11,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -72105,7 +72105,7 @@
      10.21,
      10.17,
      10.16,
-     10.16
+     10.11
     ]
    },
    "error": null
@@ -72117,7 +72117,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1214.8,
+   "market_cap_krw_eok": 1212.4,
    "returns": {
     "d1": -0.8,
     "d5": 1.3,
@@ -72655,7 +72655,7 @@
      5050.0
     ]
    },
-   "foreign_ratio": 2.14,
+   "foreign_ratio": 2.15,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -73179,7 +73179,7 @@
      2.21,
      2.19,
      2.14,
-     2.14
+     2.15
     ]
    },
    "error": null
@@ -73191,7 +73191,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 691.4,
+   "market_cap_krw_eok": 676.8,
    "returns": {
     "d1": 0.6,
     "d5": 1.3,
@@ -73729,7 +73729,7 @@
      2380.0
     ]
    },
-   "foreign_ratio": 4.66,
+   "foreign_ratio": 4.7,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -74253,7 +74253,7 @@
      4.55,
      4.42,
      4.66,
-     4.66
+     4.7
     ]
    },
    "error": null
@@ -75362,8 +75362,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 34.8,
-   "market_cap_krw_eok": 347598.2,
+   "market_cap_krw_tril": 34.7,
+   "market_cap_krw_eok": 347072.3,
    "returns": {
     "d1": 0.4,
     "d5": 0.9,
@@ -76461,7 +76461,7 @@
    "market": "JP",
    "currency": "JPY",
    "market_cap_krw_tril": 36.6,
-   "market_cap_krw_eok": 366403.8,
+   "market_cap_krw_eok": 366188.5,
    "returns": {
     "d1": 2.7,
     "d5": 1.5,
@@ -78656,8 +78656,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 10.5,
-   "market_cap_krw_eok": 104694.6,
+   "market_cap_krw_tril": 10.7,
+   "market_cap_krw_eok": 106748.9,
    "returns": {
     "d1": 3.3,
     "d5": 0.4,
@@ -80304,7 +80304,7 @@
    "market": "JP",
    "currency": "JPY",
    "market_cap_krw_tril": 2.9,
-   "market_cap_krw_eok": 28620.6,
+   "market_cap_krw_eok": 28811.9,
    "returns": {
     "d1": -0.4,
     "d5": -3.1,
@@ -83049,7 +83049,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 2579.3,
+   "market_cap_krw_eok": 2673.5,
    "returns": {
     "d1": 2.7,
     "d5": 11.2,
@@ -83587,7 +83587,7 @@
      28750.0
     ]
    },
-   "foreign_ratio": 30.13,
+   "foreign_ratio": 30.15,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -84111,7 +84111,7 @@
      30.08,
      30.08,
      30.13,
-     30.13
+     30.15
     ]
    },
    "error": null
@@ -87966,7 +87966,7 @@
    "market": "TW",
    "currency": "TWD",
    "market_cap_krw_tril": 0.6,
-   "market_cap_krw_eok": 5723.2,
+   "market_cap_krw_eok": 5790.0,
    "returns": {
     "d1": -0.8,
     "d5": -0.8,
@@ -88515,7 +88515,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.5,
-   "market_cap_krw_eok": 4965.4,
+   "market_cap_krw_eok": 4915.1,
    "returns": {
     "d1": -2.7,
     "d5": 5.9,
@@ -89053,7 +89053,7 @@
      16790.0
     ]
    },
-   "foreign_ratio": 24.58,
+   "foreign_ratio": 24.5,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -89577,7 +89577,7 @@
      24.46,
      24.44,
      24.58,
-     24.58
+     24.5
     ]
    },
    "error": null
@@ -89589,7 +89589,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.5,
-   "market_cap_krw_eok": 4841.1,
+   "market_cap_krw_eok": 5015.5,
    "returns": {
     "d1": -3.1,
     "d5": -1.2,
@@ -90127,7 +90127,7 @@
      27750.0
     ]
    },
-   "foreign_ratio": 5.85,
+   "foreign_ratio": 5.63,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -90651,7 +90651,7 @@
      5.29,
      5.21,
      5.85,
-     5.85
+     5.63
     ]
    },
    "error": null
@@ -92858,8 +92858,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 73.6,
-   "market_cap_krw_eok": 735503.8,
+   "market_cap_krw_tril": 74.4,
+   "market_cap_krw_eok": 744359.9,
    "returns": {
     "d1": 1.3,
     "d5": 3.9,
@@ -97251,7 +97251,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 1927.8,
+   "market_cap_krw_eok": 1844.5,
    "returns": {
     "d1": 8.5,
     "d5": 17.3,
@@ -97789,7 +97789,7 @@
      16890.0
     ]
    },
-   "foreign_ratio": 3.94,
+   "foreign_ratio": 3.85,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -98313,7 +98313,7 @@
      4.04,
      4.11,
      3.94,
-     3.94
+     3.85
     ]
    },
    "error": null
@@ -98325,7 +98325,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 771.2,
+   "market_cap_krw_eok": 765.8,
    "returns": {
     "d1": 1.6,
     "d5": 7.3,
@@ -98863,7 +98863,7 @@
      7090.0
     ]
    },
-   "foreign_ratio": 3.09,
+   "foreign_ratio": 3.01,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -99387,7 +99387,7 @@
      3.03,
      3.02,
      3.09,
-     3.09
+     3.01
     ]
    },
    "error": null
@@ -101594,8 +101594,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 30.3,
-   "market_cap_krw_eok": 303155.5,
+   "market_cap_krw_tril": 30.7,
+   "market_cap_krw_eok": 307071.9,
    "returns": {
     "d1": 1.8,
     "d5": -0.3,
@@ -102692,8 +102692,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 18.7,
-   "market_cap_krw_eok": 187008.9,
+   "market_cap_krw_tril": 19.0,
+   "market_cap_krw_eok": 190069.9,
    "returns": {
     "d1": -0.2,
     "d5": -3.2,
@@ -104888,8 +104888,8 @@
    "sector": "의료기기",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 8.0,
-   "market_cap_krw_eok": 80353.5,
+   "market_cap_krw_tril": 8.1,
+   "market_cap_krw_eok": 81451.9,
    "returns": {
     "d1": 2.2,
     "d5": 3.1,
@@ -106536,7 +106536,7 @@
    "market": "JP",
    "currency": "JPY",
    "market_cap_krw_tril": 1.9,
-   "market_cap_krw_eok": 19317.1,
+   "market_cap_krw_eok": 19471.2,
    "returns": {
     "d1": 0.7,
     "d5": -8.3,
@@ -107634,7 +107634,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.2,
-   "market_cap_krw_eok": 1503.4,
+   "market_cap_krw_eok": 1508.2,
    "returns": {
     "d1": -0.5,
     "d5": 2.8,
@@ -108172,7 +108172,7 @@
      4645.0
     ]
    },
-   "foreign_ratio": 6.22,
+   "foreign_ratio": 6.21,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -108696,7 +108696,7 @@
      6.29,
      6.25,
      6.22,
-     6.22
+     6.21
     ]
    },
    "error": null
@@ -109806,7 +109806,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 2628.0,
+   "market_cap_krw_eok": 2586.7,
    "returns": {
     "d1": -4.4,
     "d5": -2.0,
@@ -110344,7 +110344,7 @@
      31750.0
     ]
    },
-   "foreign_ratio": 1.84,
+   "foreign_ratio": 1.73,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -110868,7 +110868,7 @@
      2.31,
      1.94,
      1.84,
-     1.84
+     1.73
     ]
    },
    "error": null
@@ -111978,7 +111978,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 2.5,
-   "market_cap_krw_eok": 25220.3,
+   "market_cap_krw_eok": 25495.3,
    "returns": {
     "d1": -0.3,
     "d5": 0.5,
@@ -113076,7 +113076,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 2.3,
-   "market_cap_krw_eok": 23047.3,
+   "market_cap_krw_eok": 23210.9,
    "returns": {
     "d1": -1.9,
     "d5": -3.8,
@@ -114018,7 +114018,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 1.0,
-   "market_cap_krw_eok": 10011.7,
+   "market_cap_krw_eok": 10127.3,
    "returns": {
     "d1": -0.8,
     "d5": -0.4,
@@ -115116,7 +115116,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 0.5,
-   "market_cap_krw_eok": 5413.7,
+   "market_cap_krw_eok": 5448.8,
    "returns": {
     "d1": 0.9,
     "d5": -8.8,
@@ -119508,7 +119508,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 0.9,
-   "market_cap_krw_eok": 8621.8,
+   "market_cap_krw_eok": 8668.0,
    "returns": {
     "d1": -0.1,
     "d5": -1.5,
@@ -121154,8 +121154,8 @@
    "sector": "로보틱스",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 2.3,
-   "market_cap_krw_eok": 23257.6,
+   "market_cap_krw_tril": 2.5,
+   "market_cap_krw_eok": 24621.7,
    "returns": {
     "d1": 0.1,
     "d5": 17.0,
@@ -121693,7 +121693,7 @@
      34100.0
     ]
    },
-   "foreign_ratio": 31.07,
+   "foreign_ratio": 31.18,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -122217,7 +122217,7 @@
      29.84,
      29.98,
      31.07,
-     31.07
+     31.18
     ]
    },
    "error": null
@@ -122229,7 +122229,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.4,
-   "market_cap_krw_eok": 3622.6,
+   "market_cap_krw_eok": 3725.8,
    "returns": {
     "d1": 1.6,
     "d5": 13.3,
@@ -122767,7 +122767,7 @@
      8780.0
     ]
    },
-   "foreign_ratio": 4.96,
+   "foreign_ratio": 4.86,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -123291,7 +123291,7 @@
      4.95,
      4.88,
      4.96,
-     4.96
+     4.86
     ]
    },
    "error": null
@@ -123303,7 +123303,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1014.1,
+   "market_cap_krw_eok": 1014.9,
    "returns": {
     "d1": 1.6,
     "d5": 8.9,
@@ -123841,7 +123841,7 @@
      11500.0
     ]
    },
-   "foreign_ratio": 3.22,
+   "foreign_ratio": 3.24,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -124365,7 +124365,7 @@
      3.22,
      3.17,
      3.22,
-     3.22
+     3.24
     ]
    },
    "error": null
@@ -127670,8 +127670,8 @@
    "sector": "디지털헬스",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 19.4,
-   "market_cap_krw_eok": 194354.1,
+   "market_cap_krw_tril": 19.6,
+   "market_cap_krw_eok": 196363.5,
    "returns": {
     "d1": 0.5,
     "d5": -0.7,
@@ -128220,7 +128220,7 @@
    "market": "HK",
    "currency": "HKD",
    "market_cap_krw_tril": 8.0,
-   "market_cap_krw_eok": 79542.0,
+   "market_cap_krw_eok": 80249.7,
    "returns": {
     "d1": -0.2,
     "d5": -0.5,
@@ -128768,8 +128768,8 @@
    "sector": "디지털헬스",
    "market": "JP",
    "currency": "JPY",
-   "market_cap_krw_tril": 10.6,
-   "market_cap_krw_eok": 105754.4,
+   "market_cap_krw_tril": 10.8,
+   "market_cap_krw_eok": 107913.3,
    "returns": {
     "d1": 0.6,
     "d5": -1.0,
@@ -132934,8 +132934,8 @@
    "sector": "디지털헬스",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 2.2,
-   "market_cap_krw_eok": 22366.8,
+   "market_cap_krw_tril": 2.3,
+   "market_cap_krw_eok": 22552.9,
    "returns": {
     "d1": -2.4,
     "d5": -0.9,
@@ -135131,7 +135131,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.8,
-   "market_cap_krw_eok": 7870.2,
+   "market_cap_krw_eok": 8004.3,
    "returns": {
     "d1": -4.8,
     "d5": 7.7,
@@ -135669,7 +135669,7 @@
      10570.0
     ]
    },
-   "foreign_ratio": 8.23,
+   "foreign_ratio": 8.16,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -136193,7 +136193,7 @@
      8.32,
      8.02,
      8.23,
-     8.23
+     8.16
     ]
    },
    "error": null
@@ -136759,7 +136759,7 @@
     "d1": 5.7,
     "d5": 7.8,
     "m1": -5.2,
-    "m3": 23.3,
+    "m3": 23.2,
     "m6": -9.5,
     "y1": -62.4,
     "ytd": -58.5
@@ -137883,7 +137883,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1169.2,
+   "market_cap_krw_eok": 1153.8,
    "returns": {
     "d1": 1.0,
     "d5": 49.9,
@@ -138421,7 +138421,7 @@
      8350.0
     ]
    },
-   "foreign_ratio": 2.29,
+   "foreign_ratio": 2.04,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -138945,7 +138945,7 @@
      3.01,
      2.31,
      2.29,
-     2.29
+     2.04
     ]
    },
    "error": null
@@ -138957,7 +138957,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.3,
-   "market_cap_krw_eok": 3380.9,
+   "market_cap_krw_eok": 3272.1,
    "returns": {
     "d1": -3.6,
     "d5": -21.5,
@@ -139013,7 +139013,7 @@
      18020.0
     ]
    },
-   "foreign_ratio": 0.57,
+   "foreign_ratio": 0.48,
    "foreign_ratio_history": {
     "dates": [
      "2026-09-04",
@@ -139055,7 +139055,7 @@
      0.51,
      0.78,
      0.57,
-     0.57
+     0.48
     ]
    },
    "error": null
@@ -139640,7 +139640,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 971.0,
+   "market_cap_krw_eok": 1000.3,
    "returns": {
     "d1": 0.6,
     "d5": 2.8,
@@ -140178,7 +140178,7 @@
      7960.0
     ]
    },
-   "foreign_ratio": 5.77,
+   "foreign_ratio": 5.48,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -140702,7 +140702,7 @@
      5.49,
      5.53,
      5.77,
-     5.77
+     5.48
     ]
    },
    "error": null
@@ -140714,7 +140714,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.7,
-   "market_cap_krw_eok": 7023.5,
+   "market_cap_krw_eok": 6969.6,
    "returns": {
     "d1": -2.4,
     "d5": -2.1,
@@ -141252,7 +141252,7 @@
      52100.0
     ]
    },
-   "foreign_ratio": 33.86,
+   "foreign_ratio": 33.85,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -141776,7 +141776,7 @@
      33.75,
      33.84,
      33.86,
-     33.86
+     33.85
     ]
    },
    "error": null
@@ -141788,7 +141788,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 1.0,
-   "market_cap_krw_eok": 10353.2,
+   "market_cap_krw_eok": 10180.7,
    "returns": {
     "d1": 3.6,
     "d5": 7.8,
@@ -142326,7 +142326,7 @@
      27000.0
     ]
    },
-   "foreign_ratio": 4.47,
+   "foreign_ratio": 4.36,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -142850,7 +142850,7 @@
      4.34,
      4.29,
      4.47,
-     4.47
+     4.36
     ]
    },
    "error": null
@@ -142862,7 +142862,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1422.0,
+   "market_cap_krw_eok": 1459.5,
    "returns": {
     "d1": -2.7,
     "d5": 4.7,
@@ -143138,7 +143138,7 @@
      14390.0
     ]
    },
-   "foreign_ratio": 4.57,
+   "foreign_ratio": 4.39,
    "foreign_ratio_history": {
     "dates": [
      "2026-03-26",
@@ -143400,7 +143400,7 @@
      3.91,
      4.11,
      4.57,
-     4.57
+     4.39
     ]
    },
    "error": null
@@ -143412,7 +143412,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.9,
-   "market_cap_krw_eok": 9167.7,
+   "market_cap_krw_eok": 9496.0,
    "returns": {
     "d1": -1.1,
     "d5": 20.2,
@@ -143806,7 +143806,7 @@
      36300.0
     ]
    },
-   "foreign_ratio": 3.44,
+   "foreign_ratio": 3.29,
    "foreign_ratio_history": {
     "dates": [
      "2025-12-24",
@@ -144186,7 +144186,7 @@
      3.15,
      3.11,
      3.44,
-     3.44
+     3.29
     ]
    },
    "error": null
@@ -144198,7 +144198,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.0,
-   "market_cap_krw_eok": 472.0,
+   "market_cap_krw_eok": 470.2,
    "returns": {
     "d1": 0.2,
     "d5": 2.5,
@@ -144736,7 +144736,7 @@
      2630.0
     ]
    },
-   "foreign_ratio": 4.02,
+   "foreign_ratio": 4.04,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -145260,7 +145260,7 @@
      4.02,
      3.98,
      4.02,
-     4.02
+     4.04
     ]
    },
    "error": null
@@ -145272,7 +145272,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 1.0,
-   "market_cap_krw_eok": 10024.8,
+   "market_cap_krw_eok": 10438.2,
    "returns": {
     "d1": -1.7,
     "d5": 17.3,
@@ -145810,7 +145810,7 @@
      58200.0
     ]
    },
-   "foreign_ratio": 6.97,
+   "foreign_ratio": 6.92,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -146334,7 +146334,7 @@
      7.15,
      7.04,
      6.97,
-     6.97
+     6.92
     ]
    },
    "error": null
@@ -146345,8 +146345,8 @@
    "sector": "생명공학",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 0.1,
-   "market_cap_krw_eok": 1487.8,
+   "market_cap_krw_tril": 0.2,
+   "market_cap_krw_eok": 1573.3,
    "returns": {
     "d1": -9.2,
     "d5": 19.3,
@@ -146798,7 +146798,7 @@
      9750.0
     ]
    },
-   "foreign_ratio": 6.49,
+   "foreign_ratio": 6.39,
    "foreign_ratio_history": {
     "dates": [
      "2025-11-13",
@@ -147236,7 +147236,7 @@
      6.24,
      6.46,
      6.49,
-     6.49
+     6.39
     ]
    },
    "error": null
@@ -147248,7 +147248,7 @@
    "market": "KR",
    "currency": "KRW",
    "market_cap_krw_tril": 0.5,
-   "market_cap_krw_eok": 4622.3,
+   "market_cap_krw_eok": 4743.6,
    "returns": {
     "d1": -7.2,
     "d5": 23.2,
@@ -147786,7 +147786,7 @@
      34300.0
     ]
    },
-   "foreign_ratio": 1.97,
+   "foreign_ratio": 2.0,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -148310,7 +148310,7 @@
      1.95,
      2.1,
      1.97,
-     1.97
+     2.0
     ]
    },
    "error": null
@@ -149968,8 +149968,8 @@
    "sector": "생명공학",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 39.9,
-   "market_cap_krw_eok": 399078.3,
+   "market_cap_krw_tril": 40.7,
+   "market_cap_krw_eok": 407362.3,
    "returns": {
     "d1": 1.6,
     "d5": 4.5,
@@ -151066,8 +151066,8 @@
    "sector": "생명공학",
    "market": "KR",
    "currency": "KRW",
-   "market_cap_krw_tril": 62.7,
-   "market_cap_krw_eok": 626779.5,
+   "market_cap_krw_tril": 61.0,
+   "market_cap_krw_eok": 609651.8,
    "returns": {
     "d1": -4.6,
     "d5": -0.2,
@@ -151605,7 +151605,7 @@
      1354000.0
     ]
    },
-   "foreign_ratio": 13.24,
+   "foreign_ratio": 13.16,
    "foreign_ratio_history": {
     "dates": [
      "2025-09-05",
@@ -152129,7 +152129,7 @@
      13.23,
      13.2,
      13.24,
-     13.24
+     13.16
     ]
    },
    "error": null
@@ -152140,8 +152140,8 @@
    "sector": "생명공학",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 112.8,
-   "market_cap_krw_eok": 1128073.8,
+   "market_cap_krw_tril": 113.7,
+   "market_cap_krw_eok": 1136571.6,
    "returns": {
     "d1": 1.1,
     "d5": 1.3,
@@ -153787,8 +153787,8 @@
    "sector": "생명공학",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 6.8,
-   "market_cap_krw_eok": 68288.0,
+   "market_cap_krw_tril": 7.0,
+   "market_cap_krw_eok": 69583.8,
    "returns": {
     "d1": -1.2,
     "d5": -0.4,
@@ -155434,8 +155434,8 @@
    "sector": "생명공학",
    "market": "HK",
    "currency": "HKD",
-   "market_cap_krw_tril": 18.2,
-   "market_cap_krw_eok": 182143.2,
+   "market_cap_krw_tril": 19.2,
+   "market_cap_krw_eok": 191641.5,
    "returns": {
     "d1": 4.4,
     "d5": 6.3,
@@ -170260,13 +170260,13 @@
    "market_cap_krw_tril": 0.0,
    "market_cap_krw_eok": 493.7,
    "returns": {
-    "d1": 7.7,
-    "d5": 0.6,
-    "m1": 11.7,
-    "m3": 16.0,
-    "m6": -20.6,
-    "y1": -69.8,
-    "ytd": -64.5
+    "d1": 7.1,
+    "d5": 0.0,
+    "m1": 11.1,
+    "m3": 15.4,
+    "m6": -21.1,
+    "y1": -70.0,
+    "ytd": -64.7
    },
    "as_of": "2026-10-05",
    "price_source": "yfinance",
