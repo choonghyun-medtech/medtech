@@ -186,12 +186,13 @@ def yfinance_market_cap(t: yf.Ticker):
 
 def fetch_naver_kr_series(ticker: str):
     """국내 종목의 일별 종가+외국인보유율을 api.stock.naver.com에서 가져온다.
-    반환: (close 시리즈(pd.Series, DatetimeIndex, 오름차순), foreign_ratio dict{date_str: float})
-    실패 시 (None, None).
+    반환: (close 시리즈(pd.Series, DatetimeIndex, 오름차순), foreign_ratio dict{date_str: float},
+           halted_dates set{datetime.date} — 거래량 0인 날(거래정지, 네이버는 전일 종가를 그대로 채움))
+    실패 시 (None, None, None).
     """
     m = re.match(r"^([0-9A-Za-z]{6})\.(KS|KQ)$", ticker)
     if not m:
-        return None, None
+        return None, None, None
     code = m.group(1)
     end = datetime.date.today()
     start = end - datetime.timedelta(days=NAVER_HISTORY_DAYS)
@@ -202,8 +203,9 @@ def fetch_naver_kr_series(ticker: str):
     resp.raise_for_status()
     rows = resp.json()
     if not rows:
-        return None, None
+        return None, None, None
     dates = [datetime.datetime.strptime(r["localDate"], "%Y%m%d") for r in rows]
+    halted_dates = {d.date() for d, r in zip(dates, rows) if r.get("accumulatedTradingVolume") == 0}
     closes = [float(r["closePrice"]) for r in rows]
     close = pd.Series(closes, index=pd.DatetimeIndex(dates)).dropna()
     foreign_ratio = {
@@ -211,7 +213,48 @@ def fetch_naver_kr_series(ticker: str):
         for r in rows
         if r.get("foreignRetentionRate") is not None
     }
-    return close, foreign_ratio
+    return close, foreign_ratio, halted_dates
+
+
+# 야후와 네이버 종가가 이 비율 이상 어긋나면 야후 값을 버린다. 평소 차이는 NXT 애프터마켓
+# 때문에 몇 % 수준이고, KRX 가격제한폭(±30%)보다 큰 괴리는 정상 거래로 나올 수 없다.
+KR_SOURCE_MISMATCH_RATIO = 0.3
+
+
+def reconcile_kr_close(yf_close, naver_close, halted_dates, ticker=""):
+    """[2026-10-07] 야후 국내 종가를 네이버 일봉으로 검증해 오류 구간을 네이버 값으로 바꾼다.
+    시지메드텍(056090)이 9/10부터 거래정지 중인데 야후가 10/6 종가를 정지 직전 1,190원의
+    정확히 5배인 5,950원으로 줘서(주식병합 기준가만 먼저 반영, 과거 주가는 미조정으로 추정)
+    1일/1주/1개월 수익률이 모두 +400%로 찍혔다(사용자 리포트). 그래서
+      1) 네이버 기준 거래량 0인 날(거래정지)은 야후의 "정지 직전 정상 거래일 종가"를 그대로
+         이어 쓴다. 네이버 값을 쓰지 않는 이유: 야후와 네이버는 수정주가 기준이 달라(예:
+         삼성바이오로직스 2025-10-30~11-21 분할 정지 구간 야후 1,877,331 vs 네이버 1,783,167)
+         정지 구간만 네이버 값으로 바꾸면 차트에 가짜 계단이 생긴다. 직전 정상일이 조회 범위에
+         없으면(시리즈가 정지 중에 시작) 야후 값을 그대로 둔다.
+      2) 정상 거래일인데 두 소스가 KR_SOURCE_MISMATCH_RATIO 이상 어긋나면 네이버 값을 쓴다.
+    네이버에 없는 날짜(조회 기간 밖 등)는 야후 값을 그대로 둔다."""
+    if yf_close is None or naver_close is None or naver_close.empty:
+        return yf_close
+    naver_by_date = {idx.date(): float(v) for idx, v in naver_close.items()}
+    halted_dates = halted_dates or set()
+    fixed = yf_close.copy()
+    replaced = []
+    last_traded = None  # 직전 정상 거래일의 (교정 후) 종가
+    for idx, yv in yf_close.items():
+        d, yv = idx.date(), float(yv)
+        if d in halted_dates:
+            new = last_traded if last_traded is not None else yv
+        else:
+            nv = naver_by_date.get(d)
+            new = nv if nv and abs(yv / nv - 1) >= KR_SOURCE_MISMATCH_RATIO else yv
+            last_traded = new
+        if abs(new - yv) > 0.5:
+            replaced.append(f"{d} {yv:,.0f}->{new:,.0f}")
+            fixed[idx] = new
+    if replaced:
+        print(f"[WARN] {ticker}: 야후 종가 {len(replaced)}일 교정(거래정지 중 전일 종가 유지 / 네이버와 큰 괴리) — "
+              + ", ".join(replaced[-5:]), file=sys.stderr)
+    return fixed
 
 
 def pct_change(hist, offset):
@@ -267,11 +310,11 @@ def _fetch_close_series(item):
     foreign_ratio_map = None
 
     if item["market"] == "KR":
-        naver_close = None
+        naver_close, halted_dates = None, None
         try:
-            naver_close, foreign_ratio_map = fetch_naver_kr_series(ticker)
+            naver_close, foreign_ratio_map, halted_dates = fetch_naver_kr_series(ticker)
         except Exception:
-            naver_close, foreign_ratio_map = None, None
+            naver_close, foreign_ratio_map, halted_dates = None, None, None
         close, t = None, None
         try:
             close, t = _yf_close(ticker)
@@ -281,6 +324,7 @@ def _fetch_close_series(item):
         except Exception:
             close = None
         if close is not None:
+            close = reconcile_kr_close(close, naver_close, halted_dates, ticker)
             return close, foreign_ratio_map, t, "yfinance"
         if naver_close is not None and not naver_close.empty:
             return naver_close, foreign_ratio_map, None, "naver"
