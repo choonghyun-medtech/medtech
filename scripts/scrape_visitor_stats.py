@@ -129,7 +129,13 @@ def fetch_total_monthly(base_ym1, base_ym2, debug=False):
         ym = row.get("BASE_DATE", "")
         if len(ym) != 6:
             continue
-        monthly.append({"ym": f"{ym[:4]}-{ym[4:]}", "visitors": round(row.get("PSON_NUM", 0))})
+        visitors = round(row.get("PSON_NUM") or 0)
+        # [2026-10-06] 아직 발표 전인 달도 API가 PSON_NUM=0인 빈 행으로 돌려준다(실측: 10/1
+        # 실행에서 미발표 9월이 0으로 저장돼 차트·월간분석이 "-100%"로 깨짐). 방한 외국인이
+        # 실제로 0명인 달은 없으므로(코로나 최저점도 3만명대) 0은 "미발표"로 보고 버린다.
+        if visitors <= 0:
+            continue
+        monthly.append({"ym": f"{ym[:4]}-{ym[4:]}", "visitors": visitors})
     monthly.sort(key=lambda r: r["ym"])
     return monthly
 
@@ -159,21 +165,25 @@ def main():
     existing_countries = {r.get("ym"): r.get("countries", {}) for r in existing.get("countryMonthly", [])}
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    this_ym = now.strftime("%Y%m")
-    start_ym = yyyymm_add_months(this_ym, -(LOOKBACK_MONTHS - 1))
+    # 진행 중인 이번 달은 절대 집계가 끝났을 수 없으므로 조회 끝을 "지난달"로 둔다(지난달도
+    # 월말 전엔 미발표라 0으로 올 수 있는데, 그건 fetch_total_monthly가 걸러낸다).
+    end_ym = yyyymm_add_months(now.strftime("%Y%m"), -1)
+    start_ym = yyyymm_add_months(end_ym, -(LOOKBACK_MONTHS - 1))
 
     print("[INFO] 전체 방한 외래관광객 월별 추이 조회 시작", file=sys.stderr)
-    monthly = fetch_total_monthly(start_ym, this_ym, debug=args.debug)
+    monthly = fetch_total_monthly(start_ym, end_ym, debug=args.debug)
     if monthly is None:
         print("[WARN] 월별 추이 조회 실패 — 기존 값을 유지합니다.", file=sys.stderr)
-        monthly = existing.get("monthly", [])
+        monthly = [r for r in existing.get("monthly", []) if (r.get("visitors") or 0) > 0]
     else:
         print(f"[INFO] 월별 추이 {len(monthly)}개월치 확보", file=sys.stderr)
     total_by_ym = {r["ym"]: r["visitors"] for r in monthly}
 
+    # 국가별은 총 방문자수가 실제로 발표된 달까지만 조회한다(미발표 달 호출 낭비 방지).
+    last_published = max(total_by_ym).replace("-", "") if total_by_ym else end_ym
     target_yms = []
     yyyymm = start_ym
-    while yyyymm <= this_ym:
+    while yyyymm <= last_published:
         target_yms.append(yyyymm)
         yyyymm = yyyymm_add_months(yyyymm, 1)
     refresh_set = set(target_yms[-COUNTRY_REFRESH_MONTHS:])

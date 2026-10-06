@@ -115,7 +115,10 @@ def main():
         print(f"[WARN] {args.data}이 아직 없어 월간 분석을 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
 
-    total_stats = month_stats(data.get("monthly", []), "visitors")
+    # 미발표 달이 0으로 섞여 들어와도(2026-10 실제 사례) 그 달을 최신월로 오인해 "-100%"
+    # 분석을 쓰지 않도록, 0 이하인 달은 아예 빼고 계산한다.
+    published = [r for r in data.get("monthly", []) if (r.get("visitors") or 0) > 0]
+    total_stats = month_stats(published, "visitors")
     if total_stats is None:
         print("[WARN] visitor_stats.json에 월별 데이터가 없어 분석을 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
@@ -130,7 +133,8 @@ def main():
     ]
     fact_blocks.append("[전체 방한 외국인]\n" + "\n".join(lines))
 
-    country_monthly = data.get("countryMonthly", [])
+    published_yms = {r["ym"] for r in published}
+    country_monthly = [r for r in data.get("countryMonthly", []) if r.get("ym") in published_yms]
     for country in ("중국", "일본", "대만", "미국"):
         series = build_country_series(country_monthly, country)
         stats = month_stats(series, "visitors")

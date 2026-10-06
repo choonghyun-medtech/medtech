@@ -2072,15 +2072,34 @@ async function loadMedtourMonthlyAnalysis(){
     const res = await fetch('medtour_monthly_analysis.json', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
+    // 의료관광(매월 16일)과 방한외국인(매월 3일, 데이터 발표가 더 늦음)은 갱신 시점이 달라
+    // 같은 대상월 키에 둘이 동시에 있는 기간이 짧다. 예전엔 "가장 최신 월 키" 하나만 보여줘서
+    // 한쪽만 새 달로 넘어가면 다른 쪽 분석이 통째로 사라졌다(2026-10 사용자 리포트) — 이제
+    // 섹션별로 각자 가장 최신 분석을 골라, 다음 갱신 전까지 둘 다 함께 보여준다.
     const months = Object.keys(data.months || {}).sort();
-    const latestMonth = months[months.length - 1];
-    const entry = latestMonth ? data.months[latestMonth] : null;
-    const parts = [];
-    if(entry && entry.medtour && entry.medtour.summary) parts.push(entry.medtour.summary);
-    if(entry && entry.visitor && entry.visitor.summary) parts.push(entry.visitor.summary);
-    if(!parts.length) throw new Error('empty');
-    card.textContent = parts.join('\n\n');
-    if(note) note.textContent = `${latestMonth} 기준 · 매월 16일(의료관광)·3일(방한외국인) 자동 작성`;
+    const latestOf = key => {
+      for(let i = months.length - 1; i >= 0; i--){
+        const sec = data.months[months[i]][key];
+        if(sec && sec.summary) return { ym: months[i], summary: sec.summary };
+      }
+      return null;
+    };
+    const ymLabel = ym => `${ym.slice(0,4)}년 ${parseInt(ym.slice(5,7), 10)}월`;
+    const sections = [
+      { title: '의료관광 소비', sec: latestOf('medtour') },
+      { title: '방한 외국인', sec: latestOf('visitor') },
+    ].filter(s => s.sec);
+    if(!sections.length) throw new Error('empty');
+    card.textContent = '';
+    sections.forEach((s, i) => {
+      const h = document.createElement('div');
+      h.style.cssText = `font-weight:700; color:var(--accent); margin:${i ? '18px' : '0'} 0 6px`;
+      h.textContent = `${s.title} · ${ymLabel(s.sec.ym)} 기준`;
+      const body = document.createElement('div');
+      body.textContent = s.sec.summary;
+      card.append(h, body);
+    });
+    if(note) note.textContent = sections.map(s => `${s.title} ${ymLabel(s.sec.ym)}`).join(' · ') + ' · 매월 16일(의료관광)·3일(방한외국인) 자동 작성';
   }catch(e){
     // 아직 워크플로가 한 번도 안 돌았거나, 이번 달엔 유의미한 변동이 없어 생성을 건너뛴 경우
   }
@@ -3930,6 +3949,11 @@ async function loadVisitorStatsData(){
     const res = await fetch('visitor_stats.json', { cache: 'no-store' });
     if(!res.ok) throw new Error('no visitor_stats.json yet');
     VISITOR_STATS_DATA = await res.json();
+    // 미발표 달이 0으로 섞여 와도(scrape_visitor_stats.py 수정 전 데이터) 차트·침투율에 0이
+    // 찍히지 않게 방어적으로 걸러낸다.
+    const published = new Set((VISITOR_STATS_DATA.monthly || []).filter(r => r.visitors > 0).map(r => r.ym));
+    VISITOR_STATS_DATA.monthly = (VISITOR_STATS_DATA.monthly || []).filter(r => published.has(r.ym));
+    VISITOR_STATS_DATA.countryMonthly = (VISITOR_STATS_DATA.countryMonthly || []).filter(r => published.has(r.ym));
   }catch(e){
     VISITOR_STATS_DATA = { monthly: [], countryMonthly: [] };
   }
