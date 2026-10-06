@@ -1,10 +1,10 @@
-# 글로벌 대시보드 Peer Table 갱신 — 로컬 실행용 원클릭 스크립트.
+﻿# 글로벌 대시보드 Peer Table 갱신 — 로컬 실행용 원클릭 스크립트.
 #
 # 사용법: 블룸버그 터미널 로그인된 PC에서 "D:\★사용자 폴더\Desktop\dashboard files\
 # 글로벌 대시보드!!.xlsx"을 열어 raw 탭 수식을 최신화하고, "값복사" 탭에 값으로
 # 붙여넣기한 뒤 저장 — 그 다음 이 스크립트(또는 update_global_dashboard.bat)를
-# 더블클릭하면 (1) 엑셀 -> global_dashboard.json 변환, (2) 변경 내용 요약 표시,
-# (3) 검토 후 Y 입력 시에만 커밋 + 푸시까지 진행한다.
+# 더블클릭하면 (1) 엑셀 -> global_dashboard.json 변환, (2) 종목 유니버스(tickers.json)
+# 동기화, (3) 변경 내용 요약 표시, (4) 검토 후 Y 입력 시에만 커밋 + 푸시까지 진행한다.
 # [2026-09-23] 매크로 추가로 파일 확장자가 .xlsx -> .xlsm으로 바뀜
 # (scripts/convert_global_dashboard.py의 DEFAULT_SOURCE도 함께 갱신됨).
 # [2026-09-28] 다시 .xlsx로 바뀜 — convert_global_dashboard.py가 .xlsx를 먼저 찾고
@@ -53,11 +53,25 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# [2026-10-07] 엑셀에서 종목을 편입/제외하거나 섹터·사명을 바꾸면 주가 Performance/컨센서스/
+# 수급 등이 쓰는 종목 유니버스(scripts/tickers.json)도 같이 따라가야 하는데, 예전엔 이 단계가
+# 없어 sync_ticker_universe.py를 따로 돌려야 했다 — 변환 직후 자동으로 동기화한다.
 Write-Host ""
-Write-Host "-- 2) 변경 내용 요약 --" -ForegroundColor Cyan
-$diffStat = git diff --stat -- global_dashboard.json
+Write-Host "-- 2) 종목 유니버스(tickers.json) 동기화 --" -ForegroundColor Cyan
+& $pythonCmd scripts\sync_ticker_universe.py --dashboard global_dashboard.json --out scripts\tickers.json
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[오류] 종목 유니버스 동기화가 실패했습니다(위 로그 참고). 커밋 없이 종료합니다." -ForegroundColor Red
+    Read-Host "종료하려면 Enter"
+    exit 1
+}
+
+$changedFiles = @('global_dashboard.json', 'scripts/tickers.json')
+
+Write-Host ""
+Write-Host "-- 3) 변경 내용 요약 --" -ForegroundColor Cyan
+$diffStat = git diff --stat -- $changedFiles
 if (-not $diffStat) {
-    Write-Host "global_dashboard.json에 변경 사항이 없습니다(이전 커밋과 내용이 동일). 종료합니다." -ForegroundColor Yellow
+    Write-Host "global_dashboard.json / tickers.json에 변경 사항이 없습니다(이전 커밋과 내용이 동일). 종료합니다." -ForegroundColor Yellow
     Read-Host "종료하려면 Enter"
     exit 0
 }
@@ -65,23 +79,23 @@ Write-Host $diffStat
 
 Write-Host ""
 Write-Host "필요하면 아래 명령으로 상세 diff를 직접 확인할 수 있습니다:" -ForegroundColor DarkGray
-Write-Host "    git diff -- global_dashboard.json" -ForegroundColor DarkGray
+Write-Host "    git diff -- global_dashboard.json scripts/tickers.json" -ForegroundColor DarkGray
 Write-Host ""
 
-# -- 3) 검토 후 확인 --
+# -- 4) 검토 후 확인 --
 $answer = Read-Host "위 변경사항을 커밋하고 GitHub에 푸시할까요? (Y/N)"
 if ($answer -notmatch '^[Yy]') {
-    Write-Host "커밋하지 않고 종료합니다 — global_dashboard.json은 수정된 채로 남아있습니다." -ForegroundColor Yellow
-    Write-Host "되돌리려면: git checkout -- global_dashboard.json" -ForegroundColor DarkGray
+    Write-Host "커밋하지 않고 종료합니다 — global_dashboard.json / tickers.json은 수정된 채로 남아있습니다." -ForegroundColor Yellow
+    Write-Host "되돌리려면: git checkout -- global_dashboard.json scripts/tickers.json" -ForegroundColor DarkGray
     Read-Host "종료하려면 Enter"
     exit 0
 }
 
 Write-Host ""
-Write-Host "-- 4) 커밋 + 푸시 --" -ForegroundColor Cyan
+Write-Host "-- 5) 커밋 + 푸시 --" -ForegroundColor Cyan
 $dateStr = Get-Date -Format 'yyyy-MM-dd'
-git add global_dashboard.json
-git commit -m "chore: global_dashboard.json 갱신 (블룸버그 피어 테이블, $dateStr)"
+git add -- $changedFiles
+git commit -m "chore: global_dashboard.json 갱신 (블룸버그 피어 테이블, $dateStr), 종목 유니버스 동기화"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[오류] 커밋에 실패했습니다." -ForegroundColor Red
     Read-Host "종료하려면 Enter"

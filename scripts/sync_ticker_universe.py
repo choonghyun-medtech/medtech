@@ -62,6 +62,7 @@ SECTOR_PRIORITY = [
     ('디지털헬스', '디지털헬스'),
     ('생명공학', '생명공학'),
     ('생명공학 서비스', '생명공학'),
+    ('생명공학서비스', '생명공학'),  # 2026-10-07 엑셀에 띄어쓰기 없는 표기로 새로 등장(트위스트 바이오사이언스)
     ('생명공학장비', '생명공학'),
     ('CDMO', '생명공학'),
     ('CRO', '생명공학'),
@@ -214,6 +215,21 @@ def main():
     with open(args.out, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     print(f'완료: {args.out} ({len(existing)}개 -> {len(out)}개)')
+
+    # 수동 갱신(update_global_dashboard.ps1) 때 커밋 전에 바로 확인할 수 있도록 변동 내역 출력.
+    # 엑셀 쪽에서 편입/제외되거나 섹터·사명이 바뀐 종목이 그대로 주가/컨센서스 등에 따라간다.
+    old_by_ticker = {t['ticker']: t for t in existing}
+    new_by_ticker = {t['ticker']: t for t in out}
+    for t in out:
+        if t['ticker'] not in old_by_ticker:
+            print(f'  + 편입: {t["name"]} ({t["ticker"]}, {t["sector"]})')
+    for t in existing:
+        if t['ticker'] not in new_by_ticker:
+            print(f'  - 제외: {t["name"]} ({t["ticker"]})')
+    for t in out:
+        o = old_by_ticker.get(t['ticker'])
+        if o and (o.get('name'), o.get('sector')) != (t['name'], t['sector']):
+            print(f'  * 변경: {t["ticker"]} {o.get("name")}/{o.get("sector")} -> {t["name"]}/{t["sector"]}')
 
 
 if __name__ == '__main__':
