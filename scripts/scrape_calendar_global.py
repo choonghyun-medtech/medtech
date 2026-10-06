@@ -66,6 +66,13 @@
 - source_url/source_name은 실제 수집 경로(yfinance/JSON API 등)가 아니라 사용자
   요청대로 해당 기업의 공식 IR 페이지로 표기한다 — 이용자가 원문을 확인하러 갈
   곳은 IR 페이지가 맞기 때문.
+  [2026-10-06] IR 메인 주소로만 걸면 눌러도 해당 일정이 안 보인다는 사용자 지적으로,
+  우선순위를 "이벤트 상세 페이지 → 이벤트 목록 페이지(calendar_ir_sources.json의
+  events_url) → IR 메인(ir_url)"으로 바꿨다. 상세 페이지 주소를 응답에서 얻을 수
+  있는 스크래퍼는 그 주소를 쓰고, 상세 페이지가 없는 회사(BSX/ALGN 등 — 목록에
+  웹캐스트 링크만 있음)와 과거 실적(yfinance)은 이벤트 목록 페이지로 보낸다.
+  InMode는 IR 사이트가 막혀 있어 수집 경로인 StockTitan 보도자료 원문으로 연결하고,
+  source_name도 그에 맞게 표기한다.
 
 사용법:
     python scrape_calendar_global.py --out calendar_events.json
@@ -80,7 +87,7 @@ import json
 import re
 import sys
 import time
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 import requests
 from curl_cffi import requests as curl_requests
@@ -118,7 +125,9 @@ def load_ir_sources(path):
         return json.load(f)
 
 
-def make_event(d, ticker, name, ir_url, title, ev_type="earn"):
+def make_event(d, ticker, name, ir_url, title, ev_type="earn", detail_url=None, source_name=None):
+    """ir_url은 상세 페이지를 못 얻었을 때의 대체 링크(main()이 events_url 또는 ir_url을
+    넘긴다). detail_url이 있으면 그 일정의 상세 페이지로 바로 연결한다."""
     return {
         "date": d.isoformat(),
         "region": "global",
@@ -126,10 +135,16 @@ def make_event(d, ticker, name, ir_url, title, ev_type="earn"):
         "ticker": ticker,
         "company": name,
         "title": title,
-        "source_name": f"{name} IR",
-        "source_url": ir_url,
+        "source_name": source_name or f"{name} IR",
+        "source_url": detail_url or ir_url,
         "estimated": False,
     }
+
+
+def _href(attrs, base_url):
+    """태그 속성 문자열에서 href를 뽑아 절대 주소로 만든다(없으면 None)."""
+    m = re.search(r'href="([^"]+)"', attrs or "")
+    return urljoin(base_url, html.unescape(m.group(1))) if m else None
 
 
 def fetch_past_earnings(ticker, name, ir_url, session, today):
@@ -190,10 +205,11 @@ def scrape_mdt_wd(scraper_url, ticker, name, ir_url, today):
             continue
         html = item.get("content", "")
         date_m = re.search(r'wd_event_date">.*?</span>([^<]+)<', html)
-        title_m = re.search(r'wd_title"><a[^>]*>([^<]+)</a>', html)
+        title_m = re.search(r'wd_title"><a([^>]*)>([^<]+)</a>', html)
         if not date_m or not title_m:
             continue
-        title = title_m.group(1).strip()
+        title = title_m.group(2).strip()
+        detail_url = _href(title_m.group(1), scraper_url)  # "events-presentations?item=104" 형태
         ev_type = classify_global(title)
         if not ev_type:
             continue
@@ -203,7 +219,7 @@ def scrape_mdt_wd(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, detail_url))
     return events
 
 
@@ -343,7 +359,10 @@ def scrape_q4_feed(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        # LinkToDetailPage는 "/events-and-presentations/event-details/..." 같은 사이트 내 경로
+        link = item.get("LinkToDetailPage") or ""
+        detail_url = urljoin(base + "/", link) if link else None
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, detail_url))
     return events
 
 
@@ -378,9 +397,9 @@ def scrape_nir_card(scraper_url, ticker, name, ir_url, today):
 
     pattern = re.compile(
         r'stockQuotePressReleaseDate[\s\S]{0,150}?(\d{1,2}/\d{1,2}/\d{2})'
-        r'[\s\S]{0,300}?class="stockQuotePressNote[^"]*"[^>]*>([^<]+)<'
+        r'[\s\S]{0,300}?class="stockQuotePressNote[^"]*"([^>]*)>([^<]+)<'
     )
-    for date_str, title in pattern.findall(text):
+    for date_str, attrs, title in pattern.findall(text):
         title = title.strip()
         ev_type = classify_global(title)
         if not ev_type:
@@ -391,7 +410,7 @@ def scrape_nir_card(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, _href(attrs, scraper_url)))
     return events
 
 
@@ -432,9 +451,9 @@ def scrape_nir_llf(scraper_url, ticker, name, ir_url, today):
         return events
 
     pattern = re.compile(
-        r'<article[^>]*data-title="([^"]+)"[\s\S]{0,900}?nir-widget--event--date"[\s\S]{0,80}?(\d{1,2}/\d{1,2}/\d{4})'
+        r'<article[^>]*data-title="([^"]+)"([\s\S]{0,900}?)nir-widget--event--date"[\s\S]{0,80}?(\d{1,2}/\d{1,2}/\d{4})'
     )
-    for title, date_str in pattern.findall(text):
+    for title, body, date_str in pattern.findall(text):
         title = title.strip()
         ev_type = classify_global(title)
         if not ev_type:
@@ -445,7 +464,10 @@ def scrape_nir_llf(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        # 제목 링크(field-nir-event-title 안 <a href="/events/event-details/...">)가 상세 페이지
+        link_m = re.search(r'field-nir-event-title[\s\S]{0,80}?<a([^>]*)>', body)
+        detail_url = _href(link_m.group(1), scraper_url) if link_m else None
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, detail_url))
     return events
 
 
@@ -462,9 +484,9 @@ def scrape_nir_table_abt(scraper_url, ticker, name, ir_url, today):
     pattern = re.compile(
         r'views-field-field-nir-event-start-date[\s\S]{0,80}?nir-widget--event--date"'
         r'[\s\S]{0,60}?([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4})'
-        r'[\s\S]{0,400}?field-nir-event-title[\s\S]{0,80}?<a[^>]*>([^<]+)</a>'
+        r'[\s\S]{0,400}?field-nir-event-title[\s\S]{0,80}?<a([^>]*)>([^<]+)</a>'
     )
-    for date_str, title in pattern.findall(text):
+    for date_str, attrs, title in pattern.findall(text):
         title = title.strip()
         ev_type = classify_global(title)
         if not ev_type:
@@ -475,7 +497,7 @@ def scrape_nir_table_abt(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, _href(attrs, scraper_url)))
     return events
 
 
@@ -494,10 +516,12 @@ def scrape_rdnt_news(scraper_url, ticker, name, ir_url, today):
         print(f"[WARN] {ticker} 공식 IR 크롤링 실패(rdnt_news): {e}", file=sys.stderr)
         return events
 
-    item_re = re.compile(r'<div class="title">([^<]+)</div>[\s\S]{0,80}?<div class="description">([\s\S]{0,1500}?)</div>')
+    # 각 보도자료는 <a href="{보도자료 원문}"><div class="pubdate">..</div><div class="title">..
+    # 구조라 제목 앞 <a href>를 함께 잡아 상세 링크로 쓴다(못 잡으면 빈 문자열 → 대체 링크).
+    item_re = re.compile(r'(?:<a href="([^"]+)">[\s\S]{0,200}?)?<div class="title">([^<]+)</div>[\s\S]{0,80}?<div class="description">([\s\S]{0,1500}?)</div>')
     date_re = re.compile(r'on\s+(?:[A-Za-z]+day,?\s+)?([A-Za-z]+\s+\d{1,2},\s*\d{4})\s+at', re.I)
 
-    for title, desc in item_re.findall(text):
+    for href, title, desc in item_re.findall(text):
         title = title.strip()
         ev_type = classify_global(title)
         if not ev_type:
@@ -511,7 +535,8 @@ def scrape_rdnt_news(scraper_url, ticker, name, ir_url, today):
             continue
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        detail_url = urljoin(scraper_url, html.unescape(href)) if href else None
+        events.append(make_event(d, ticker, name, ir_url, title, ev_type, detail_url))
     return events
 
 
@@ -535,6 +560,7 @@ def scrape_inmd_rss(scraper_url, ticker, name, ir_url, today):
     item_re = re.compile(r"<item>([\s\S]*?)</item>")
     title_re = re.compile(r"<title>([\s\S]*?)</title>")
     pubdate_re = re.compile(r"<pubDate>([\s\S]*?)</pubDate>")
+    link_re = re.compile(r"<link>([\s\S]*?)</link>")
     date_with_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2},\s*\d{4})", re.I)
     date_no_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2})\b(?:,|\s|$)", re.I)
 
@@ -576,7 +602,14 @@ def scrape_inmd_rss(scraper_url, ticker, name, ir_url, today):
 
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        # 공식 IR 사이트는 막혀 있으므로, 날짜가 적힌 보도자료 원문(StockTitan)으로 연결한다.
+        link_m = link_re.search(block)
+        if link_m:
+            events.append(make_event(d, ticker, name, ir_url, title, ev_type,
+                                     html.unescape(link_m.group(1).strip()),
+                                     f"{name} 보도자료(StockTitan)"))
+        else:
+            events.append(make_event(d, ticker, name, ir_url, title, ev_type))
     return events
 
 
@@ -615,14 +648,17 @@ def main():
 
     all_events = []
     for src in sources:
-        ticker, name, ir_url = src["ticker"], src["name"], src["ir_url"]
+        ticker, name = src["ticker"], src["name"]
+        # 상세 페이지를 못 얻은 일정(과거 실적, 상세 페이지가 없는 회사)이 걸릴 대체 링크 —
+        # IR 메인보다 일정이 실제로 나열된 이벤트 목록 페이지가 낫다.
+        fallback_url = src.get("events_url") or src["ir_url"]
 
-        past_ev = fetch_past_earnings(ticker, name, ir_url, session, today)
+        past_ev = fetch_past_earnings(ticker, name, fallback_url, session, today)
 
         future_ev = []
         scraper_key = src.get("scraper")
         if scraper_key and scraper_key in SCRAPERS:
-            future_ev = SCRAPERS[scraper_key](src["scraper_url"], ticker, name, ir_url, today)
+            future_ev = SCRAPERS[scraper_key](src["scraper_url"], ticker, name, fallback_url, today)
 
         print(f"[INFO] {ticker}: 과거 {len(past_ev)}건 + 확정 미래 {len(future_ev)}건")
         all_events.extend(past_ev)
