@@ -1,45 +1,36 @@
 {
  "updated": "2026-10-06T22:53:19Z",
- "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료) · 요약: Gemini 자동 생성",
  "domestic": [
   {
    "cat": "디지털헬스",
    "items": [
     {
      "co": "메쥬",
-     "ctx": "뉴스",
+     "ctx": "파트너십",
      "t": "[기획] 신약은 추격, 디지털헬스는 선도…새 승부처 주목",
      "src": "medipana.com",
      "date": "2026-10-07",
      "url": "https://www.medipana.com/news/articleView.html?idxno=418826",
-     "desc": "씨어스테크놀로지-대웅제약을 비롯해 메쥬-동아에스티, 휴이노-유한양행 등 디지털헬스 기업과 제약사 병원 영업망을 결합하는 협업도 확대되고 있다. 국내에서 기술을 개발하고 의료진이 검증한 뒤 진료와 시장으로..."
+     "summary": "디지털헬스 기업과 제약사 간 병원 영업망 결합 협업이 확대되고 있음."
     },
     {
      "co": "스카이랩스",
-     "ctx": "뉴스",
+     "ctx": "임상",
      "t": "스카이랩스 CART 혈압계, 영국 보험 수가 획득 가속화",
      "src": "getnews.co.kr",
      "date": "2026-10-06",
      "url": "https://www.getnews.co.kr/news/articleView.html?idxno=882766",
-     "desc": "국내 의료기기 스타트업 스카이랩스(대표 이병환)는 자사의 '병의원용 CART 혈압계'를 영국·아일랜드 고혈압학회(BIHS·British and Irish Hypertension Society)의 공식 검증 기기로 인정받기 위한 임상연구에 착수한다고 6일..."
+     "summary": "스카이랩스가 병의원용 CART 혈압계의 영국·아일랜드 고혈압학회 공식 검증 기기 인정을 위한 임상연구에 착수함."
     },
     {
      "co": "스카이랩스",
-     "ctx": "뉴스",
+     "ctx": "임상",
      "t": "스카이랩스, CART 혈압계 영국 진출 위한 임상 착수",
      "src": "docdocdoc.co.kr",
      "date": "2026-10-06",
      "url": "http://www.docdocdoc.co.kr/news/articleView.html?idxno=3043349",
-     "desc": "스카이랩스는 '병의원용 CART 혈압계'를 영국·아일랜드고혈압학회(BIHS)의 공식 검증 기기로 인정받고자, 24시간 활동혈압측정 성능 검증을 위한 임상연구에 착수한다고 6일 밝혔다. 스카이랩스는 이번 임상연구가..."
-    },
-    {
-     "co": "스카이랩스",
-     "ctx": "뉴스",
-     "t": "[주식] HLB, 담관암 이어 간암도? 기대감에 '상한가'",
-     "src": "hitnews.co.kr",
-     "date": "2026-10-06",
-     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=79673",
-     "desc": "41%), 스카이랩스(-5.11%), 동국제약(-4.18%), 삼성바이오로직스(-3.03%) 오늘의 이슈 삼천당제약(▲17.15%): CPHI서 단독 부스…먹는 인슐린 기술이전 나서 HLB(▲16.81%): 리보세라닙 제조시설, FDA서..."
+     "summary": "스카이랩스가 CART 혈압계의 영국 진출을 위해 24시간 활동혈압측정 성능 검증 임상연구에 착수함."
     }
    ]
   },
@@ -48,57 +39,57 @@
    "items": [
     {
      "co": "클래시스, 휴젤, 큐리오시스, 리브스메드, 그래피",
-     "ctx": "뉴스",
+     "ctx": "IR행사",
      "t": "[오늘의 IR] 기아ㆍ코스텍시스ㆍ올릭스 등",
      "src": "etoday.co.kr",
      "date": "2026-10-07",
      "url": "https://www.etoday.co.kr/news/view/2633083",
-     "desc": "증진 △클래시스, 기업가치 및 투자가치 제고 △니어스랩, 회사소개 및 주요 사업현황에 대한 투자자 이해 제고 △마키나락스, 회사 소개 및 사업현황에 대한 투자자 이해증진 △한미사이언스, iM증권 NDR..."
+     "summary": "클래시스 등 주요 기업들이 기업가치 제고 및 사업현황 안내를 위한 IR을 진행함."
     },
     {
      "co": "에이피알",
-     "ctx": "뉴스",
+     "ctx": "해외진출",
      "t": "“딸이 한국서 사다준 K화장품, 좀 이상해요”…잘나갈수록 판치는 짝퉁",
      "src": "매일경제",
      "date": "2026-10-07",
      "url": "https://www.mk.co.kr/article/12169873",
-     "desc": "해외온라인서 차단된 ‘짝퉁’ 2년새 두배 늘어 3만6천건 구다이, 유통단계별 대응에 에이피알은 AI로 감시... 메디큐브를 운영하는 에이피알(APR)도 대응을 강화하고 있다. 최근 싱가포르에서 유해 성분인 수단4호가..."
+     "summary": "에이피알이 해외 온라인에서 유통되는 가품 대응을 강화하고 AI 모니터링을 추진함."
     },
     {
      "co": "에이피알",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "정품 패키지 그대로 베꼈다… ‘짝퉁’ K뷰티 전세계로 확산",
      "src": "seoul.co.kr",
      "date": "2026-10-07",
      "url": "https://www.seoul.co.kr/news/economy/distribution/2026/10/07/20261007032004?wlog_tag3=naver",
-     "desc": "최근에는 가품으로 의심되는 메디큐브 제품에서 유해물질이 검출되면서 에이피알 주가가 급락하는 등... 아모레퍼시픽, 에이피알 등도 주요 글로벌 플랫폼의 가품 유통을 모니터링하는 한편 해외 세관 및 수사기관과..."
+     "summary": "메디큐브 가품 유해물질 검출 우려 등으로 에이피알 주가가 급락했으며 가품 모니터링을 강화함."
     },
     {
      "co": "클래시스",
-     "ctx": "뉴스",
+     "ctx": "IR행사",
      "t": "[HIT알공] 2000억 조달한 알테오젠, 자회사 흡수합병 결정",
      "src": "hitnews.co.kr",
      "date": "2026-10-06",
      "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=79678",
-     "desc": "⑬ 클래시스, Korea Premium Weeks 2026 IR 참가 = 7일 서울에서 국내 기관투자자를 대상으로 2026년 2분기 실적과 연간 가이던스, 글로벌 시장 확대 및 중장기 성장 방향 설명 예정. ⑭ SCL사이언스, 15일 기업설명회..."
+     "summary": "클래시스가 국내 기관투자자를 대상으로 실적 및 글로벌 시장 확대 방향을 설명하는 IR에 참가함."
     },
     {
      "co": "시지메드텍",
-     "ctx": "뉴스",
+     "ctx": "M&A",
      "t": "시지바이오, 시지메드텍 지분 42.41%까지 확대…추가 지분 매입 가능성...",
      "src": "socialvalue.kr",
      "date": "2026-10-06",
      "url": "https://www.socialvalue.kr/news/view/1065575589496982",
-     "desc": "▲시지메드텍 사옥 전경/사진=시지메드텍 제공  시지바이오가 시지메드텍 지분을 42.41%까지 확대하며 최대주주로서 영향력을 강화한 가운데 향후 추가 지분 취득 가능성도 열어뒀다. 당장 확정된 추가 매입 계획은..."
+     "summary": "시지바이오가 시지메드텍 지분을 42.41%까지 확대하며 최대주주 영향력을 강화함."
     },
     {
      "co": "시지메드텍",
-     "ctx": "뉴스",
+     "ctx": "인허가",
      "t": "美 수술실 노리는 K-임플란트…메디쎄이·엘앤케이·시지메드텍 FDA 문턱...",
      "src": "segye.com",
      "date": "2026-10-06",
      "url": "https://www.segye.com/newsView/20261006503714?OutUrl=naver",
-     "desc": "시지메드텍도 척추 임플란트로 미국 진입에 속도를 내고 있다. 시지메드텍의 요추용 척추 융합기기 ‘유니스페이스(UniSpace TPLIF Cage)’는 지난해 11월 FDA 510(k) 클리어런스를 획득했다. 퇴행성 척추 질환 수술에서..."
+     "summary": "시지메드텍의 요추용 척추 융합기기가 미국 FDA 510(k) 승인을 받으며 미국 진출을 추진함."
     }
    ]
   },
@@ -107,12 +98,12 @@
    "items": [
     {
      "co": "고영",
-     "ctx": "뉴스",
+     "ctx": "리포트",
      "t": "고영 3만6,000원대 진입…반도체 검사장비 회복 여부 부각",
      "src": "job-post.co.kr",
      "date": "2026-10-06",
      "url": "https://www.job-post.co.kr/news/articleView.html?idxno=230815",
-     "desc": "고영은 3차원 납도포 검사장비와 부품 실장 검사장비를 주력으로 공급한다. 전자 제조 고객의 설비투자와 가동률이 장비 주문 시점을 좌우한다. 고영 거래대금은 6일 오후 2시27분 기준 63,932백만원으로 집계됐다...."
+     "summary": "고영 주가가 3만 6천 원대에 진입했으며 반도체 검사장비 실적 회복 여부가 부각됨."
     }
    ]
   },
@@ -121,48 +112,48 @@
    "items": [
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "인터뷰",
      "t": "아마존서 알렉사·AGI 이끈 로히트 프라사드, 보스턴다이내믹스 지휘봉...",
      "src": "pinpointnews.co.kr",
      "date": "2026-10-07",
      "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=493157",
-     "desc": "사진=보스턴다이내믹스 제공. 보스턴다이내믹스가 피지컬 인공지능(AI) 경쟁력 강화를 위해 글로벌 AI 전문가 로히트 프라사드를 신임 최고경영자(CEO)로 영입했다. 대화형 AI와 생성형 AI, 멀티모달 AI, 범용인공지능(AGI)..."
+     "summary": "보스턴다이내믹스가 AI 경쟁력 강화를 위해 로히트 프라사드를 신임 CEO로 영입함."
     },
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "파트너십",
      "t": "보스턴다이내믹스, 아마존 AI 수장 영입…현대차그룹과 '피지컬 AI' 상용...",
      "src": "한국경제",
      "date": "2026-10-07",
      "url": "https://www.hankyung.com/article/202610076904g",
-     "desc": "또한 현대차그룹의 제조·물류·모빌리티 현장을 활용해 AI·로보틱스 기술의 적용 가능성을 검증하고, 기술 개발부터 상용화까지 전 단계의 실행력을 높인다는 방침이다. 보스턴다이내믹스는 자사 로보틱스 기술과..."
+     "summary": "보스턴다이내믹스가 아마존 출신 AI 전문가를 영입하고 현대차그룹 현장에서 로봇 기술 검증을 추진함."
     },
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "인터뷰",
      "t": "보스턴다이내믹스, AI 전문가 프라사드 CEO 영입",
      "src": "연합뉴스",
      "date": "2026-10-07",
      "url": "https://www.yna.co.kr/view/AKR20261007017300003?input=1195m",
-     "desc": "아마존 알렉사 개발 참여 보스턴다이내믹스는 피지컬 인공지능(AI) 경쟁력 강화를 위해 글로벌 AI 전문가 로히트 프라사드를 신임 최고경영자(CEO)로 영입했다고 6일(현지시간) 밝혔다. 프라사드 신임 CEO는 대화형 AI와..."
+     "summary": "보스턴다이내믹스가 피지컬 AI 경쟁력 강화를 위해 글로벌 AI 전문가 로히트 프라사드를 CEO로 영입함."
     },
     {
      "co": "레인보우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "[애프터마켓 리뷰] HLB그룹주, 간암 신약 허가 ‘청신호’ 소식에 급등",
      "src": "biz.sbs.co.kr",
      "date": "2026-10-07",
      "url": "https://biz.sbs.co.kr/article_hub/20000338618?division=NAVER",
-     "desc": "그리고 로봇주 레인보우로보틱스 3.67%, 마지막으로 이오테크닉스까지 2.82% 오르면서 주당 54만 7천원에 장을 마쳤습니다. 대형 반도체가 쉬어가는 사이, 순환매가 도는 모습인데요. 과연 오늘(7일)장 출발 흐름 어떨지..."
+     "summary": "레인보우로보틱스 주가가 순환매 장세 속에 3.67% 상승 마감함."
     },
     {
      "co": "레인보우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "‘코스닥 경쟁력 강화’ 위한 발걸음…“기술특례상장 고도화·건전성 ...",
      "src": "kukinews.com",
      "date": "2026-10-06",
      "url": "https://www.kukinews.com/article/view/kuk202610060204",
-     "desc": "대표적인 성공사례로 인공지능(AI) 기업 노타, 바이오 기업 알테오젠, 반도체 기업 파크시스템스, 로봇 기업 레인보우로보틱스 등이 꼽힌다. 거래소는 기술특례상장을 통한 혁신기업들의 코스닥 진입이 활발해지는 만큼..."
+     "summary": "레인보우로보틱스 등이 코스닥 기술특례상장 성공 사례로 꼽히며 거래소가 제도 고도화를 추진함."
     }
    ]
   },
@@ -171,30 +162,30 @@
    "items": [
     {
      "co": "두산로보틱스",
-     "ctx": "뉴스",
+     "ctx": "파트너십",
      "t": "[단독]매디슨 황, 11월 방한 확정…韓기업과 '피지컬 AI' 협력 주목",
      "src": "mt.co.kr",
      "date": "2026-10-07",
      "url": "https://www.mt.co.kr/tech/2026/10/07/2026100618010617114",
-     "desc": "지난 4월 방한해 삼성전자와 SK하이닉스, LG전자, 현대자동차, 두산로보틱스 등과 피지컬 AI 협력을 논의했다. 6월에는 젠슨 황 CEO의 방한 일정에도 동행했으며, 8월에는 LG전자 서울 양재 R&D(연구개발) 캠퍼스의 로봇..."
+     "summary": "엔비디아 관계자가 방한해 두산로보틱스 등 국내 주요 기업과 피지컬 AI 협력을 논의함."
     },
     {
      "co": "두산로보틱스",
-     "ctx": "뉴스",
+     "ctx": "IR행사",
      "t": "인공지능 모델부터 로봇까지...최첨단 AI기술 '총 집합'",
      "src": "newskr.kr",
      "date": "2026-10-06",
      "url": "http://www.newskr.kr/news/articleView.html?idxno=106946",
-     "desc": "두산로보틱스 등 로봇 기업도 참가해 AI와 로봇 산업의 결합이 빨라지는 흐름을 보여준다. AI 산업에서 모델 못지않게 중요한 것이 이를 뒷받침하는 인프라다. 삼성SDS와 메가존클라우드, NHN클라우드 등은 AI 활용을..."
+     "summary": "두산로보틱스 등 로봇 기업들이 AI와 로봇 산업 결합 흐름을 알리는 전시 행사에 참가함."
     },
     {
      "co": "두산로보틱스",
-     "ctx": "뉴스",
+     "ctx": "수주",
      "t": "두산로보틱스, 피지컬 AI 국책과제 2건 수주…연구개발비 989억원",
      "src": "thefirstmedia.net",
      "date": "2026-10-06",
      "url": "http://www.thefirstmedia.net/news/articleView.html?idxno=210240",
-     "desc": "ⓒ두산 두산로보틱스가 국산 인공지능(AI) 반도체를 활용한 차세대 협동로봇과 AI 기반 용접 자동화 기술 개발에 나선다. 두 과제의 총연구개발비는 약 989억원이며, 이 가운데 정부 지원금은 약 681억원이다...."
+     "summary": "두산로보틱스가 총 989억 원 규모의 피지컬 AI 관련 국책과제 2건을 수주함."
     }
    ]
   },
@@ -203,57 +194,48 @@
    "items": [
     {
      "co": "로보티즈",
-     "ctx": "뉴스",
+     "ctx": "계약",
      "t": "서울대-LG전자·KT, '피지컬AI' 핵심기술 개발한다",
      "src": "zdnet.co.kr",
      "date": "2026-10-07",
      "url": "https://zdnet.co.kr/view/?no=20261006181215",
-     "desc": "주관 기업인 LG전자 외에도 마음AI와 홀리데이로보틱스, 로보티즈, 크라우드웍스, 알체라, KT, 한국과학기술원(KAIST), 한국정보통신기술협회 등 기업·기관이 참여한다. 서울대학교 관계자는 \"서울대와 KAIST가 월드..."
+     "summary": "로보티즈가 서울대, LG전자, KT 등과 함께 피지컬 AI 핵심기술 개발 산학연 협력에 참여함."
     },
     {
      "co": "에스피지",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "'매출 줄고 재고 는' 에스피지, 자산 3분의1이 재고",
      "src": "sidae.com",
      "date": "2026-10-07",
      "url": "https://www.sidae.com/article/2026100614485860220",
-     "desc": "에스피지가 정밀감속기와 통합 액추에이터 등 로봇 부품 사업을 키우는 사이 재고자산이 빠르게 늘고... 7일 금융감독원 전자공시시스템에 따르면 에스피지의 올해 6월 말 연결 기준 재고자산은 1596억원으로 지난해..."
+     "summary": "에스피지의 올해 6월 말 연결 기준 재고자산이 1596억 원으로 증가함."
     },
     {
      "co": "로보티즈",
-     "ctx": "뉴스",
+     "ctx": "계약",
      "t": "LG전자, 월드모델로 피지컬AI 공략…'K-원팀'으로 기술 개발",
      "src": "zdnet.co.kr",
      "date": "2026-10-06",
      "url": "https://zdnet.co.kr/view/?no=20261006165307",
-     "desc": "마음AI와 홀리데이로보틱스, 로보티즈, 크라우드웍스, 알체라, KT, 한국과학기술원(KAIST), 서울대학교, 한국정보통신기술협회 등 9개 산학연이 협력한다. 월드 파운데이션 모델은 AI가 복잡한 현실세계 구조와 동역학을..."
-    },
-    {
-     "co": "로보티즈",
-     "ctx": "뉴스",
-     "t": "코스피 7000선 밑으로 ‘뚝’…외국인 1.7조 던졌다",
-     "src": "economist.co.kr",
-     "date": "2026-10-06",
-     "url": "https://economist.co.kr/article/view/ecn202610060046",
-     "desc": "에코프로와 레인보우로보틱스, 원익IPS, 심텍, 이오테크닉스, 리노공업, HPSP, 로보티즈, 피에스케이 등도 일제히 상승했다. 김 연구원은 “삼성전기의 AI 서버용 MLCC 공급계약 소식에 전자부품과 기판주가 강세를..."
+     "summary": "로보티즈가 LG전자 주관 K-원팀에 참여해 피지컬 AI 월드 파운데이션 모델을 개발함."
     },
     {
      "co": "에스비비테크, 나우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "리포트",
      "t": "감속기부터 협동로봇까지 매수 온기 확산… 실적 모멘텀 겸비한 로봇 핵...",
      "src": "pinpointnews.co.kr",
      "date": "2026-10-06",
      "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=492985",
-     "desc": "하모닉 감속기 양산 기술을 보유한 에스비비테크, 시험장비 및 로봇 부품 전문 케이엔알시스템, 이동형 로봇 및 자율주행 솔루션 기업 로보티즈, 로봇 제어기 전문업체 아진엑스텍, 2차전지 및 로봇 자동화 장비 기업..."
+     "summary": "에스비비테크, 로보티즈 등 실적 모멘텀을 갖춘 로봇 핵심주로 매수세가 확산됨."
     },
     {
      "co": "에스피지",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "세아베스틸, 로봇 감속기 소재 국산화…日 의존도 낮춘다",
      "src": "sedaily.com",
      "date": "2026-10-06",
      "url": "https://www.sedaily.com/article/20098783?ref=naver",
-     "desc": "특수강 소재는 올해 2월 국내 정밀 감속기 기업 ‘에스피지’에 공급된 후 양산 단계에 진입해 산업 현장에서 점유율을 높여가고 있다. 세아베스틸은 향후 휴머노이드 로봇 적용을 목표로 다양한 특수강 강종을 추가..."
+     "summary": "세아베스틸이 국산화한 로봇 감속기 특수강 소재를 에스피지에 공급하여 양산 단계에 진입함."
     }
    ]
   },
@@ -262,30 +244,30 @@
    "items": [
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "시지바이오, 발리서 15개국 의료진 대상 ‘재생 에스테틱’ 복합시술 교...",
      "src": "메디게이트뉴스",
      "date": "2026-10-07",
      "url": "https://www.medigatenews.com/news/2670252095",
-     "desc": "시지바이오가 오는 10월 16일부터 17일까지 인도네시아 발리에서 글로벌 학술·교육 프로그램 ‘밋 더 마스터스 인 발리 2026(Meet the Masters in Bali 2026)’을 개최한다고 6일 밝혔다. 이번 행사에는 아시아·태평양..."
+     "summary": "시지바이오가 발리에서 15개국 의료진 대상 학술 교육 행사 '밋 더 마스터스'를 개최함."
     },
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "시지바이오, 발리서 글로벌 15개국 의료진 대상 '밋 더 마스터스 인 발...",
      "src": "thefirstmedia.net",
      "date": "2026-10-06",
      "url": "http://www.thefirstmedia.net/news/articleView.html?idxno=210258",
-     "desc": "▲시지바이오가 지난해 10월 17~18일 인도네시아 발리에서 개최한 제3회 '밋 더 마스터스 인 발리 2025(Meet the Masters in Bali 2025)' 행사 모습 재생의료 전문기업 시지바이오는 오는 16∼17일 인도네시아 발리에서 글로벌..."
+     "summary": "시지바이오가 글로벌 15개국 의료진을 대상으로 에스테틱 복합시술 교육 프로그램을 진행함."
     },
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "시지바이오, 해외 의료진 교육서 환자별 시술 판단 공유",
      "src": "datasom.co.kr",
      "date": "2026-10-06",
      "url": "https://www.datasom.co.kr/news/articleView.html?idxno=210228",
-     "desc": "시지바이오는  '밋 더 마스터스 인 발리 2026'을 개최한다고 6일 밝혔다. 이번 행사는 오는 16~17일 진행되며 아시아·태평양을 비롯해 유럽, 중동, 중남미 등 15개국 의료진 110여 명이 참석할 예정이다. 시술 현장을 직접..."
+     "summary": "시지바이오가 발리 행사에서 해외 의료진 110여 명을 대상으로 환자별 시술 노하우를 공유함."
     }
    ]
   },
@@ -298,21 +280,21 @@
    "items": [
     {
      "co": "토모큐브",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "대전시, 3천여 명 모이는 ‘2026 대전바이오교류회’ 개막",
      "src": "breaknews.com",
      "date": "2026-10-06",
      "url": "http://www.breaknews.com/1241018",
-     "desc": "특히 대전을 대표하는 핵심 바이오기업 6개사(큐로셀 ,토모큐브 ,아이빔테크놀로지 ,소바젠 ,와이바이오로직스 ,인투셀)가 대거 참가해 독자적인 연구 성과를..."
+     "summary": "토모큐브 등 대전 지역 핵심 바이오기업들이 대전바이오교류회에 참가해 연구 성과를 공유함."
     },
     {
      "co": "큐리옥스바이오시스템즈",
-     "ctx": "뉴스",
+     "ctx": "수주",
      "t": "큐리옥스바이오시스템즈, 글로벌 '톱5' CRO가 찍었다 ... 첫 주문부터 7...",
      "src": "한국경제",
      "date": "2026-10-06",
      "url": "https://www.hankyung.com/article/202610064003i",
-     "desc": "큐리옥스바이오시스템즈가 글로벌 상위 5위권 임상시험수탁기관(CRO)으로부터 세포 세척 자동화 장비 ‘플루토’의 첫 주문을 수주했다. 계약 규모는 약 7억원으로, 회사의 3분기 멀티유닛 구매 가운데 최대 규모다. 이번..."
+     "summary": "큐리옥스바이오시스템즈가 글로벌 톱5 CRO로부터 7억 원 규모의 세포 세척 자동화 장비를 수주함."
     }
    ]
   },
@@ -321,39 +303,39 @@
    "items": [
     {
      "co": "로킷헬스케어",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "“모낭 역노화” 내건 로킷헬스케어…‘발모 65%’ 근거 공개는 여전히...",
      "src": "이데일리",
      "date": "2026-10-07",
      "url": "https://www.edaily.co.kr/News/Read?newsId=02578086645610624&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
-     "desc": "로킷헬스케어(376900)가 ‘모낭 역노화’와 ‘신개념 특허발모’라는 파격적인 표현을 앞세워 천연 유래 광생체조절(PBM) 후보물질의 2차 동물실험 결과를 발표했다. 회사는 후보물질이 기존 탈모 치료제와 다른 비호르몬..."
+     "summary": "로킷헬스케어가 천연 유래 광생체조절 후보물질의 모낭 역노화 2차 동물실험 결과를 발표함."
     },
     {
      "co": "리브스메드",
-     "ctx": "뉴스",
+     "ctx": "투자유치",
      "t": "엘리스그룹, 공모가 상단 9만500원 확정…코스닥 '1조 대어' 등판",
      "src": "한국경제",
      "date": "2026-10-06",
      "url": "https://www.hankyung.com/article/202610066474r",
-     "desc": "공모가가 상단에서 결정되면서 지난해 10월 리브스메드 이후 약 1년 만에 등장한 조 단위 코스닥 'IPO 대어'에 등극했다. 수요예측에는 국내외 기관 2367곳이 참여했다. 경쟁률은 389대 1로 집계됐다. 주문 수량의 99.7..."
+     "summary": "엘리스그룹 공모가가 상단 확정되며 리브스메드 이후 약 1년 만에 조 단위 코스닥 기업이 등장함."
     },
     {
      "co": "뷰웍스",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "비대면진료 시장 규제 완화 움직임에 폭풍 매수… 인성정보·뷰웍스 동...",
      "src": "pinpointnews.co.kr",
      "date": "2026-10-06",
      "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=492958",
-     "desc": "이 외에도 의료용 영상 입력장치 전문 기업 뷰웍스, AI 기반 의료 진단 솔루션을 개발하는 제이엘케이... 이어 \"스피어나 인성정보처럼 실질적인 의료 IT 인프라 공급 능력을 보유했거나, 뷰웍스 및 제이엘케이같이 AI 기술..."
+     "summary": "비대면진료 규제 완화 움직임에 의료 IT 및 AI 관련 기업인 뷰웍스 등의 매수세가 확대됨."
     },
     {
      "co": "뷰웍스",
-     "ctx": "뉴스",
+     "ctx": "리포트",
      "t": "뷰웍스, 반도체 검사 수요 확대…영업익 2배 전망",
      "src": "medipana.com",
      "date": "2026-10-06",
      "url": "https://www.medipana.com/news/articleView.html?idxno=418785",
-     "desc": "뷰웍스가 반도체 검사장비용 머신비전 카메라 공급 확대에 힘입어 올해 수익성을 크게 높일 것으로... 6일 한국IR협의회 기업리서치센터에 따르면, 뷰웍스 올해 연결기준 매출액은 2429억원으로 전년 대비 1.5..."
+     "summary": "뷰웍스가 반도체 검사장비용 카메라 공급 확대에 힘입어 영업이익 2배 증가가 전망됨."
     }
    ]
   },
@@ -362,12 +344,12 @@
    "items": [
     {
      "co": "덴티움",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "[공시] 10월 7일, 코스피 상장사 51개 종목 자사주 매수 신청",
      "src": "newstnt.com",
      "date": "2026-10-06",
      "url": "https://www.newstnt.com/news/articleView.html?idxno=721689",
-     "desc": "이건산업(008250), 스틱인베스트먼트(026890), 덴티움(145720), DL이앤씨(375500), 쏘카(403550)는 각각 5000주를 신청했다. 삼성출판사(068290)는 3000주, HL홀딩스(060980)는 1700주, BYC우(001465)는 1000주, 아세아..."
+     "summary": "덴티움이 코스피 상장사 자사주 매수 신청을 통해 5000주 매수를 신청함."
     }
    ]
   }
@@ -383,7 +365,7 @@
      "src": "medtechdive.com",
      "date": "2026-10-06",
      "url": "https://www.medtechdive.com/news/zenflow-raises-52m-inks-distribution-deal-with-cook-medical/832212/",
-     "desc": "Cook Medical has become Zenflow’s U.S. distributor in a urology device market targeted by Boston Scientific, Olympus and Teleflex."
+     "summary": "젠플로우가 5,200만 달러 규모의 자금을 유치하고 쿡 메디컬과 미국 유통 계약을 체결함."
     },
     {
      "co": "Stryker",
@@ -392,7 +374,7 @@
      "src": "medtechdive.com",
      "date": "2026-10-06",
      "url": "https://www.medtechdive.com/news/stryker-ceo-kevin-lobo-to-resign/832258/",
-     "desc": "Lobo will step down on Dec. 31 as CEO after more than 15 years at Stryker. Chief operating officer Spencer Stiles will lead the company."
+     "summary": "스트라이커의 케빈 로보 최고경영자가 12월 31일 자로 사임함.\n후임으로는 스펜서 스타일스 최고운영책임자가 지명됨."
     },
     {
      "co": "Stryker",
@@ -401,7 +383,7 @@
      "src": "MassDevice",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1zazhVaW1aY0tqZFJ4WURtZk10SU1EQUF3M2VfRW56UkRjTlFKdm1aQzBlLWJrMmZBN1NVZWIzSWNIaDc2RlJQYy1RVDZFWFloRl9YSmJMOU1qb2dWb3lwNUpEVU1iMC1JQ29EMHd6b0RMTDA?oc=5",
-     "desc": "Stryker will have a new CEO next year  MassDevice"
+     "summary": "스트라이커가 내년에 새로운 최고경영자를 선임할 예정임."
     },
     {
      "co": "Medtronic",
@@ -410,7 +392,7 @@
      "src": "MassDevice",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPbk5KbFQyNjZGdVB5VG5RLXdxbnAydy11NVJ6R0l0TUFGbHdjTm1Kb09pX3A1Y3VKeEJQd2dpa19GYlI1VXd1cEI3LWktMHFfclpybzVRQXF4aUNxVHJWRXlMXzlZVDhqMHpHTUl4Vi1HZlVSWUtXZzFrMlNVQkdSNWZ4X2xWQnJhVUc1dVhsckJHTDdRT1A2WmdKcWJkRWNxY1pmcEtYY1A3dw?oc=5",
-     "desc": "Medtronic taps Siemens Healthineers exec as new Cardiac Ablations Solutions VP  MassDevice"
+     "summary": "메드트로닉이 지멘스 헬시니어스 임원을 심장절제술 솔루션 신임 부사장으로 영입함."
     },
     {
      "co": "Stryker",
@@ -419,7 +401,7 @@
      "src": "Ortho Spine News",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQVnhpZlV5QnhwcjEtSHRxNlJQUzJrSUV5bm9wdW9wTXkxdGtuNEZiMW9vbjNCdXNqTE9NMmpTZ3lLWklqWTlUcUphTEI3YnVVdzBpbWxjM3J2MGp4VDRGVDRaQVFCVEhENUlaY09xeEdySGdjWFBrcUdtdnAwRTRQTThad0w?oc=5",
-     "desc": "Stryker announces leadership succession  Ortho Spine News"
+     "summary": "스트라이커가 경영진 승계 계획을 발표함."
     },
     {
      "co": "Stryker",
@@ -428,7 +410,7 @@
      "src": "WWMT",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxNbWdRcVUyX0kycENINldDM19UZzRFcnhqMEFwWFl6bUIwNmxxbGpkdjFNMVQzWVE2eThpa295Y19QREtzWkdERFVoR1U5OFdFY1ZUdWRaRHhuaTRpZXI2MlZJVkRUMWl5T2VldEVySnNUM3Y2NnF4OXNIYXMwTERPd3JLalJLVzQ2alktZkZXbC0tUzg1UEhHSldIVFNYSDJBdWI4dnhlTWdKMUNlb21oQlhDMjhkbkkzNnJHc3J2b1VBdWRuVWZhWkpsUWJjbDdkQlk0SnoxRmp5TzNpdjJVSDdYYVRJYy01TjNuTlgycmFDSkk?oc=5",
-     "desc": "Stryker names President, COO Spencer Stiles as next CEO  WWMT"
+     "summary": "스트라이커가 스펜서 스타일스 사장 겸 최고운영책임자를 차기 최고경영자로 지명함."
     }
    ]
   },
@@ -438,56 +420,11 @@
     {
      "co": "Intuitive Surgical",
      "ctx": "News",
-     "t": "Zacks Industry Outlook Globus Medical, Intuitive Surgical and Thermo Fisher Scientific",
-     "src": "TradingView",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNLVFGbWRlOUxUeEpSZTZwS1RhdE10SVhCX0sweFNIOXJwUXZTcHVoemNVT3FYcmNwUjRweTZVQ2lqSXdNaWx1cDk2cngxQ1hpV1ZJU0NiYVJVRUFVZDh6emRESGlVTEJ0N3lDMUw5UVNMMDJhMlNoSEU5b1M0bFlNLW41VnhDc3ZXYWRLVVZ1Vkwwa3liYndxaVlnMEg0dTByT1A2bUhXdFF2em5ZTzlaWFJlQWRDb1NTQk5TeWltOTlTWVRxbUtpeWRQZVJxZkktN1laXzNQU2s?oc=5",
-     "desc": "Zacks Industry Outlook Globus Medical, Intuitive Surgical and Thermo Fisher Scientific  TradingView"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Intuitive Surgical, Inc. (ISRG) Stock Price, News, Quote & History",
-     "src": "Yahoo! Finance Canada",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE52X0ZOeUwwdzhnNUlQVWVYRTFrLVVsUzR1T3NkdmNfSmQ4endaWUxpZGNHLXZNdUpXLUhPdTNZbE5aQk1SUkM4eDI5VExjY0FiVkE?oc=5",
-     "desc": "Intuitive Surgical, Inc. (ISRG) Stock Price, News, Quote & History  Yahoo! Finance Canada"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Intuitive Surgical: The Multiple Fell, The Story Didn't (NASDAQ:ISRG)",
-     "src": "Seeking Alpha",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxObjFwc0xrenByYnExWm9PMHVHMm1iYmZmV2w4NkRIdURVTXVYQWNjOHFUemViU1I4UmNHMHBqOE8xVFM1WXMydVduY1J3bGFIUGVWYmY3V0lpak1reFlHZEZRU2JPaTlvQnhnYzhrVlVUS2syNDJIVkJwTWtHUktQN1BRVTdNU1lNdS1JZjJXZXZLVDRtd0lERXlyOEZLNGRldUJsV2VTMGl2dw?oc=5",
-     "desc": "Intuitive Surgical: The Multiple Fell, The Story Didn't (NASDAQ:ISRG)  Seeking Alpha"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
      "t": "Intuitive Surgical stays a leader in robotic su...",
      "src": "Pluang",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxORWI1X0J2UEVBME9tOUp6Ry05VHJWZFMtWFBXWTVXZm44dGlkU2NBVnQtRmZTc2stMDV3ZjM1Z0k0TWQzZGgtODNOVXRXRTI1YXMzTloyZ3BwNVpVbVdOYURUUXlyRE5jNm5zUXNZckM0blhpb1ptQUNOM3hTdmlKSm9qZk4yWHFTTmZxYW9UbjBVbzQ?oc=5",
-     "desc": "Intuitive Surgical stays a leader in robotic su...  Pluang"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Intuitive Surgical stock gets a Buy rating as Q2 growth holds",
-     "src": "AD HOC NEWS",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPZGtjN3lFcFNIMEh1QmRqVjhOX1RZbldOcDZ4ZUlMWXVDdklPdTF4VDJDUk1fQUtPN2pSTjBRUEJ0UjQ0YmJsT05CNkVWYV9HRWl5S0dmUm5kcGM5S2o3M1ZBTi1sXzk1ZDdMU3pwaEZEX3JBaUI1UlBkeFhsNDgtZFlzOWt5bHpEZExzUDVtT3JpTEdEd2dxVkRqejFseUJaZmkxUjhZQ3lZX0VPbmhyTDFONVdjd1l3Wnp4RS1ENWFJdw?oc=5",
-     "desc": "Intuitive Surgical stock gets a Buy rating as Q2 growth holds  AD HOC NEWS"
-    },
-    {
-     "co": "Intuitive Surgical",
-     "ctx": "News",
-     "t": "Citi sets a USD 500.00 target for Intuitive Surgical stock",
-     "src": "AD HOC NEWS",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOb1loMzVocndmWF9RcnBNZEdmeEtrMUZZelpjcURZUm83ZFVqc00tNS1pWXY3cnlXQ0p6SVZHQ3JwVndYRmxQOTNEd2ktZW00M0tpZXJaM2hUQmNYak8xMXI2djRQcVVLLXo3VFJObUItVFRKSXRpYVRqcjhXSFdsSjU1LUlQOG54MXZmU3Z2bEpKSUNNblJ4WHd3cXBuQ2UxaFFERzRNcmZqM3BTZm9MT3ZEM1VLeWdOeDFfLVlB?oc=5",
-     "desc": "Citi sets a USD 500.00 target for Intuitive Surgical stock  AD HOC NEWS"
+     "summary": "인투이티브 서지컬이 수술용 로봇 시장에서 선도적 지위를 유지하고 있음."
     }
    ]
   },
@@ -501,16 +438,7 @@
      "src": "fiercebiotech.com",
      "date": "2026-10-06",
      "url": "https://www.fiercebiotech.com/medtech/abbott-nabs-fda-approval-new-cardiomems-hf-system-allows-heart-readings-be-seen-home",
-     "desc": "Abbott has been given U.S. clearance for new updates to its CardioMEMS HF System that allow for patient-facing capabilities through its CardioGuide HF App."
-    },
-    {
-     "co": "Abbott",
-     "ctx": "News",
-     "t": "Abbott Laboratories (ABT) stock price, news, quote and history",
-     "src": "Yahoo Finance Australia",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFB0Wl93bUphVERZZnljRnNOMjVBdlF5RjEtMFhxTl8wWXUtczdQOGl0aXRSdkJVc0xTYTFRbi1NNHZxc0M2dWFONm1YYXI3RUVsNFNSdktFTU9ybk5ZY0t1TA?oc=5",
-     "desc": "Abbott Laboratories (ABT) stock price, news, quote and history  Yahoo Finance Australia"
+     "summary": "애보트가 환자용 앱으로 자가 측정 기능을 제공하는 CardioMEMS HF 시스템 업데이트 승인을 FDA로부터 획득함."
     },
     {
      "co": "Abbott",
@@ -519,7 +447,7 @@
      "src": "Simply Wall Street",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxOV05Ndmp5NnhsQm5YYUpMamZWaDdTTVJWbmp5NTU0eUE3UG1OU1JmOG5vcXZpRk5RUGlCYUJhYlI1eFZ3c3R5Q3BTdWxybTUzZVJKcl9ENUdlZ0ZEa29xVlo5ckp0SEloVTRkRW9xZExxSjd5ZUdIdnB2QnEzbjB4NGRjeDRmdWZxNlA5TURTWk96QmZiT2dnLWtuaXB2X3p3aUVoMzV2UG05bXMyTmNWS1lTMmdkV2tLTWY4c1hMN1QzR0luVjMwZmJWQTM2N0NFZjNWTkRhOFLSAdgBQVVfeXFMTldOTXZqeTZ4bEJuWGFKTGpmVmg3U01SVm5qeTU1NHlBN1BtTlNSZjhub3F2aUZOUVBpQmFCYWJSNXhWd3N0eUNwU3Vscm01M2VSSnJfRDVHZWdGRGtvcVZaOXJKdEhJaFU0ZEVvcWRMcUo3eWVHSHZwdkJxM24weDRkY3g0ZnVmcTZQOU1EU1pPekJmYk9nZy1rbmlwdl96d2lFaDM1dlBtOW1zMk5jVktZUzJnZFdrS01mOHNYTDdUM0dJblYzMGZiVkEzNjdDRWYzVk5EYThS?oc=5",
-     "desc": "Did Heart Failure Device Updates Just Shift Abbott Stock’s Investment Narrative?  Simply Wall Street"
+     "summary": "애보트의 심부전 기기 업데이트가 주가 투자 전망에 미칠 영향이 주목됨."
     },
     {
      "co": "Abbott",
@@ -528,7 +456,7 @@
      "src": "Kalkine Media",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNNl9pdjc4RmJfb2pzdmdPcVpZRGtqQWdCczE2WFZjZm1kNDU5T09sT1gzY3Q3a1dmb2xxaDE1TXVhY3lreWI3NkFxTThQOWY3eDdKMmFfWUQ1SmxjSTA0RmU3ZmhVUnJnSjJ3cFdyMVQ1TGNNZGthUzNlN2dkVTA4NFBTQUdsX3Nwc0NHQXNEY0FoSmJNWnkyOHR2RlN0WFNNc0VFdWc1UU1jcmI4YkFRMDd1SQ?oc=5",
-     "desc": "What Will the Libre Duo Launch Mean for Abbott Laboratories (NYSE:ABT)?  Kalkine Media"
+     "summary": "애보트의 리브레 듀오 출시가 기업 가치에 미칠 영향이 주목됨."
     },
     {
      "co": "Abbott",
@@ -537,7 +465,7 @@
      "src": "AD HOC NEWS",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQTjBGNXQzZGhWV200TS01T0MwSFpfbFN4LVp3RE84OFA5dmdGVkJSdm1lN1c2d0I2SUp2b1ZoZVU5dEJETTZEWlViLTJudGpQeFpXTDAwUEpnSHZ5SFVUN0VYQlFvNmdCckpkaDRzbHRVVXpob3FhOVEwNTVzNnFzMThza3hZWVBfX2l5dTkzemxWMDh2TnFNMXUyS0hkRVRRbnp5blk0bE1POE9lWU5ndG90MW9aTTRRc1BkZXVnWkhjU28?oc=5",
-     "desc": "Abbott Laboratories stock: FDA approves new CardioMEMS capabilities  AD HOC NEWS"
+     "summary": "FDA가 애보트의 CardioMEMS 신규 기능 추가를 승인함."
     },
     {
      "co": "Abbott",
@@ -546,7 +474,7 @@
      "src": "Picayune Item",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPX1ZnT0lqcHhLX1ZkTXdPUXI2M1JkOUJoamVEVWFrUVhwc2l4ei1tNTBPal9BM2hlYzdFSko4OVNUZFFiNm42Q0FROTh4NjdIb0Y0VTBER2hwMm11a2FlZlJkVkxMYTZxYm9SRGEzQjhuWVlMaDRGZkVqcVhzMml4Y3FpUUUxeEJ4VVAzeEg3NXkwdGdhcHNFaGJ0QnVpcDg3VFVUZXh3S213dw?oc=5",
-     "desc": "AG Fitch announces $384M false claims settlement with Abbott Laboratories  Picayune Item"
+     "summary": "피치 검찰총장이 애보트와 3억 8,400만 달러 규모의 허위 청구 합의를 발표함."
     }
    ]
   },
@@ -556,47 +484,11 @@
     {
      "co": "Natera",
      "ctx": "News",
-     "t": "Natera, Inc. (NTRA) stock price, news, quote and history",
-     "src": "Yahoo Finance UK",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE53MndwNGd5MGNkTWZ6OFAteHJyM1Fqcm9BSS02OWg2dWpjdWc4OVExbktRR2pkTDFFckxVOFpSd3FQYl9SUTlZX2J0b0JPWjJwT0E?oc=5",
-     "desc": "Natera, Inc. (NTRA) stock price, news, quote and history  Yahoo Finance UK"
-    },
-    {
-     "co": "Natera",
-     "ctx": "News",
-     "t": "Natera Inc Stock (NTRA) Moved Down by 5.30% on Oct 6: A Full Analysis",
-     "src": "TradingKey",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQa3BSa0kzLTFIaWV4OHJ4NUFQX2g1SVdjRUs0UkdkWTYwc2lheG9HOUhVODBneG1hd1BfSzdNX2RUUFk3dmxON0owY0otbVk5b3poTks5MTlRTDhvZ3FpVzdmSzJ5SEFMYzl2NVpEemJrLUFtQ2wwU2pqU2NmdVpTUFZuYUFaNXhGanJJ?oc=5",
-     "desc": "Natera Inc Stock (NTRA) Moved Down by 5.30% on Oct 6: A Full Analysis  TradingKey"
-    },
-    {
-     "co": "Natera",
-     "ctx": "News",
-     "t": "Why is Natera stock sliding today?",
-     "src": "Investing.com",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPZmowYjBhRzdPeHdyRWFHM2RnOVVxSkxPZ0NTTk5WUldyTVJNUGxwZWFjdXBCME54WkhXYm15T1lYQ05pbVgwdzc4eElHb0t0dHZyeTJhX21mS3FPYmhkOXgxRHZzY2JXSFNiNkowbTZQMTFsWldwUmJEVDdWNTZnMGFkRGR5Z3FPVVVUSy1COWpIRVJDTlBrUVdpaw?oc=5",
-     "desc": "Why is Natera stock sliding today?  Investing.com"
-    },
-    {
-     "co": "Natera",
-     "ctx": "News",
-     "t": "Natera Slides as Investors Digest Insider Sales After a Strong Run",
-     "src": "Quiver Quantitative",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPalQ4RnlMczMzV2VhNzJ5THoxQ1YtRHJQaDRPcmRSQ3ljSjV0bktpTVVZLTZvM2tCVENELXdsX3ByZVI5eV90a0hjdVdJNXRVZnRscGpCNmRzOHNjMThtTUlMZmpDaTFubHFOTEtPU25JVWFNVmp5REJfbWNiZW9BdzRMeXN1T3Z6M0lCMHZMYlpNYlVCaWNsWTV5T2NRWXMw?oc=5",
-     "desc": "Natera Slides as Investors Digest Insider Sales After a Strong Run  Quiver Quantitative"
-    },
-    {
-     "co": "Natera",
-     "ctx": "News",
      "t": "AFT, Natera launch Phase III to test MRD-guided deferral of CDK4/6 therapy in early breast cancer",
      "src": "AllSci",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOcXQ2SlJfVjExYk1pX29kWGdxS2dINkxLcE56MktJd2gyaWRWN0tjenFRUTl3Y3M2R1ZYdG5tblRvcUxtQ2VERWpvc0toSW9rWkVCNzBoMnhjRjh6YVdTOUlUeUhQVkhIdVotc1NxcUt2ZTBOb1Z2UWF0czN5R2xsR3RYNkxDOGRvODRvSEw5VDRPOE0?oc=5",
-     "desc": "AFT, Natera launch Phase III to test MRD-guided deferral of CDK4/6 therapy in early breast cancer  AllSci"
+     "summary": "나테라와 AFT가 조기 유방암에서 미세잔류질환 기반 CDK4/6 치료 유예를 평가하는 임상 3상을 개시함."
     },
     {
      "co": "Natera",
@@ -605,7 +497,7 @@
      "src": "AD HOC NEWS",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOVFgzTUJ2SjJ2UlJTckpLaG1ST1ZSWUNaR0FrazdRdEk5bGN3RU1YNWsyN0pRR1JUNEZDRk00anZNNUZueE1HaGlpNngwaDFidkhiMWxVWlZpZm85dFpWNnV0UmpLaXVnUzk5LU81QnRvVFdkSll4ZThBM0NodDJBc3FMa3hJcmJtSXZqVC1GOTBTM2xWaFJQY1ZWSDhnNmtycXJucXp6VFl5eW1uMDh6QXhfdzNOcXVJc1FuX2VRV252Z3E4R2JlWS1rNkxWTjZJS3c?oc=5",
-     "desc": "Natera wins Japan approval and Guggenheim targets Natera stock at USD 475  AD HOC NEWS"
+     "summary": "나테라가 일본에서 승인을 획득함."
     }
    ]
   },
@@ -619,34 +511,7 @@
      "src": "MassDevice",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBEUGZQU1pJRVkzTExtTGRsV243cktZbmJlR2pyRGYtS21id0E1UmcydENzeldWOXFVUmN0UnR4NnowZ0dja3BnWnc2bUdySUtrRGR5Y2dKd2dLN1NoTVQ0b1ktdmpIMFlmc3lodFdLVHQyR2NWVFY5SmEzTElmZw?oc=5",
-     "desc": "iRhythm completes acquisition of VitalConnect  MassDevice"
-    },
-    {
-     "co": "iRhythm",
-     "ctx": "News",
-     "t": "iRhythm stock price target lowered to $150 by Wells Fargo on model update",
-     "src": "Investing.com",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQZ0FOU280Tk9TSU16SlpmZ1lMSnBRQVpqQ0l3UkdsSjdmS1JVZFdnc0lpYjcwR1FEcUdxVjd5NnhQRDg4aG9MU0txSW01Rnh0OXJ4d3BtR1VlQ2Y3bWxNckRacG1MWGphZlBUSlBNOHJVd2xlNnM0WDRVempUVEpyT0dHUjN6MHpYdjJqc2NzajkyQW4wVl9sMDNzSTFJRmIwWTZwOGgyOFAxWGVncjFHNkR5T2FwT3Q3bmdaRnNwYkFfT1NLOGkyUmdBTDQ?oc=5",
-     "desc": "iRhythm stock price target lowered to $150 by Wells Fargo on model update  Investing.com"
-    },
-    {
-     "co": "iRhythm",
-     "ctx": "News",
-     "t": "Freedom Capital Markets maintains Buy rating on iRhythm Holdings, $190 price target",
-     "src": "TradingView",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQUGpKX2Rzc29GRFJmZnBLdTFJS3Y4TUNnLUNZMFJ4bEZMTVNOMVBzXzZuWW9QS0doVDd4aTNTOUFLdnpEUkRISDNBY3FuQlJxWkdoTEtBWGlLeE11RV9KTFpFNmdZMklVYnNMZzNnY2lMX2VDOEpTWGtIaWJNRDYxMm9VVGkyanBPS0RkR2hjVUNMQUFFdllsbS1rMGxURXphZ1BLSHRBS3c1N2Z1d0tSdlJLZ3JkeEdUeGtCemRKV1NUVmVxN0o2ZzEyVHdKbGJ6MmhndHFWLV9kSmM?oc=5",
-     "desc": "Freedom Capital Markets maintains Buy rating on iRhythm Holdings, $190 price target  TradingView"
-    },
-    {
-     "co": "iRhythm",
-     "ctx": "News",
-     "t": "iRhythm Technologies Inc (MIL:1IRTC) Stock Holders - Institutional & Insider Ownership",
-     "src": "GuruFocus",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5GV2h4TmRPZGM0QzJ5Y0VvNmY0RURva2c2SGtabm5YQVpUb2UxUnozYzhFM0ltM0VtazVtRlVoRFNsVkhSdm9iZnVpTEF5UmZETXp1YTRLaXNxaFhDUktmMA?oc=5",
-     "desc": "iRhythm Technologies Inc (MIL:1IRTC) Stock Holders - Institutional & Insider Ownership  GuruFocus"
+     "summary": "아이리듬이 바이탈커넥트 인수 절차를 완료함."
     },
     {
      "co": "iRhythm",
@@ -655,16 +520,7 @@
      "src": "Digital Health News",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQMlRnSWlObFJfazhQMlVuaDhFSWhlUnBlcENzeVAyV1RMNUZtcjRadS1SVVV4NU5XQkZEU1kxcGJSbG4xUXMzWjJ6ZnptbGxwQ0FBUFJRaUJ1cHJ4SW85LXRYOE41cy16Q2ZmdmVIaWR1M050eGpEOGRCR3VMbkl2YmpTZTlUQzREaHVJTUxKMVlLdGtXeFlIZzdTWXZXeERmZlgzRlZjZ1V0cktOQmw1R1hDNTF6NlVlbXBRTHp3Z1lvNUE?oc=5",
-     "desc": "San Francisco-based iRhythm Acquires VitalConnect for $237.5 Mn to Expand Cardiac Monitoring  Digital Health News"
-    },
-    {
-     "co": "Hims & Hers",
-     "ctx": "News",
-     "t": "Hims & Hers Health, Inc. (HIMS) stock price, news, quote and history",
-     "src": "Yahoo Finance UK",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5FeE5lNDl2dU5lS3Vtc1VTR2hTNy1STE5jb1pFOHhFVVBEd2xMc0o1Z09VYi1RUnBOY1Rzc2k3ZGlPdFh4NHBfaVRsX2hCMHdJWGc?oc=5",
-     "desc": "Hims & Hers Health, Inc. (HIMS) stock price, news, quote and history  Yahoo Finance UK"
+     "summary": "아이리듬이 심장 모니터링 강화를 위해 바이탈커넥트를 2억 3,750만 달러에 인수함."
     }
    ]
   },
@@ -674,20 +530,11 @@
     {
      "co": "UnitedHealth",
      "ctx": "News",
-     "t": "What Four Healthcare Stocks Are Moving: UnitedHealth (NYSE:UNH), J&J (NYSE:JNJ), Medtronic (NYSE:MDT), Moderna (NASDAQ:MRNA)?",
-     "src": "kalkine.ca",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxOM3ozNXpBaXpfYXppVnpYYWtRY2tTck92Sl92Rlppd3lBTVd2Q084dVM2bGU1Q0F1RGxKQTU4ZjNkYklFYld1SzhyOUxZUllQVEtZNkF3c1UyemthS19UYjR1SE82VlRLSlN5WTk5S1MxVkYxX1JZRmhJdUlTV1NkR0VSUmlqdVA3c3hxQ2RROC1PZmZTd3RMaXJJNzJTa1JKaEx4U1dxVTJxR09GQm9mOE1NX0FQV2pnVkZ1WWNlbmFyUFdkbUZNcGl6Y3lwbS1mNzlIT0g2bzFNUQ?oc=5",
-     "desc": "What Four Healthcare Stocks Are Moving: UnitedHealth (NYSE:UNH), J&J (NYSE:JNJ), Medtronic (NYSE:MDT), Moderna (NASDAQ:MRNA)?  kalkine.ca"
-    },
-    {
-     "co": "UnitedHealth",
-     "ctx": "News",
      "t": "Texas AG Ken Paxton investigates UnitedHealth over coverage denials",
      "src": "The American Bazaar",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOUTJEVEtmdkdtMXA5VDJjZm00ZHFjdllEUHdtcDNROFV0cHREcXdCOW9XZHhySXAzWDJhek4xNnV3S1puaVNuMVliWUlGRHFkLV81RVdUZVkzR0tGZkZNRWV5bmVrT2t0TDdCUjZodlVEc0pNMTJOUUlRWXd5RG5ucndBTlg1c2l0Wm84QW93amQxT3UzMTFCRDBxMGR4ZEc3N0Joc2tjZzh0UGVPcGliSW9rMC1KbG9YSjRB?oc=5",
-     "desc": "Texas AG Ken Paxton investigates UnitedHealth over coverage denials  The American Bazaar"
+     "summary": "텍사스주 검찰총장이 유나이티드헬스의 보험 적용 거부 건에 대한 조사에 착수함."
     },
     {
      "co": "UnitedHealth",
@@ -696,16 +543,7 @@
      "src": "Benzinga",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxONVVOM1JpSmhCQlZkMXF0RXIyM0ZuMlVBMy1EU2xqRHZmRGZYeFlsN3pwYnlqaGg1WWpTYlJUYVhLSkN1LVE5OVlJQ3h3a2Nfd2p4ZHItOWN6bzlHZ2lhbHhNdTA4cjUxX1VsVEwzemJDRmY3bUFtMkl6YTlQV1ZSQ09Yd1Z2el82MGY5U2o0XzJmOXJMRTR1c09LWVY0Q0U1QXhaM2gtNHo1YTgyUjBvNGl1Rk8zMWt2QzhxRWMyRHJiUjBycFo3eFA5WWd3Z3RZcnBvOXRES3l2ZU55Vzk0RWpMYw?oc=5",
-     "desc": "Texas AG Targets UnitedHealth: Probe Examines Alleged Bribes, Care Delays and Coverage Denials  Benzinga"
-    },
-    {
-     "co": "UnitedHealth",
-     "ctx": "News",
-     "t": "UnitedHealth: The Upside Is Gone (NYSE:UNH)",
-     "src": "Seeking Alpha",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBfWGhNd1lwNzBmeC11NHpSS3FqWTgtU2xPN2VubGZHOU1RdkxickluTk9GZng5aFctZGRGYzBpWEs2N1RmV0JmajlDQ2ZMSjJ0V20wWEt1UlZjVVVOQVFWYTNxdVBjOWZmV3JNVW4wQzhQdGRWMzRz?oc=5",
-     "desc": "UnitedHealth: The Upside Is Gone (NYSE:UNH)  Seeking Alpha"
+     "summary": "텍사스주 검찰총장이 뇌물 수수, 진료 지연, 보험 거부 의혹으로 유나이티드헬스 조사를 진행함."
     },
     {
      "co": "UnitedHealth",
@@ -714,7 +552,7 @@
      "src": "TradingView",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOTEg1T1VHT1VnN1hOSDRFV2VHaDVlbTdKUzRrOUYxM2ZGSHB3WUxRaEMtdi1NZXNhOUNFMmVUdlhHWWo3SklLMVc3dmpmNjI4eEd3NDl1ckNUUTJBOExWMVdXbEd6X0xReWxtTGdKSDI0WnE3Z2RjQzFURjRCZmlNNUh0NC1aQ2hBM3JhUVVwRzJsRDNRLXVTOFVKaEFZcE9OcWltOXhxbGZleUx5OUZYUk42SWh6eWhMZ2c?oc=5",
-     "desc": "UnitedHealth Q3 Coming Up: Two Questions Investors Can't Ignore  TradingView"
+     "summary": "유나이티드헬스의 3분기 실적 발표를 앞두고 투자자들의 관심이 집중됨."
     },
     {
      "co": "UnitedHealth",
@@ -723,46 +561,17 @@
      "src": "AD HOC NEWS",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxNN1hnOERhU05zUldrdDMyQ3dWTTU2LTNMU2daUjF5WVVyaGs0czZHeTRaYm44Nl9lWHdyUXpOVG9tX0xfcDFXc0xIZThfcGs0Vjh0cDN2V3VfT1dJbHRoYXZfTUV4UzFvYW5BRUVkU1Z6TlRVcEtfYmFWdnVpLWxldF9iRE1EcDFJT25BRVJCSWdGZVRjdF84WW0xdzJlM0N1OXk4cW5FYWpwejNidDRwVUJJY3RUMEpuNG83MUQ1NUpJUktNMXFBSlZpanR5OGJ5ODFuOEU2VU42QlBNUDJ2LW9hQVVFUQ?oc=5",
-     "desc": "UnitedHealthcare unveils 2027 plans. UnitedHealth Group stock is 17.99 percent below high  AD HOC NEWS"
+     "summary": "유나이티드헬스케어가 2027년 계획을 공개함."
     }
    ]
   },
   {
    "cat": "치과",
-   "items": [
-    {
-     "co": "Align Technology",
-     "ctx": "News",
-     "t": "Align Technology (ALGN) Stock Looks Reasonable Despite Its 78% Five Year Fall",
-     "src": "Simply Wall Street",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNWU1VN0x1OWRLOVJWaGFBb0hqdVVnUUF4ZVZGOWppaTNkZDA2YXZjUU41Uk1saTdsOUpyTFBkNm90WHVJY09ETEVaSTBiQnVvS09KS2lwbFBuQllaNTItcDRfUnBaYzg2RVpLTHZ6c1ItcDNfWF9QNjFxeWNMSER1TjQyZVphZVVyd1pvY20yaC1jU0F5ZHZqbWJLUERxQ2lHVldXUVJBV1U4NmtyTUlWTFdPdm1JQUp4eWZ0aVU1cVFkVk1oa1pUTUxCLWhTLVVLYnfSAdcBQVVfeXFMTXluS09FUURvbGR0MVhTV0JNTGFfSGJaeHRtSS1Hb3pGS1Azbml0WFkyLXRNZHlORklOY2NVaU1oTHkxbGxRWm5FejFHM2F4UTBrSVhsN1B3V2sxWi1XOXktNEwwVnF6ZHdoOVpSQ05sYldyUWZxTzBVVUxYN0dZMUQ5RGFQNks5UE56SFVLcjl2S1ZlM2N4dTZsdmtCaGpQemhySXRYWFJ2ckhFYnpZclZ0REh2U255Ri1yWDl3NWZBaWwwbnRianVPdEI0bFZoX29JTXFGdmM?oc=5",
-     "desc": "Align Technology (ALGN) Stock Looks Reasonable Despite Its 78% Five Year Fall  Simply Wall Street"
-    },
-    {
-     "co": "Straumann",
-     "ctx": "News",
-     "t": "Goldman adds Straumann to picks and sets CHF 125 target for Straumann stock",
-     "src": "AD HOC NEWS",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPS0tIaHA2S1pSaGVVclNWUG55LV9QNmJuU2Z0aVRkWlEwZ2dULTNIMzdFWEJreWxObWNJREhFbHJoZ0F5MkRWek9weEFBY21YOW5PVG01ZlItSzF0bDh3Y0JkSlRVRHF6cTRJb1JpNWdYdlNRcGxPSE9WbnFMbS16aEU5RHJtOENSQ2E1bm1EMmR6TjZnZzlNZ2l4dEctTEN1SndHSmRXa1NmU1JSZXkxV0RiNE1GQnVBTzBkZ2lNRm1KZFJUdHNSMTlQZ3VWWTRCNm1jQQ?oc=5",
-     "desc": "Goldman adds Straumann to picks and sets CHF 125 target for Straumann stock  AD HOC NEWS"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "미용",
-   "items": [
-    {
-     "co": "InMode",
-     "ctx": "News",
-     "t": "InMode stock carries a Hold consensus before Q3 results",
-     "src": "AD HOC NEWS",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQQ01NZnhMUnVMUmR3aEtRbjhjUXE4VnUxbUpBUWZIa0xOUWNhTjRaMjljMHA0T0RuNkpWUGZCSDI5UUhudnRHSGdBZ3NySkctQTdOX0c4dGxIY2V0cVcxLUp0ZW1lOHo0emhQRS1iYmJ5cHBNZUpRZDZRM0JJelFHQk5aMllpLVR3TjliVFdlVlp2dUFydmp5eTYyVlYxNVdHTDJKS29pLUwtMlNUcDVhLU8tZVZydVJZbmc?oc=5",
-     "desc": "InMode stock carries a Hold consensus before Q3 results  AD HOC NEWS"
-    }
-   ]
+   "items": []
   },
   {
    "cat": "휴머노이드",
@@ -774,7 +583,7 @@
      "src": "therobotreport.com",
      "date": "2026-10-06",
      "url": "https://www.therobotreport.com/boston-dynamics-appoints-former-amazon-executive-rohit-prasad-new-ceo/",
-     "desc": "Before Boston Dynamics, Prasad served as senior vice president and head scientist for Alexa and artificial general intelligence at Amazon.\nThe post Boston Dynamics appoints former Amazon exec Rohit Prasad as new CEO appeared first on The Robot Report."
+     "summary": "보스턴 다이내믹스가 아마존 출신의 로힛 프라사드를 신임 최고경영자로 선임함."
     },
     {
      "co": "Tesla",
@@ -783,7 +592,7 @@
      "src": "Westfair Communications",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPUlBDV0lpdm5WS0F2XzVUZTZkQjhRWHlhbmczaWxEQjl6Ty1JZjZJenFiRHQxSTVMMEhpemZhVWtwUGhiUFItSUNfSkdrNlF0V3pEbi16Q1ZELXptaVVBY3NscnhLNHR1MDQ0MEQ3WTJUT1QxRXpfNVlZbjNfOTVpNWRmWkZGU21Zc24xQi1heVNQOGhL?oc=5",
-     "desc": "Optimus Health Care gets started on $2.34M renovation  Westfair Communications"
+     "summary": "옵티머스 헬스케어가 234만 달러 규모의 개보수 공사를 시작함."
     },
     {
      "co": "Tesla",
@@ -792,7 +601,7 @@
      "src": "Bloomberg.com",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNUnhPaEx6NWFzX2EyMzl4SFZKNGthY1RKdjFhQUJVVmxYQjB5QmZZYmhYOTI0WWdRckJPY1JNYkpTcGRIZXJzejdBQlh6aktySzlRemxIS1prZnMzR2hBd0MxYXZPeTZxbXZxOXF4aUN6eUxOTzMwX19zR0pKeF9rUFdIdTYyU0dOZk54elFXX1pQZ3hXSmUya01vS1liZTQ1NGEzQy1yYWpBMzFkS3c?oc=5",
-     "desc": "Tesla to Showcase Its Cybercab Robotaxi at Paris Auto Show  Bloomberg.com"
+     "summary": "테슬라가 파리 모터쇼에서 사이버캡 로보택시를 선보일 예정임."
     },
     {
      "co": "Tesla",
@@ -801,7 +610,7 @@
      "src": "Yahoo Finance",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPSGJ5VEpqY2JMYWFlU1dsclBjb2N4UmlmcEV4WUhwVV9MajZiWUJIVzZaQ2JvLXlzNTVDSG5ocHIxWXpIamw1MElVWVprcXk4cEZQaklPVk01YlpRdm1Eb1FFVmxsUTZ6eFZwSTdjQ3RRcUFYQVE0SXl0WWxfdzZBTkowX0wwUGhTTlNHb2N2WjU3ck82dnhlLXNXTUFPTm1YaWc?oc=5",
-     "desc": "Tesla’s Robotaxis, FSD And Optimus Outlook Matter More Than Q3 Earnings, Says Goldman Sachs  Yahoo Finance"
+     "summary": "골드만삭스가 테슬라의 로보택시 및 옵티머스 전망이 3분기 실적보다 중요하다고 평가함."
     },
     {
      "co": "Tesla",
@@ -810,7 +619,7 @@
      "src": "MotorBiscuit",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQNnFmUFZGS0pQMUkwNGpicEZxLWh3S3hKWkFWajFWcDAxMFlfT240TkJ1Q0NxSzV6dVFWYWZNcmRVNFJhN2NzTFN5YnpvRHpDWEFfTmdFRGRjdko4eElCZjdvZ1VVM2FJajRmNVNxWkZVMlAxS1RWdnRpTkNBQmxhWUxJUWQxb1JGQ25PX0ZISEZtNVA2SmVaQWdKc0RXZTE0c0Z4WjRvcWM?oc=5",
-     "desc": "Tesla Robotaxis Hit The Brakes At 11 P.M. Over One Unusual Nighttime Problem  MotorBiscuit"
+     "summary": "테슬라 로보택시가 야간 관련 문제로 인해 밤 11시에 운행을 중단함."
     },
     {
      "co": "Tesla",
@@ -819,7 +628,7 @@
      "src": "Auto Spies",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE4tNVJiVjQ1STVob1daUzRsdFZLTlBTTGllbXBsOWlJVUxITWpkazJrcmdWMDdFMDhLS2xjUElZZGJyNXdmam16SEo3SF84RWt0Vkl4WFkzX1pwRllDOGJyV3FPQnctcklRVjQ5dEtn?oc=5",
-     "desc": "Tesla Blames Limited Robotaxi Hours In Austin On Low Contrast Pets  Auto Spies"
+     "summary": "테슬라가 오스틴에서의 로보택시 운행 시간 제한 원인으로 명암비가 낮은 반려동물을 언급함."
     }
    ]
   },
@@ -833,7 +642,7 @@
      "src": "roboticstomorrow.com",
      "date": "2026-10-06",
      "url": "http://www.RoboticsTomorrow.com/news/2026/10/06/fanuc-america-demonstrates-automated-solutions-for-welding-and-painting-at-fabtech-2026/27209",
-     "desc": "FANUC America, a global industrial automation leader, will feature advanced automation technologies for the fabrication industry at FABTECH 2026, including advanced welding automation, collaborative robotics, laser processing and paint automation."
+     "summary": "화낙 아메리카가 FABTECH 2026에서 용접 및 도장 자동화 솔루션을 선보일 예정임."
     },
     {
      "co": "FANUC",
@@ -842,7 +651,7 @@
      "src": "WWAYTV3",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQZDRPb3J4SHg5cDh2S08tRWFWMXlPbGptUlhGRE56R3h4X2VjQWlwemp3UXpzU29oR2h1QmdLYVNvSUh3Wko2SGdaTmEyZk96LVBudVB3Zm9uV1VqWjR3VTJVY0U5S3pRR2hjRTJTdzVMYl80YXhWcWlKUFlTSmJmRXBwTnJqQVdQbjkw?oc=5",
-     "desc": "CFCC becomes FANUC-certified robotics training institution  WWAYTV3"
+     "summary": "CFCC가 화낙 인증 로봇 교육 기관으로 지정됨."
     },
     {
      "co": "FANUC",
@@ -851,7 +660,7 @@
      "src": "PR Newswire",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNby1ZaFY5YlhfMkI0aXpSZkNOM0JFTFFZREw4c1JDckF3WW1Ub0l3RFFST3BBanlrMlhrUy10cDBrMkcwMUVJRTQ5Wmlxb3FiVk1PZ25EZWZBWTc0N2RFZEtmcThEM3NXNGhGbmFJcWJ4ZjhLMnBOSUlzSzYzX3lRVVJRZFhYU3hzeVNJaXZqVHVuZ3lwM3FuMHZSUW9mal9tYVJmNEJzQWVic3kzNGZ1N0VhTjh0NVRmU0h4Mk5KMWpiOHhyWFBnVjNvYUZURE9VQjI5ajJyRlBfMnRCQmVya2ZWVmZRajdrY2dINzFiczNfdUZlWmluNQ?oc=5",
-     "desc": "FANUC America Brings AI-Powered Robotics and Intelligent Packaging Automation to PACK EXPO International 2026  PR Newswire"
+     "summary": "화낙 아메리카가 PACK EXPO 2026에서 AI 기반 로봇 기술을 공개함."
     },
     {
      "co": "FANUC",
@@ -860,16 +669,7 @@
      "src": "AD HOC NEWS",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQZXY4bGdZVExRSTNQeThXcldSOHRrb0hFb29XX3ZLTXZDUmJ0eExoMmdDb09kdTE3RDFEenU2U1ZpZlN2dHhWYmg3bHViZkpMck0tLUdrX3l1Szh3dVI2Y3Ryd2xudDVMcGRMb3FwZmhEYUlYSVNTWkQtVmtjWTdhc2JESjZQZ2t1MERBU0JRdHRlek9lVEd1cVJCQkdPVTE5QlNrbEM0N0FrTjZ4UklaSFpYcUc3TUpLdUxoVzduZnNOUE02?oc=5",
-     "desc": "FANUC showcases automation at FABTECH: what it means for Fanuc stock  AD HOC NEWS"
-    },
-    {
-     "co": "ABB",
-     "ctx": "News",
-     "t": "ABB Ltd (ABBNY) Stock Price, News, Quote & History",
-     "src": "Yahoo Finance",
-     "date": "2026-10-06",
-     "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFA2YTVsM09GZ3pkQ28ydE1HaHBFSldZcGdITWQtNHJaZ1FMOGlmcFpFWXdQbF9uTWNGRnRWV1hBbVN1bDdySEhOaENzdTdiRmc?oc=5",
-     "desc": "ABB Ltd (ABBNY) Stock Price, News, Quote & History  Yahoo Finance"
+     "summary": "화낙이 FABTECH에서 자동화 기술을 시연함."
     },
     {
      "co": "ABB",
@@ -878,7 +678,7 @@
      "src": "Data Center Dynamics",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNdWpzTUswZnZqV1Q2ZkU0WjB5RHduZ3RXak91QTE0WFpNeE9TTE90V1Y1VFZwam5GYncyV1hEc18zelZPTnFZeHhyTlpBbThCMDYwd1dmOTJMNkpjR21sZmVTakl2V3E4YXNWM0ZpLTc5YWd2V2Rudnc1Z240c1RWWEROdUUwaVV0d2pJ?oc=5",
-     "desc": "ABB launches range of DC power products  Data Center Dynamics"
+     "summary": "ABB가 직류 전력 제품군을 새롭게 출시했음."
     }
    ]
   },
@@ -892,7 +692,7 @@
      "src": "www.marketscreener.com",
      "date": "2026-10-06",
      "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxNZkJvclkwTm9QcXRoV0hkVy1MVk9nMkdmQzgxeV9CbDZxTlptUGR1SDl4LV9abW5XYVFGLTR6R2tBOWM1WnpXOXRzNHFEczNSOGx4ZEN6LWdXZXRBcXA2QTVRZEtMTXJXcHBIdFIzQS1uTzNOYXAzSnpkNnZEb2pPYlNMODNlclZFaElXb1UwbHZyeHFoaktYbndiTmYzTGhkdG9NZklIS0Z1aElSdkpESGdkZWtROHVrWndfNUJrbmJyNzBhdWpZbW9LakNzeHBXOWxaZnhNb1FPTjdITFBqSw?oc=5",
-     "desc": "Bertrandt : and Bosch Rexroth Join Forces to Advance Industrial Machine Vision, AI, and Automation  www.marketscreener.com"
+     "summary": "베르트랑과 보쉬 렉스로스가 비전 및 자동화 발전을 위해 협력함."
     }
    ]
   }
