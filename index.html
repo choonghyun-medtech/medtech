@@ -450,6 +450,19 @@ tr:last-child td{border-bottom:none}
 .gd-sortable:hover .gd-sort-hint{opacity:1; color:var(--accent)}
 /* 주요 지표 요약 카드 — 수치와 국가를 한 줄에 같이 쓰면 카드마다 줄바꿈 여부가 들쭉날쭉해
    서식이 지저분해 보였다(2026-09-16 지적) — 국가를 항상 별도 줄로 고정한다. */
+/* 선택 기업 주가 추이(2026-10-07) — 왼쪽 시총 누적 영역 / 오른쪽 시작점=100 상대 성과 */
+.gd-trend-bar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:8px}
+.gd-trend-chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px}
+.gd-chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--card); color:var(--dim); border-radius:999px; padding:4px 10px; font-size:11.5px; cursor:pointer; user-select:none}
+.gd-chip .dot{width:9px; height:9px; border-radius:50%; background:var(--border); flex:none}
+.gd-chip.on{color:var(--text); border-color:var(--sub)}
+.gd-chip .ret{font-variant-numeric:tabular-nums}
+.gd-chip.on .ret.pos{color:var(--red)} .gd-chip.on .ret.neg{color:var(--blue)}
+.gd-chip.hl{box-shadow:0 0 0 2px var(--accent)}
+.gd-trend-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.gd-trend-grid .chart-box{height:340px}
+.gd-trend-grid h3{font-size:12.5px; margin:0 0 6px; color:var(--sub); font-weight:600}
+@media (max-width:900px){.gd-trend-grid{grid-template-columns:1fr}}
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
 #gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
 .gd-empty{padding:30px; text-align:center; color:var(--dim)}
@@ -654,6 +667,9 @@ tr:last-child td{border-bottom:none}
 
       <div class="sec-h" style="margin-top:20px"><h2>주요 지표 요약</h2><span class="note">이 탭의 현재 필터·제외 설정이 반영된 결과 기준</span></div>
       <div class="cards" id="gd-analysis-cards"></div>
+
+      <div class="sec-h" style="margin-top:20px"><h2>선택 기업 주가 추이</h2><span class="note" id="gd-trend-note">위 필터(국가·섹터·시총·검색)에 걸린 기업 기준</span></div>
+      <div id="gd-trend-wrap"></div>
     </div>
 
     <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
@@ -3270,6 +3286,10 @@ function gdMakeDefaultTabState(){
     search: '',
     sortKey: null, // 첫 번째 열(사명) 클릭 정렬 — 2026-09-16 요청
     sortDir: 1, // 1=오름차순, -1=내림차순
+    trendPeriod: '1Y', // 선택 기업 주가 추이 기간
+    trendOn: null,     // 차트에 켠 기업 사명 Set — null이면 "시총 상위 GD_TREND_DEFAULT_N개" 기본값
+    trendHl: null,     // 칩 더블클릭으로 강조한 기업 사명
+    trendShowAll: false, // 칩 목록 "더보기" 펼침 여부
   };
 }
 function gdGetTabState(tabId){
@@ -3729,6 +3749,7 @@ function gdRender(){
   }
 
   gdRenderAnalysis(included, currency);
+  gdRenderTrend(filtered, currency);
 }
 
 function gdTopBy(rows, getter){
@@ -3780,6 +3801,215 @@ function gdRenderAnalysis(rows, currency){
       </div>
     `;
   }).join('');
+}
+
+// ---- 선택 기업 주가 추이 (2026-10-07 사수 피드백) ----
+// 필터에 걸린 기업들의 주가 흐름을 두 차트로 보여준다.
+//  - 왼쪽: 시가총액 누적 영역 — 그룹 전체 몸집 변화와 기업별 비중
+//  - 오른쪽: 기간 시작점 시총=100 상대 성과 — 규모가 다른 기업을 같은 출발선에서 비교
+// 과거 시총은 저장된 게 없어 "현재 시총(global_dashboard.json) × 그날 종가 ÷ 최신 종가"로
+// 역산한다(기간 중 주식수 변화는 무시 — 1년 이내라 오차 작음). 종가는 stock_performance.json
+// (최근 약 260거래일)이라 기간은 1Y까지만 지원한다. 두 파일은 사명으로 1:1 매칭된다
+// (tickers.json이 global_dashboard.json 사명을 그대로 가져오므로 — sync_ticker_universe.py).
+// 기본은 시총 상위 10개만 켜고, 칩을 눌러 기업을 켜고 끈다.
+const GD_TREND_DEFAULT_N = 10;
+const GD_TREND_CHIP_PREVIEW = 20; // 칩은 켜진 기업 + 시총 상위 20개만 보이고 나머지는 "더보기"로 접는다
+const GD_TREND_PERIODS = [
+  {key:'5D', label:'5일'}, {key:'1M', label:'1개월'}, {key:'3M', label:'3개월'},
+  {key:'6M', label:'6개월'}, {key:'YTD', label:'YTD'}, {key:'1Y', label:'1년'},
+];
+const GD_TREND_COLORS = ['#2563eb','#dc2626','#16a34a','#d97706','#7c3aed','#0891b2','#db2777','#65a30d','#ea580c','#4f46e5',
+                         '#0d9488','#be123c','#a16207','#9333ea','#0284c7','#15803d','#c2410c','#6d28d9','#b91c1c','#047857'];
+let gdTrendCapChart = null, gdTrendRelChart = null;
+
+function gdTrendStockByName(){
+  const m = {};
+  (STOCK_PERF || []).forEach(s => { if(s.price_history && s.price_history.dates && s.price_history.dates.length) m[s.name] = s; });
+  return m;
+}
+
+// 기간 시작일(포함). 5D는 거래일 기준(합집합 날짜축의 뒤에서 6번째), 나머지는 달력 기준.
+function gdTrendStartDate(axis, period){
+  const last = axis[axis.length-1];
+  if(period === '5D') return axis[Math.max(0, axis.length-6)];
+  if(period === 'YTD'){
+    const prevYearEnd = axis.filter(d => d < last.slice(0,4)+'-01-01').pop();
+    return prevYearEnd || axis[0]; // 전년 마지막 거래일 종가를 기준점으로
+  }
+  const months = {'1M':1, '3M':3, '6M':6, '1Y':12}[period] || 12;
+  const dt = new Date(last + 'T00:00:00Z');
+  dt.setUTCMonth(dt.getUTCMonth() - months);
+  const target = dt.toISOString().slice(0,10);
+  return axis.filter(d => d <= target).pop() || axis[0];
+}
+
+function gdRenderTrend(rows, currency){
+  const wrap = document.getElementById('gd-trend-wrap');
+  if(!wrap) return;
+  const ts = gdGetTabState(GD_STATE.activeTab);
+  const byName = gdTrendStockByName();
+  if(!Object.keys(byName).length){
+    wrap.innerHTML = `<div class="card note">주가 데이터를 불러오는 중입니다…</div>`;
+    return;
+  }
+  // 후보: 필터 결과 중 주가가 있는 기업, 현재 시총 내림차순(색상도 이 순서로 고정)
+  const cands = rows.filter(r => byName[r.name] && r.mktcap != null).sort((a,b) => b.mktcap - a.mktcap);
+  const noPrice = rows.filter(r => !byName[r.name]).map(r => r.name);
+  if(!cands.length){
+    wrap.innerHTML = `<div class="card note">주가 데이터가 있는 기업이 없습니다.</div>`;
+    return;
+  }
+  const colorOf = {};
+  cands.forEach((r,i) => colorOf[r.name] = GD_TREND_COLORS[i % GD_TREND_COLORS.length]);
+  // trendOn: null → 기본(상위 N) · 빈 Set → 사용자가 "전체 끄기" · 그 외 → 고른 기업.
+  // 필터를 바꿔 고른 기업이 하나도 안 남으면 기본값으로 돌아간다.
+  const explicitNone = ts.trendOn && ts.trendOn.size === 0;
+  let on = ts.trendOn ? cands.filter(r => ts.trendOn.has(r.name)) : [];
+  if(!explicitNone && !on.length) on = cands.slice(0, GD_TREND_DEFAULT_N);
+  const onSet = new Set(on.map(r => r.name));
+
+  // 켠 기업들의 날짜 합집합 축(시장별 휴장일이 달라서) → 기간 슬라이스. 다 꺼져 있으면
+  // 칩 수익률 계산용으로 후보 전체의 날짜축을 쓴다.
+  const axisSrc = on.length ? on : cands;
+  const axisAll = Array.from(new Set(axisSrc.flatMap(r => byName[r.name].price_history.dates))).sort();
+  const start = gdTrendStartDate(axisAll, ts.trendPeriod);
+  const axis = axisAll.filter(d => d >= start);
+
+  // 기업별: 날짜축에 맞춰 종가 forward-fill → 시총 역산
+  const series = on.map(r => {
+    const s = byName[r.name], ph = s.price_history;
+    const closeByDate = {}; ph.dates.forEach((d,i) => closeByDate[d] = ph.close[i]);
+    const lastClose = ph.close[ph.close.length-1];
+    const capNow = gdConvertAmount(r.mktcap, currency);
+    // 기준일 이전 마지막 종가로 시작값을 채운다(해당 시장 휴장일이 기준일인 경우)
+    let cur = null;
+    ph.dates.forEach((d,i) => { if(d <= start) cur = ph.close[i]; });
+    const caps = axis.map(d => {
+      if(closeByDate[d] != null) cur = closeByDate[d];
+      return cur == null ? null : capNow * cur / lastClose;
+    });
+    const base = caps.find(v => v != null);
+    const rel = caps.map(v => v == null || !base ? null : v / base * 100);
+    const ret = rel.length && rel[rel.length-1] != null ? rel[rel.length-1] - 100 : null;
+    return { name: r.name, color: colorOf[r.name], caps, rel, ret, market: s.market };
+  });
+
+  // 칩용 기간 수익률은 꺼진 기업도 보여주기 위해 따로 계산(같은 기준일)
+  const chipRet = name => {
+    const ph = byName[name].price_history;
+    let b = null; ph.dates.forEach((d,i) => { if(d <= start) b = ph.close[i]; });
+    if(b == null) b = ph.close.find((v,i) => ph.dates[i] >= start);
+    const l = ph.close[ph.close.length-1];
+    return b ? (l / b - 1) * 100 : null;
+  };
+
+  const total = axis.map((_,i) => series.reduce((acc,s) => acc + (s.caps[i] || 0), 0));
+  const totalRel = total.map(v => total[0] ? v / total[0] * 100 : null);
+  const unit = gdCurrencyUnitLabel(currency);
+  const fmtDate = d => axis.length > 130 ? d.slice(2).replace(/-/g,'.') : d.slice(5).replace('-','/');
+
+  wrap.innerHTML = `
+    <div class="gd-trend-bar">
+      <div style="display:flex; gap:6px; flex-wrap:wrap">${GD_TREND_PERIODS.map(p =>
+        `<button class="gd-tab-btn ${p.key===ts.trendPeriod?'active':''}" data-period="${p.key}">${p.label}</button>`).join('')}</div>
+      <span class="note">${onSet.size}/${cands.length}개사 표시 · 칩을 눌러 켜기/끄기</span>
+      <a class="gd-reset-link" id="gd-trend-top">시총 상위 ${GD_TREND_DEFAULT_N}개</a>
+      <a class="gd-reset-link" id="gd-trend-all">전체 켜기</a>
+      <a class="gd-reset-link" id="gd-trend-none">전체 끄기</a>
+    </div>
+    <div class="gd-trend-chips">${cands.filter((r,i) => ts.trendShowAll || i < GD_TREND_CHIP_PREVIEW || onSet.has(r.name)).map(r => {
+      const isOn = onSet.has(r.name), ret = chipRet(r.name);
+      const cls = ret == null ? '' : ret >= 0 ? 'pos' : 'neg';
+      return `<span class="gd-chip ${isOn?'on':''} ${ts.trendHl===r.name&&isOn?'hl':''}" data-name="${escapeHtml(r.name)}" title="클릭: 켜기/끄기 · 더블클릭: 강조">
+        <span class="dot" style="${isOn?`background:${colorOf[r.name]}`:''}"></span>${escapeHtml(r.name)}
+        <span class="ret ${cls}">${ret==null?'-':(ret>=0?'+':'')+ret.toFixed(1)+'%'}</span></span>`;
+    }).join('')}${(() => {
+      const hidden = cands.filter((r,i) => i >= GD_TREND_CHIP_PREVIEW && !onSet.has(r.name)).length;
+      if(!hidden) return '';
+      return ts.trendShowAll ? `<a class="gd-reset-link" id="gd-trend-more">접기</a>`
+                             : `<a class="gd-reset-link" id="gd-trend-more">+${hidden}개 더보기</a>`;
+    })()}</div>
+    ${!series.length ? `<div class="card note">위 칩에서 차트에 표시할 기업을 골라주세요.</div>` : `<div class="gd-trend-grid">
+      <div><h3>시가총액 추이 (${unit}, 누적)</h3><div class="chart-box"><canvas id="gdTrendCapChart"></canvas></div></div>
+      <div><h3>상대 성과 (기간 시작 시총 = 100)</h3><div class="chart-box"><canvas id="gdTrendRelChart"></canvas></div></div>
+    </div>
+    <div class="note" style="margin-top:4px">기간 ${axis[0]} ~ ${axis[axis.length-1]} · 과거 시총 = 현재 시총 × 그날 종가 ÷ 최신 종가(주식수 변화 미반영) · 상대 성과는 현지통화 주가 기준(환율 효과 제외) · 굵은 점선 = 표시 기업 합산(시총가중)${noPrice.length ? ` · 주가 데이터 없음: ${noPrice.map(escapeHtml).join(', ')}` : ''}</div>`}
+  `;
+
+  const hl = ts.trendHl && onSet.has(ts.trendHl) ? ts.trendHl : null;
+  const alpha = (hex, a) => hex + Math.round(a*255).toString(16).padStart(2,'0');
+  const labels = axis.map(fmtDate);
+  const commonOpts = (yFmt, tooltipLabel, extra={}) => ({
+    responsive:true, maintainAspectRatio:false, animation:false,
+    interaction:{mode:'index', intersect:false},
+    elements:{point:{radius:0, hoverRadius:3}},
+    plugins:{
+      legend:{display:false},
+      tooltip:{mode:'index', intersect:false, itemSort:(a,b)=> b.parsed.y - a.parsed.y,
+        callbacks:{title: items => axis[items[0].dataIndex], label: tooltipLabel, ...(extra.tooltipCallbacks||{})}},
+    },
+    scales:{
+      x:{grid:{color:gridColor()}, ticks:{color:textColor(), autoSkip:true, maxRotation:0, maxTicksLimit:8}},
+      y:{grid:{color:gridColor()}, ticks:{color:textColor(), callback: yFmt}, ...(extra.y||{})},
+    },
+  });
+
+  if(gdTrendCapChart){ gdTrendCapChart.destroy(); gdTrendCapChart = null; }
+  if(gdTrendRelChart){ gdTrendRelChart.destroy(); gdTrendRelChart = null; }
+  const bindEvents = () => {
+    wrap.querySelectorAll('[data-period]').forEach(b => b.onclick = () => { ts.trendPeriod = b.dataset.period; gdRenderTrend(rows, currency); });
+    const setOn = names => { ts.trendOn = new Set(names); gdRenderTrend(rows, currency); };
+    document.getElementById('gd-trend-top').onclick = () => { ts.trendOn = null; ts.trendHl = null; gdRenderTrend(rows, currency); };
+    document.getElementById('gd-trend-all').onclick = () => setOn(cands.map(r => r.name));
+    document.getElementById('gd-trend-none').onclick = () => { ts.trendHl = null; setOn([]); };
+    const more = document.getElementById('gd-trend-more');
+    if(more) more.onclick = () => { ts.trendShowAll = !ts.trendShowAll; gdRenderTrend(rows, currency); };
+    let clickTimer = null;
+    wrap.querySelectorAll('.gd-chip').forEach(chip => {
+      const name = chip.dataset.name;
+      chip.onclick = () => {
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+          const next = new Set(onSet);
+          if(next.has(name)) next.delete(name); else next.add(name);
+          if(ts.trendHl === name && !next.has(name)) ts.trendHl = null;
+          setOn([...next]);
+        }, 220);
+      };
+      chip.ondblclick = () => {
+        clearTimeout(clickTimer);
+        const next = new Set(onSet); next.add(name);
+        ts.trendHl = ts.trendHl === name ? null : name;
+        setOn([...next]);
+      };
+    });
+  };
+  bindEvents();
+  if(!series.length) return;
+  // 누적 영역: 큰 기업이 아래에 깔리도록 시총 순서 그대로 쌓는다
+  gdTrendCapChart = new Chart(document.getElementById('gdTrendCapChart'), {
+    type:'line',
+    data:{labels, datasets: series.map((s,i) => ({
+      label:s.name, data:s.caps, borderColor:s.color, borderWidth: hl===s.name ? 2.5 : 1,
+      backgroundColor: alpha(s.color, hl ? (hl===s.name ? .75 : .15) : .55),
+      fill: i===0 ? 'origin' : '-1', tension:.15, spanGaps:true,
+    }))},
+    options: commonOpts(v => gdFmt0(v), c => `${c.dataset.label}: ${gdFmt0(c.parsed.y)} ${unit}`,
+      { y:{stacked:true, beginAtZero:true},
+        tooltipCallbacks:{ footer: items => `합계: ${gdFmt0(total[items[0].dataIndex])} ${unit}` } }),
+  });
+  gdTrendRelChart = new Chart(document.getElementById('gdTrendRelChart'), {
+    type:'line',
+    data:{labels, datasets: [
+      ...series.map(s => ({
+        label:s.name, data:s.rel, borderColor: hl && hl!==s.name ? alpha(s.color,.25) : s.color,
+        borderWidth: hl===s.name ? 3 : 1.5, fill:false, tension:.15, spanGaps:true,
+      })),
+      { label:'합산(시총가중)', data:totalRel, borderColor:textColor(), borderWidth:2.5, borderDash:[6,4], fill:false, tension:.15 },
+    ]},
+    options: commonOpts(v => v.toFixed(0), c => `${c.dataset.label}: ${c.parsed.y.toFixed(1)} (${c.parsed.y>=100?'+':''}${(c.parsed.y-100).toFixed(1)}%)`,
+      { y:{ grid:{ color: ctx => ctx.tick && ctx.tick.value === 100 ? textColor() : gridColor() } } }),
+  });
 }
 
 // 다른 탭들의 각종 로더가 완료될 때마다 방어적으로 호출하는 기존 관례
