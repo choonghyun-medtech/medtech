@@ -463,6 +463,30 @@ tr:last-child td{border-bottom:none}
 .gd-trend-grid .chart-box{height:340px}
 .gd-trend-grid h3{font-size:12.5px; margin:0 0 6px; color:var(--sub); font-weight:600}
 @media (max-width:900px){.gd-trend-grid{grid-template-columns:1fr}}
+/* 글로벌 Watch List(2026-10-07 초안) — 세부섹터 모멘텀 + 눈여겨볼 종목 스크리닝 */
+.gw-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px}
+.gw-seg{display:flex; gap:4px; flex-wrap:wrap}
+.gw-grid{display:grid; grid-template-columns:1fr; gap:18px}
+.gw-grid h3{font-size:12.5px; margin:0 0 6px; color:var(--sub); font-weight:600}
+.gw-table{font-size:12px; width:100%}
+.gw-table th, .gw-table td{padding:6px 8px; text-align:right; white-space:nowrap}
+.gw-table th{color:var(--dim); font-weight:600; font-size:10.5px; background:var(--bg2)}
+.gw-table th.l, .gw-table td.l{text-align:left}
+.gw-table th.sel{color:var(--accent)}
+.gw-table tbody tr{cursor:default}
+.gw-sector-row{cursor:pointer !important}
+.gw-sector-row:hover td{background:var(--bg2)}
+.gw-sector-row.picked td{background:var(--accent-soft)}
+.gw-table td.heat{font-variant-numeric:tabular-nums}
+.gw-table td.top{font-weight:700}
+.gw-table tr.dim td{opacity:.45}
+.gw-badge{display:inline-block; font-size:10px; font-weight:700; border-radius:999px; padding:1px 7px; margin-left:4px; white-space:nowrap}
+.gw-badge.l3{background:#dc2626; color:#fff}
+.gw-badge.l2{background:rgba(220,38,38,.18); color:var(--red)}
+.gw-badge.l1{background:var(--bg2); color:var(--sub); border:1px solid var(--border)}
+.gw-stock-row.l3 td{background:rgba(220,38,38,.07)}
+.gw-stock-row.l3 td:first-child{box-shadow:inset 3px 0 0 #dc2626}
+.gw-legend{font-size:11px; color:var(--dim); margin-top:6px; line-height:1.7}
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
 #gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
 .gd-empty{padding:30px; text-align:center; color:var(--dim)}
@@ -561,6 +585,7 @@ tr:last-child td{border-bottom:none}
     <div class="tabs" id="stock-subtabs" style="margin-bottom:14px">
       <button class="region-tab active" data-sub="perf">주가 Performance</button>
       <button class="region-tab" data-sub="global">글로벌 대시보드</button>
+      <button class="region-tab" data-sub="watch">글로벌 Watch List</button>
       <button class="region-tab" data-sub="flowmap">수급 판독기</button>
     </div>
 
@@ -670,6 +695,15 @@ tr:last-child td{border-bottom:none}
 
       <div class="sec-h" style="margin-top:20px"><h2>선택 기업 주가 추이</h2><span class="note" id="gd-trend-note">위 필터(국가·섹터·시총·검색)에 걸린 기업 기준</span></div>
       <div id="gd-trend-wrap"></div>
+    </div>
+
+    <!-- ---- 글로벌 Watch List (2026-10-07 초안) — 처음엔 글로벌 대시보드 맨 아래에 붙였다가
+         페이지가 너무 길어져 별도 하위 탭으로 분리. 데이터는 글로벌 대시보드와 같은
+         global_dashboard.json(세부섹터·시총) + stock_performance.json(수익률)을 쓰고,
+         렌더는 gdRender() 끝에서 gwRender()로 함께 갱신된다. -->
+    <div id="stock-sub-watch" style="display:none">
+      <div class="sec-h"><h2>글로벌 Watch List</h2><span class="note">세부섹터 모멘텀 → 강한 섹터 안에서 추세가 이어지는 종목 스크리닝 · 글로벌 대시보드 유니버스 기준</span></div>
+      <div id="gw-wrap"></div>
     </div>
 
     <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
@@ -3750,6 +3784,7 @@ function gdRender(){
 
   gdRenderAnalysis(included, currency);
   gdRenderTrend(filtered, currency);
+  gwRender();
 }
 
 function gdTopBy(rows, getter){
@@ -4010,6 +4045,167 @@ function gdRenderTrend(rows, currency){
     options: commonOpts(v => v.toFixed(0), c => `${c.dataset.label}: ${c.parsed.y.toFixed(1)} (${c.parsed.y>=100?'+':''}${(c.parsed.y-100).toFixed(1)}%)`,
       { y:{ grid:{ color: ctx => ctx.tick && ctx.tick.value === 100 ? textColor() : gridColor() } } }),
   });
+}
+
+// ---- 글로벌 Watch List (2026-10-07 사수 피드백, 초안) ----
+// 1) 세부섹터 모멘텀: global_dashboard.json의 세부섹터(한 기업이 여러 섹터면 각각에 포함)별로
+//    5일/1개월/3개월/YTD 수익률을 묶어 순위를 매긴다. 수익률은 stock_performance.json의
+//    returns(d5/m1/m3/ytd, 현지통화)를 사명으로 매칭해 쓴다.
+//    - 시총가중: "섹터 바구니"의 수익률 = Σ현재시총 ÷ Σ(현재시총 ÷ (1+r)) − 1 (시작 시총 역산)
+//    - 동일가중: 단순 평균
+//    - 종목 수 GW_MIN_SECTOR_N개 미만 섹터는 순위에서 뺀다(1~2종목이 섹터를 대표하면 왜곡).
+// 2) 추세 지속: 5일 상위 GW_TOP_N 섹터가 1개월에도 상위면 "1M 지속", 3개월까지 상위면 "3M 지속".
+//    종목도 같은 발상으로 5일·1개월·3개월 수익률이 모두 플러스면 최고 등급(빨간 하이라이트).
+// 3) 눈여겨볼 종목: 기준 기간 상위 GW_TOP_N 섹터(또는 클릭한 섹터)의 종목을 추세 등급 →
+//    기준 기간 수익률 순으로 정렬. (실적 추정치 변화·뉴스 연동은 추후 검토)
+const GW_PERIODS = [{key:'5D', label:'5일', rk:'d5'}, {key:'1M', label:'1개월', rk:'m1'}, {key:'3M', label:'3개월', rk:'m3'}, {key:'YTD', label:'YTD', rk:'ytd'}];
+const GW_TOP_N = 5;
+const GW_MIN_SECTOR_N = 3;
+const GW_STOCK_LIMIT = 20;
+const GW_STATE = { country:'ALL', weight:'cap', period:'5D', sector:null };
+
+function gwHeatStyle(v, scale){
+  if(v == null || isNaN(v)) return '';
+  const a = Math.min(Math.abs(v) / scale, 1) * 0.38;
+  return `background:${v >= 0 ? `rgba(220,38,38,${a.toFixed(2)})` : `rgba(37,99,235,${a.toFixed(2)})`}`;
+}
+function gwFmtPct(v){ return v == null || isNaN(v) ? '-' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+// 기간별 색 진하기 기준(이 정도 수익률이면 가장 진한 색) — 기간이 길수록 크게
+const GW_HEAT_SCALE = {'5D':6, '1M':12, '3M':20, 'YTD':30};
+
+function gwStockLevel(rt){
+  const p = k => rt[k] != null && rt[k] > 0;
+  if(p('d5') && p('m1') && p('m3')) return 3;
+  if(p('d5') && p('m1')) return 2;
+  if(p('d5')) return 1;
+  return 0;
+}
+const GW_LEVEL_BADGE = {
+  3: '<span class="gw-badge l3" title="5일·1개월·3개월 수익률 모두 플러스">5D→3M 지속</span>',
+  2: '<span class="gw-badge l2" title="5일·1개월 수익률 플러스">5D→1M 지속</span>',
+  1: '<span class="gw-badge l1" title="5일만 플러스">단기 반등</span>',
+  0: '',
+};
+
+function gwRender(){
+  const wrap = document.getElementById('gw-wrap');
+  if(!wrap) return;
+  const byName = {};
+  (STOCK_PERF || []).forEach(s => { if(s.returns) byName[s.name] = s; });
+  if(!GD_RAW.length || !Object.keys(byName).length){
+    wrap.innerHTML = `<div class="card note">데이터를 불러오는 중입니다…</div>`;
+    return;
+  }
+  // 유니버스: 산업재 참고군 제외 · 주가 매칭되는 기업 · 국가 필터
+  const universe = GD_RAW.filter(r => !r.misc && byName[r.name] && r.mktcap != null &&
+    (GW_STATE.country === 'ALL' || r.country === GW_STATE.country));
+  const countries = ['ALL', ...GD_COUNTRIES];
+
+  // 섹터 집계
+  const sectorMap = {};
+  universe.forEach(r => (r.sectors || []).forEach(sec => (sectorMap[sec] = sectorMap[sec] || []).push(r)));
+  const agg = (rows, rk) => {
+    const xs = rows.map(r => ({cap: r.mktcap, v: byName[r.name].returns[rk]})).filter(x => x.v != null && !isNaN(x.v));
+    if(!xs.length) return null;
+    if(GW_STATE.weight === 'eq') return xs.reduce((a,x) => a + x.v, 0) / xs.length;
+    const now = xs.reduce((a,x) => a + x.cap, 0);
+    const start = xs.reduce((a,x) => a + x.cap / (1 + x.v/100), 0);
+    return start ? (now / start - 1) * 100 : null;
+  };
+  const sectors = Object.entries(sectorMap).map(([name, rows]) => {
+    const ret = {}; GW_PERIODS.forEach(p => ret[p.key] = agg(rows, p.rk));
+    return { name, rows, n: rows.length, ret, eligible: rows.length >= GW_MIN_SECTOR_N };
+  });
+  // 기간별 순위(대상 섹터만)
+  const rank = {};
+  GW_PERIODS.forEach(p => {
+    rank[p.key] = {};
+    sectors.filter(s => s.eligible && s.ret[p.key] != null).sort((a,b) => b.ret[p.key] - a.ret[p.key])
+      .forEach((s,i) => rank[p.key][s.name] = i + 1);
+  });
+  const isTop = (s, k) => rank[k][s.name] != null && rank[k][s.name] <= GW_TOP_N;
+  sectors.forEach(s => {
+    s.persist = isTop(s,'5D') && isTop(s,'1M') && isTop(s,'3M') ? 3 : isTop(s,'5D') && isTop(s,'1M') ? 2 : 0;
+  });
+  const per = GW_STATE.period;
+  sectors.sort((a,b) => (b.eligible - a.eligible) || ((b.ret[per] ?? -1e9) - (a.ret[per] ?? -1e9)));
+  if(GW_STATE.sector && !sectorMap[GW_STATE.sector]) GW_STATE.sector = null;
+
+  // 눈여겨볼 종목
+  const pickedSectors = GW_STATE.sector ? [GW_STATE.sector]
+    : sectors.filter(s => isTop(s, per)).map(s => s.name);
+  const perRk = GW_PERIODS.find(p => p.key === per).rk;
+  const seen = new Set();
+  const stocks = [];
+  pickedSectors.forEach(sec => (sectorMap[sec] || []).forEach(r => {
+    if(seen.has(r.name)) return; seen.add(r.name);
+    const s = byName[r.name];
+    stocks.push({ r, s, level: gwStockLevel(s.returns),
+      secs: (r.sectors || []).filter(x => pickedSectors.includes(x)) });
+  }));
+  stocks.sort((a,b) => (b.level - a.level) || ((b.s.returns[perRk] ?? -1e9) - (a.s.returns[perRk] ?? -1e9)));
+  const shownStocks = stocks.slice(0, GW_STOCK_LIMIT);
+  const strongCnt = stocks.filter(x => x.level === 3).length;
+
+  const seg = (items, cur, attr) => `<div class="gw-seg">${items.map(([k,l]) =>
+    `<button class="gd-tab-btn ${k===cur?'active':''}" ${attr}="${escapeHtml(k)}">${escapeHtml(l)}</button>`).join('')}</div>`;
+  const persistBadge = lv => lv === 3 ? '<span class="gw-badge l3" title="5일·1개월·3개월 모두 상위 5위 안">5D→3M 지속</span>'
+    : lv === 2 ? '<span class="gw-badge l2" title="5일·1개월 모두 상위 5위 안">5D→1M 지속</span>' : '';
+  const capB = r => gdFmt0(gdConvertAmount(r.mktcap, 'krw'));
+
+  wrap.innerHTML = `
+    <div class="gw-controls">
+      <div class="gd-filter-group"><span class="gd-filter-label">기준 기간 (정렬·스크리닝)</span>${seg(GW_PERIODS.map(p=>[p.key,p.label]), per, 'data-gw-period')}</div>
+      <div class="gd-filter-group"><span class="gd-filter-label">국가</span>${seg(countries.map(c=>[c, c==='ALL'?'전체':c]), GW_STATE.country, 'data-gw-country')}</div>
+      <div class="gd-filter-group"><span class="gd-filter-label">섹터 수익률 계산</span>${seg([['cap','시총가중'],['eq','동일가중']], GW_STATE.weight, 'data-gw-weight')}</div>
+    </div>
+    <div class="gw-grid">
+      <div>
+        <h3>세부섹터 모멘텀 <span class="note" style="font-weight:400">· 행을 클릭하면 아래 종목 목록이 그 섹터로 바뀜(다시 클릭하면 해제)</span></h3>
+        <div class="gd-table-scroll"><table class="gw-table">
+          <thead><tr><th class="l">#</th><th class="l">세부섹터</th><th>종목</th>
+            ${GW_PERIODS.map(p => `<th class="${p.key===per?'sel':''}">${p.label}</th>`).join('')}<th class="l">추세</th></tr></thead>
+          <tbody>${sectors.map(s => `
+            <tr class="gw-sector-row ${s.eligible?'':'dim'} ${GW_STATE.sector===s.name?'picked':''}" data-gw-sector="${escapeHtml(s.name)}"
+                title="${s.eligible ? '' : `종목 ${GW_MIN_SECTOR_N}개 미만 — 순위 제외`}">
+              <td class="l">${s.eligible ? (rank[per][s.name] ?? '-') : '-'}</td>
+              <td class="l">${escapeHtml(s.name)}</td><td>${s.n}</td>
+              ${GW_PERIODS.map(p => `<td class="heat ${s.eligible && isTop(s,p.key)?'top':''}" style="${gwHeatStyle(s.ret[p.key], GW_HEAT_SCALE[p.key])}">${gwFmtPct(s.ret[p.key])}</td>`).join('')}
+              <td class="l">${s.eligible ? persistBadge(s.persist) : ''}</td>
+            </tr>`).join('')}</tbody>
+        </table></div>
+        <div class="gw-legend">굵은 글씨 = 그 기간 상위 ${GW_TOP_N}위 · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 모두 상위 ${GW_TOP_N}위 · <span class="gw-badge l3">5D→3M 지속</span> 3개월까지 상위 ${GW_TOP_N}위 · 섹터 수익률 ${GW_STATE.weight==='cap'?'시총가중(섹터 바구니 수익률)':'동일가중(단순 평균)'} · 한 기업이 여러 세부섹터에 속하면 각 섹터에 모두 포함</div>
+      </div>
+      <div>
+        <h3>눈여겨볼 종목 — ${GW_STATE.sector ? `${escapeHtml(GW_STATE.sector)} <a class="gd-reset-link" id="gw-clear-sector">상위 섹터로 돌아가기</a>` : `${GW_PERIODS.find(p=>p.key===per).label} 상위 ${GW_TOP_N}개 섹터 (${pickedSectors.map(escapeHtml).join(', ')})`}
+          <span class="note" style="font-weight:400">· ${stocks.length}개 중 ${shownStocks.length}개 표시 · 5D→3M 지속 ${strongCnt}개</span></h3>
+        <div class="gd-table-scroll"><table class="gw-table">
+          <thead><tr><th class="l">종목</th><th class="l">세부섹터</th><th class="l">국가</th><th>시총(십억원)</th>
+            ${GW_PERIODS.map(p => `<th class="${p.key===per?'sel':''}">${p.label}</th>`).join('')}
+            <th class="l">추세</th></tr></thead>
+          <tbody>${shownStocks.length ? shownStocks.map(x => `
+            <tr class="gw-stock-row l${x.level}" title="종가 기준일 ${x.s.as_of || '-'}">
+              <td class="l"><a class="perf-name-link" href="${newsUrl(x.r.name)}" target="_blank" rel="noopener">${escapeHtml(x.r.name)}</a></td>
+              <td class="l gd-sector-tag">${escapeHtml(x.secs.join(', '))}</td>
+              <td class="l gd-country-badge">${escapeHtml(x.r.country)}</td>
+              <td>${capB(x.r)}</td>
+              ${GW_PERIODS.map(p => `<td class="heat" style="${gwHeatStyle(x.s.returns[p.rk], GW_HEAT_SCALE[p.key])}">${gwFmtPct(x.s.returns[p.rk])}</td>`).join('')}
+              <td class="l">${GW_LEVEL_BADGE[x.level]}</td>
+            </tr>`).join('') : `<tr><td colspan="9" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
+        </table></div>
+        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <span class="gw-badge l1">단기 반등</span> 5일만 플러스 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 뉴스 검색</div>
+      </div>
+    </div>`;
+
+  wrap.querySelectorAll('[data-gw-period]').forEach(b => b.onclick = () => { GW_STATE.period = b.dataset.gwPeriod; gwRender(); });
+  wrap.querySelectorAll('[data-gw-country]').forEach(b => b.onclick = () => { GW_STATE.country = b.dataset.gwCountry; GW_STATE.sector = null; gwRender(); });
+  wrap.querySelectorAll('[data-gw-weight]').forEach(b => b.onclick = () => { GW_STATE.weight = b.dataset.gwWeight; gwRender(); });
+  wrap.querySelectorAll('[data-gw-sector]').forEach(tr => tr.onclick = () => {
+    const sec = tr.dataset.gwSector;
+    GW_STATE.sector = GW_STATE.sector === sec ? null : sec; gwRender();
+  });
+  const clr = document.getElementById('gw-clear-sector');
+  if(clr) clr.onclick = () => { GW_STATE.sector = null; gwRender(); };
 }
 
 // 다른 탭들의 각종 로더가 완료될 때마다 방어적으로 호출하는 기존 관례
