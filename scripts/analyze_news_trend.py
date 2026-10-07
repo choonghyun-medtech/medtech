@@ -67,6 +67,7 @@ import re
 import sys
 import time
 
+from company_names import glossary_text, normalize_text
 from summarize_news import (
     DailyQuotaExhausted,
     build_provider,
@@ -218,7 +219,7 @@ def build_lines(items):
         co = it.get("co", "")
         date = it.get("date", "")
         ctx = it.get("ctx", "")
-        content = it.get("summary") or it.get("t") or ""
+        content = normalize_text(it.get("summary") or it.get("t") or "")  # 입력부터 표준 기업명으로
         tag = f"[{ctx}] " if ctx else ""
         lines.append(f"- {date} {co}: {tag}{content}")
     return lines[:MAX_LINES_PER_CATEGORY]
@@ -241,6 +242,9 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
     user_content = "\n\n".join(sections)
     max_tokens = min(8000, 200 + MAX_TOKENS_PER_SECTION * len(ordered_keys))
     tag = f"{REGION_LABEL[region]} {len(ordered_keys)}개 구간 일괄"
+    # 해외 브리핑은 영문 기업명을 한글로 옮기며 표기가 제각각이었다(2026-10-07, "덱스콤" vs
+    # 대시보드 "덱스컴") — 표준 표기 목록(company_names_ko.json)을 지시문에 덧붙인다.
+    system = TREND_SYSTEM + (glossary_text() if region == "global" else "")
 
     # 2026-09-09: 1차+재시도 1회(총 2회)로는 "503 UNAVAILABLE(high demand)"를 못 버텨내고
     # 그날 브리핑 전체가 0건으로 끝나는 사례가 실제로 있었다 — 4회로 늘렸다가, 같은 날
@@ -250,7 +254,7 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
     # 503/UNAVAILABLE은 429와 별도의(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
     for attempt in range(5):
         try:
-            raw = provider.call(TREND_SYSTEM, user_content, max_tokens=max_tokens)
+            raw = provider.call(system, user_content, max_tokens=max_tokens)
         except Exception as e:
             if is_daily_quota_exhausted(e):
                 print(f"[WARN] 일별 쿼터 소진 확인({tag}) — 재시도해도 못 풀리므로 남은 "
@@ -393,7 +397,8 @@ def main():
                 "key": cat,
                 "region": region,
                 "period_days": days,
-                "text": text,
+                # 지시문을 따르지 않았거나 이전 결과로 대체된 구간도 알려진 오표기는 표준 표기로 교정
+                "text": normalize_text(text),
                 "n_articles": n_articles,
             })
 

@@ -6,8 +6,9 @@ LLM으로 뉴스클리핑 가이드라인 형식의 요약을 생성해 붙인�
 - 국내(domestic): 맥락 태그([실적],[수주],[리포트],[IR행사],[학회발표],[공시],[인허가] 등)는
   뉴스클리핑_가이드라인.md 그대로 유지하되("ctx" 필드), 요약 자체는 2026-08-20 사용자 요청으로
   1줄 → 2줄로 확장했다(해외와 동일하게). "summary" 필드에 줄바꿈("\n")으로 구분된 2줄 저장.
-- 해외(global): medtech_news_clipping_rules.md의 "2줄 내용 요약" 형식 —
-  대괄호 태그 없이, 영문 기사 내용을 한국어 2줄로 요약. "summary" 필드(줄바꿈 "\n" 포함)로 저장.
+- 해외(global): medtech_news_clipping_rules.md의 "2줄 내용 요약" 형식 — 영문 기사 내용을
+  한국어 2줄로 요약해 "summary" 필드(줄바꿈 "\n" 포함)로 저장. 2026-10-07부터는 국내와 같은
+  어휘의 한글 맥락 태그("ctx")도 함께 만든다(그 전엔 태그 없이 수집 기본값 [News]로 표시됨).
 
 - 요약 provider(둘 중 하나만 설정하면 됨, 둘 다 있으면 Gemini 우선):
   · GEMINI_API_KEY  — Google AI Studio 무료 티어(비용 $0). 신용카드 등록 불필요.
@@ -32,6 +33,8 @@ import os
 import re
 import sys
 import time
+
+from company_names import glossary_text, normalize_text
 
 MAX_ITEMS_PER_CALL = 50  # 한 번의 API 호출에 담는 기사 수 상한.
 # 2026-09-03: Gemini 무료 티어의 실제 하루 호출 한도가 gemini-3.6-flash 기준 20회(RPD)로
@@ -128,19 +131,30 @@ DOMESTIC_SYSTEM = f"""당신은 국내 의료기기/디지털헬스 증권 애�
 출력 형식: [{{"i": 0, "ctx": "...", "summary": "첫째 줄." 또는 "첫째 줄.\\n둘째 줄."}}, {{"i": 1, ...}}, ...]
 입력된 기사 개수와 순서(i)를 정확히 맞춰서 모두 답하세요."""
 
-GLOBAL_SYSTEM = """당신은 한국 증권사 애널리스트를 위한 해외 의료기기/헬스케어 뉴스 요약 보조원입니다.
+# 2026-10-07: 해외도 국내처럼 기사 앞에 [파트너십]/[인허가] 같은 한글 맥락 태그를 붙여달라는
+# 요청 — 그 전엔 해외 프롬프트가 태그 없이 summary만 만들어서, 수집 단계 기본값 "News"가 모든
+# 해외 기사에 그대로 [News]로 찍혔다. 어휘는 국내(DOMESTIC_CTX_EXAMPLES)와 통일한다.
+GLOBAL_SYSTEM = f"""당신은 한국 증권사 애널리스트를 위한 해외 의료기기/헬스케어 뉴스 요약 보조원입니다.
 아래 규칙을 반드시 지켜 JSON 배열만 출력하세요(다른 설명, 마크다운 코드블록 없이 순수 JSON만).
 
-각 기사에 대해 "summary"를 작성하세요: 영문 제목/설명만 근거로 한국어 요약. 각 줄은 "~했음."
-또는 "~함."으로 끝나는 완결된 서술체 문장(25~50자 내외)이어야 합니다(국내 뉴스 요약과 문체
-통일 — "~입니다", "~습니다" 같은 존댓말 종결어미는 쓰지 마세요). 첫 줄은 핵심 사실을 쓰고,
-실제로 더 쓸 배경/세부 내용이 있으면 "\\n"(개행문자)로 구분해 둘째 줄에 이어 쓰세요. 더 쓸
-내용이 없으면 억지로 채우지 말고 첫째 줄만으로 끝내세요. 기사에 없는 내용을 추측하거나
-지어내지 마세요. 단순 주가/자금 흐름만 언급하는 기사는 summary에 "단순 주가/자금흐름 기사"라고
-있는 그대로 쓰세요(추측 금지).
+각 기사에 대해:
+1. "ctx": 기사 내용에 맞는 짧은 한국어 맥락 태그(2~6글자, 대괄호 없이). 예시 어휘: {DOMESTIC_CTX_EXAMPLES}.
+   위 예시에 맞는 게 없으면 내용에 맞는 다른 짧은 한국어 명사형 태그를 새로 만들어도 됩니다
+   (영어 태그, "뉴스"/"News" 같은 의미 없는 태그는 쓰지 마세요).
+2. "summary": 영문 제목/설명만 근거로 한국어 요약. 각 줄은 "~했음." 또는 "~함."으로 끝나는
+   완결된 서술체 문장(25~50자 내외)이어야 합니다(국내 뉴스 요약과 문체 통일 — "~입니다",
+   "~습니다" 같은 존댓말 종결어미는 쓰지 마세요). 첫 줄은 핵심 사실을 쓰고, 실제로 더 쓸
+   배경/세부 내용이 있으면 "\\n"(개행문자)로 구분해 둘째 줄에 이어 쓰세요. 더 쓸 내용이 없으면
+   억지로 채우지 말고 첫째 줄만으로 끝내세요. 기사에 없는 내용을 추측하거나 지어내지 마세요.
+   단순 주가/자금 흐름만 언급하는 기사는 summary에 "단순 주가/자금흐름 기사"라고 있는 그대로
+   쓰세요(추측 금지).
 
-출력 형식: [{"i": 0, "summary": "첫째 줄." 또는 "첫째 줄.\\n둘째 줄."}, {"i": 1, ...}, ...]
+출력 형식: [{{"i": 0, "ctx": "...", "summary": "첫째 줄." 또는 "첫째 줄.\\n둘째 줄."}}, {{"i": 1, ...}}, ...]
 입력된 기사 개수와 순서(i)를 정확히 맞춰서 모두 답하세요."""
+
+# 수집 단계(scrape_news*.py)가 요약 전 임시로 넣는 기본 태그 — 이 값이면 아직 실제 맥락
+# 태그를 못 받은 상태로 본다(화면에서도 이 값은 태그로 표시하지 않는다).
+PLACEHOLDER_CTX = {"News", "뉴스", ""}
 
 
 def parse_json_array(text):
@@ -379,7 +393,7 @@ def summarize_domestic(provider, items, debug=False):
         if ctx:
             it["ctx"] = ctx[:12]
         if summary:
-            it["summary"] = summary[:300]  # 1줄→2줄로 늘리면서 상한도 global과 동일하게 300자로 상향
+            it["summary"] = normalize_text(summary)[:300]  # 1줄→2줄로 늘리면서 상한도 global과 동일하게 300자로 상향
 
     # 2줄 요약으로 늘어난 만큼 항목당 토큰 배분도 global과 동일하게(120→150) 상향.
     max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
@@ -391,10 +405,14 @@ def summarize_global(provider, items, debug=False):
     # 이미 2줄 한국어 요약을 직접 생성해 "summary" 필드를 채워 넣는다 — 여기서 title/desc
     # 만으로 다시 요약하면 오히려 근거가 약한 요약으로 덮어쓰게 되므로, 이미 summary가
     # 채워진 항목은 건너뛴다(비용 절감 + 품질 유지 둘 다 목적).
-    todo = [it for it in items if not (it.get("summary") or "").strip()]
+    # 2026-10-07: 맥락 태그(ctx)가 추가되면서, 요약은 이미 있지만 태그가 아직 기본값("News")인
+    # 기사(검색 그라운딩으로 요약이 미리 채워진 기사 등)도 태그만 받으러 대상에 포함한다 — 이때
+    # 기존 요약은 덮어쓰지 않는다(apply_result 참고).
+    todo = [it for it in items
+            if not (it.get("summary") or "").strip() or (it.get("ctx") or "").strip() in PLACEHOLDER_CTX]
     skipped = len(items) - len(todo)
     if skipped and debug:
-        print(f"[DEBUG] global: 이미 요약이 있는 {skipped}건은 재요약 건너뜀", file=sys.stderr)
+        print(f"[DEBUG] global: 이미 요약·태그가 있는 {skipped}건은 재요약 건너뜀", file=sys.stderr)
     if not todo:
         return
 
@@ -402,12 +420,17 @@ def summarize_global(provider, items, debug=False):
         return {"i": idx, "co": it.get("co", ""), "title": it.get("t", ""), "desc": it.get("desc", "")}
 
     def apply_result(it, r):
+        ctx = str(r.get("ctx") or "").strip()
         summary = str(r.get("summary") or "").strip()
-        if summary:
-            it["summary"] = summary[:300]
+        if ctx and ctx not in PLACEHOLDER_CTX:
+            it["ctx"] = ctx[:12]
+        if summary and not (it.get("summary") or "").strip():
+            it["summary"] = normalize_text(summary)[:300]
 
     max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
-    summarize_batch(provider, todo, GLOBAL_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
+    # 해외 기업 한글 표기를 대시보드(tickers.json) 표기로 맞추도록 표준 표기 목록을 덧붙인다.
+    system = GLOBAL_SYSTEM + glossary_text()
+    summarize_batch(provider, todo, system, max_tokens, build_payload, apply_result, debug=debug)
 
 
 def main():
@@ -448,9 +471,12 @@ def main():
                 print(f"[WARN] 해외 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
 
     # desc는 요약 생성용 내부 필드였으므로(요약이 생성됐든 안 됐든) 화면 노출용
-    # 최종 파일에는 남기지 않는다.
+    # 최종 파일에는 남기지 않는다. 기업명 표기 통일은 이번에 새로 요약하지 않은 기사(검색
+    # 그라운딩으로 요약이 미리 채워진 기사 등)에도 적용한다 — API 호출 없는 단순 치환.
     for it in domestic_items + global_items:
         it.pop("desc", None)
+        if it.get("summary"):
+            it["summary"] = normalize_text(it["summary"])
 
     # 2026-09-14: "단순 주가/자금흐름 기사"(해외)·"이유 설명 없는 단순 주가 등락"(국내)은
     # DOMESTIC_SYSTEM/GLOBAL_SYSTEM 프롬프트가 LLM에게 "내용 없는 기사면 이 문구를 그대로

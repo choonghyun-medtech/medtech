@@ -25,7 +25,8 @@ fetch해 날짜별 원문 조회·카테고리별 AI 월간 분석에 쓴다. ne
   30일까지만 있어 지금 당장은 UI에서 더 긴 기간을 조회할 수 없지만, 나중에 토글을
   늘릴 걸 대비해 파일 자체는 여유 있게 보관해둔다. 매일 실행마다 만료분을 지우므로
   이전처럼 순수 append-only가 아니라, 매번 파일 전체를 다시 읽어 만료분을 걸러내고
-  통째로 다시 쓴다(그래도 기존 줄의 내용 자체를 수정하지는 않는다 — 삭제만 한다).
+  통째로 다시 쓴다(기존 줄의 내용은 원칙적으로 건드리지 않는다 — 예외는 위 백필과, 2026-10-07
+  추가된 요약 속 해외 기업명 표기 통일(company_names.py, "덱스콤"→"덱스컴" 같은 단순 치환)뿐).
 
 사용법:
     python archive_news_snapshot.py --news news.json --history news_history.jsonl
@@ -34,6 +35,12 @@ import argparse
 import datetime
 import json
 import sys
+
+from company_names import normalize_text
+
+# summarize_news.py가 요약 전 임시로 넣는 기본 태그(PLACEHOLDER_CTX와 동일) — 이 값이면 아직
+# 실제 맥락 태그를 못 받은 상태로 본다.
+PLACEHOLDER_CTX = {"News", "뉴스", ""}
 
 RETENTION_DAYS = 365 * 3  # 36개월(3년) 보관 — 실측상 36개월치도 약 22MB라 용량 부담 없음(2026-09-08)
 
@@ -95,6 +102,12 @@ def main():
                         if item.get("ctx"):
                             existing["ctx"] = item.get("ctx")
                         backfilled += 1
+                    # 2026-10-07: 해외 기사도 맥락 태그를 받게 되면서, 요약은 먼저 있었고 태그만
+                    # 나중에 붙는 경우가 생겼다 — 기존 태그가 기본값이면 태그만 백필한다.
+                    elif ((existing.get("ctx") or "").strip() in PLACEHOLDER_CTX
+                          and (item.get("ctx") or "").strip() not in PLACEHOLDER_CTX):
+                        existing["ctx"] = item.get("ctx")
+                        backfilled += 1
                     continue
                 new_records.append({
                     "date": item.get("date", ""),
@@ -113,12 +126,21 @@ def main():
     kept_records = [rec for rec in all_records if rec.get("date", "") >= cutoff]
     expired = len(all_records) - len(kept_records)
 
+    # 2026-10-07: 요약 속 해외 기업 한글 표기를 대시보드 표기로 통일(company_names.py). 매번
+    # 파일 전체를 다시 쓰므로, 이미 쌓인 과거 기사의 오표기("덱스콤" 등)도 여기서 같이 고쳐진다.
+    renamed = 0
+    for rec in kept_records:
+        fixed = normalize_text(rec.get("summary") or "")
+        if fixed != (rec.get("summary") or ""):
+            rec["summary"] = fixed
+            renamed += 1
+
     with open(args.history, "w", encoding="utf-8") as f:
         for rec in kept_records:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
-    print(f"저장 완료: {args.history} 신규 {len(new_records)}건 추가, 뒤늦게 요약된 {backfilled}건 백필, "
-          f"{RETENTION_DAYS}일 초과 {expired}건 삭제 (누적 {len(kept_records)}건)")
+    print(f"저장 완료: {args.history} 신규 {len(new_records)}건 추가, 뒤늦게 요약·태그된 {backfilled}건 백필, "
+          f"기업명 표기 통일 {renamed}건, {RETENTION_DAYS}일 초과 {expired}건 삭제 (누적 {len(kept_records)}건)")
 
 
 if __name__ == "__main__":

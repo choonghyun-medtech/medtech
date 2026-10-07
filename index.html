@@ -401,6 +401,7 @@ tr:last-child td{border-bottom:none}
 .news-cat-h:first-child{margin-top:0}
 .news-co{font-weight:700; margin-right:4px}
 .news-ctx{color:var(--dim); font-weight:600}
+#news-briefing-wrap mark{background:var(--accent-soft); color:var(--accent); font-weight:700; padding:0 2px; border-radius:3px}
 
 /* ---- 글로벌 대시보드 Peer Table (2026-09-15 개편) ----
    기본 table{text-align:left}과 달리 숫자 위주 표라 셀 기본 정렬을 오른쪽으로 바꿔야 하는데,
@@ -1250,6 +1251,15 @@ function escapeHtml(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// 기사 앞 [맥락] 태그. "News"/"뉴스"는 수집 단계가 요약 전에 넣어두는 임시 기본값이라
+// (scripts/summarize_news.py의 PLACEHOLDER_CTX) 아무 정보가 없어 표시하지 않는다 — 2026-10-07
+// 해외 기사도 [파트너십]/[인허가] 같은 실제 태그를 받게 되기 전에 쌓인 과거 기사 대비.
+function newsCtxTag(ctx){
+  const c = String(ctx || '').trim();
+  if(!c || c === 'News' || c === '뉴스') return '';
+  return `<span class="news-ctx">[${escapeHtml(c)}]</span> `;
+}
+
 function renderNewsSection(wrapId, groups){
   const wrap = document.getElementById(wrapId);
   let html = '';
@@ -1266,7 +1276,7 @@ function renderNewsSection(wrapId, groups){
         ? `<div class="news-summary">${escapeHtml(it.summary).replace(/\n/g,'<br>')}</div>`
         : '';
       html += `<div class="news-item">
-        <div class="t"><span class="news-co">${it.co}</span><span class="news-ctx">[${it.ctx}]</span> ${titleHtml}</div>
+        <div class="t"><span class="news-co">${it.co}</span>${newsCtxTag(it.ctx)}${titleHtml}</div>
         ${summaryHtml}
         <div class="meta"><span>${it.date||''}</span><span>${it.src}</span></div>
       </div>`;
@@ -1412,6 +1422,8 @@ function applyNewsFilters(){
   // 뉴스 플로우 섹션도 같은 필터(NEWS_STATE) 기준으로 같이 갱신 — renderNewsFlow는 파일 뒤쪽에
   // 정의돼 있지만 function 선언이라 호이스팅되어 여기서 호출 가능하다.
   if(typeof renderNewsFlow === 'function') renderNewsFlow();
+  // 브리핑도 같은 검색어/섹터/기업 필터를 따른다(2026-10-07 — 그 전엔 필터와 무관하게 전체 표시).
+  if(typeof renderMonthlyBriefing === 'function') renderMonthlyBriefing();
 }
 
 // 뉴스 플로우 전용 기간 필터(오늘/7일/30일) — 오늘의 클리핑에는 더 이상 적용되지 않는다.
@@ -1916,14 +1928,87 @@ function filterNewsHistory(){
 // 위해 문장 나열 대신 개조식 불릿으로 바꿔달라는 사용자 요청). 혹시 구버전 news_trend.json이
 // 캐시돼 있어 줄바꿈 없는 문단 형태로 남아있는 경우에도 깨지지 않도록, 줄이 하나뿐이면
 // 문단 그대로 보여준다.
-function renderBriefingBullets(text){
-  const lines = String(text || '').split('\n').map(l=>l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+function briefingLines(text){
+  return String(text || '').split('\n').map(l=>l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+}
+// terms가 주어지면 해당 단어를 <mark>로 강조한다(브리핑 기업/키워드 검색용).
+function renderBriefingBullets(text, terms){
+  const lines = briefingLines(text);
+  const fmt = l => highlightTerms(escapeHtml(l), terms);
   if(lines.length <= 1){
-    return `<div style="font-size:13px;line-height:1.7">${escapeHtml(text || '')}</div>`;
+    return `<div style="font-size:13px;line-height:1.7">${fmt(lines[0] || '')}</div>`;
   }
   return `<ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">${
-    lines.map(l=>`<li>${escapeHtml(l)}</li>`).join('')
+    lines.map(l=>`<li>${fmt(l)}</li>`).join('')
   }</ul>`;
+}
+
+// ---- 브리핑 기업·키워드 검색(2026-10-07, 사수 피드백) ----
+// 브리핑은 섹터 단위 AI 종합이라 기업별 브리핑이 따로 없다(호출량 문제로 뺐음 — 위 주석 참고).
+// 대신 섹터 브리핑 문장에 기업명이 직접 들어가 있으므로, 위 검색어/기업 드롭다운과 일치하는
+// 문장만 골라 보여준다(추가 AI 호출 없음). 해외 브리핑 본문은 "보스턴 사이언티픽"처럼 한글
+// 사명으로 쓰이는데 드롭다운(NEWS_TRACKED_GLOBAL)은 영문 키라, 한글 표기로 연결한다.
+// 표기는 scripts/company_names_ko.json 하나로 관리한다(AI 요약·브리핑 지시문과 자동 교정도 같은
+// 파일을 씀 — scripts/company_names.py). 표준 한글명은 tickers.json의 name(대시보드 표기)이고,
+// 약칭(short)과 예전 오표기(variants — 교정 전 쌓인 텍스트 대비)도 검색어에 포함한다.
+// 새 해외 기업을 NEWS_TRACKED_GLOBAL에 추가하면 company_names_ko.json에도 한 줄 넣을 것.
+let NEWS_BRIEFING_NAME_ALIASES = {};
+async function loadCompanyNamesKo(){
+  try{
+    const [namesRes, tickersRes] = await Promise.all([
+      fetch('scripts/company_names_ko.json', {cache:'no-store'}),
+      fetch('scripts/tickers.json', {cache:'no-store'}),
+    ]);
+    if(!namesRes.ok) throw new Error('HTTP '+namesRes.status);
+    const names = await namesRes.json();
+    const tickerName = {};
+    if(tickersRes.ok) (await tickersRes.json()).forEach(t=>{ tickerName[t.ticker] = t.name; });
+    const aliases = {};
+    (names.companies || []).forEach(c=>{
+      const tn = tickerName[c.ticker];
+      const ko = tn && /[가-힣]/.test(tn) ? tn : c.ko;
+      aliases[c.en] = [ko, ...(c.short || []), ...Object.keys(c.variants || {})].filter(Boolean);
+    });
+    Object.entries(names.domestic_aliases || {}).forEach(([k, v])=>{ if(Array.isArray(v)) aliases[k] = v; });
+    NEWS_BRIEFING_NAME_ALIASES = aliases;
+  }catch(e){
+    NEWS_BRIEFING_NAME_ALIASES = {}; // 실패해도 영문/국내 기업명 그대로는 검색됨
+  }
+  if(NEWS_STATE.q || NEWS_STATE.company) renderMonthlyBriefing();
+}
+loadCompanyNamesKo();
+
+function regexEscape(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+// 2글자 이하 한글 사명("디오", "고영" 등)은 "스튜디오"처럼 다른 단어 안에 섞여 잘못 걸리기
+// 쉬워서, 바로 앞 글자가 한글이 아닐 때만 일치로 본다.
+function termPattern(term){
+  const short = term.length <= 2 && /^[가-힣]+$/.test(term);
+  return (short ? '(?<![가-힣])' : '') + regexEscape(term);
+}
+function textHasTerm(text, term){ return new RegExp(termPattern(term), 'i').test(text); }
+// "가던트 헬스"/"가던트"처럼 겹치는 표기가 이중으로 감싸지지 않도록, 긴 표기부터 하나의
+// 정규식으로 묶어 한 번에 강조한다.
+function highlightTerms(html, terms){
+  const pats = [...new Set((terms || []).map(t=>escapeHtml(t)).filter(Boolean))]
+    .sort((a,b)=>b.length - a.length).map(termPattern);
+  if(!pats.length) return html;
+  return html.replace(new RegExp(pats.join('|'), 'gi'), '<mark>$&</mark>');
+}
+
+function companyBriefingTerms(co){
+  return [co, ...(NEWS_BRIEFING_NAME_ALIASES[co] || [])];
+}
+// 검색어가 추적 기업명(영문 키 또는 한글 별칭)의 일부면 그 기업의 모든 표기로 넓혀서 찾는다
+// — "stryker"로 검색해도 본문의 "스트라이커"가 걸리게. 앞부분 일치만 보는 이유: "AI" 같은 일반
+// 키워드가 "Tempus AI"/"Figure AI"에 걸려 엉뚱한 기업 표기까지 넓혀지는 걸 막으려고.
+function queryBriefingTerms(q){
+  const ql = q.toLowerCase();
+  const terms = new Set([q]);
+  newsAllCompanies().forEach(co=>{
+    const all = companyBriefingTerms(co);
+    if(all.some(t=>t.toLowerCase().startsWith(ql))) all.forEach(t=>terms.add(t));
+  });
+  return [...terms];
 }
 
 // 브리핑 — 카테고리를 따로 선택하지 않아도 현재 국내/해외 토글 + 주간/월간 토글 기준
@@ -1943,15 +2028,68 @@ function renderMonthlyBriefing(){
     wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 ${periodLabel} 브리핑이 없습니다(최근 ${NEWS_BRIEFING_PERIOD_DAYS}일 기사가 섹터당 기준 건수 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
     return;
   }
-  wrap.innerHTML = matches.map(t=>`
+
+  const card = (t, bodyHtml, extraNote) => `
     <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
       <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <span style="font-size:15px;font-weight:800;color:var(--accent);letter-spacing:-0.2px">🧭 ${escapeHtml(t.key)}</span>
-        <span class="note">최근 ${t.period_days}일 AI 분석 · 기사 ${t.n_articles}건 근거</span>
+        <span class="note">최근 ${t.period_days}일 AI 분석 · 기사 ${t.n_articles}건 근거${extraNote || ''}</span>
       </div>
-      ${renderBriefingBullets(t.text)}
-    </div>
-  `).join('');
+      ${bodyHtml}
+    </div>`;
+
+  // 위 공통 필터(섹터/기업/검색어) 적용. 섹터는 카드 단위로, 기업·검색어는 문장 단위로 거른다.
+  const q = NEWS_STATE.q.trim();
+  const co = NEWS_STATE.company;
+  const scoped = NEWS_STATE.category ? matches.filter(t=>t.key === NEWS_STATE.category) : matches;
+  if(!q && !co){
+    wrap.innerHTML = scoped.length
+      ? scoped.map(t=>card(t, renderBriefingBullets(t.text))).join('')
+      : `<div class="note" style="padding:8px 0">${escapeHtml(NEWS_STATE.category)} 섹터의 ${periodLabel} 브리핑이 없습니다.</div>`;
+    return;
+  }
+
+  const coTerms = co ? companyBriefingTerms(co) : null;
+  const qTerms = q ? queryBriefingTerms(q) : null;
+  const hit = line => (!coTerms || coTerms.some(x=>textHasTerm(line, x)))
+                   && (!qTerms || qTerms.some(x=>textHasTerm(line, x)));
+  const terms = [...(coTerms || []), ...(qTerms || [])];
+  const label = [co, q && `"${q}"`].filter(Boolean).join(' · ');
+
+  let nLines = 0;
+  const cards = [];
+  scoped.forEach(t=>{
+    const lines = briefingLines(t.text);
+    const hits = lines.filter(hit);
+    if(!hits.length) return;
+    nLines += hits.length;
+    // 일치한 문장만 보여주고, 섹터 전체 흐름은 펼쳐서 볼 수 있게 남겨둔다.
+    const rest = lines.length > hits.length
+      ? `<details style="margin-top:6px"><summary class="note" style="cursor:pointer">섹터 브리핑 전체 보기 (${lines.length}개 문장)</summary>${renderBriefingBullets(t.text, terms)}</details>`
+      : '';
+    cards.push(card(t, renderBriefingBullets(hits.map(l=>'- '+l).join('\n'), terms) + rest, ` · ${escapeHtml(label)} 관련 ${hits.length}개 문장`));
+  });
+
+  // 기업을 골랐는데 그 기업이 현재 국내/해외 토글과 다른 쪽 트래킹 기업이면 안내.
+  const coRegion = co ? (NEWS_TRACKED_DOMESTIC[co] ? 'domestic' : NEWS_TRACKED_GLOBAL[co] ? 'global' : null) : null;
+  const regionHint = coRegion && coRegion !== NEWS_STATE.region
+    ? ` ${escapeHtml(co)}은(는) ${coRegion === 'domestic' ? '국내' : '해외'} 뉴스 트래킹 기업이라 위 "${coRegion === 'domestic' ? '국내' : '해외'} 뉴스" 토글로 바꿔야 보입니다.`
+    : '';
+
+  let html = `<div class="note" style="margin-bottom:10px">${
+    nLines ? `${escapeHtml(label)} 관련 브리핑 문장 ${nLines}개 (섹터 ${cards.length}곳)`
+           : `${periodLabel} 브리핑 본문에 ${escapeHtml(label)} 관련 언급이 없습니다. 브리핑은 섹터 단위 AI 종합이라 그 기간 비중이 작은 기업은 빠질 수 있어요 — 개별 기사는 "뉴스 아카이브" 탭에서 확인하세요.${regionHint}`
+  }</div>`;
+  html += cards.join('');
+
+  // 기업을 골랐는데 직접 언급이 없으면, 그 기업이 속한 섹터 브리핑 전체를 참고로 보여준다.
+  const coCat = co && coRegion === NEWS_STATE.region
+    ? (coRegion === 'domestic' ? NEWS_TRACKED_DOMESTIC[co] : NEWS_TRACKED_GLOBAL[co]) : null;
+  if(!nLines && coCat){
+    const t = matches.find(x=>x.key === coCat);
+    if(t) html += card(t, renderBriefingBullets(t.text), ` · ${escapeHtml(co)} 소속 섹터 참고`);
+  }
+  wrap.innerHTML = html;
 }
 (function initNewsBriefingPeriodToggle(){
   const toggle = document.getElementById('news-briefing-period-toggle');
@@ -1987,7 +2125,7 @@ function renderNewsFlowList(filtered){
     const items = byDate[d];
     html += `<div class="news-cat-h">${d} <span class="note">(${items.length}건)</span></div><div class="card" style="padding:0 16px">`;
     items.forEach(r=>{
-      const ctxTag = r.ctx ? `<span class="news-ctx">[${escapeHtml(r.ctx)}]</span> ` : '';
+      const ctxTag = newsCtxTag(r.ctx);
       const titleHtml = r.url
         ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
         : escapeHtml(r.t);
@@ -6975,7 +7113,7 @@ function renderSnapshot(ticker){
       const titleHtml = it.url
         ? `<a href="${it.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(it.t)}</a>`
         : escapeHtml(it.t);
-      const ctxTag = it.ctx ? `<span class="news-ctx">[${escapeHtml(it.ctx)}]</span> ` : '';
+      const ctxTag = newsCtxTag(it.ctx);
       return `<div class="news-item">
         <div class="t">${ctxTag}${titleHtml}</div>
         <div class="meta"><span>${it.date||''}</span></div>
