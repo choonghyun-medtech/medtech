@@ -1058,8 +1058,10 @@ tr:last-child td{border-bottom:none}
       <div class="note" id="rev-range-note" style="margin:-4px 0 10px"></div>
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+        <!-- 2026-10-07: 2주 제거 — 1주와 1개월 사이 값이라 새로 알려주는 게 적었다. 1주는 실적 발표
+             직후 수정, 1개월·3개월은 추세를 보는 용도. -->
         <div class="toggle" id="rev-period-toggle">
-          <button data-days="7">1주</button><button data-days="14">2주</button><button data-days="30" class="active">1개월</button><button data-days="90">3개월</button>
+          <button data-days="7">1주</button><button data-days="30" class="active">1개월</button><button data-days="90">3개월</button>
         </div>
         <div class="toggle" id="rev-metric-toggle">
           <button data-metric="eps" class="active">EPS</button><button data-metric="rev">매출</button><button data-metric="op">영업이익</button><button data-metric="tp">목표주가</button>
@@ -1074,7 +1076,6 @@ tr:last-child td{border-bottom:none}
           <option value="KR">국내</option>
           <option value="GLOBAL">해외</option>
         </select>
-        <select id="rev-sector-filter" class="filter-select"><option value="all">섹터 전체</option></select>
         <label class="note" style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="rev-min-coverage" checked> 해외는 커버 애널리스트 3인 이상만</label>
       </div>
       <div class="note" id="rev-metric-note" style="margin:0 0 10px"></div>
@@ -1082,13 +1083,20 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h" style="margin:6px 0 6px"><h2 style="font-size:13px">리비전 방향</h2><span class="note" id="rev-breadth-note"></span></div>
       <div id="rev-breadth-wrap" style="margin-bottom:16px"></div>
 
-      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">상향 / 하향 Top 10</h2><span class="note">종목을 클릭하면 아래에 추이 차트가 표시됩니다</span></div>
+      <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">상향 / 하향 Top 10</h2><span class="note">종목을 클릭하면 아래에 추이 차트가 표시됩니다 · Top 10 밖 종목은 아래 종목별 추이에서 검색</span></div>
       <div id="rev-table-wrap"></div>
 
-      <div class="sec-h" style="margin:20px 0 6px"><h2 style="font-size:13px">종목별 추이 <span class="note" id="rev-detail-label"></span></h2>
-        <input id="rev-search-input" class="filter-select" style="width:200px" placeholder="종목명 또는 티커 검색..." list="rev-search-list" autocomplete="off" />
-        <datalist id="rev-search-list"></datalist>
+      <!-- 2026-10-07 사수 피드백("Top 10에 안 들어가도 보고 싶다, 특히 국내"): 검색창이 있었지만
+           자동완성 항목을 정확히 골라야만 동작해 이름만 치고 Enter로는 안 됐다 — 이름·티커·종목코드
+           일부로도 찾게 하고, 국내/해외 빠른 선택 목록(select)을 같이 둔다. -->
+      <div class="sec-h" style="margin:20px 0 6px;flex-wrap:wrap;gap:8px"><h2 style="font-size:13px">종목별 추이 <span class="note" id="rev-detail-label"></span></h2>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <input id="rev-search-input" class="filter-select" style="width:220px" placeholder="종목명·티커 검색" list="rev-search-list" autocomplete="off" />
+          <datalist id="rev-search-list"></datalist>
+          <select id="rev-pick-select" class="filter-select" style="max-width:220px"><option value="">전체 종목에서 고르기</option></select>
+        </div>
       </div>
+      <div class="note" id="rev-search-msg" style="margin:-2px 0 8px" hidden></div>
       <div class="cards" id="rev-detail-cards"></div>
       <div class="note" id="rev-detail-note" style="margin:0 0 8px"></div>
       <div class="chart-box" id="rev-detail-chart-box"><canvas id="revDetailChart"></canvas></div>
@@ -7565,7 +7573,10 @@ loadBioReports();
 // ==================================================================
 let CONS_HIST = null;
 let revDetailChartInstance = null;
-const REV_STATE = { days:30, metric:'eps', fy:1, region:'all', sector:'all', minCov:true, detail:null };
+// 2026-10-07: 섹터 필터·섹터별 리비전 막대 제거(사수 질문 "섹터별 분석이 의미 있나" 검토 결과) —
+// 전부 메드텍 한 업종이고, 섹터로 쪼개면 국내는 미용 외엔 1~3종목뿐, 국내·해외가 같은 섹터명에
+// 섞여 해석이 어려웠다. 전체 + 국내/해외 구분 + 종목 검색으로 본다.
+const REV_STATE = { days:30, metric:'eps', fy:1, region:'all', minCov:true, detail:null };
 const REV_METRIC_META = {
   eps: { label:'EPS' },
   rev: { label:'매출' },
@@ -7624,7 +7635,6 @@ function revComputeRows(){
     if(REV_STATE.region === 'KR' && h.market !== 'KR') return;
     if(REV_STATE.region === 'GLOBAL' && h.market === 'KR') return;
     const sm = revStockMeta(ticker, h);
-    if(REV_STATE.sector !== 'all' && sm.sector !== REV_STATE.sector) return;
     const cov = revLastNonNull(h.n);
     if(REV_STATE.minCov && h.market !== 'KR' && (cov == null || cov < REV_MIN_COVERAGE)) return;
     const s = revSeriesFor(h, REV_STATE.metric, REV_STATE.fy);
@@ -7691,25 +7701,10 @@ function renderRevBreadth(rows){
   };
   const all = count(rows);
   if(note) note.textContent = `${rows.length}종목 · ±${REV_FLAT_PCT}% 미만은 변화 없음`;
-  const bySector = {};
-  rows.forEach(r=>{ (bySector[r.sector] = bySector[r.sector] || []).push(r); });
-  const sectorRows = Object.entries(bySector)
-    .filter(([, list])=>list.length >= 3)
-    .map(([sector, list])=>({ sector, c:count(list), n:list.length }))
-    .sort((a,b)=> (b.c.up-b.c.down)/b.n - (a.c.up-a.c.down)/a.n);
   const label = (c) => `<span style="color:${REV_UP_COLOR};font-weight:700">상향 ${c.up}</span><span class="note"> · </span><span style="color:${REV_FLAT_COLOR};font-weight:700">변화 없음 ${c.flat}</span><span class="note"> · </span><span style="color:${REV_DOWN_COLOR};font-weight:700">하향 ${c.down}</span>`;
   wrap.innerHTML = `
     ${revBreadthBarHtml(all.up, all.flat, all.down, 20)}
     <div style="margin-top:8px; font-size:13px">${label(all)}</div>
-    ${sectorRows.length > 1 && REV_STATE.sector === 'all' ? `
-    <div style="margin-top:14px; display:grid; grid-template-columns:minmax(90px,150px) 1fr auto; gap:6px 10px; align-items:center; font-size:12px">
-      ${sectorRows.map(s=>`
-        <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis" title="${escapeHtml(s.sector)}">${escapeHtml(s.sector)} <span class="note">(${s.n})</span></div>
-        ${revBreadthBarHtml(s.c.up, s.c.flat, s.c.down, 10)}
-        <div class="note" style="white-space:nowrap"><span style="color:${REV_UP_COLOR}">▲${s.c.up}</span> <span style="color:${REV_DOWN_COLOR}">▼${s.c.down}</span></div>
-      `).join('')}
-    </div>
-    <div class="note" style="margin-top:6px; font-size:10.5px">섹터는 3종목 이상만, (상향−하향) 비율이 높은 순</div>` : ''}
   `;
 }
 function renderRevTables(rows){
@@ -7720,8 +7715,10 @@ function renderRevTables(rows){
   const down = rows.filter(r=>revDirection(r.pct) === 'down').sort((a,b)=>a.pct-b.pct).slice(0,10);
   // 상세 종목이 없거나, 지표를 바꿔 그 종목엔 해당 지표가 없게 되면(예: 해외 종목 선택 중
   // 영업이익으로 전환) 상향 1위(없으면 하향 1위)로 바꿔 보여준다.
+  // 검색·클릭으로 직접 고른 종목(detailPinned)은 지표에 값이 없어도 바꾸지 않는다 — 아래 상세에
+  // "이 지표는 국내 미제공" 같은 안내가 뜨는 게, 엉뚱한 종목으로 튀는 것보다 낫다.
   const curH = REV_STATE.detail && CONS_HIST.stocks[REV_STATE.detail];
-  if(!curH || !revSeriesFor(curH, metric, 1)){
+  if(!curH || (!REV_STATE.detailPinned && !revSeriesFor(curH, metric, 1))){
     const first = up[0] || down[0];
     if(first) REV_STATE.detail = first.ticker;
   }
@@ -7751,6 +7748,7 @@ function renderRevTables(rows){
   wrap.querySelectorAll('.rev-row').forEach(tr=>{
     tr.addEventListener('click', ()=>{
       REV_STATE.detail = tr.dataset.ticker;
+      REV_STATE.detailPinned = true;
       renderRevTables(rows);
       renderRevDetail();
       document.getElementById('rev-detail-label').scrollIntoView({behavior:'smooth', block:'center'});
@@ -7817,7 +7815,7 @@ function renderRevDetail(){
     note.textContent = meta.krOnly ? `${meta.label} 컨센서스는 국내 종목만 제공됩니다.` : meta.globalOnly ? `${meta.label}는 해외 종목만 제공됩니다(국내 소스 미제공).` : `이 종목은 ${meta.label} 컨센서스가 없습니다.`;
     return;
   }
-  // 차트 기간은 위의 기간 선택(1주/2주/1개월/3개월)과 연동 — 표의 "기준 → 현재"와 같은 구간을 보여준다.
+  // 차트 기간은 위의 기간 선택(1주/1개월/3개월)과 연동 — 표의 "기준 → 현재"와 같은 구간을 보여준다.
   const b0 = revBaseIndex().idx;
   const winDates = dates.slice(b0);
   const unit = revAxisUnit(metric, h.market, sm.currency);
@@ -7859,7 +7857,7 @@ function renderRevision(){
   const { rows, excludedNeg, base } = revComputeRows();
 
   const rangeNote = document.getElementById('rev-range-note');
-  const periodLabel = {7:'1주', 14:'2주', 30:'1개월', 90:'3개월'}[REV_STATE.days];
+  const periodLabel = {7:'1주', 30:'1개월', 90:'3개월'}[REV_STATE.days];
   rangeNote.innerHTML = `${revShortDate(dates[base.idx])} 대비 ${revShortDate(dates[dates.length-1])} 기준`
     + (base.insufficient ? ` · <span style="color:#d97706;font-weight:600">이력이 ${dates.length}일치(${revShortDate(dates[0])}~)뿐이라 ${periodLabel} 대신 첫날 대비로 계산</span>` : '')
     + ` · 이력 ${revShortDate(dates[0])}부터 매일 누적 · ${updatedLabel(CONS_HIST.updated)}`;
@@ -7880,14 +7878,70 @@ function renderRevision(){
 }
 
 function populateRevFilters(){
-  const sectors = new Set();
-  Object.entries(CONS_HIST.stocks).forEach(([t, h])=>sectors.add(revStockMeta(t, h).sector));
-  const sel = document.getElementById('rev-sector-filter');
-  const cur = sel.value;
-  sel.innerHTML = '<option value="all">섹터 전체</option>' + [...sectors].filter(s=>s!=='-').sort((a,b)=>a.localeCompare(b,'ko')).map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-  if([...sel.options].some(o=>o.value===cur)) sel.value = cur;
-  document.getElementById('rev-search-list').innerHTML = Object.entries(CONS_HIST.stocks)
-    .map(([t, h])=>`<option value="${escapeHtml(revStockMeta(t, h).name)} (${t})"></option>`).join('');
+  // 검색 자동완성·빠른 선택 목록 — 컨센서스 값이 하나라도 있는 종목만(국내 일부는 커버 애널리스트가
+  // 없어 이력이 전부 비어 있다). 빠른 선택은 국내/해외로 나눠 이름순.
+  const list = revSearchableStocks();
+  document.getElementById('rev-search-list').innerHTML = list
+    .map(s=>`<option value="${escapeHtml(s.name)} (${s.ticker})"></option>`).join('');
+  const group = (label, items) => items.length
+    ? `<optgroup label="${label} (${items.length})">${items.map(s=>`<option value="${s.ticker}">${escapeHtml(s.name)} · ${s.ticker}</option>`).join('')}</optgroup>` : '';
+  document.getElementById('rev-pick-select').innerHTML = '<option value="">전체 종목에서 고르기</option>'
+    + group('국내', list.filter(s=>s.market === 'KR')) + group('해외', list.filter(s=>s.market !== 'KR'));
+}
+
+function revHasAnyData(h){
+  if(h.market !== 'KR' && (h.tp || []).some(v=>v!=null)) return true;
+  return ['eps','rev','op'].some(m=>Object.values(h[m] || {}).some(a=>a.some(v=>v!=null)));
+}
+function revSearchableStocks(){
+  return Object.entries(CONS_HIST.stocks)
+    .filter(([, h])=>revHasAnyData(h))
+    .map(([t, h])=>({ ticker:t, name:revStockMeta(t, h).name, market:h.market }))
+    .sort((a,b)=>a.name.localeCompare(b.name, 'ko'));
+}
+// 검색어 → 종목. 자동완성 형식 "이름 (티커)", 티커 전체/앞부분("096530"), 이름 일치, 이름·티커 일부 순으로 찾는다.
+// 반환: {ticker} | {candidates:[...]} (여러 개) | {noData:이름} (유니버스엔 있지만 컨센서스 없음) | null
+function revResolveSearch(raw){
+  const q = String(raw || '').trim();
+  if(!q) return null;
+  const m = q.match(/\(([^()]+)\)\s*$/);
+  if(m && CONS_HIST.stocks[m[1]]) return { ticker:m[1] };
+  const ql = q.toLowerCase();
+  const list = revSearchableStocks();
+  const exact = list.filter(s=>s.ticker.toLowerCase() === ql || s.ticker.split('.')[0].toLowerCase() === ql || s.name.toLowerCase() === ql);
+  if(exact.length === 1) return { ticker:exact[0].ticker };
+  const partial = exact.length ? exact
+    : list.filter(s=>s.name.toLowerCase().includes(ql) || s.ticker.toLowerCase().includes(ql));
+  if(partial.length === 1) return { ticker:partial[0].ticker };
+  if(partial.length > 1) return { candidates:partial.slice(0, 8) };
+  const u = (TICKER_UNIVERSE || []).find(t=>t.name.toLowerCase().includes(ql) || t.ticker.toLowerCase().includes(ql));
+  if(u) return { noData:stockDisplayName(u.ticker) };
+  return null;
+}
+function revSelectDetail(ticker){
+  REV_STATE.detail = ticker;
+  REV_STATE.detailPinned = true;
+  const msg = document.getElementById('rev-search-msg');
+  if(msg) msg.hidden = true;
+  renderRevision();
+}
+function revRunSearch(input){
+  const r = revResolveSearch(input.value);
+  const msg = document.getElementById('rev-search-msg');
+  if(r && r.ticker){ input.value = ''; revSelectDetail(r.ticker); return; }
+  if(!input.value.trim()){ msg.hidden = true; return; }
+  msg.hidden = false;
+  if(r && r.candidates){
+    msg.innerHTML = `여러 종목이 해당돼요: ` + r.candidates.map(s=>
+      `<a href="#" class="rev-cand" data-ticker="${s.ticker}" style="margin-right:8px">${escapeHtml(s.name)} <span class="market-badge">${s.market}</span></a>`).join('');
+    msg.querySelectorAll('.rev-cand').forEach(a=>a.addEventListener('click', e=>{
+      e.preventDefault(); input.value = ''; revSelectDetail(a.dataset.ticker);
+    }));
+  }else if(r && r.noData){
+    msg.textContent = `${r.noData}은(는) 추적 종목이지만 컨센서스 데이터가 없습니다(커버 애널리스트 없음 등).`;
+  }else{
+    msg.textContent = `"${input.value.trim()}"에 해당하는 종목을 찾지 못했습니다.`;
+  }
 }
 
 (function setupRevisionControls(){
@@ -7906,16 +7960,14 @@ function populateRevFilters(){
   bindToggle('rev-metric-toggle', 'metric', v=>{ REV_STATE.metric = v; });
   bindToggle('rev-fy-toggle', 'fy', v=>{ REV_STATE.fy = parseInt(v, 10); });
   document.getElementById('rev-region-filter').addEventListener('change', e=>{ REV_STATE.region = e.target.value; renderRevision(); });
-  document.getElementById('rev-sector-filter').addEventListener('change', e=>{ REV_STATE.sector = e.target.value; renderRevision(); });
   document.getElementById('rev-min-coverage').addEventListener('change', e=>{ REV_STATE.minCov = e.target.checked; renderRevision(); });
-  document.getElementById('rev-search-input').addEventListener('change', e=>{
-    const m = (e.target.value || '').match(/\(([^()]+)\)\s*$/);
-    const ticker = m ? m[1] : e.target.value.trim();
-    if(CONS_HIST && CONS_HIST.stocks[ticker]){
-      REV_STATE.detail = ticker;
-      e.target.value = '';
-      renderRevision();
-    }
+  // 자동완성 항목 선택·포커스 이동(change)과 Enter 둘 다로 검색한다.
+  const searchInput = document.getElementById('rev-search-input');
+  searchInput.addEventListener('change', ()=>{ if(CONS_HIST) revRunSearch(searchInput); });
+  searchInput.addEventListener('keydown', e=>{ if(e.key === 'Enter' && CONS_HIST){ e.preventDefault(); revRunSearch(searchInput); } });
+  document.getElementById('rev-pick-select').addEventListener('change', e=>{
+    if(e.target.value && CONS_HIST) revSelectDetail(e.target.value);
+    e.target.value = '';
   });
   // 하위 탭이 숨겨진(display:none) 상태에서 그린 Chart.js 캔버스는 크기가 0으로 잡히므로,
   // 하위 탭을 처음 열 때 다시 그린다.
@@ -7948,11 +8000,11 @@ loadConsensusHistory();
 let SUP_DATA = null;
 let supDistChartInstance = null;
 const SUP_STATE = { season:null, region:'KR', sector:'all', sort:'date' };
-// 판정 용어는 국내·해외 모두 Beat / In-line / Miss로 통일. 기준 폭만 다르다(국내 영업이익은 변동성이
-// 커서 ±10% — 국내 관행, 해외 EPS는 ±5%).
+// 판정 용어는 국내·해외 모두 Beat / In-line / Miss로 통일. 기준 폭도 국내·해외 모두 ±5%
+// (2026-10-07 사용자 요청 — 그 전엔 국내 영업이익만 변동성을 이유로 ±10%였다).
 const SUP_LABELS = { beat:'Beat', inline:'In-line', miss:'Miss' };
 const SUP_RULES = {
-  KR:     { metric:'op',  label:'영업이익', band:10 },
+  KR:     { metric:'op',  label:'영업이익', band:5 },
   GLOBAL: { metric:'eps', label:'EPS',     band:5 },
 };
 const SUP_REV_BAND = 3;     // 매출 차이 색 표시 기준(%)
@@ -8072,8 +8124,8 @@ function renderSurprise(){
   const season = SUP_STATE.season;
   const rule = SUP_RULES[SUP_STATE.region];
   document.getElementById('sup-rule-note').textContent =
-    `판정: ${rule.label}가 발표 직전 컨센서스 대비 +${rule.band}% 이상 Beat, -${rule.band}% 이하 Miss, 그 사이 In-line`
-    + (SUP_STATE.region === 'KR' ? ' (국내는 영업이익 변동성이 커 ±10% 적용) · 금액 단위 억원' : ' · 반기 실적만 내는 일부 유럽·홍콩·중국 기업은 빠짐')
+    `판정: ${rule.label}${SUP_STATE.region === 'KR' ? '이' : '가'} 발표 직전 컨센서스 대비 +${rule.band}% 이상 Beat, -${rule.band}% 이하 Miss, 그 사이 In-line`
+    + (SUP_STATE.region === 'KR' ? ' · 금액 단위 억원' : ' · 반기 실적만 내는 일부 유럽·홍콩·중국 기업은 빠짐')
     + ' · 컨센서스가 0 이하(적자 예상)면 판정 제외';
 
   const reported = [], noCons = [], negEst = [];
