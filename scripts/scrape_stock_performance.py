@@ -289,7 +289,35 @@ def _yf_close(symbol):
     if hist is None or hist.empty:
         return None, t
     close = hist["Close"].dropna()
-    return (close if not close.empty else None), t
+    if close.empty:
+        return None, t
+    return _fill_last_close_from_meta(close, t), t
+
+
+def _fill_last_close_from_meta(close, t):
+    """[2026-10-07] 야후 일봉이 유럽 대륙 거래소(.PA/.SW/.DE/.MI 등)의 당일 종가를 장 마감
+    후에도 한참(다음날 아침까지) Close=NaN으로 두는 문제 보완. 위에서 dropna()로 그 행이
+    빠지면 최신 종가가 전일로 남아, 매일 저녁 수집 때 유럽 종목만 하루씩 밀렸다(CH/DE/FR
+    as_of가 늘 하루 늦음 — 블룸버그 대비 비오메리외 +1.8 vs +2.5 등). 같은 응답 메타데이터의
+    regularMarketPrice/regularMarketTime에는 공식 종가가 이미 들어 있어(실측: BIM.PA 10/6
+    15:35 UTC 80.1) 그 날짜 일봉이 비어 있으면 그 값으로 채운다. 아직 장중이면 이 값은
+    현재가이지만, 뒤이은 drop_unfinished_session이 마감 전 '오늘' 행을 버리므로 안전하다."""
+    try:
+        meta = t.history_metadata or {}
+        price, mtime = meta.get("regularMarketPrice"), meta.get("regularMarketTime")
+        if not price or mtime is None:
+            return close
+        tz = close.index.tz or "UTC"
+        ts = pd.Timestamp(mtime, unit="s", tz="UTC") if isinstance(mtime, (int, float)) else pd.Timestamp(mtime)
+        ts = (ts.tz_localize("UTC") if ts.tzinfo is None else ts).tz_convert(tz)
+        if ts.date() <= close.index[-1].date():
+            return close
+        day = ts.normalize()
+        if close.index.tz is None:
+            day = day.tz_localize(None)
+        return pd.concat([close, pd.Series([float(price)], index=pd.DatetimeIndex([day]))])
+    except Exception:
+        return close
 
 
 def _fetch_close_series(item):
