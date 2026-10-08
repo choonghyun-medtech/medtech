@@ -476,10 +476,9 @@ tr:last-child td{border-bottom:none}
 .gd-chip .ret{font-variant-numeric:tabular-nums}
 .gd-chip.on .ret.pos{color:var(--red)} .gd-chip.on .ret.neg{color:var(--blue)}
 .gd-chip.hl{box-shadow:0 0 0 2px var(--accent)}
-.gd-trend-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-.gd-trend-grid .chart-box{height:340px}
+.gd-trend-grid{display:grid; grid-template-columns:1fr; gap:10px}
+.gd-trend-grid .chart-box{height:380px}
 .gd-trend-grid h3{font-size:12.5px; margin:0 0 6px; color:var(--sub); font-weight:600}
-@media (max-width:900px){.gd-trend-grid{grid-template-columns:1fr}}
 /* 글로벌 Watch List(2026-10-07 초안) — 세부섹터 모멘텀 + 눈여겨볼 종목 스크리닝 */
 .gw-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px}
 .gw-seg{display:flex; gap:4px; flex-wrap:wrap}
@@ -3875,11 +3874,11 @@ function gdRenderAnalysis(rows, currency){
 }
 
 // ---- 선택 기업 주가 추이 (2026-10-07 사수 피드백) ----
-// 필터에 걸린 기업들의 주가 흐름을 두 차트로 보여준다.
-//  - 왼쪽: 시가총액 누적 영역 — 그룹 전체 몸집 변화와 기업별 비중
-//  - 오른쪽: 기간 시작점 시총=100 상대 성과 — 규모가 다른 기업을 같은 출발선에서 비교
-// 과거 시총은 저장된 게 없어 "현재 시총(global_dashboard.json) × 그날 종가 ÷ 최신 종가"로
-// 역산한다(기간 중 주식수 변화는 무시 — 1년 이내라 오차 작음). 종가는 stock_performance.json
+// 필터에 걸린 기업들의 기간 시작점 시총=100 상대 성과를 보여준다 — 규모가 다른 기업을 같은
+// 출발선에서 비교. (2026-10-08: 처음엔 왼쪽에 시가총액 누적 영역 차트도 있었으나 사수 피드백으로
+// 삭제하고 상대 성과만 가로 전체 폭으로 표시.) 시총가중 합산선에 쓰는 과거 시총은 저장된 게 없어
+// "현재 시총(global_dashboard.json) × 그날 종가 ÷ 최신 종가"로 역산한다(기간 중 주식수 변화는
+// 무시 — 1년 이내라 오차 작음). 종가는 stock_performance.json
 // (최근 약 260거래일)이라 기간은 1Y까지만 지원한다. 두 파일은 사명으로 1:1 매칭된다
 // (tickers.json이 global_dashboard.json 사명을 그대로 가져오므로 — sync_ticker_universe.py).
 // 기본은 시총 상위 10개만 켜고, 칩을 눌러 기업을 켜고 끈다.
@@ -3891,7 +3890,7 @@ const GD_TREND_PERIODS = [
 ];
 const GD_TREND_COLORS = ['#2563eb','#dc2626','#16a34a','#d97706','#7c3aed','#0891b2','#db2777','#65a30d','#ea580c','#4f46e5',
                          '#0d9488','#be123c','#a16207','#9333ea','#0284c7','#15803d','#c2410c','#6d28d9','#b91c1c','#047857'];
-let gdTrendCapChart = null, gdTrendRelChart = null;
+let gdTrendRelChart = null;
 
 function gdTrendStockByName(){
   const m = {};
@@ -4001,10 +4000,9 @@ function gdRenderTrend(rows, currency){
                              : `<a class="gd-reset-link" id="gd-trend-more">+${hidden}개 더보기</a>`;
     })()}</div>
     ${!series.length ? `<div class="card note">위 칩에서 차트에 표시할 기업을 골라주세요.</div>` : `<div class="gd-trend-grid">
-      <div><h3>시가총액 추이 (${unit}, 누적)</h3><div class="chart-box"><canvas id="gdTrendCapChart"></canvas></div></div>
       <div><h3>상대 성과 (기간 시작 시총 = 100)</h3><div class="chart-box"><canvas id="gdTrendRelChart"></canvas></div></div>
     </div>
-    <div class="note" style="margin-top:4px">기간 ${axis[0]} ~ ${axis[axis.length-1]} · 과거 시총 = 현재 시총 × 그날 종가 ÷ 최신 종가(주식수 변화 미반영) · 상대 성과는 현지통화 주가 기준(환율 효과 제외) · 굵은 점선 = 표시 기업 합산(시총가중)${noPrice.length ? ` · 주가 데이터 없음: ${noPrice.map(escapeHtml).join(', ')}` : ''}</div>`}
+    <div class="note" style="margin-top:4px">기간 ${axis[0]} ~ ${axis[axis.length-1]} · 현지통화 주가 기준(환율 효과 제외) · 굵은 점선 = 표시 기업 합산(시총가중, 과거 시총은 현재 시총 × 그날 종가 ÷ 최신 종가로 역산)${noPrice.length ? ` · 주가 데이터 없음: ${noPrice.map(escapeHtml).join(', ')}` : ''}</div>`}
   `;
 
   const hl = ts.trendHl && onSet.has(ts.trendHl) ? ts.trendHl : null;
@@ -4025,7 +4023,6 @@ function gdRenderTrend(rows, currency){
     },
   });
 
-  if(gdTrendCapChart){ gdTrendCapChart.destroy(); gdTrendCapChart = null; }
   if(gdTrendRelChart){ gdTrendRelChart.destroy(); gdTrendRelChart = null; }
   const bindEvents = () => {
     wrap.querySelectorAll('[data-period]').forEach(b => b.onclick = () => { ts.trendPeriod = b.dataset.period; gdRenderTrend(rows, currency); });
@@ -4057,18 +4054,6 @@ function gdRenderTrend(rows, currency){
   };
   bindEvents();
   if(!series.length) return;
-  // 누적 영역: 큰 기업이 아래에 깔리도록 시총 순서 그대로 쌓는다
-  gdTrendCapChart = new Chart(document.getElementById('gdTrendCapChart'), {
-    type:'line',
-    data:{labels, datasets: series.map((s,i) => ({
-      label:s.name, data:s.caps, borderColor:s.color, borderWidth: hl===s.name ? 2.5 : 1,
-      backgroundColor: alpha(s.color, hl ? (hl===s.name ? .75 : .15) : .55),
-      fill: i===0 ? 'origin' : '-1', tension:.15, spanGaps:true,
-    }))},
-    options: commonOpts(v => gdFmt0(v), c => `${c.dataset.label}: ${gdFmt0(c.parsed.y)} ${unit}`,
-      { y:{stacked:true, beginAtZero:true},
-        tooltipCallbacks:{ footer: items => `합계: ${gdFmt0(total[items[0].dataIndex])} ${unit}` } }),
-  });
   gdTrendRelChart = new Chart(document.getElementById('gdTrendRelChart'), {
     type:'line',
     data:{labels, datasets: [
@@ -4085,8 +4070,8 @@ function gdRenderTrend(rows, currency){
 
 // ---- 글로벌 Watch List (2026-10-07 사수 피드백, 초안) ----
 // 1) 세부섹터 모멘텀: global_dashboard.json의 세부섹터(한 기업이 여러 섹터면 각각에 포함)별로
-//    5일/1개월/3개월/YTD 수익률을 묶어 순위를 매긴다. 수익률은 stock_performance.json의
-//    returns(d5/m1/m3/ytd, 현지통화)를 사명으로 매칭해 쓴다.
+//    1일~1년(GW_PERIODS) 수익률을 묶어 순위를 매긴다. 수익률은 stock_performance.json의
+//    returns(d1/d5/m1/m3/m6/ytd/y1, 현지통화)를 사명으로 매칭해 쓴다.
 //    - 시총가중: "섹터 바구니"의 수익률 = Σ현재시총 ÷ Σ(현재시총 ÷ (1+r)) − 1 (시작 시총 역산)
 //    - 동일가중: 단순 평균
 //    - 종목 수 GW_MIN_SECTOR_N개 미만 섹터는 순위에서 뺀다(1~2종목이 섹터를 대표하면 왜곡).
@@ -4094,7 +4079,12 @@ function gdRenderTrend(rows, currency){
 //    종목도 같은 발상으로 5일·1개월·3개월 수익률이 모두 플러스면 최고 등급(빨간 하이라이트).
 // 3) 눈여겨볼 종목: 기준 기간 상위 GW_TOP_N 섹터(또는 클릭한 섹터)의 종목을 추세 등급 →
 //    기준 기간 수익률 순으로 정렬. (실적 추정치 변화·뉴스 연동은 추후 검토)
-const GW_PERIODS = [{key:'5D', label:'5일', rk:'d5'}, {key:'1M', label:'1개월', rk:'m1'}, {key:'3M', label:'3개월', rk:'m3'}, {key:'YTD', label:'YTD', rk:'ytd'}];
+// 2026-10-08: 1일·6개월·1년 추가(사수 피드백). 추세 지속 판정은 그대로 5일→1개월→3개월 기준.
+const GW_PERIODS = [
+  {key:'1D', label:'1일', rk:'d1'}, {key:'5D', label:'5일', rk:'d5'}, {key:'1M', label:'1개월', rk:'m1'},
+  {key:'3M', label:'3개월', rk:'m3'}, {key:'6M', label:'6개월', rk:'m6'}, {key:'YTD', label:'YTD', rk:'ytd'},
+  {key:'1Y', label:'1년', rk:'y1'},
+];
 const GW_TOP_N = 5;
 const GW_MIN_SECTOR_N = 3;
 const GW_STOCK_LIMIT = 20;
@@ -4107,7 +4097,7 @@ function gwHeatStyle(v, scale){
 }
 function gwFmtPct(v){ return v == null || isNaN(v) ? '-' : (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
 // 기간별 색 진하기 기준(이 정도 수익률이면 가장 진한 색) — 기간이 길수록 크게
-const GW_HEAT_SCALE = {'5D':6, '1M':12, '3M':20, 'YTD':30};
+const GW_HEAT_SCALE = {'1D':3, '5D':6, '1M':12, '3M':20, '6M':25, 'YTD':30, '1Y':35};
 
 function gwStockLevel(rt){
   const p = k => rt[k] != null && rt[k] > 0;
@@ -4227,7 +4217,7 @@ function gwRender(){
               <td>${capB(x.r)}</td>
               ${GW_PERIODS.map(p => `<td class="heat" style="${gwHeatStyle(x.s.returns[p.rk], GW_HEAT_SCALE[p.key])}">${gwFmtPct(x.s.returns[p.rk])}</td>`).join('')}
               <td class="l">${GW_LEVEL_BADGE[x.level]}</td>
-            </tr>`).join('') : `<tr><td colspan="9" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
+            </tr>`).join('') : `<tr><td colspan="${5 + GW_PERIODS.length}" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
         </table></div>
         <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <span class="gw-badge l1">단기 반등</span> 5일만 플러스 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 뉴스 검색</div>
       </div>
