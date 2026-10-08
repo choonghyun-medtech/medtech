@@ -1,0 +1,441 @@
+{
+ "ticker": "GH",
+ "company": "Guardant Health, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-30",
+ "title": "Guardant Health, Inc., Q2 2026 Earnings Call, Jul 30, 2026",
+ "source": "TIKR 컨콜 스크립트(수동 복사)",
+ "qa_start": 5,
+ "segments": [
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Hello, everyone. Thank you for joining us, and welcome to the Guardant Health Second Quarter 2026 Earnings Call. [Operator Instructions]",
+    "I will now hand the conference over to Zarak Khurshid, VP of Investor Relations. Zarak, please go ahead."
+   ]
+  },
+  {
+   "speaker": "Zarak Khurshid",
+   "paras": [
+    "Thank you. Earlier today, Guardant Health released financial results for the quarter ended June 30, 2026. Joining me today from Guardant are Co-CEOs, Helmy Eltoukhy and AmirAli Talasaz; and Chief Financial Officer, Mike Bell.",
+    "Before we begin, I'd like to remind you that during this call, we will be making forward-looking statements within the meaning of federal securities laws. These statements involve material risks and uncertainties that could cause actual results or events to materially differ from those anticipated. This call will also include a discussion of non-GAAP financial measures, which are adjusted to exclude certain specified items. Additional information regarding material risks and uncertainties as well as the non-GAAP financial reconciliation to most directly comparable GAAP financial measures are available in the press release Guardant issued today as well as in our 10-Q and other filings with the SEC.",
+    "Guardant disclaims any intention or obligation to update or revise financial projections and forward-looking statements, whether because of new information, future events or otherwise, except as required by law. The information in this conference call is accurate only as of the live broadcast.",
+    "With that, I would like to turn the call over to Helmy."
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Thanks, Zarak. Good afternoon, and thank you for joining our second quarter 2026 earnings call. Starting on Slide 3. The platform we have built at Guardant is enabling 4 of the largest opportunities in precision medicine: therapy selection, recurrence monitoring, cancer screening and ultimately, multi-disease screening. Together, these represent nearly $400 billion in potential markets, all powered by the same Smart Platform and that compounding technology data and clinical insights it generates across the disease continuum.",
+    "Q2 was a landmark quarter in advancing that vision. During the quarter, we received FDA approval for Guardant360 Liquid CDx as well as approval for a higher-throughput, lower-COGS Shield workflow. In addition, we achieved 2 significant Shield milestones, inclusion in the American Cancer Society's colorectal cancer screening guidelines. And just this month, a major coverage decision from UnitedHealth Group. Together with continued broad-based growth across the business, these results demonstrate that we are steadily turning our Smart Platform vision into clinical impact and durable growth.",
+    "Before I share our results in more detail, I'd like to share a story that illustrates the real-world impact of our tests. Maria was a 46-year-old mother of 2 living with metastatic breast cancer. After surgery, chemotherapy, endocrine therapy and later progression on multiple lines of treatment, her care team faced a familiar but frustrating question: what next? Her disease had become harder to control. Tissue was limited from prior biopsies and may not be representative of her current disease and another invasive procedure would have delayed treatment decisions.",
+    "Her oncologist ordered a Guardant360 Liquid test to provide a comprehensive real-time view of her cancer through a blood draw. The result changed the conversation. Guardant360 Liquid identified homologous recombination deficiency, or HRD, which occurs when cells lose their ability to accurately repair double-stranded DNA breaks. Armed with this new biological insight, Maria's care team had greater confidence that her cancer may be more responsive to a DNA damage response strategy as opposed to another empiric chemotherapy. Maria's oncologists shifted her treatment plan to a biomarker-informed approach that included platinum-based therapy, which she responded well to, with manageable side effects.",
+    "Turning to our revenue performance on Slide 4. We delivered $335 million of revenue in the second quarter, representing 44% year-over-year growth. The growth was strong and broad-based across our Oncology, Biopharma & Data and Screening business lines.",
+    "Taking a closer look at our Oncology business on Slide 5. Oncology revenue grew 38% year-over-year, driving Q2 revenue of $219 million. Oncology test volumes rose 63% to approximately 104,000 tests, up from 64,000 in the prior year period with strength across all products.",
+    "Turning to Slide 6. The tremendous 63% growth in Oncology volume represented another quarter of acceleration, reflecting the increasing strength of our portfolio across both therapy selection and MRD. Guardant360 Liquid year-over-year volume growth accelerated from the first quarter, delivering greater than 30% growth, benefiting from continued Smart Platform adoption. Guardant360 Tissue volume growth also accelerated in the quarter and remains our second fastest-growing product. Reveal continues to be our fastest-growing product with volume growth accelerating again to more than 100% year-over-year, reflecting continued strength in MRD and growing adoption of the therapy monitoring use case.",
+    "Moving to Slide 7. I want to spend a moment on what we believe is one of our most underappreciated assets, our data. Every patient we test deepens a proprietary data asset that is difficult, if not impossible, for others to replicate. Today, that repository spans more than 1.3 million patient tests and over 700,000 epigenetic profiles across more than 100 tumor types. This is the raw fuel that powers InfinityAI, enabling the discovery of novel biological signatures, the development of new clinically actionable Smart apps and the acceleration of drug discovery for our biopharma partners. At ASCO in June, we showcased several innovative new tools built on our InfinityAI platform, and we are seeing a very strong positive response.",
+    "Turning to Slide 8. In May, we received FDA approval for Guardant360 Liquid CDx, the most advanced FDA-approved liquid biopsy panel with 100x more content versus our legacy FDA-approved CDx product. Guardant360 Liquid CDx is significant for several reasons. Most notably, it reinforces Guardant's leadership in the field of liquid CGP testing, with Guardant360 Liquid CDx representing the only FDA-approved liquid biopsy test integrating both genomic and epigenomic content.",
+    "Over time, Guardant360 Liquid CDx will help to simplify our therapy selection portfolio by consolidating multiple offerings into a single product. We're also excited by the potential for Guardant360 Liquid CDx to complement Guardant360 Tissue to drive greater adoption. We remain on track to obtain ADLT designation for Guardant360 Liquid CDx in the first half of 2027.",
+    "In June, we began a phased rollout of Guardant360 Liquid CDx to our U.S. customers, and we plan to offer widespread availability of the test following ADLT designation. This approach is intended to ensure a smooth reimbursement transition to the new test. The FDA approval in the second quarter represents one of the most significant regulatory milestones in our company's history, and the feedback from customers thus far has been incredibly strong.",
+    "Turning to Slide 9. Reveal continues to perform at an extremely high level with volume growth accelerating for the third quarter in a row to well above 100% year-over-year. We believe Reveal remains the most validated and highest performing tissue-free MRD solution with a 5-day turnaround time. Once again, we experienced strong MRD uptake in the second quarter across major indications, and Reveal therapy monitoring continues to stand out as a major volume growth driver in its second full quarter after launch.",
+    "Reveal is uniquely suited for therapy monitoring in late-stage cancer, helping predict therapy response months before imaging, and with seamless connectivity to Guardant360 Liquid, it can help physicians to act sooner and with more precision. Late-stage cancer therapy monitoring alone is a multimillion test annual opportunity that remains largely untapped. We continue to be excited about the commercial momentum behind Reveal, and we remain on track to launch Reveal Ultra later this year, which we believe will be the most sensitive tumor-informed MRD test.",
+    "Turning to Slide 10. We continue to make progress advancing our Reveal data and publication pipeline. As a reminder, we have submitted data to MolDX for coverage for breast cancer surveillance, immuno-oncology monitoring and chemotherapy monitoring, and those initiatives continue to progress.",
+    "Shifting to our Biopharma & Data business on Slide 11. Revenue grew 9% year-over-year to $61 million, which marks a record quarter. Our companion diagnostic franchise continues to build momentum. We now have 28 CDx approvals, with 4 added in the first half of this year alone. This reflects the strategic value of our Smart Platform to leading biopharma companies.",
+    "During the quarter, we received FDA approval for Guardant360 CDx as a companion diagnostic for Boehringer Ingelheim's HERNEXEOS, the first targeted therapy approved for adults with HER2 or ERBB2 mutant advanced non-small cell lung cancer as an initial treatment option. We also received FDA approval for Guardant360 CDx as a companion diagnostic for Arvinas and Pfizer's VEPPANU for ER-positive HER2-negative ESR1-mutated advanced breast cancer. We also announced a collaboration with Nuvalent to develop companion diagnostics with an initial focus on Guardant360 Tissue.",
+    "With that, I'll now turn the call over to AmirAli for an update on Screening."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "Thank you, Helmy. Moving on to Slide 12. We developed Shield from the ground up as a multi-cancer detection platform. Shield is clinically validated for detection of 10 different cancer types and is approved by the FDA for colorectal cancer screening as its first indication. When a physician orders a Shield blood test for CRC screening, they can opt in to receive multi-cancer detection results report covering 9 additional cancer types beyond CRC.",
+    "The release of this report is contingent on patients authorizing the release of their medical records to Guardant as part of our data collection initiative. We are very pleased with the progress in multi-cancer data collection and are excited to see the majority of Shield ordering physicians opting in to receive MCD reports. With colorectal cancer screening still representing such a significant unmet need, CRC remains our primary commercial focus.",
+    "Now moving on to Slide 13 for an update on the Screening business. Q2 was another fantastic quarter for Shield. We delivered $53 million of Shield testing revenue, driven by approximately 66,000 tests compared to $15 million of revenue and approximately 16,000 tests in Q2 of 2025.",
+    "Turning to Slide 14, which shows the evolution of Shield sales over the last 8 quarters overlaid with the important guidelines, commercial partnerships and coverage wins that have been instrumental in driving recent demand and that gives us confidence in future growth. I will discuss a few of these significant wins in greater detail shortly. We are now well into our second year of commercial launch and the business continues to fire on all cylinders.",
+    "Moving on to Slide 15 to discuss our major Screening highlights. We saw exceptionally strong volume growth in the quarter, driven by commercial scale, DTC momentum and our Quest collaboration. Shield was included in the American Cancer Society's colorectal cancer screening guidelines, making Shield the only FDA-approved blood test included in both ACS and NCCN guidelines. And UnitedHealth Group, the largest commercial insurer in the United States, announced it will begin covering Shield for colorectal cancer screening in adults 45 and older. Moreover, we are excited to report that last week, we received FDA approval for a higher-throughput, lower-COGS Shield workflow.",
+    "Let's focus on the latest scaled Shield commercial engine on Slide 16. Shield's commercial reach continues to expand rapidly on personal promotion, campaigns, health system engagements and EMR connectivity. We are happy to report that our field organization now stands at over 400 professionals nationwide.",
+    "In addition to our internal sales team, the Quest collaboration has been a success. We are encouraged with how nationwide EMR access and co-promotional activities with their team have developed in the first full quarter since the relationship went live in the field. In addition to these initiatives, we have built and expanded our dedicated health system team to more than 30 people and have been encouraged by the engagement within large accounts.",
+    "Turning to Slide 17. Patient access to Shield blood test continues to expand at a rapid rate. Shield was added to the NCCN guidelines in June 2025 and to the American Cancer Society guidelines in May 2026. ACS guideline inclusion is particularly important because it triggers state-level coverage mandates in roughly a dozen states for commercial payers.",
+    "An exciting result of these guideline wins has been positive momentum in our payer discussions and the sooner-than-expected UnitedHealth coverage policy update that I mentioned earlier. This coverage will be effective starting on August 1, which includes Shield as a covered primary colorectal cancer screening option for average risk adults aged 45 and older. UnitedHealth is the largest commercial insurer in the U.S. and the first major insurer to cover Shield.",
+    "Turning to Slide 18. To put these commercial coverage wins into context. There are approximately 120 million average-risk individuals in U.S. eligible for colorectal cancer screening, representing a $50 billion U.S. addressable screening market. As a result of ACS guideline inclusion and the UnitedHealth coverage policy, we believe that approximately 70 million lives or roughly 60% of the market is now covered for Shield blood tests.",
+    "Turning to Slide 19. Last week, we received FDA approval for a higher-throughput, lower-COGS Shield workflow, and that workflow will be live in production in August for all the new incoming samples. This workflow improvement will increase efficiency in running the test and will reduce the cost per test.",
+    "Furthermore, it will improve the scalability of our existing lab operations. As a result of this development, the much stronger-than-expected demand and UnitedHealth coverage news, we are accelerating investments to continue to build our lab capacity ahead of rapidly increasing volume.",
+    "We are excited about all the progress across multiple fronts at Guardant Health. On behalf of Helmy and myself, I want to express our deepest gratitude to our leaders and the whole Guardant team. Watching this team's focus, integrity and sheer dedication to our mission continues to inspire us both every single day.",
+    "With that, I'll now turn the call over to Mike for more detail on our financials."
+   ]
+  },
+  {
+   "speaker": "Michael Bell",
+   "paras": [
+    "Thanks, AmirAli. Turning to Slide 20. I'll walk through our second quarter results, unless otherwise noted, growth rates are year-over-year. Second quarter revenue reached $335 million, up 44%. Growth was broad-based with strong contributions from Oncology, Biopharma & Data and Screening.",
+    "Oncology revenue was $219 million, an increase of 38%. Oncology test volume grew 63% to approximately 104,000 tests, reflecting strength across the portfolio. Within the portfolio, Guardant360 Liquid volume increased more than 30%, driven by continued adoption of our Smart apps.",
+    "Guardant360 Tissue accelerated from first quarter levels and remained our second fastest-growing Oncology product, reflecting the product enhancements introduced over the past few quarters. Reveal again led the portfolio in growth with volume more than doubling year-over-year, as MRD adoption expanded and therapy response monitoring contributed meaningfully.",
+    "Oncology ASPs were broadly stable sequentially, and our submissions to MolDx for Medicare reimbursement covering breast MRD and immunotherapy and chemotherapy response monitoring continue to progress.",
+    "Our Biopharma & Data business delivered record quarterly revenue of $61 million, up 9%, reflecting the increasing strategic value of our Smart Platform and InfinityAI offerings to biopharma partners.",
+    "Screening revenue was $53 million compared to $15 million a year ago. Shield volume increased to approximately 66,000 tests from 16,000 a year ago. ASP was approximately $800 per test with reimbursement remaining strong across Medicare fee-for-service and Medicare Advantage.",
+    "As expected, the mix of commercially insured patients under age 65 increased in the quarter ahead of broader reimbursement coverage. With Shield now included in ACS guidelines and UnitedHealthcare coverage beginning in August, we expect the commercial mix to continue to increase in the second half of the year.",
+    "Turning to Slide 21. As AmirAli noted, the FDA recently approved a higher-throughput, lower-COGS Shield workflow. This marks a significant step forward in our efforts to reduce Shield cost per test. When fully implemented in our lab operations, the new workflow will produce a step down in Shield cost per test.",
+    "Combined with additional efficiencies from increasing scale, we expect that by the end of 2026, Shield cost per test will reduce by roughly 15% from the current level of approximately $410. Beyond 2026, further scale benefits and major automation initiatives are expected to drive the next wave of reductions and support our $200 cost per test target in 2028.",
+    "Turning to Slide 22. Second quarter non-GAAP gross margin was 67% compared with 66% a year ago. The improvement reflects lab efficiency, disciplined execution and tight cost control. As planned, we completed the Guardant360 Liquid transition to NovaSeq X in May, reducing cost per test by approximately $200. That benefit, together with the planned Shield cost reductions will help support continued strong gross margins in the second half even as our product mix continues to evolve.",
+    "Non-GAAP operating expenses were $288 million, up 34%, with the increase concentrated in commercial investment. Sales and marketing expense was $172 million compared with $108 million a year ago as we continue to expand the Screening sales infrastructure, advanced Shield HCP and DTC programs and supported Oncology growth.",
+    "Adjusted EBITDA loss was $56 million compared with a loss of $52 million in the second quarter of 2025. Quarter end cash and investments were approximately $1.2 billion, and free cash flow burn in Q2 was $70 million compared with $66 million a year ago. The year-over-year increase was due to additional CapEx investment in screening lab automation and broader infrastructure to support higher test volumes, greater processing efficiency and improved turnaround times.",
+    "Turning to Slide 23. Our first half results and the progress since our last call give us greater visibility into the balance of the year. We are raising full year 2026 revenue guidance to a range of $1.34 billion to $1.36 billion, representing growth of 36% to 38%.",
+    "For Oncology, we now expect revenue growth of approximately 30% and volume growth of approximately 50%. The outlook reflects continued Smart app adoption of Guardant360 Liquid, strong commercial execution and the impact of recent product upgrades in Guardant360 Tissue, as well as continued growth in Reveal across MRD and therapy monitoring.",
+    "Our Biopharma & Data outlook is unchanged at low double-digit growth, supported by recent strategic partnerships and continued good progress across the companion diagnostic pipeline.",
+    "For Screening, we are raising revenue guidance to a range of $218 million to $230 million and now expect 270,000 to 285,000 Shield tests. The higher outlook reflects strong demand and commercial execution as well as greater confidence following ACS guideline inclusion and UnitedHealthcare coverage, which becomes effective in August.",
+    "Our full year non-GAAP gross margin outlook remains 64% to 65%. The range incorporates lower testing costs for Guardant360 Liquid and Shield in the second half, partially offset by product mix, as Shield and Reveal volumes scale. We intend to continue to reinvest incremental Screening gross profit to support commercial expansion.",
+    "As a result, we now expect 2026 non-GAAP operating expenses of $1.08 billion to $1.1 billion, representing growth of 20% to 22% compared with 2025. We now expect full year free cash flow burn of $195 million to $205 million, $10 million above our prior outlook and an improvement compared with 2025. As mentioned, this revision reflects CapEx investments to accelerate the expansion of Shield's lab capacity, supporting anticipated growth over the next several years.",
+    "We continue to expect the rest of the business, excluding Screening, to generate positive free cash flow in 2026, with year-over-year improvements in cash generation, and we remain committed to achieving company-wide cash flow breakeven by the end of 2027.",
+    "Turning to Slide 24. Several catalysts we discussed last quarter are now in hand. In Oncology, the NovaSeq X transition is complete and Guardant360 Liquid CDx is FDA approved. Our priorities are continued expansion of Smart Platform apps, the launch of Reveal Ultra and broader Reveal reimbursement. The ESR1 monitoring launch remains contingent on FDA approval of camizestrant.",
+    "In Biopharma & Data, our priorities are to continue to advance CDx programs, broaden strategic partnerships and scale InfinityAI. In Screening, we obtained ACS guideline inclusion and are excited about the UnitedHealthcare coverage, both of which will help broaden access and adoption of Shield. We're also expanding Shield internationally through our self-pay channel.",
+    "To close, Q2 demonstrates the breadth of our growth and the progress we are making in driving efficiencies across our operations. We are investing in the areas with the greatest long-term potential while maintaining our commitment to cash flow breakeven.",
+    "With that, we'll open the call for questions."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "[Operator Instructions] Your first question comes from the line of Kyle Mikson with Canaccord."
+   ]
+  },
+  {
+   "speaker": "Kyle Mikson",
+   "paras": [
+    "Congrats on a great broad-based performance in the quarter. Just on Screening, though, first, UnitedHealth and ACS, obviously, opens the market up to these under 65-year olds. Could you elaborate on the near and the long-term ASP and the volume impact? I guess, after August, the volume tailwind could be pretty material, but pricing hasn't been finalized, I assume, for these commercial plans.",
+    "And just secondly, kind of quickly, like on USPSTF, with all this happening, what's your thoughts on this late August meeting? Do you still think a late '27 or early '28 time frame for inclusion there makes sense?"
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "Thank you, Kyle. Obviously, we are very excited about this recent development with both ACS and UnitedHealth coverage. As I mentioned in the prepared remarks, actually now, roughly 70 million lives are covered for Shield, 60% of the whole market. This UHG win could actually give us some interesting benefits, like we are excited to see how the rest of the year would play out. It could be a tailwind for the volume. It would help us to strategically step-by-step build our commercial side of the volume, so not just 65 and above, but actually younger patients, make sure they get actually access to this breakthrough technology.",
+    "ASP is going to take some time, though, like ASP in order to see the impact, we need to obviously go through some kind of conversations with them, but also show the history of collection from them in order to be able to accrue some of the upside upfront. So on ASP side, we need to be more patient. USPSTF, it's -- our expectation is as it was before.",
+    "So looks like new members are going to be in place. Looks like the August meeting is going to happen. But in terms of our expectation, we are not changing anything. So we are monitoring to see what happens. And it's interesting as I mentioned, that some of the payers even before USPSTF are engaging in conversations with us, and we'll see what happens."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Subbu Nambi with Guggenheim."
+   ]
+  },
+  {
+   "speaker": "Subhalaxmi Nambi",
+   "paras": [
+    "Congratulations on another record Oncology volume and Shield quarter. As we think about Oncology volume guide, could you give us the puts and takes on the 50% guide raise? Is this largely from Reveal in metastatic stage? And how is per patient testing cadence looking today? I know it's early.",
+    "And looking to Q3, given the tough comp in G360, how should we think about G360 volume growth? And I know I'm tacking on multiple questions, but one question for you, AmirAli. How did the United coverage come about? It was surprising to us. None of us had that in our 2026 bingo card. So how might that influence other private payer coverage in the absence of even USPSTF?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Great. I'll start. And thanks, Subbu, for the good question. Yes, we're really excited about what we saw in the quarter in terms of Oncology volumes. Obviously, we had a tremendous sort of volume ramp that we saw, and it was really broad-based in terms of the beat. We saw great volumes from 360 growing over 30% year-over-year. Tissue continued to accelerate and it was higher, obviously, than 360. And then Reveal was also over 100%. And so I think all of them are really going to be contributing to sort of continued strong volume for the second half of the year.",
+    "And obviously, we have strong sort of comps for Q3 and Q4 for 360, but I think we're very confident that we can continue the momentum we're seeing at least in the first half of the year on all of the products going forward and so that we can hit that 50% mark that we've guided to. I don't know if Mike wants to add."
+   ]
+  },
+  {
+   "speaker": "Michael Bell",
+   "paras": [
+    "I mean, no, just to reiterate, Helmy, that's -- I think our guide now of 50% full year Oncology volume growth is incredibly strong. So yes, I mean, we have -- I think we have tough comps now every quarter. So we'll continue to manage that. But I think our guide, again, for Q3 and Q4 is implying very strong Oncology volume growth."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "Regarding UnitedHealth, it was unexpected for us too. It was much sooner than what we thought it's going to happen. Having said that, we have multiyear relationship with United because of our Oncology products and coverages. We have the relationship, and we had multiyear conversations with United about the value of the Shield and what it could offer. There is also something in the payer landscape that nobody want to be first, nobody want to be last.",
+    "So again, still, we don't expect any major wins in short term by any other major payers. Having said that, again, nobody want to be last too, and we are excited with some of the conversations that we are having with some plans. We see what happens -- what will happen."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Puneet Souda with Leerink."
+   ]
+  },
+  {
+   "speaker": "Puneet Souda",
+   "paras": [
+    "And again, congrats on this impressive growth that you're seeing in the core business as well as Shield. Is there a way to sort of characterize this? I mean, as I pointed out before, this is an assay that's been on the market. G360 has been on the market. You revamped it. It's been on the market for 10 years plus. And it's growing 30%. Now it's growing -- it appears to be growing even more faster. Your portfolio is growing faster. Sort of where are we in this S-curve of growth?",
+    "And then on the Shield side, AmirAli, just wondering how should I think -- how should we think about the drivers for upside? Is it the sales reps, DTC ads? What are some of those? And how should we think about if there is any third and the fourth quarter sequential ramp growth that if you can provide on Shield?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. Thanks for the question, Puneet. We're very excited about what we're seeing. And it's -- what we obviously built the product to and how advanced we believe it is compared to sort of the landscape right now in the liquid biopsy market. It really is one of the most comprehensive tests out there. It covers broadly all the genomic markers of relevance, but really, the only test that has integrated genome-wide methylation coverage, which is really driving a lot of the, I think, really exciting sort of next-gen applications of liquid biopsy.",
+    "And frankly, I think we're just scratching the surface in terms of what's possible with this platform. And I think many physicians are just starting to get sort of the experience of using it with patients. And it's -- when you get those hits, when you find something that you couldn't find before, you find an option for a patient, it takes time to sort of get those experiences. And I think we're really leaning into it now that it's been on the market for a few quarters. And we're very excited about the pipeline in terms of other apps that we have in development that will be coming out soon.",
+    "So we think this is something that we can continue to lean into, not just for the sort of 1-test-per-patient era that we're in right now, but when we start thinking about patients using a liquid biopsy, Guardant360 test at every progression. And that's still not something we've leaned into. That's a big market multiplier and why we believe we can continue to sort of lean into this growth of 360 for years to come."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "And regarding that, yes, there was something about Shield, quickly to answer that. The sequential growth of Q2 over Q1 was super strong for us, 22,000 step-up. There were multiple factors that compounded at once. We launched this Quest co-promotion. We launched our DTC. We are adding to our field force. And there is some nonlinear effects that we are seeing, that the productivity of our reps have gone up in a very interesting way when we are doing the co-promotion with Quest, and we have our DTC in the air.",
+    "There were multiple factors all combined between Q2 and Q1. So we don't expect multiple new things all hitting at once in Q3. Having said that, we are very excited of what we can do in the second half, like we increased our guide by 40,000 samples, which translates at the midpoint, the guide that we put out there, like sequential growth of 12,000 Q-over-Q. We don't want to get ahead of our skis with the fantastic Q2 results that we have for rest of the year and be very thoughtful. I think it's a very reasonable guide for second half of the year for us."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Mark Massaro with BTIG."
+   ]
+  },
+  {
+   "speaker": "Mark Massaro",
+   "paras": [
+    "Congratulations on another great quarter. Helmy, I know in the last couple of years, you've talked about how you'd like to sort of reframe how pricing -- the value of diagnostic tests in the industry. The reason I'm asking this question is, like Subbu said, the United coverage really caught everybody by surprise. So as we think about your ADLT rate of $1,495, how should we -- how are you thinking about negotiating with United? What is your appetite for a discount?",
+    "And then you talked about how you're encouraged with other conversations with commercial payers. It would seem logical that other payers would probably follow. But I was curious if you could just speak to the importance of ACS and NCCN. And to what extent those endorsements in some ways, might derisk USPSTF?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "That's for AmirAli, so I'll let him answer that."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "Yes. So in terms of pricing negotiation, like we just got the coverage, so let us go through that process and see what's going to happen. It's very typical in diagnostics, Medicare pricing is the centerpiece of conversations and our pricing is very transparent to everybody when they make it on the coverage decision. So -- but we'll see how it goes.",
+    "In terms of derisking, I think UnitedHealth decided to act before USPSTF. And we are seeing some additional conversations with other payers. Definitely, we are getting the attention. UnitedHealth coverage decision is getting the attention by other people. Our progress in the field in terms of the impact we are showing is getting the attention, and we have a scaled team in managed care team that have all the connections and relationships and with a bunch of those people, we have multiyear conversations about Shield.",
+    "But again, we'll see how it goes. We don't expect any major wins for the rest of the year. We haven't included anything in our guide in terms of additional wins, and we'll see how it goes."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Dan Brennan with TD Cowen."
+   ]
+  },
+  {
+   "speaker": "Daniel Brennan",
+   "paras": [
+    "Maybe I'll just have one on ADLT. So first off, is kind of $8,500 plus or minus the right price, AmirAli -- excuse me, Helmy. When we did the math, we came up with about a 7% increase to revenues in '27, 20% in '28 just based upon the realized price that you'd be able to capture. So anything, a, you could share about whatever price you pick, like what type of MA and commercial realized price increases, what's a reasonable way to think about that?",
+    "And then importantly, whatever the revenue impact is, can you just help us think through what the drop-through rate will be? Like how much of that revenue upside would you plan to reinvest back in the business? And how much of it will accrue to the pretax line?"
+   ]
+  },
+  {
+   "speaker": "Michael Bell",
+   "paras": [
+    "Yes. No, I think we're going through the ADLT process now. We're expecting a price of $8,455. And so that will be an uplift from our current Medicare price of $5,000. And then that would be an immediate increase. It will take time for Medicare Advantage and commercial payers to sort of change the price in line with the new Medicare price. And I think we've seen that in the past when Guardant360 CDx got ADLT and ADLT pricing. It can take sort of 12 to 24 months for that to flow through. So I would expect once we get that ADLT, yes, we'll see a nice uptick for our ASP for Guardant360, but then it should continue to improve over, again, the next sort of 12 to 18 months.",
+    "Yes, investing the incremental gross profit. I think that's -- we've been sort of doing that over the past sort of 12, 18 months on the Screening side of business, and that's been allowing us to increase our investment, specifically on the commercial side.",
+    "I think with Oncology, if and when we do get a higher ASP and incremental gross profit, we will allow some of that to drop down to the bottom line. I think we've said it many times, but we're very focused on getting to cash flow breakeven as quickly as possible. And so that could give us the ability to accelerate our timeline, which is currently sort of Q4 2027.",
+    "But we'd also want to take some of that gross profit and reinvest it back in the business. I mean we continue to be a company of innovation. I think we want to continue to do that. But we would also, on the Oncology side of the business, want to continue to invest on our commercial operations. So I think hopefully, we'll be able to do both, and it will start to -- we'll start to have a very nice P&L as and when that comes."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Daniel Markowitz with Evercore."
+   ]
+  },
+  {
+   "speaker": "Daniel Markowitz",
+   "paras": [
+    "Congrats on the quarter and all the progress the last recent history as well. So when I look back at the Investor Day last year, you gave some helpful targets for 2028. And there have been, like I just said, lots of positive developments since then. So firstly, I just wanted to ask your high-level views on how things have trended and what it might mean for those targets.",
+    "And then double-clicking on G360, I'm tacking on to Dan's question. Now the table is set for ADLT, should we think about the ASP uplift with the new list price taking you up to closer to $5,000 rather than the prior target was closer to $3,300?",
+    "And then I also wanted, lastly, just more color from this ASP uplift. If you drop that straight down to gross profit, it does imply really nice upside to the margins and a profitability inflection. I just wanted to get more color on that and how you think about what to reinvest versus how much to drop down and whether the math is right and this really could be a very meaningful profitability inflection."
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "To Mike..."
+   ]
+  },
+  {
+   "speaker": "Michael Bell",
+   "paras": [
+    "Yes. Yes, I'll take that. Yes, again, just to sort of reiterate, at our Investor Day last year, we sort of increased our 2028 revenue target. It would have previously been $2 billion, and we increased that to $2.2 billion, which sort of inferred a growth rate over 3 years of just over 30%. So I would say that so far, so good. I think we're doing very well against that target.",
+    "Our current guidance now for the full year of '26 is 36% to 38%. So I think against what we need to do over that 3-year period, we're doing very well. I don't think we're in a position to sort of change that target now. But I think where we are in the middle of '26 just gives us a lot more confidence that we can achieve that $2.2 billion.",
+    "Yes, I think the other question was related to the ADLT rate at $8,455, and would that lead to Guardant360 ASP of around $5,000? That's probably in the ballpark on a sort of a long term. I just mentioned on the last answer, it would probably take 12, 18, 24 months to sort of get to that level. But realizing overall sort of 60% of the Medicare rate, that's currently where we are with Guardant360. So I think it's -- that sort of like $5,000 level is achievable.",
+    "And yes. I think basically on the profitability, the incremental gross profit and how we would manage that, I think we talked about that on the last question with Dan. And again, I think it would be a mix of letting that drop down -- some of that drop down to the bottom line, hopefully accelerating our path to breakeven, but also reinvesting back in the business in innovation and on the commercial strength of the company."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Evie -- my apologies, comes from the line of Casey Woodring with JPMorgan."
+   ]
+  },
+  {
+   "speaker": "Casey Woodring",
+   "paras": [
+    "Congrats on the print. Helmy, maybe could you give us a sense of how therapy monitoring volumes are tracking and how those are contributing to the greater than 100% volume growth in Reveal? And any way to quantify or frame the revenue opportunity there once you turn on reimbursement for IO and chemo?",
+    "And then as a follow-up on G360, would just be curious to hear if you're seeing any material uplift in volumes that are driven by the FDA approval, if that's been a real needle mover for doctors that maybe have been on the sideline in terms of moving over from Tissue."
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. Great questions, Casey. We're very excited about what we're seeing with therapy monitoring. I mean that said, we're seeing really good traction with MRD and with the Reveal volumes. And -- but therapy monitoring, I think, is a I would say, maybe underappreciated opportunity in the market. This is, I think, the future of oncology in terms of moving from biopsies and scans to really just using blood quantitatively to both treat and monitor patient response to therapy. So we're seeing very, very good uptake from our G360 orders who really want to sort of move into the future of precision medicine here.",
+    "And yes, and we think this is a great leading indicator for when we get some of the sort of reimbursement over the finish line, it's going to be a very, very strong business for us. If you think about it, there are 1 million late-stage patients. It's a multi-multimillion sort of testing opportunity there just for therapy monitoring if you think about monitoring those patients a couple of times during each course or each line of therapy. And so I think it could be, I think, nearly as big as maybe even the MRD opportunity from a testing point of view, at least in the active cancer patient segment.",
+    "And then in terms of FDA approval, it really happened sort of late in the quarter. So I think very early to sort of comment on that. And because we were doing a phased launch, it's having a positive impact, but nothing, I think -- it won't be as big of an impact as when we finally sort of do a full launch once we get ADLT designation. But certainly, we're seeing a lot of positive reception, a lot of excitement from physicians, and it's certainly something that we're going to lean into in the coming quarters."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Kallum Titchmarsh with Morgan Stanley."
+   ]
+  },
+  {
+   "speaker": "Kallum Titchmarsh",
+   "paras": [
+    "Maybe just one for Helmy. It would be good to get a little more color on Reveal Ultra. I guess, perhaps just walk us through the indication road map. And then would love to just understand the commercial strategy in more detail as you go about capturing share there.",
+    "And then for AmirAli, just on the multi-cancer detection front, perhaps just walk us through the opt-in rates that you've been seeing on that and then how you're using the data that you've been generating from those tests."
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. It's -- in terms of Reveal Ultra, it's a highly competitive market. So I think we're keeping some things close to the chest here in terms of exactly how we're going to launch it and what indications. But I can tell you that the development has gone really, really well in terms of the performance we're seeing. We're routinely hitting LoD levels of well below 1 parts per million.",
+    "And in real samples, it's really exciting to see the potential there. I mean that is detecting sort of tumors and early cancer at really unprecedented levels to be able to go that deep. And it's going to be really, I think, we're very sensitive to how the product sort of fits with the rest of the portfolio. We want to really make sure that it's sort of seamless in terms of the connectivity between Reveal, between Guardant360 and between our Tissue products.",
+    "And so we're going to be very thoughtful in terms of how we launch it and which indications we launch it where we believe we can sort of have the sort of greatest traction early on. And then we're also, I think, focused on thinking about the sort of reimbursement timelines there, the road map, some of the clinical validation as well. So that's a lot of the work we're doing there."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "Regarding Shield multi-cancer, data collection is going very well, powered really by the attachment rate that remains very strong. And I mentioned that majority of physicians ordering Shield now are opting in to receive the MCD results report. So we are very happy with what we are seeing."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Dan Leonard with RBC Capital Markets."
+   ]
+  },
+  {
+   "speaker": "Dan Leonard",
+   "paras": [
+    "So I have a follow-up question on the UnitedHealthcare decision. To the degree that -- AmirAli, to the degree that price sensitivity becomes a topic in that customer base, is there anything you could do to address or help with that, be it co-pays or otherwise? Or is USPSTF really the solution to that? Just how you're thinking about that."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "So actually, we have to see what the United conversation would be around, like the co-pay and the patient responsibility. So we see how it goes, but obviously, post-USPSTF, if there is any co-pay, that would go away. And about the rebates, I don't have any comments to share at this time."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Mason Carrico with Stephens. [Operator Instructions] Your next question comes from the line of Evie Koslosky with Goldman Sachs."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Koslosky",
+   "paras": [
+    "So given the acceleration that you saw in therapy monitoring indication for Reveal, can you walk through some of the cross-selling benefit between therapy monitoring and therapy selection? And then any color you can provide on the sales force productivity related to this?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Well so obviously, it's the same customer base in terms of the same oncologists that are ordering both tests. And the 2 really sit hand in glove in the sense that you first test the patients to determine what therapy may be best for them. And then you typically want to see how are they doing on that therapy. And so it's a nice one-two punch in terms of how the products fit together.",
+    "And I think it is not only, I think, sort of a very strong introduction for us in terms of the utility of the product. You can do some things that I think other products in the field can't do. But I think it also creates a nice sort of data stream for physicians where essentially, you want to see the longitudinal view of every single patient through every line of treatment, through every progression.",
+    "And so it's really, I think, leaning into this platformization concept that we talked about a couple of years ago, introducing in the field. And this is really, I think, making that vision a reality now."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Paige Chamberlain with Wolfe Research."
+   ]
+  },
+  {
+   "speaker": "Paige Chamberlain",
+   "paras": [
+    "I wanted to ask on the potential impact to volumes for the G360 Tissue test after the FDA approval of the liquid test, the thought being that reimbursement of the liquid test under the NCD might give way to a volume acceleration for the tissue test.",
+    "So I'm just wondering how you guys are thinking about that and especially in light of the comments that I heard in the prep remarks about a phased rollout of the FDA-approved version of the test. So can we think about any volume good guys ahead of ADLT pricing going into effect?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. No, it's a great question. I mean we don't have, I would say, much baked in given the phased rollout, but we certainly are very excited for the potential for that once we get ADLT designation and we have a sort of more complete rollout of the CDx. That said, I think we're very excited by the traction we're making with Guardant360 Tissue. It's our second fastest-growing product on the Oncology side. We saw acceleration this last quarter. And I think really starting to gain traction as more physicians realize some of the advantages that Tissue has.",
+    "We're seeing a lot of stand-alone volume in the field. We're really able to process much more challenging samples than a lot of the other tests out there. And that peace of mind, that performance advantage, is really sort of standing on its own 2 feet and allowing us to really take a lot of share in the market. Obviously, small numbers still, but very exciting to see the progress this last quarter and for the remainder of the year."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Brad Bowers with Mizuho."
+   ]
+  },
+  {
+   "speaker": "Bradley Bowers",
+   "paras": [
+    "Actually wanted to hit on profitability. Obviously, a positive FDA data point here, lowering the COGS Shield workflow. And I know overall, we talked about kind of 1 million tests is kind of a break-in number. But the reason I'm asking is the way the Street's modeling profitability is that it kind of flips pretty abruptly and severely, which I guess makes sense given a lot of the levers in the business.",
+    "But with everything firing all cylinders and the expectation kind of for ADLT pricing into next year, I just wanted to hear about how you're thinking about profit, whether there's anything else that's going to be pulled forward or if there's actually some type of EBITDA breakthrough over the next 12 months."
+   ]
+  },
+  {
+   "speaker": "Michael Bell",
+   "paras": [
+    "Yes. I can answer that. And really, when we're looking at sort of, well, adjusted EBITDA and profitability, we almost talk about that in a similar breadth to free cash flow burn. And we've been very sort of clear that getting to profitability, getting to cash flow breakeven, it's a key focus for the company. We're well on track to get to cash flow breakeven by the end of 2027.",
+    "And if you look at the business, excluding Screening, actually, that business now is adjusted EBITDA positive. It's generating positive cash flow. And so we've achieved that with the rest of the business. We're continuing to make heavy investments to build out the commercial infrastructure on Screening. And that's going to continue throughout '27 as we continue to ramp up.",
+    "We do expect at a point in '27 that we will reach some sort of critical mass in our commercial spending, and we'll start to get a lot of leverage as the Screening gross profit continues to increase. And this reduction in the Shield cost per test is going to help us get there. And we should start to see Screening start to ramp down in the burn sometime in '27, and that business itself getting to breakeven in 2028.",
+    "So we're well on track with what our expectations were. We're very focused on getting to profitability and cash burn. What could bring that forward? I think in the previous answer, we talked about getting ADLT designation for Guardant360, with an increase in the Medicare price and potential increase in Guardant360 ASP. If and when that happens, obviously, that's going to, again, generate incremental bottom line cash and profit for us. And so that could accelerate getting to that breakeven and it could accelerate our sort of profitability ramp following that. So again, I think we're tracking very nicely to our expectations."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Tycho Peterson with Jefferies."
+   ]
+  },
+  {
+   "speaker": "Noah Kava",
+   "paras": [
+    "This is Noah on for Tycho. Congrats on the quarter. I wanted to ask about Guardant360 Tissue. You're clearly outgrowing the broader market in this application. I'm curious if you think these share gains are tied to maybe some of these concurrent testing trends of Liquid that you've been talking about or an actual shift in provider preference? And then what does the underlying assumption look like for growth in this market on the go forward?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. No, I think right now, I think a lot of the growth is really sort of Tissue standing on its own 2 feet. It's a product that can essentially utilize much smaller tissue samples and a lot of the tests that are out there that I think is a lot of the sort of initial traction that we see with that product. But it's also one that is really one of the most comprehensive products on the market in a very large genomic panel, genome-wide methylation, whole -- it's now a whole transcriptome as well. And so it's really one of the most comprehensive offerings on the market.",
+    "We also recently rolled out a lot of the apps that we had in our Liquid side, on the Tissue side as well. And so it's really benefiting from InfinityAI, the platform that we have in terms of developing a lot of these differentiating clinical applications. And so obviously, this bodes well for that franchise in the future as concurrent testing does become more and more prevalent, and more and more the standard of care for many tumor types."
+   ]
+  },
+  {
+   "speaker": "Zarak Khurshid",
+   "paras": [
+    "One more question, please, Ellen."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Certainly. Our final question comes from Catherine Schulte with Baird."
+   ]
+  },
+  {
+   "speaker": "Catherine Ramsey",
+   "paras": [
+    "Maybe on Reveal, can you just talk through expectations on when you might hear back from MolDX on some of these indications, some of them are hitting close to the year-mark. And then on the lower-COGS version of Shield, we look at that PMA supplement, it looks like it kind of streamlines it to a methylation-only workflow, kind of removing fragmentomics and the somatic component. So can you just talk through the development work that went into that and kind of how that might inform future iterations of the test?"
+   ]
+  },
+  {
+   "speaker": "Helmy Eltoukhy",
+   "paras": [
+    "Yes. In terms of Reveal, I mean, I can say that I think we're making progress on the submissions and the packages we have there. I mean, certainly, IO and breast are probably the closest to the finish line. I think we're hopeful that we can get at least one or both of them by end of this year. And obviously making some good progress in chemo as well.",
+    "Obviously, it's taking a little bit longer than we would have liked, but I think we're very confident that we can get these over the finish line. And we have a number of other submissions that sort of are under development and in preparation. As soon as those get -- as soon as the associated manuscripts get published, we'll be submitting those as well.",
+    "So we have a lot of sort of balls in the air in terms of Reveal, and we know that it's going to be a very, very big sort of franchise for us going forward as soon as we get some of these reimbursement wins."
+   ]
+  },
+  {
+   "speaker": "AmirAli Talasaz",
+   "paras": [
+    "And regarding the Shield workflow improvement, yes, actually, we are -- we focused it on methylation-only, which the information is in the current version of Shield V1. The algorithm updates and multimodal Shield are generating kind of exciting pipeline activities for us in terms of hopefully continuing to see improvement in the Shield performance."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "This concludes today's call. Thank you for attending. You may now disconnect."
+   ]
+  }
+ ]
+}

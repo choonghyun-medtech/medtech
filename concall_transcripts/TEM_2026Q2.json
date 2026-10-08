@@ -1,0 +1,242 @@
+{
+ "ticker": "TEM",
+ "company": "Tempus AI, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-30",
+ "title": "Tempus AI, Inc., Q2 2026 Earnings Call, Jul 30, 2026",
+ "source": "TIKR 컨콜 스크립트(수동 복사)",
+ "qa_start": 3,
+ "segments": [
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Ladies and gentlemen, thank you for standing by. My name is Angela, and I will be your conference operator today. At this time, I would like to welcome everyone to the Tempus AI Second Quarter 2026 Financial Results Conference Call. I'd like to remind everyone that this call is being recorded [Operator Instructions].",
+    "I would now like to turn the call over to Liz Krutoholow, Vice President, Investor Relations. Please go ahead."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Krutoholow",
+   "paras": [
+    "Thank you. Good afternoon, and welcome to Tempus' Second Quarter 2026 Conference Call. This afternoon, Tempus released results for the quarter ended June 30, 2026. The press release and overview of the quarter and our latest presentation are available on our IR website at investors.tempus.com.",
+    "Joining me today from Tempus are Eric Lefkofsky, Founder and CEO of Tempus and Jim Rogers, CFO. Before we begin, I would like to remind you that during this call, management will be making forward-looking statements that are subject to risks and uncertainties that could cause actual results to differ materially. For a discussion of these risks, please refer to our 10-K and other subsequent filings with the SEC.",
+    "During the call, we will discuss non-GAAP financial measures, which are not prepared in accordance with generally accepted accounting principles. Definitions of these non-GAAP financial measures, along with reconciliations to the most directly comparable GAAP financial measures are included in our earnings release, which is available on our IR page.",
+    "I would now like to turn the call over to Eric."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Thank you, and good afternoon, everyone. Q2 was an exceptional quarter for Tempus. Overall, our revenues increased 22% to $382.5 million with this being the first quarter where we are lapping Ambry being fully integrated into our results. Our Diagnostics business delivered $289.3 million of revenue, an increase of 20% year-over-year, as slower growth in hereditary cancer testing was offset by higher growth in CGP testing due to acceleration in the business.",
+    "Momentum continues as June saw some of the strongest growth we have seen to date across the portfolio. Hereditary revenue for the quarter was up 5% to $107.4 million as Q2 of 2025 was a period of abnormally high growth, which we are now lapping. Data and apps revenues were $93.2 million, increasing 28% year-over-year with our data licensing and modeling business insights, growing at 36% in the quarter.",
+    "There were also several notable highlights in the quarter. We received FDA approval for tumor-only xT CDx. This approval allows the migration of our entire solid tumor DNA portfolio to be under unified ADLT pricing. We expect an estimated $200 uplift in ASP, which equates to approximately $85 million on an annual basis beginning in 2027. It's also important to note that we have our liquid biopsy, xF in front of the FDA now. And when that is approved and in market which should be in the latter half of 2027, we expect the incremental ASP lift to be an additional $550. Between xT CDx and xF approvals we anticipate approximately $400 million of revenue uplift in 2028.",
+    "We introduced initial results from and successfully delivered the first version of our foundation model to AstraZeneca. The model was used to predict which patients responded in several public and blinded clinical trials. We're thrilled to have achieved this milestone and are now working on the next version of the model. We signed a large multiyear data licensing and modeling agreement with BioNTech, who now joins the ranks of AstraZeneca, GlaxoSmithKline, Bristol Myers Squibb and others. This, along with Merck last quarter, is further evidence that our data and modeling capabilities are becoming instrumental to pharma.",
+    "We also signed large deals with Daiichi Sankyo, LevelSet Bio and Insight Pharmaceuticals contributing to the approximately $200 million in total bookings this quarter. We completed a $460 million offering of 0.0% convertible senior notes due 2032. The proceeds of this offering were used in part to repay an outstanding loan from Ares Capital. Importantly, this transaction allows us to save over $30 million annually in interest expense, enabling us to achieve positive free cash flow by year-end.",
+    "GAAP net income was $5.6 million and adjusted EBITDA was $8 million, a $13.6 million year-over-year improvement. We finished the quarter with $820.7 million of cash, cash equivalents and marketable securities compared to $643.8 million last quarter. As expected, cash used in operating activities improved significantly to negative $7.5 million in the quarter.",
+    "On top of all this, on July 20, we announced an agreement to acquire Personalis, minimal residual disease, MRD testing, represents a $20 billion-plus market and is one of the fastest-growing segments in oncology diagnostics. Bringing Personalis under our roof accelerates commercial adoption of our MRD test rounds out our overall portfolio and strengthens the multimodal data flywheel that differentiates our business. Given their improving financial profile, we felt now was the right time to pursue a strategic acquisition.",
+    "Up until now, we have phased our sales efforts. That's only about 10% of our sales force is selling MRD today based on these reimbursed indications. Even with that, we are delivering growth rates that have exceeded our expectations, running approximately 6,500 tests in Q1 and approximately 9,000 tests in Q2, growing 38% quarter-over-quarter.",
+    "With reimbursement in place for several indications and more coming, we believe volumes will be materially higher as we equip additional sales reps with Next over time. The transaction is structured as a 100% stock transaction with Tempus having the option to elect payment in cash capped at 50% of the consideration paid. We have already begun working with parties to put a debt facility in place as our intention, obviously, depending on our stock price is to finance a large portion of the proceeds with debt to minimize shareholder dilution. Even with this acquisition, we intend to see continued improvement in adjusted EBITDA and free cash flow in 2027.",
+    "Turning to guidance. We are increasing guidance to $1.595 billion to $1.605 billion in 2026, representing approximately 25% growth. We expect 2026 adjusted EBITDA to be approximately $65 million, an improvement of about $72 million over 2025, we're exceptionally proud of our results this quarter and look forward to carrying this momentum into the second half of the year.",
+    "Operator, we are ready to open the line for questions."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "[Operator Instructions]. And your first question comes from the line of Kallum Titchmarsh with Morgan Stanley."
+   ]
+  },
+  {
+   "speaker": "Kallum Titchmarsh",
+   "paras": [
+    "Great. Maybe one for Jim, just on Personalis. We've had quite a lot of questions coming through. Just on your underlying assumptions on the ASP front and just how those economics could become more favorable to you with time. So just any incremental color on that would be fantastic.",
+    "And then, Eric, I think you touched on this a little on the call last week. But maybe just talk us through how the incremental MRD data you'll now have access to could feed back into your data business? And I guess why that would perhaps be more of a compelling data set now for customers?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. So I'll start on the ASP, and then Eric can take the second piece. On ASP, obviously, they've gotten coverage in several indications over the last several quarters. And so there's been improvement on the Personalis front. They have more indications that are coming down the pipeline as well. And so over time, obviously, we would anticipate ASPs to continue to improve as they secure coverage and additional indications.",
+    "And then also from a volume perspective, our ability to kind of expand the sales force that is able to sell that test, which today is around 10% will help us drive volume. So they're early on in the ASP kind of curve, but they've obviously had a tremendous amount of success in getting the first couple of indications approved, and we anticipate that continuing."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. And just maybe a bit more color there, and then I'll jump into the data. So I think the part of their story that is so compelling is that they have a really a nice pipeline of studies that are being run. And we, like others, are watching and reacting to those studies that read out to turn into papers that eventually turn into approvals. They've done a great job of getting 3 approvals so far. They have a whole pipeline of others coming. And so the real clarity that's come into focus over the last 30, 60, 90 days is that you can start to see how this ASP story is going to turn for them in 2027 and all of a sudden, the economics that were more favorable for us or that are more favorable for us today because we get paid and don't lose money will actually flip and all of a sudden, they'll be getting paid, they'll have more margin, and we'll kind of wish we had that deal instead of our deal. And that certainly is a great piece of the story is -- as Jim mentioned.",
+    "There's also, I think, compelling aspects in terms of their data. Almost every major biopharma client we have that's running large studies is trying to understand the endpoint of those studies. And historically, we think a lot about scans as a major endpoint to understand if disease is recurring or there's progression or what's happening. And more and more, you're getting earlier signals from these kind of MRD tests that are showing signs of cancer recurring 6 months or 12 months before a scan. And so as you can imagine, if you're a drug company, being able to see when patients recur and be able to get them out of drug earlier is a really big deal. And so we have a consistent stream of people wanting us to include MRD data with the GERD data that they're using for licensing and modeling purposes. And I would suspect over time, it becomes a really compelling component of our overall data offering."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Brad Bowers with Mizuho."
+   ]
+  },
+  {
+   "speaker": "Bradley Bowers",
+   "paras": [
+    "First off, congrats on the large deals that you got this quarter. I wanted to focus specifically on the AstraZeneca piece, another congratulations on kind of delivering the first version of the model. So maybe just to double-click on what that looks like. And then I think there's a little bit of the elephant in the room on kind of what the agreement looks like for 2027 and beyond. To me, I think it seems that the foundation model is obviously, a big piece of that. Maybe just some help on where that contracting kind of fits. And just a reminder on the kind of escalators that can exist, whether the foundation model catalysts come at some point after this year such that the contract needs to be in place?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. So the foundation model was accepted by AZ, that was a big deal because we had to hit certain criteria. And the cool part of that is you train this very large multimodal model trained on billions of parameters, very complicated and it had to perform as well as certain models that both we had developed and they had developed that were like highly tuned for specific use cases, including predicting response to both public and private trials. And so we would send them these models, and they would basically see how our big model performed against their own internal models and in a blinded manner, we didn't have access to a bunch of that data.",
+    "So the fact that we've met the acceptance criteria means that they're comfortable this model is predictive and can now serve as the foundation even though it's a foundation model for all kinds of R&D and development work they're doing. So that's a huge hurdle and we're ecstatic. And we're consistent to invest in that.",
+    "Separate from our foundation model efforts, they're obviously a licensee of our data and a whole bunch of our products, the current agreement we have with AZ, I think, goes for other couple of years. So it doesn't end at the end of this year. I think the current agreement goes -- I don't even know, through '28 or something, I have no idea, but it had several years left on it even at the end of this year.",
+    "So there are certain criteria that they can opt into preferential pricing. And if not, they would just pay more for the data they are licensing. We have -- first of all, there's a bunch of projects they've already committed to that will extend into 2027. So they will be a very large client in 2027, no matter what happens. And we would -- I can't imagine a scenario like literally where they don't want to lock in for a longer period of time to avail themselves of discounts. I mean, it just wouldn't make any sense. They haven't given us any indication that they're not going to want to lock in for a long period of time and avail themselves to discount.",
+    "So I would suspect that we will be delivering a similar amount of data and revenue to them next year. I would suspect that at some point, we'll have a long-term extension in place or they'll just use the contract they currently have and commit to similar kind of dollar amounts of data. And every indication we have, including their CEO, talking about, I think, on CNBC or whatever is that they're super happy and tend to be a long-term partner of us."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Kyle Mikson with Canaccord."
+   ]
+  },
+  {
+   "speaker": "Kyle Mikson",
+   "paras": [
+    "Congrats on a very good quarter. The first one on the excess FDA clearance tailwind, that looks like it's now $550 using 2Q data compared to $230 that you had at the Investor Day that was using 4Q data. So just -- I don't think you called out the reason for the change there, if you just comment on that.",
+    "And secondly, with your shares trading below $46, is it possible that Personalis to terminate? Can you just talk about what you can do to avoid that as well as what makes you confident that they don't do that, they don't terminate."
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. So on the xF pricing as kind of others have gone down the approval for liquid biopsies and kind of indicated the price that they're going after that our price -- our thinking around the ADLT pricing for xF has evolved. And we think that there's additional upside from what we had pegged for the kind of earlier on. So that assay is in front of the FDA now, as Eric mentioned, as we get later into '27, we would anticipate getting approval and then following kind of the ADLT pathway, but that's the rationale behind the change."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "And look, it's an evolving market. Our assay is most comparable in terms of size, like literally size like megabases and size totality to Guardant's recent assay that they got approved. And I believe their ADLT pricing is something like $8,300 or $8,400. And so we -- it would be very hard for us to go to the market with a almost identical, at least in terms of like size and complexity assay that's radically less expensive. And so we have to follow people who've come before us that have set ADLT pricing when we have kind of comparable products in terms of complexity and size. And so the pricing here is just higher than we expected. And so it's a significant benefit to us -- will be a significant benefit to us once it's approved in the market. So that's the big uplift.",
+    "In terms of Personalis, I can't see a scenario where they would want to terminate even if we were slightly below the floor. We established the floor because we weren't willing to -- we weren't willing to have more dilution than x amount. And so we obviously have cash as a lever. We've got stock as a lever. We don't want to have more than x amount of dilution given where we're trading now, obviously, my preference would be to fund maybe close to half the transaction in cash and the balance of stock to keep the dilution quite low. I believe we'll have that opportunity and I can't see any scenario upon which this doesn't close.",
+    "As you can imagine, they very much want to do this deal. We're a current partner of theirs now, it would be highly disruptive if this deal didn't get done on their side. And I just can't envision any scenario even if they end up getting a few less shares where it doesn't go forward."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Ryan MacDonald with Needham."
+   ]
+  },
+  {
+   "speaker": "Matthew Shea",
+   "paras": [
+    "This is Matt Shea on for Ryan. Eric, you've seen some really nice momentum in the Data and Insights business throughout first half of 2026, including the BMS expansion in May and a number of deals you announced today, maybe can you talk about the level of momentum you have going into the back half of the year? And then maybe for Jim, as we layer in that BMS expansion and $200 million of bookings in the quarter on top of the $350 million of TCV that was already earmarked for revenue in 2026, how much visibility and confidence you have in hitting the implied $410 million of data revenue guidance, if that's even still the right number might be a bit higher with the guidance raise? And how are you thinking about levers for upside."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. So I mean, I can -- you may add on, but my comment, I think, will tackle both, which is in light of the deals we've been signing , first of all, we've kind of have more momentum. I mentioned this, I think, on the last call before that the data business is just on fire. We've had more momentum in terms of signing deals than we've had in like a long time in years. Other than the foundation model, it's probably the single best run of 3 or 4 quarters we've had ever in terms of momentum. So we're having just an awesome moment. More and more people want our data.",
+    "And more importantly, what's really exciting is they don't just want our data, they want access to Lens. They want us connecting and provisioning GPUs for them in Lens, they're uploading data. They're building models that remain in Lens. So the business just feels super healthy, super sticky and it's just -- and we just have a stronger pipeline and more demand than we've had, which means we have great visibility into our growth rates, not just in 2026, but 2027. And we -- that's how we think about the data business. We really are interested in maintaining long-term growth in that close to 30% range plus or -- and we kind of want to plot these things out in a way that we feel like we can grow at that level for years, 3 years, 5 years, 7 years. And so we feel great. We're in a great spot for '26. We're in a great spot for '27, and we now spend a lot of time thinking about '28."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Mark Massaro with BTIG."
+   ]
+  },
+  {
+   "speaker": "Mark Massaro",
+   "paras": [
+    "Congrats. I wanted to start maybe just to clarify the higher pricing assumptions on xT CDx or pardon me, the xF. Maybe can you just walk us through what rates or what prices are you estimating on the Medicare side? Because I know you cited Guardant, but if you could be more explicit, that would be helpful.",
+    "And then, Eric, when do you think you can sort of take that 10% promoting the Personalis test now? Why not take that up faster? And so do you think you could take that up sooner rather than later? Or are you waiting for the deal to perhaps close?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. For xF, Mark, we're assuming a $7,500 ADLT price."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "And in terms of taking MRD up faster, the same constraints we had when we didn't own Personalis will be the same constraints we'll have even after this transaction closes, which is we just want to time the full unshackling of these efforts to having the tests on an ASP level be basically breakeven. If you're losing money, if your margin is negative and you kind of rush to run an extra 100,000 tests, you're just burning money.",
+    "And if we felt like this market was such that this was beachfront real estate that you had to procure, we would do that. We would tell the world, hey, we want to earn a bunch of money and here's why we think it makes sense. We don't believe that. We didn't believe it with therapy selection. And if that was the case, Foundation Medicine would dominate the space instead of Tempus and Caris.",
+    "So we don't believe this is -- there's like beachfront real estate to be procured. We do believe it's important that we're in market with an offering that is comprehensive that people want. We think we can meter this out and not lose the market opportunity. Obviously, we're growing super fast. We're 38% quarter-over-quarter, and we're getting to some real scale, and we will get to even more significant scale in '27.",
+    "And at some point, you'll see this pivot where the ASPs will start to climb up and you kind of -- you can see breakeven in sight, and that's the point where I think you should expect us to kind of ramp up the sales force pretty dramatically. That said, you won't even notice it because the core economics of our business from a gross margin growth perspective, and the variable investments we make are so significant that if we wanted to invest an extra $50 million in the sales force, we just would spend $50 million less on cloud or things that you don't even see and we still would be EBITDA positive. We still would be cash flow positive. So we just are in a great spot where the core business is now starting to generate so much gross margin and gross profit dollar growth. And we're making so many incremental investments that are like long term in duration that we can make some of these investments like sales force growth without negative EBITDA or negative cash flow or going backwards. So I think we're in a good spot."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Subbu Nambi with Guggenheim."
+   ]
+  },
+  {
+   "speaker": "Robert Bamberger",
+   "paras": [
+    "This is Ricki on for Subbu. So following the launch of GenomeNext, do you have any updates on your outlook for the rare disease ramp within Ambry? And in the letter, you mentioned you're expecting this to pick up in the second half. Would you be able to quantify this for us? What would a successful second half for rare disease with an Ambry look like?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. I'll take the first. The launch was great. Great, meaning we had an expectation for the first month. And I think I'm going to say something like 2 or 3 weeks in, we were already 50% higher than our expectation. So that said, it's -- these are small numbers. Like at the end of the day, this is a new product for us. So when you get to market and sell 500 or 1,000 tests, like it's a good start.",
+    "So I do think there is some upside that is going to come in the back half of the year related to whole genomes. We don't yet have enough insight to know. Right now, it's not cannibalistic to our whole exome business. Does it become cannibalistic at some point? So far, it's not, but we only have 1 month of data. And obviously, we're trying to ramp up hereditary growth rates. And so we kind of view that business as getting to like mid-teens growth by the end of the year. We're being conservative about our whole genome estimates, although it will pick up. And so I think we're in a bit of a wait and see on how that's going to shake out. And again, fortunate that we don't need it because our 2 main businesses, oncology testing and data are overperforming, and so we'll be fine."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Brendan Smith with TD Cowen."
+   ]
+  },
+  {
+   "speaker": "Brendan Smith",
+   "paras": [
+    "Maybe just another follow-up on the data and insights business. I guess, kind of following up on your commentary about momentum in that part of the business. I mean you mentioned some of the newer deals being -- it sounds like potentially more expensive with some of these pharma guys in to leverage like Lens and you mentioned the other data and apps offerings. I guess just in terms of economics to Tempus, should we assume that some of the kind of construct of those deals drive potentially better revenue to you all over the course of the partnership? Is it maybe faster recognition of booking res versus backlog? I guess, I'm really just trying to understand how some of the levers there manifest and how we should think about the ramp in reported versus TCV as more of those guys get online and get the use of the platform up and running?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. I can start and then Jim can jump in. So I mean so it's probably maybe worth some history. So we used to have a business where we would like go to people and say, we have this de-identified data, if you want to license it, we'll send you 5,000 files and you can pay us and our revenue was very lumpy, but we recognize revenue instantaneously. And we made a shift several years back, where we kind of stopped all that, like upfront revenue and moved people to 1-year, 2-year, 3-year, 5-year licenses and really deferred a bunch of that revenue which was tough to swallow back then, but great for the long-term health of the business because we now have like awesome visibility multiple years out.",
+    "So I don't expect these new deals where people are getting more ingrained with Lens and getting more ingrained with building small or large models in our environment accessing GPUs at some scale, I don't think they'll change revenue recognition at all. They just are another kind of element of stickiness that locks people into our ecosystem. They are kind of first locked in because they signed long-term contracts that are fixed in terminate, you can't cancel whatever the fixed term is. And number two, they're now locked in because they're building models in our environment, they can't take the models.",
+    "That said, the main reason they're locked in, we think, is because our data is awesome and the tools are really helpful. And if that weren't the case, we wouldn't have this healthy of a data business and one that continues to grow really fast."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "And in the interest of time, and our last question comes from the line of Robert Bamberger with Baird."
+   ]
+  },
+  {
+   "speaker": "Robert Bamberger",
+   "paras": [
+    "You guys have cited about a 40% algorithm attach rate on solid tumor. Is that still the case in Q2? And I guess what's the algorithm that drives it and what attach rate is then embedded in your guidance here?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. So the algorithm attach rate in Q2 was 45%, so a slight uptick from the 40% that we had quoted in Q1. And it's really broad-based. Obviously, we've got a suite of algorithms that address a number of different kind of questions or insights that physicians may be asking for. And so it's pretty broad-based in terms of which algorithms are being ordered.",
+    "And then in terms of the guide, many of those algorithms remain not being paid. And so there's no impact on revenue from the number of algorithms, although it does highlight again, our advantage in diagnostics are the insights that we provide physicians beyond just the test results. And so it helps drive kind of that core volume growth, which accelerated to 31% in Q2, it's just another factor of the data advantage that we have."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "That concludes our question-and-answer session. I will now turn the conference back over to Liz Krutoholow for closing remarks."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Krutoholow",
+   "paras": [
+    "Thanks, everyone, for joining us. If you have any questions, please reach out to the IR team. Have a great day."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Ladies and gentlemen, that concludes today's call. Thank you all for joining. You may now disconnect."
+   ]
+  }
+ ]
+}
