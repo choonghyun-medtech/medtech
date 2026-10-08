@@ -208,7 +208,14 @@ def main():
             'ticker': ticker,
             'name': r['name'],
             'sector': map_sector(r.get('sectors') or []),
+            # 2026-10-08: 글로벌 대시보드와 같은 세부 섹터(엑셀 C열, 여러 개 가능)도 함께 넘긴다 —
+            # 주가 Performance 탭이 대분류 대신 이 세부 섹터로 필터한다. sector(대분류)는 아직
+            # 다른 탭(수급·리포트·뉴스 등)이 쓰므로 그대로 둔다.
+            'sectors': list(r.get('sectors') or []),
             'market': market,
+            # 글로벌 대시보드의 "국가"(엑셀 B열 국적 — 대한민국/미국/일본/중국/기타(미국)/기타).
+            # market(상장 시장)과 다를 수 있다(예: 메드트로닉은 미국 상장이지만 기타(미국)).
+            'country': r.get('country') or '',
         })
 
     with open(args.out, 'w', encoding='utf-8') as f:

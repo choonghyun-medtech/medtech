@@ -368,7 +368,9 @@ def fetch_one(item):
         "ticker": ticker,
         "name": item["name"],
         "sector": item["sector"],
+        "sectors": item.get("sectors") or [],  # 글로벌 대시보드와 같은 세부 섹터(주가 Performance 필터용)
         "market": item["market"],
+        "country": item.get("country") or "",  # 글로벌 대시보드와 같은 국가(국적) 그룹 — 주가 Performance 국가 필터용
         "currency": MARKET_TO_CURRENCY.get(item["market"], "USD"),
         "market_cap_krw_tril": None,
         "market_cap_krw_eok": None,  # 억원 단위 정밀값 (조원 1자리 반올림 후 재환산 시 발생하는 정밀도 손실 방지용)

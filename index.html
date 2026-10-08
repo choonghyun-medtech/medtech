@@ -397,6 +397,14 @@ tr:last-child td{border-bottom:none}
 .market-badge{display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--bg2); color:var(--sub); margin-left:5px; vertical-align:middle}
 .perf-name-link{color:inherit; text-decoration:none; font-weight:600}
 .perf-name-link:hover{text-decoration:underline}
+/* 2026-10-08: 섹터 열(세부 섹터)이 생기면서 긴 해외 종목명과 겹쳐 오른쪽 표가 본문 밖으로 넘쳐서,
+   화면 표에서만 두 표를 반반으로 고정하고 긴 종목명은 말줄임(마우스 올리면 전체). 이미지 캡쳐 표는 그대로. */
+#perf-body .perf-grid > div{min-width:0}
+.perf-sector-cell{font-size:11px}
+#perf-body .perf-sector-cell{max-width:7.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+/* 이미지 캡쳐 표는 마우스오버가 없으니 섹터를 전부 보여준다 — 길면(예: 섹터 4개) 단어 단위로 두 줄. */
+.perf-capture-stage .perf-sector-cell{max-width:14em; white-space:normal; word-break:keep-all; line-height:1.35}
+#perf-body .perf-name-link{display:inline-block; max-width:11em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle}
 .perf-table-box table{font-size:12.5px}
 .perf-table-box{border:1px solid var(--border); border-radius:0 0 10px 10px; overflow:hidden}
 /* 필터 행 맨 오른쪽 캡쳐 버튼 — 기간이 1일/5일일 때만 노출 (2026-09-28) */
@@ -646,17 +654,23 @@ tr:last-child td{border-bottom:none}
         <option value="5to20">5~20조</option>
         <option value="gt20">20조 이상</option>
       </select>
-      <select id="perf-region-filter" class="filter-select">
-        <option value="all">지역 전체</option>
-        <option value="KR">한국</option>
-        <option value="GLOBAL">글로벌</option>
-        <option value="US">미국</option>
-        <option value="CN">중국</option>
-        <option value="JP">일본</option>
-      </select>
-      <select id="perf-sector-filter" class="filter-select">
-        <option value="all">섹터 전체</option>
-      </select>
+      <!-- 2026-10-08: "지역" 드롭다운 → 글로벌 대시보드와 같은 "국가"(엑셀 국적 그룹) 체크박스 다중 선택. -->
+      <details class="gd-msel" id="perf-country-msel">
+        <summary id="perf-country-summary">국가 전체</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+          <div id="perf-country-options"></div>
+        </div>
+      </details>
+      <!-- 2026-10-08: 섹터를 글로벌 대시보드와 같은 세부 섹터로 바꾸고, 드롭다운 대신 체크박스
+           다중 선택(글로벌 대시보드와 같은 UI). 아무것도 안 고르면 전체, 여러 개면 그중 하나라도 해당. -->
+      <details class="gd-msel" id="perf-sector-msel">
+        <summary id="perf-sector-summary">섹터 전체</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+          <div id="perf-sector-options"></div>
+        </div>
+      </details>
       <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장">📷 1일 표 저장</button>
     </div>
     <div id="perf-body">
@@ -2890,7 +2904,28 @@ document.getElementById('flowmap-reset-link').addEventListener('click', e => {
 // 종목 유니버스: stock_performance_requirements.md 기준 145종목
 // ==================================================================
 let STOCK_PERF = [];
-let perfState = { period:'d1', cap:'all', region:'all', sector:'all' };
+// sectors/countries: 체크한 세부 섹터·국가(비어 있으면 전체). 글로벌 대시보드 필터와 같은 규칙.
+let perfState = { period:'d1', cap:'all', countries:new Set(), sectors:new Set() };
+
+// 국가 표시 순서 — 글로벌 대시보드 국가 필터와 같은 순서(gdInit에서도 이 상수를 쓴다).
+const COUNTRY_ORDER = ['대한민국', '미국', '일본', '중국', '기타(미국)', '기타'];
+// 종목의 국가(글로벌 대시보드 엑셀 국적 그룹). stock_performance.json → tickers.json 순으로 찾고,
+// 둘 다 없으면 상장 시장으로 추정한다.
+function perfCountryOf(s){
+  if(s.country) return s.country;
+  const info = tickerInfo(s.ticker);
+  if(info && info.country) return info.country;
+  return ({KR:'대한민국', US:'미국', JP:'일본', CN:'중국', HK:'중국'})[s.market] || '기타';
+}
+
+// 종목의 세부 섹터(글로벌 대시보드 엑셀 C열, 여러 개 가능). stock_performance.json에 아직
+// sectors가 없으면(2026-10-08 추가 — 다음 자동 갱신 전) tickers.json에서, 그것도 없으면 대분류로.
+function perfSectorsOf(s){
+  if(s.sectors && s.sectors.length) return s.sectors;
+  const info = tickerInfo(s.ticker);
+  if(info && info.sectors && info.sectors.length) return info.sectors;
+  return s.sector ? [s.sector] : [];
+}
 
 function capFilterPass(capTril, filterVal){
   if(filterVal==='all') return true;
@@ -2903,13 +2938,6 @@ function capFilterPass(capTril, filterVal){
     case 'gt20': return capTril >= 20;
     default: return true;
   }
-}
-function regionFilterPass(market, filterVal){
-  if(filterVal==='all') return true;
-  if(filterVal==='KR') return market==='KR';
-  if(filterVal==='GLOBAL') return market!=='KR';
-  if(filterVal==='US' || filterVal==='CN' || filterVal==='JP') return market===filterVal;
-  return true;
 }
 function newsUrl(name){ return 'https://www.google.com/search?q=' + encodeURIComponent(name) + '&tbm=nws'; }
 function fmtPct(v){ if(v==null) return '-'; const sign = v>0?'+':''; return sign + v.toFixed(1); }
@@ -2984,11 +3012,63 @@ function renderForeignRatioTop10(){
   });
 }
 
+// 섹터 체크 목록 — 글로벌 대시보드처럼 종목 수가 많은 순으로, 괄호 안은 해당 종목 수.
 function populatePerfSectorFilter(){
-  const sectors = [...new Set(STOCK_PERF.map(s=>s.sector))].sort();
-  const sel = document.getElementById('perf-sector-filter');
-  sel.innerHTML = '<option value="all">섹터 전체</option>' + sectors.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const counts = {};
+  STOCK_PERF.forEach(s=>perfSectorsOf(s).forEach(sec=>{ counts[sec] = (counts[sec]||0) + 1; }));
+  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
+  // 종목 목록이 바뀌어 사라진 섹터는 선택에서 뺀다.
+  perfState.sectors = new Set([...perfState.sectors].filter(sec=>counts[sec]));
+  const wrap = document.getElementById('perf-sector-options');
+  wrap.innerHTML = list.map(([sec, n])=>`
+    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${perfState.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-sector]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) perfState.sectors.add(cb.dataset.sector); else perfState.sectors.delete(cb.dataset.sector);
+      updatePerfSectorSummary(); renderPerfTables();
+    };
+  });
+  updatePerfSectorSummary();
 }
+function updatePerfSectorSummary(){
+  const el = document.getElementById('perf-sector-summary');
+  const sel = [...perfState.sectors];
+  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
+}
+function perfSectorPass(s){
+  if(perfState.sectors.size === 0) return true;
+  return perfSectorsOf(s).some(sec=>perfState.sectors.has(sec));
+}
+
+// 국가 체크 목록 — 글로벌 대시보드와 같은 순서, 괄호 안은 해당 종목 수.
+function populatePerfCountryFilter(){
+  const counts = {};
+  STOCK_PERF.forEach(s=>{ const c = perfCountryOf(s); counts[c] = (counts[c]||0) + 1; });
+  const rank = c => { const i = COUNTRY_ORDER.indexOf(c); return i === -1 ? COUNTRY_ORDER.length : i; };
+  const list = Object.keys(counts).sort((a,b)=> rank(a)-rank(b) || a.localeCompare(b,'ko'));
+  perfState.countries = new Set([...perfState.countries].filter(c=>counts[c]));
+  const wrap = document.getElementById('perf-country-options');
+  wrap.innerHTML = list.map(c=>`
+    <label class="gd-msel-row"><input type="checkbox" data-country="${escapeHtml(c)}" ${perfState.countries.has(c)?'checked':''}> ${escapeHtml(c)} <span class="note">(${counts[c]})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-country]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) perfState.countries.add(cb.dataset.country); else perfState.countries.delete(cb.dataset.country);
+      updatePerfCountrySummary(); renderPerfTables();
+    };
+  });
+  updatePerfCountrySummary();
+}
+function updatePerfCountrySummary(){
+  const el = document.getElementById('perf-country-summary');
+  const sel = [...perfState.countries];
+  el.textContent = sel.length === 0 ? '국가 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
+}
+function perfCountryPass(s){
+  return perfState.countries.size === 0 || perfState.countries.has(perfCountryOf(s));
+}
+function populatePerfFilters(){ populatePerfCountryFilter(); populatePerfSectorFilter(); }
 
 function renderPerfAsOfNote(){
   const byMarket = {};
@@ -3010,8 +3090,8 @@ function renderPerfTables(){
   }
   const filtered = STOCK_PERF.filter(s=>
     capFilterPass(s.market_cap_krw_tril, perfState.cap) &&
-    regionFilterPass(s.market, perfState.region) &&
-    (perfState.sector==='all' || s.sector===perfState.sector) &&
+    perfCountryPass(s) &&
+    perfSectorPass(s) &&
     s.returns[perfState.period] != null
   );
   body.innerHTML = buildPerfGridHtml(filtered, perfState.period) +
@@ -3092,8 +3172,8 @@ function buildPerfGridHtml(list, period, capUnit='krw'){
     const rows = rowsList.map((s,i)=>`
       <tr title="${s.as_of ? '종가 기준일 '+s.as_of : '기준일 정보 없음'}">
         <td>${i+1}</td>
-        <td><a class="perf-name-link" href="${newsUrl(s.name)}" target="_blank" rel="noopener">${s.name}</a><span class="market-badge">${s.market}</span></td>
-        <td>${s.sector}</td>
+        <td style="white-space:nowrap"><a class="perf-name-link" href="${newsUrl(s.name)}" target="_blank" rel="noopener" title="${escapeHtml(s.name)}">${s.name}</a><span class="market-badge">${s.market}</span></td>
+        <td class="gd-sector-tag perf-sector-cell" title="${escapeHtml(perfSectorsOf(s).join(', '))}">${escapeHtml(perfSectorsOf(s).join(', '))}</td>
         <td>${unit.value(s)}</td>
         <td class="${pctClass(s.returns[period])}">${fmtPct(s.returns[period])}</td>
       </tr>`).join('');
@@ -3286,8 +3366,16 @@ document.querySelectorAll('#perf-period-toggle button').forEach(b=>{
   });
 });
 document.getElementById('perf-cap-filter').addEventListener('change', e=>{ perfState.cap = e.target.value; renderPerfTables(); });
-document.getElementById('perf-region-filter').addEventListener('change', e=>{ perfState.region = e.target.value; renderPerfTables(); });
-document.getElementById('perf-sector-filter').addEventListener('change', e=>{ perfState.sector = e.target.value; renderPerfTables(); });
+document.querySelector('#perf-country-msel .gd-msel-actions a').addEventListener('click', ()=>{
+  perfState.countries = new Set();
+  populatePerfCountryFilter();
+  renderPerfTables();
+});
+document.querySelector('#perf-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
+  perfState.sectors = new Set();
+  populatePerfSectorFilter();
+  renderPerfTables();
+});
 
 async function loadStockPerformance(){
   try{
@@ -3296,7 +3384,7 @@ async function loadStockPerformance(){
     const data = await res.json();
     STOCK_PERF = data.stocks || [];
     if(data.fx_to_krw) PERF_SCRAPER_FX = Object.assign({KRW:1}, data.fx_to_krw);
-    populatePerfSectorFilter();
+    populatePerfFilters();
     renderPerfAsOfNote();
     renderPerfTables();
     if(data.updated){
@@ -3452,7 +3540,7 @@ async function gdInit(){
   }
   // 국가 드롭다운 표시 순서 고정(2026-09-16 요청): 대한민국(디폴트 선택) 다음
   // 미국-일본-중국-기타(미국)-기타 순. 목록에 없는 국가가 새로 생기면 맨 뒤에 붙는다.
-  const GD_COUNTRY_ORDER = ['대한민국', '미국', '일본', '중국', '기타(미국)', '기타'];
+  const GD_COUNTRY_ORDER = COUNTRY_ORDER; // 주가 Performance 국가 필터와 같은 순서(상수 공유)
   GD_COUNTRIES = Array.from(new Set(GD_RAW.map(r=>r.country))).sort((a,b)=>{
     const ia = GD_COUNTRY_ORDER.indexOf(a), ib = GD_COUNTRY_ORDER.indexOf(b);
     if(ia !== -1 && ib !== -1) return ia - ib;
@@ -4368,6 +4456,8 @@ async function loadTickerUniverse(){
     TICKER_UNIVERSE = [];
   }
   renderTrackedChips();
+  // 주가 Performance 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
+  if(STOCK_PERF.length){ populatePerfFilters(); renderPerfTables(); }
   renderStockStatCards(selectedStockTicker);
   renderPriceChart(selectedStockTicker, selectedPriceMonths);
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
