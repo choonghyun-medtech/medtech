@@ -28,6 +28,9 @@
        JSONP 엔드포인트("{IR도메인}/feed/Event.svc/GetEventList")를 그대로
        호출하면 회사별 HTML 파싱 없이 구조화된 JSON으로 일정을 받는다
        (scrape_q4_feed 함수 하나로 9개사 전부 처리).
+       [2026-10-08] 이벤트 캘린더엔 등록하지 않고 보도자료로만 실적일정을 공지하는
+       경우(Dexcom)가 있어, 같은 플랫폼의 보도자료 피드(PressRelease.svc)에서
+       실적일정 공지를 찾아 보충한다(_q4_press_release_earnings).
      - [2026-09-03/04] Intuitive Surgical/Align Technology/Tempus AI/Abbott:
        넷 다 "nasdaqir"(Nasdaq IR, Drupal 기반) 플랫폼을 쓰지만 회사마다 테마가
        달라 nir_card(ISRG)/nir_table(ALGN)/nir_llf(TEM)/nir_table_abt(ABT)
@@ -363,6 +366,88 @@ def scrape_q4_feed(scraper_url, ticker, name, ir_url, today):
         link = item.get("LinkToDetailPage") or ""
         detail_url = urljoin(base + "/", link) if link else None
         events.append(make_event(d, ticker, name, ir_url, title, ev_type, detail_url))
+
+    # 이벤트 피드에 같은 날짜 실적일정이 이미 있으면 보도자료분은 중복이라 버린다.
+    earn_dates = {e["date"] for e in events if e["type"] == "earn"}
+    for ev in _q4_press_release_earnings(base, ticker, name, ir_url, today):
+        if ev["date"] not in earn_dates:
+            events.append(ev)
+            earn_dates.add(ev["date"])
+    return events
+
+
+_MONTH_DAY = r"([A-Z][a-z]{2,8})\.?\s+(\d{1,2})"
+_PR_HEADLINE_DATE_RE = re.compile(_MONTH_DAY + r",\s*(\d{4})")
+# 본문 요약에서는 "on Thursday, October 29, 2026" / "on Wednesday, Nov. 4"처럼 요일이 붙은
+# 날짜만 인정한다 — 실적 리포트 본문의 "quarter ended June 30, 2026" 같은 날짜를 피하려고.
+_PR_BODY_DATE_RE = re.compile(r"(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day,?\s+" + _MONTH_DAY + r"(?:,\s*(\d{4}))?")
+
+
+def _parse_month_day(month_str, day_str, year):
+    for fmt in ("%B", "%b"):
+        try:
+            m = datetime.datetime.strptime(month_str if fmt == "%B" else month_str[:3], fmt).month
+            return datetime.date(year, m, int(day_str))
+        except ValueError:
+            continue
+    return None
+
+
+def _q4_press_release_earnings(base, ticker, name, ir_url, today):
+    """[2026-10-08] Q4 플랫폼 보도자료 피드("{IR도메인}/feed/PressRelease.svc/
+    GetPressReleaseList")에서 실적발표 일정 공지 보도자료를 찾아 날짜를 뽑는다.
+    Dexcom은 실적일정을 이벤트 캘린더에 등록하지 않고 "Dexcom Schedules Third
+    Quarter 2026 Earnings Release ... for October 29, 2026" 보도자료로만 공지해
+    이벤트 피드만으로는 수집되지 않았다(사용자 리포트). 날짜는 제목에서 먼저 찾고,
+    제목에 없으면(Teladoc 등) 본문 요약의 요일 붙은 날짜에서 찾는다."""
+    events = []
+    params = {
+        "pageSize": 20,  # 보도자료가 잦은 회사(Natera 등)도 최근 공지가 빠지지 않을 만큼
+        "pageNumber": 0,
+        "LanguageId": 1,
+        "bodyType": 3,  # ShortBody(요약문)만 포함
+        "pressReleaseDateFilter": 3,
+        "year": -1,
+        "callback": "?",
+    }
+    try:
+        r = requests.get(f"{base}/feed/PressRelease.svc/GetPressReleaseList", params=params,
+                          timeout=20, headers={"User-Agent": "Mozilla/5.0"}, verify=not _INSECURE)
+        r.raise_for_status()
+        m = re.match(r"^\?\((.*)\);?$", r.text.strip(), re.S)
+        items = json.loads(m.group(1)).get("GetPressReleaseListResult", []) if m else []
+    except Exception as e:
+        print(f"[WARN] {ticker} 보도자료 피드 조회 실패(q4_feed): {e}", file=sys.stderr)
+        return events
+
+    for item in items:
+        headline = html.unescape(item.get("Headline") or "").strip().rstrip(".")
+        if classify_global(headline) != "earn":
+            continue
+        try:
+            pub = datetime.datetime.strptime((item.get("PressReleaseDate") or "").split(" ")[0], "%m/%d/%Y").date()
+        except ValueError:
+            continue
+
+        d = None
+        hm = _PR_HEADLINE_DATE_RE.search(headline)
+        if hm:
+            d = _parse_month_day(hm.group(1), hm.group(2), int(hm.group(3)))
+        else:
+            body = html.unescape(re.sub(r"<[^>]+>", " ", item.get("ShortBody") or ""))
+            bm = _PR_BODY_DATE_RE.search(body)
+            if bm:
+                d = _parse_month_day(bm.group(1), bm.group(2), int(bm.group(3)) if bm.group(3) else pub.year)
+                if d and not bm.group(3) and d < pub:
+                    d = d.replace(year=pub.year + 1)
+        # 공지 시점 이후 ~4개월 안의 날짜만 인정(엉뚱한 날짜 오인 방지)
+        if d is None or d < pub or d > pub + datetime.timedelta(days=120):
+            continue
+        if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
+            continue
+        link = item.get("LinkToDetailPage") or ""
+        detail_url = urljoin(base + "/", link) if link else None
+        events.append(make_event(d, ticker, name, ir_url, headline, "earn", detail_url))
     return events
 
 
