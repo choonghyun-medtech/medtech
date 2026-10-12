@@ -39,10 +39,29 @@ from monthly_analysis_common import (
     build_object_provider,
     call_llm_with_retries,
     fmt_pct,
+    add_months_args,
     fmt_rank,
     is_notable,
+    load_months_file,
     month_stats,
+    run_months,
+    save_months_file,
 )
+
+
+def load_export_months(path):
+    """export_monthly_analysis.json을 {"months": {"YYYY-MM": {"export": {...}}}}로 읽는다.
+    2026-10-13 이전 형식(최신 한 달만 최상위 target_month/summary로 저장, 매달 덮어씀)이면
+    그 한 달을 새 구조로 옮겨 담는다 — 그래야 기존 분석이 사라지지 않는다."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        old = None
+    if isinstance(old, dict) and old.get("target_month") and old.get("summary") and "months" not in old:
+        return {"months": {old["target_month"]: {"export": {
+            "generated_at": old.get("generated_at"), "source": old.get("source"), "summary": old["summary"]}}}}
+    return load_months_file(path)
 
 MAX_TOKENS = 2500
 
@@ -183,24 +202,13 @@ def build_category_facts(cat):
     return stats["latest_ym"], "\n".join(lines)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--data", default="export_data.json")
-    ap.add_argument("--out", default="export_monthly_analysis.json")
-    ap.add_argument("--debug", action="store_true")
-    args = ap.parse_args()
-
-    try:
-        with open(args.data, encoding="utf-8") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        print(f"[WARN] {args.data}이 아직 없어 월간 분석을 건너뜁니다.", file=sys.stderr)
-        sys.exit(0)
-
-    categories = data.get("categories", [])
+def analyze_once(data, get_provider, debug=False):
+    """data의 최신 달을 분석한다. 반환: (대상월, 요약, provider 이름) — 요약을 못 만들면
+    (대상월, None, 사유). 하루 쿼터 소진은 DailyQuotaExhausted로 올린다.
+    과거 달 분석(--months)은 data를 그 달까지 자른 사본으로 이 함수를 그대로 부른다."""
     fact_blocks = []
     target_month = None
-    for cat in categories:
+    for cat in data.get("categories", []):
         result = build_category_facts(cat)
         if result is None:
             continue
@@ -212,37 +220,68 @@ def main():
         fact_blocks.append(f"{header}\n{block}")
 
     if not fact_blocks:
-        print("[INFO] 이번 달 유의미한 변동이 있는 카테고리가 없어 분석을 건너뜁니다.", file=sys.stderr)
-        sys.exit(0)
-
-    provider = build_object_provider()
+        return target_month, None, "유의미한 변동이 있는 카테고리가 없음"
+    provider = get_provider()
     if provider is None:
+        return target_month, None, "AI 키 없음"
+
+    tag = f"export monthly ({target_month}, {len(fact_blocks)}개 카테고리)"
+    raw = call_llm_with_retries(provider, SYSTEM_PROMPT, "\n\n".join(fact_blocks), MAX_TOKENS, tag, debug=debug)
+    summary = ((parse_json_object(raw) or {}).get("summary") or "").strip()
+    if not summary:
+        return target_month, None, f"LLM 응답 파싱 실패 또는 빈 응답 — 원문: {(raw or '')[:300]}"
+    print(f"[INFO] {target_month}: {len(fact_blocks)}개 카테고리 분석", file=sys.stderr)
+    return target_month, summary, provider.name
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data", default="export_data.json")
+    ap.add_argument("--out", default="export_monthly_analysis.json")
+    ap.add_argument("--debug", action="store_true")
+    add_months_args(ap)
+    args = ap.parse_args()
+
+    try:
+        with open(args.data, encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        print(f"[WARN] {args.data}이 아직 없어 월간 분석을 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
 
-    user_content = "\n\n".join(fact_blocks)
-    tag = f"export monthly ({target_month}, {len(fact_blocks)}개 카테고리)"
+    provider_cache = []
+    def get_provider():
+        if not provider_cache:
+            provider_cache.append(build_object_provider())
+        return provider_cache[0]
+
+    # 2026-10-13: 매달 덮어쓰던 것을 월별로 쌓는다(의료관광 분석과 같은 구조) — 화면에서 지난
+    # 분석도 고를 수 있게(사수 피드백). 같은 달을 다시 돌리면 그 달 분석만 새로 바뀐다.
+    out_data = load_export_months(args.out)
+    def save(ym, summary, provider_name):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        out_data["months"].setdefault(ym, {})["export"] = {
+            "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "source": f"export_data.json 기반 자동 분석 ({provider_name})"
+                      + (" · 과거 시점 데이터로 사후 작성" if args.months else ""),
+            "summary": summary,
+        }
+        save_months_file(args.out, out_data)
+
+    if args.months:
+        run_months(args, data, out_data, "export", lambda d: analyze_once(d, get_provider, args.debug), save)
+        return
+
     try:
-        raw = call_llm_with_retries(provider, SYSTEM_PROMPT, user_content, MAX_TOKENS, tag, debug=args.debug)
+        target_month, summary, info = analyze_once(data, get_provider, args.debug)
     except DailyQuotaExhausted:
         print("[WARN] 일별 쿼터 소진으로 이번 실행은 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
-
-    obj = parse_json_object(raw)
-    summary = (obj or {}).get("summary", "").strip()
     if not summary:
-        print(f"[WARN] LLM 응답 파싱 실패 또는 빈 응답 — 분석 파일을 갱신하지 않습니다. 원문: {(raw or '')[:300]}", file=sys.stderr)
+        print(f"[INFO] 분석을 건너뜁니다 — {info}", file=sys.stderr)
         sys.exit(0)
-
-    now = datetime.datetime.now(datetime.timezone.utc)
-    payload = {
-        "target_month": target_month,
-        "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"export_data.json 기반 자동 분석 ({provider.name})",
-        "summary": summary,
-    }
-    with open(args.out, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=1)
-    print(f"저장 완료: {args.out} (대상월={target_month}, {len(fact_blocks)}개 카테고리)")
+    save(target_month, summary, info)
+    print(f"저장 완료: {args.out} (대상월={target_month})")
 
 
 if __name__ == "__main__":

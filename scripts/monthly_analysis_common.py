@@ -15,6 +15,7 @@ analyze_visitor_monthly.py) 3개가 공통으로 쓰는 유틸리티.
   등을 암산하게 하면 숫자가 틀리기 쉽다(환각 방지).
 """
 import os
+import re
 import sys
 import time
 
@@ -141,6 +142,86 @@ def month_add(ym, delta):
     y, m = int(ym[:4]), int(ym[5:7])
     total = y * 12 + (m - 1) + delta
     return f"{total // 12:04d}-{total % 12 + 1:02d}"
+
+
+# ---------------------------------------------------------------------------
+# 과거 달 분석(백필) — 2026-10-13. 세 월간 분석 스크립트는 모두 "데이터의 최신 달"을 분석하므로,
+# 데이터를 그 달까지만 잘라 넣으면 기존 분석 로직 그대로 과거 시점 분석을 만들 수 있다.
+# 워크플로 수동 실행 입력(months)으로 받아 --months 인자로 넘긴다.
+# ---------------------------------------------------------------------------
+_YM_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
+
+
+def parse_months_arg(text):
+    """'2026-06~2026-08' 또는 '2026-06,2026-07' 형식을 ['2026-06', ...]로. 비어 있으면 []."""
+    text = (text or "").replace(" ", "")
+    if not text:
+        return []
+    months = []
+    for part in text.split(","):
+        if "~" in part:
+            start, end = part.split("~", 1)
+            if not (_YM_RE.match(start) and _YM_RE.match(end)) or start > end:
+                raise ValueError(f"기간 형식 오류: {part} (예: 2026-06~2026-08)")
+            ym = start
+            while ym <= end:
+                months.append(ym)
+                ym = month_add(ym, 1)
+        elif _YM_RE.match(part):
+            months.append(part)
+        else:
+            raise ValueError(f"월 형식 오류: {part} (예: 2026-06)")
+    return sorted(set(months))
+
+
+def truncate_to_month(obj, ym):
+    """데이터 안의 {"ym": "YYYY-MM", ...} 레코드 목록을 전부 ym 이하로 자른 사본을 만든다
+    (중첩된 dict/list를 모두 따라감 — 수출 byCountry/byRegion, 의료관광 deptAmt, 방한외국인
+    countryMonthly 등). 그 결과 각 시계열의 "최신 달"이 ym이 되어 그 시점 분석이 된다."""
+    if isinstance(obj, list):
+        if obj and all(isinstance(x, dict) and "ym" in x for x in obj):
+            return [truncate_to_month(x, ym) for x in obj if str(x["ym"]) <= ym]
+        return [truncate_to_month(x, ym) for x in obj]
+    if isinstance(obj, dict):
+        return {k: truncate_to_month(v, ym) for k, v in obj.items()}
+    return obj
+
+
+def add_months_args(ap):
+    ap.add_argument("--months", default="",
+                    help="과거 달 분석(백필): '2026-06~2026-08' 또는 '2026-06,2026-07'. "
+                         "지정하면 각 달을 그 시점 데이터로 분석해 월별로 쌓는다(이미 있는 달은 건너뜀). "
+                         "비우면 평소처럼 최신 달 1개만 분석.")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="--months와 함께: 이미 분석이 있는 달도 다시 만든다.")
+
+
+def run_months(args, data, out_data, section, analyze_once, save):
+    """--months 백필 루프. analyze_once(data) → (target_month, summary, provider_name) 또는
+    (target_month, None, 사유). 달마다 바로 저장해, 하루 쿼터가 중간에 떨어져도 그때까지 만든
+    달은 남는다(다음 실행 때 없는 달만 이어서 만든다)."""
+    months = parse_months_arg(args.months)
+    made = []
+    for ym in months:
+        existing = (out_data["months"].get(ym) or {}).get(section) or {}
+        if existing.get("summary") and not args.overwrite:
+            print(f"[INFO] {ym} {section}: 이미 분석이 있어 건너뜀(--overwrite로 다시 만들 수 있음)", file=sys.stderr)
+            continue
+        try:
+            target, summary, info = analyze_once(truncate_to_month(data, ym))
+        except DailyQuotaExhausted:
+            print(f"[WARN] 일별 쿼터 소진 — {ym}부터는 다음 실행 때 이어서 만듭니다(이미 만든 달: {made}).", file=sys.stderr)
+            break
+        if target != ym:
+            print(f"[WARN] {ym} {section}: 데이터에 이 달 수치가 없어 건너뜀(최신 달={target})", file=sys.stderr)
+            continue
+        if not summary:
+            print(f"[INFO] {ym} {section}: 분석 생략 — {info}", file=sys.stderr)
+            continue
+        save(ym, summary, info)
+        made.append(ym)
+        print(f"[INFO] {ym} {section}: 과거 달 분석 저장", file=sys.stderr)
+    print(f"백필 완료: {section} {len(made)}개월 생성 {made}")
 
 
 def month_stats(series, value_key, ym_key="ym", min_history_months=13):

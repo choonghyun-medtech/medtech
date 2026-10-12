@@ -11,10 +11,20 @@ on:
     # analyze_visitor_monthly.py 상단 docstring 참고. 시간은 다른 update-*.yml과 겹치지
     # 않는 애매한 분으로 KST 08:36 = 23:36 UTC(전날).
     - cron: "36 23 2 * *"
-  workflow_dispatch: {}  # Actions 탭에서 수동 실행 버튼으로도 즉시 테스트 가능
+  workflow_dispatch:  # Actions 탭에서 수동 실행 — 기간을 비우면 평소처럼 최신 달 1개만 분석
+    inputs:
+      months:
+        description: "과거 달 분석(선택): 예) 2026-06~2026-08 또는 2026-06,2026-07 — 이미 있는 달은 건너뜀"
+        required: false
+        default: ""
 
 permissions:
   contents: write
+
+# 의료관광 분석(update-medtour-monthly-analysis.yml)과 같은 파일에 쓰므로 차례로 돌게 한다.
+concurrency:
+  group: medtour-monthly-analysis-file
+  cancel-in-progress: false
 
 jobs:
   update-visitor-monthly-analysis:
@@ -35,7 +45,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/analyze_visitor_monthly.py --data visitor_stats.json --out medtour_monthly_analysis.json
+          MONTHS: ${{ github.event.inputs.months }}
+        run: python scripts/analyze_visitor_monthly.py --data visitor_stats.json --out medtour_monthly_analysis.json --months "$MONTHS"
 
       - name: Commit changes if any
         if: always()

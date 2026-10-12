@@ -31,6 +31,7 @@ import sys
 
 from monthly_analysis_common import (
     DailyQuotaExhausted,
+    add_months_args,
     build_object_provider,
     call_llm_with_retries,
     fmt_pct,
@@ -38,6 +39,7 @@ from monthly_analysis_common import (
     is_notable,
     load_months_file,
     month_stats,
+    run_months,
     save_months_file,
 )
 
@@ -106,6 +108,7 @@ def main():
     ap.add_argument("--data", default="visitor_stats.json")
     ap.add_argument("--out", default="medtour_monthly_analysis.json")
     ap.add_argument("--debug", action="store_true")
+    add_months_args(ap)
     args = ap.parse_args()
 
     try:
@@ -115,13 +118,49 @@ def main():
         print(f"[WARN] {args.data}이 아직 없어 월간 분석을 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
 
+    provider_cache = []
+    def get_provider():
+        if not provider_cache:
+            provider_cache.append(build_object_provider())
+        return provider_cache[0]
+
+    out_data = load_months_file(args.out)
+    def save(ym, summary, provider_name):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        out_data["months"].setdefault(ym, {})["visitor"] = {
+            "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "source": f"visitor_stats.json 기반 자동 분석 ({provider_name})"
+                      + (" · 과거 시점 데이터로 사후 작성" if args.months else ""),
+            "summary": summary,
+        }
+        save_months_file(args.out, out_data)
+
+    # 과거 달 분석(2026-10-13): 데이터를 그 달까지 자른 사본으로 같은 분석을 반복한다.
+    if args.months:
+        run_months(args, data, out_data, "visitor", lambda d: analyze_once(d, get_provider, args.debug), save)
+        return
+
+    try:
+        target_month, summary, info = analyze_once(data, get_provider, args.debug)
+    except DailyQuotaExhausted:
+        print("[WARN] 일별 쿼터 소진으로 이번 실행은 건너뜁니다.", file=sys.stderr)
+        sys.exit(0)
+    if not summary:
+        print(f"[INFO] 분석을 건너뜁니다 — {info}", file=sys.stderr)
+        sys.exit(0)
+    save(target_month, summary, info)
+    print(f"저장 완료: {args.out} (대상월={target_month}, visitor 섹션)")
+
+
+def analyze_once(data, get_provider, debug=False):
+    """data의 최신 달을 분석한다. 반환: (대상월, 요약, provider 이름) — 요약을 못 만들면
+    (대상월, None, 사유). 하루 쿼터 소진은 DailyQuotaExhausted로 올린다."""
     # 미발표 달이 0으로 섞여 들어와도(2026-10 실제 사례) 그 달을 최신월로 오인해 "-100%"
     # 분석을 쓰지 않도록, 0 이하인 달은 아예 빼고 계산한다.
     published = [r for r in data.get("monthly", []) if (r.get("visitors") or 0) > 0]
     total_stats = month_stats(published, "visitors")
     if total_stats is None:
-        print("[WARN] visitor_stats.json에 월별 데이터가 없어 분석을 건너뜁니다.", file=sys.stderr)
-        sys.exit(0)
+        return None, None, "visitor_stats.json에 월별 데이터가 없음"
     target_month = total_stats["latest_ym"]
 
     fact_blocks = []
@@ -149,36 +188,18 @@ def main():
         )
 
     if not is_notable(total_stats) and len(fact_blocks) == 1:
-        print("[INFO] 이번 달 유의미한 변동이 없어 분석을 건너뜁니다.", file=sys.stderr)
-        sys.exit(0)
-
-    provider = build_object_provider()
+        return target_month, None, "유의미한 변동이 없음"
+    provider = get_provider()
     if provider is None:
-        sys.exit(0)
+        return target_month, None, "AI 키 없음"
 
-    user_content = "\n\n".join(fact_blocks)
     tag = f"visitor monthly ({target_month}, {len(fact_blocks)}개 항목)"
-    try:
-        raw = call_llm_with_retries(provider, SYSTEM_PROMPT, user_content, MAX_TOKENS, tag, debug=args.debug)
-    except DailyQuotaExhausted:
-        print("[WARN] 일별 쿼터 소진으로 이번 실행은 건너뜁니다.", file=sys.stderr)
-        sys.exit(0)
-
-    obj = parse_json_object(raw)
-    summary = (obj or {}).get("summary", "").strip()
+    raw = call_llm_with_retries(provider, SYSTEM_PROMPT, "\n\n".join(fact_blocks), MAX_TOKENS, tag, debug=debug)
+    summary = ((parse_json_object(raw) or {}).get("summary") or "").strip()
     if not summary:
-        print(f"[WARN] LLM 응답 파싱 실패 또는 빈 응답 — 분석 파일을 갱신하지 않습니다. 원문: {(raw or '')[:300]}", file=sys.stderr)
-        sys.exit(0)
-
-    now = datetime.datetime.now(datetime.timezone.utc)
-    out_data = load_months_file(args.out)
-    out_data["months"].setdefault(target_month, {})["visitor"] = {
-        "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"visitor_stats.json 기반 자동 분석 ({provider.name})",
-        "summary": summary,
-    }
-    save_months_file(args.out, out_data)
-    print(f"저장 완료: {args.out} (대상월={target_month}, visitor 섹션, {len(fact_blocks)}개 항목)")
+        return target_month, None, f"LLM 응답 파싱 실패 또는 빈 응답 — 원문: {(raw or '')[:300]}"
+    print(f"[INFO] {target_month}: {len(fact_blocks)}개 항목 분석", file=sys.stderr)
+    return target_month, summary, provider.name
 
 
 if __name__ == "__main__":
