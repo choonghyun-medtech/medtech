@@ -385,7 +385,8 @@ tr:last-child td{border-bottom:none}
    고정폭 + 말줄임으로 가지런히 정리(2026-09-04). */
 .rep-cat-select{width:150px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 /* 기업 스냅샷 탭의 섹터별 드롭다운도 같은 이유로 고정폭 + 말줄임(2026-09-08). */
-.snap-sector-select{width:150px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.snap-sector-select{width:170px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.snap-company-select{width:240px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 .perf-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
 @media (max-width:720px){.perf-grid{grid-template-columns:1fr}}
 .perf-table-title{font-size:13px; font-weight:700; padding:8px 10px; border-radius:8px 8px 0 0; color:#fff}
@@ -1212,7 +1213,14 @@ tr:last-child td{border-bottom:none}
         <div class="toggle" id="sup-region-toggle">
           <button data-region="KR" class="active">국내</button><button data-region="GLOBAL">해외</button>
         </div>
-        <select id="sup-sector-filter" class="filter-select"><option value="all">섹터 전체</option></select>
+        <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(주가 Performance와 같은 UI) -->
+        <details class="gd-msel" id="sup-sector-msel">
+          <summary id="sup-sector-summary">섹터 전체</summary>
+          <div class="gd-msel-panel">
+            <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+            <div id="sup-sector-options"></div>
+          </div>
+        </details>
       </div>
       <div class="note" id="sup-rule-note" style="margin:0 0 12px"></div>
 
@@ -2920,11 +2928,14 @@ function perfCountryOf(s){
 
 // 종목의 세부 섹터(글로벌 대시보드 엑셀 C열, 여러 개 가능). stock_performance.json에 아직
 // sectors가 없으면(2026-10-08 추가 — 다음 자동 갱신 전) tickers.json에서, 그것도 없으면 대분류로.
-function perfSectorsOf(s){
-  if(s.sectors && s.sectors.length) return s.sectors;
-  const info = tickerInfo(s.ticker);
+function perfSectorsOf(s){ return fineSectorsOf(s.ticker, s.sector, s.sectors); }
+// 세부 섹터 공통 조회 — 데이터에 실린 값(own) → tickers.json → 대분류(fallback) 순.
+// 주가 Performance·실적 서프라이즈 등 글로벌 대시보드 기준 세부 섹터를 쓰는 탭이 공유한다.
+function fineSectorsOf(ticker, fallback, own){
+  if(own && own.length) return own;
+  const info = tickerInfo(ticker);
   if(info && info.sectors && info.sectors.length) return info.sectors;
-  return s.sector ? [s.sector] : [];
+  return fallback && fallback !== '-' ? [fallback] : [];
 }
 
 function capFilterPass(capTril, filterVal){
@@ -7336,9 +7347,7 @@ function renderRepStockBox(co){
 function jumpToSnapshot(ticker){
   activateTab('snapshot');
   if(!ticker) return;
-  document.querySelectorAll('#snap-dropdown-wrap .snap-sector-select').forEach(sel=>{
-    sel.value = [...sel.options].some(o=>o.value === ticker) ? ticker : '';
-  });
+  syncSnapshotDropdowns(ticker);
   selectedSnapshotTicker = ticker;
   renderSnapshot(ticker);
 }
@@ -7451,37 +7460,63 @@ function snapshotReportsFor(ticker){
   return REPORTS.filter(r => tickerForCompany(r.co) === ticker);
 }
 
-// 리서치 보고서 탭의 renderRepCategoryDropdowns()와 같은 패턴이지만, reports.json에 있는
-// 기업만 다루는 CATEGORIES 대신 tickers.json 전체(145개, sector 필드 기준)로 그린다 —
-// 리포트가 아직 없는 기업도 뉴스/주가/공시만으로 스냅샷을 볼 수 있어야 하기 때문.
-const SNAPSHOT_SECTOR_ORDER = ['디지털헬스','미용','로보틱스','치과','체외진단','생명공학','의료기기','의료서비스'];
+// tickers.json 전체(글로벌 대시보드와 같은 종목)를 대상으로 한다 — 리포트가 아직 없는 기업도
+// 뉴스/주가/공시만으로 스냅샷을 볼 수 있어야 하기 때문.
+// 2026-10-12: 대분류 8개마다 드롭다운이 하나씩이던 것을, 글로벌 대시보드 세부 섹터(22개)로
+// 바꾸면서 "섹터 → 기업" 두 단계 드롭다운으로 변경(드롭다운 22개는 화면에 맞지 않음).
+// 한 기업이 여러 세부 섹터에 속하면 어느 섹터를 골라도 그 기업이 나온다.
+let snapSectorSel = ''; // 고른 세부 섹터('' = 전체)
+function snapCompaniesIn(sector){
+  // 화면 표기는 항상 stockDisplayName()으로 통일(사명 변경 대응 — 예: tickers.json엔 구사명
+  // "씨어스테크놀로지"로 남아있어도 현재 사명 "씨어스"로 보여준다, 2026-09-08 지적).
+  return TICKER_UNIVERSE
+    .filter(t=>!sector || fineSectorsOf(t.ticker, t.sector, t.sectors).includes(sector))
+    .sort((a,b)=>stockDisplayName(a.ticker).localeCompare(stockDisplayName(b.ticker), 'ko'));
+}
+function renderSnapCompanySelect(selectedTicker){
+  const sel = document.getElementById('snap-company-select');
+  if(!sel) return;
+  const list = snapCompaniesIn(snapSectorSel);
+  sel.innerHTML = `<option value="">기업 선택 (${list.length})</option>` + list.map(t=>
+    `<option value="${t.ticker}">${escapeHtml(stockDisplayName(t.ticker))}${t.market!=='KR'?` (${t.market})`:''}</option>`).join('');
+  sel.value = list.some(t=>t.ticker === selectedTicker) ? selectedTicker : '';
+}
 function renderSnapshotDropdowns(){
   const wrap = document.getElementById('snap-dropdown-wrap');
   if(!wrap) return;
-  const bySector = {};
-  TICKER_UNIVERSE.forEach(t=>{ (bySector[t.sector]=bySector[t.sector]||[]).push(t); });
-  const order = [...SNAPSHOT_SECTOR_ORDER, ...Object.keys(bySector).filter(s=>!SNAPSHOT_SECTOR_ORDER.includes(s))];
-  let html = '';
-  order.forEach(sector=>{
-    // 화면 표기는 항상 stockDisplayName()으로 통일(주가 탭과 동일한 사명 변경 대응 — 예:
-    // tickers.json엔 구사명 "씨어스테크놀로지"로 남아있어도 2026-03 사명 변경 이후 현재
-    // 사명인 "씨어스"로 보여준다, 2026-09-08 지적).
-    const list = (bySector[sector]||[]).slice().sort((a,b)=>stockDisplayName(a.ticker).localeCompare(stockDisplayName(b.ticker)));
-    if(!list.length) return;
-    html += `<select class="filter-select snap-sector-select" data-sector="${escapeHtml(sector)}">
-      <option value="">${escapeHtml(sector)} (${list.length})</option>
-      ${list.map(t=>`<option value="${t.ticker}">${escapeHtml(stockDisplayName(t.ticker))}${t.market!=='KR'?` (${t.market})`:''}</option>`).join('')}
-    </select>`;
+  const counts = {};
+  TICKER_UNIVERSE.forEach(t=>fineSectorsOf(t.ticker, t.sector, t.sectors).forEach(s=>{ counts[s] = (counts[s]||0) + 1; }));
+  const sectors = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
+  if(snapSectorSel && !counts[snapSectorSel]) snapSectorSel = '';
+  wrap.innerHTML = `
+    <select id="snap-sector-select" class="filter-select snap-sector-select">
+      <option value="">섹터 전체 (${TICKER_UNIVERSE.length})</option>
+      ${sectors.map(([s, n])=>`<option value="${escapeHtml(s)}">${escapeHtml(s)} (${n})</option>`).join('')}
+    </select>
+    <select id="snap-company-select" class="filter-select snap-company-select"></select>`;
+  const sectorSel = document.getElementById('snap-sector-select');
+  sectorSel.value = snapSectorSel;
+  renderSnapCompanySelect(selectedSnapshotTicker);
+  sectorSel.addEventListener('change', ()=>{
+    snapSectorSel = sectorSel.value;
+    renderSnapCompanySelect(selectedSnapshotTicker); // 지금 보던 기업이 새 섹터에 있으면 선택 유지
   });
-  wrap.innerHTML = html;
-  wrap.querySelectorAll('.snap-sector-select').forEach(sel=>{
-    sel.addEventListener('change', ()=>{
-      if(!sel.value) return;
-      wrap.querySelectorAll('.snap-sector-select').forEach(o=>{ if(o!==sel) o.value=''; });
-      selectedSnapshotTicker = sel.value;
-      renderSnapshot(sel.value);
-    });
+  document.getElementById('snap-company-select').addEventListener('change', e=>{
+    if(!e.target.value) return;
+    selectedSnapshotTicker = e.target.value;
+    renderSnapshot(e.target.value);
   });
+}
+// 검색·다른 탭에서 기업을 고르면 드롭다운도 그 기업으로 맞춘다 — 지금 고른 섹터에 그 기업이
+// 있으면 섹터는 그대로, 없으면 그 기업의 대표(첫) 세부 섹터로 바꾼다.
+function syncSnapshotDropdowns(ticker){
+  const info = tickerInfo(ticker);
+  if(!info) return;
+  const secs = fineSectorsOf(ticker, info.sector, info.sectors);
+  if(snapSectorSel && !secs.includes(snapSectorSel)) snapSectorSel = secs[0] || '';
+  const sectorSel = document.getElementById('snap-sector-select');
+  if(sectorSel) sectorSel.value = snapSectorSel;
+  renderSnapCompanySelect(ticker);
 }
 
 // 기업 스냅샷 검색 — 기업명(현재 사명 포함)·티커·종목코드로 찾아 바로 스냅샷을 연다.
@@ -7502,9 +7537,7 @@ function pickSnapshotFromSearch(ticker){
   const results = document.getElementById('snap-search-results');
   if(input) input.value = '';
   if(results){ results.style.display = 'none'; results.innerHTML = ''; }
-  document.querySelectorAll('#snap-dropdown-wrap .snap-sector-select').forEach(sel=>{
-    sel.value = [...sel.options].some(o=>o.value === ticker) ? ticker : '';
-  });
+  syncSnapshotDropdowns(ticker);
   selectedSnapshotTicker = ticker;
   renderSnapshot(ticker);
 }
@@ -7513,7 +7546,7 @@ function renderSnapSearchResults(query){
   if(!query){ results.style.display = 'none'; results.innerHTML = ''; return; }
   const matches = snapSearchMatches(query);
   results.innerHTML = matches.length
-    ? matches.map(t=>`<div class="snap-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${escapeHtml(stockDisplayName(t.ticker))} <span class="note">${t.ticker} · ${t.market} · ${escapeHtml(t.sector)}</span></div>`).join('')
+    ? matches.map(t=>`<div class="snap-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${escapeHtml(stockDisplayName(t.ticker))} <span class="note">${t.ticker} · ${t.market} · ${escapeHtml(fineSectorsOf(t.ticker, t.sector, t.sectors).join(', '))}</span></div>`).join('')
     : '<div class="note" style="padding:8px">일치하는 기업이 없습니다</div>';
   results.querySelectorAll('.snap-search-item').forEach(item=>{
     item.addEventListener('mouseenter', ()=> item.style.background = 'var(--bg2)');
@@ -7729,7 +7762,7 @@ function renderSnapshot(ticker){
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
         <div style="font-weight:700;font-size:16px">${escapeHtml(stockDisplayName(ticker))} <span class="note">(${info.ticker})</span></div>
-        <div class="note">${info.market} · ${escapeHtml(info.sector)}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
+        <div class="note">${info.market} · ${escapeHtml(fineSectorsOf(info.ticker, info.sector, info.sectors).join(', '))}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
       </div>
     </div>
     <div class="snap-subsec-h" style="margin-top:14px; justify-content:flex-end">${stockJumpBtn}</div>
@@ -8242,9 +8275,11 @@ function revLastNonNull(arr){
 function revStockMeta(ticker, h){
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const info = tickerInfo(ticker);
+  const sector = (info && info.sector) || (perf && perf.sector) || '-';
   return {
     name: info ? stockDisplayName(ticker) : (h.name || ticker),
-    sector: (info && info.sector) || (perf && perf.sector) || '-',
+    sector,
+    sectors: fineSectorsOf(ticker, sector, perf && perf.sectors), // 글로벌 대시보드 세부 섹터(여러 개)
     currency: perf && perf.currency ? perf.currency : (h.market==='KR' ? 'KRW' : ''),
     market: h.market,
   };
@@ -8647,7 +8682,8 @@ loadConsensusHistory();
 // ==================================================================
 let SUP_DATA = null;
 let supDistChartInstance = null;
-const SUP_STATE = { season:null, region:'KR', sector:'all', sort:'date' };
+// sectors: 체크한 세부 섹터(비어 있으면 전체) — 글로벌 대시보드 섹터 필터와 같은 규칙.
+const SUP_STATE = { season:null, region:'KR', sectors:new Set(), sort:'date' };
 // 판정 용어는 국내·해외 모두 Beat / In-line / Miss로 통일. 기준 폭도 국내·해외 모두 ±5%
 // (2026-10-07 사용자 요청 — 그 전엔 국내 영업이익만 변동성을 이유로 ±10%였다).
 const SUP_LABELS = { beat:'Beat', inline:'In-line', miss:'Miss' };
@@ -8682,7 +8718,8 @@ function supColor(cls){ return cls === 'beat' ? SUP_BEAT_COLOR : cls === 'miss' 
 function supInRegion(s, region){ return region === 'KR' ? s.market === 'KR' : s.market !== 'KR'; }
 function supStocks(){
   return Object.entries(SUP_DATA.stocks).filter(([t, s])=>
-    supInRegion(s, SUP_STATE.region) && (SUP_STATE.sector === 'all' || revStockMeta(t, s).sector === SUP_STATE.sector));
+    supInRegion(s, SUP_STATE.region) &&
+    (SUP_STATE.sectors.size === 0 || revStockMeta(t, s).sectors.some(sec=>SUP_STATE.sectors.has(sec))));
 }
 // 이 시즌에 아직 실적이 안 나온(발표 예정) 종목인지 — 그 분기 실적이 없고, 다음 분기 정보가 그 시즌을 가리킬 때
 function supIsPending(s, season){
@@ -8864,7 +8901,7 @@ function renderSupResults(rule, rows, noCons, negEst, pendingCount){
   }).join('');
   const badge = cls => `<span class="badge" style="background:${hexToRgba(supColor(cls), .15)};color:${cls === 'inline' ? 'var(--sub)' : supColor(cls)}">${SUP_LABELS[cls]}</span>`;
   const body = list.map(r=>`
-    <tr title="${escapeHtml(r.meta.sector)}${r.s.market !== 'KR' && r.meta.currency ? ' · '+r.meta.currency : ''}">
+    <tr title="${escapeHtml(r.meta.sectors.join(', '))}${r.s.market !== 'KR' && r.meta.currency ? ' · '+r.meta.currency : ''}">
       <td style="white-space:nowrap">${r.q.report_date ? revShortDate(r.q.report_date) : '<span class="note">-</span>'}</td>
       <td style="white-space:nowrap"><span style="font-weight:600;display:inline-block;max-width:9em;overflow:hidden;text-overflow:ellipsis;vertical-align:middle">${escapeHtml(r.meta.name)}</span><span class="market-badge">${r.s.market}</span></td>
       <td>${badge(r.cls)}</td>
@@ -8905,7 +8942,7 @@ function renderSupPending(rule, rows, doneCount){
     const cells = isKR
       ? `<td>${supFmtVal(n.rev_est, 'rev', 'KR')}</td><td>${supFmtVal(n.op_est, 'op', 'KR')}</td>`
       : `<td>${supFmtVal(n.rev_est, 'rev', r.s.market)}</td><td>${supFmtVal(n.eps_est, 'eps', r.s.market)}</td>`;
-    return `<tr title="${escapeHtml(r.meta.sector)}${!isKR && r.meta.currency ? ' · '+r.meta.currency : ''}">
+    return `<tr title="${escapeHtml(r.meta.sectors.join(', '))}${!isKR && r.meta.currency ? ' · '+r.meta.currency : ''}">
       <td style="white-space:nowrap">${dateCell}</td>
       <td style="white-space:nowrap"><span style="font-weight:600">${escapeHtml(r.meta.name)}</span><span class="market-badge">${r.s.market}</span></td>
       ${cells}
@@ -8920,18 +8957,40 @@ function renderSupPending(rule, rows, doneCount){
     <div class="note" style="margin-top:4px; font-size:10.5px">컨센 = 현재 시점 컨센서스(국내 억원, 해외 현지 통화). 발표 예정일은 이벤트 캘린더(회사 IR 페이지 확인) 일정이 있으면 그것을, 없으면 Yahoo Finance 예정일을 표시 — 두 값이 다르면 ⚠ 표시.</div>`;
 }
 
+// 섹터 체크 목록 — 지금 고른 국내/해외 종목 기준 개수, 많은 순. 국내/해외를 바꿔도 체크는 유지하고,
+// 그쪽에 종목이 없는 섹터는 (0)으로 남겨 무엇이 걸려 있는지 보이게 한다.
 function populateSupSectorFilter(){
-  const sel = document.getElementById('sup-sector-filter');
-  const cur = sel.value;
-  const sectors = new Set(Object.entries(SUP_DATA.stocks).map(([t, s])=>revStockMeta(t, s).sector).filter(s=>s !== '-'));
-  sel.innerHTML = '<option value="all">섹터 전체</option>' + [...sectors].sort((a,b)=>a.localeCompare(b,'ko')).map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-  if([...sel.options].some(o=>o.value===cur)) sel.value = cur;
+  if(!SUP_DATA) return;
+  const counts = {};
+  Object.entries(SUP_DATA.stocks).forEach(([t, s])=>{
+    if(!supInRegion(s, SUP_STATE.region)) return;
+    revStockMeta(t, s).sectors.forEach(sec=>{ counts[sec] = (counts[sec]||0) + 1; });
+  });
+  SUP_STATE.sectors.forEach(sec=>{ if(!(sec in counts)) counts[sec] = 0; });
+  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
+  const wrap = document.getElementById('sup-sector-options');
+  wrap.innerHTML = list.map(([sec, n])=>`
+    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${SUP_STATE.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-sector]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) SUP_STATE.sectors.add(cb.dataset.sector); else SUP_STATE.sectors.delete(cb.dataset.sector);
+      updateSupSectorSummary(); renderSurprise();
+    };
+  });
+  updateSupSectorSummary();
+}
+function updateSupSectorSummary(){
+  const el = document.getElementById('sup-sector-summary');
+  const sel = [...SUP_STATE.sectors];
+  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
 }
 
 (function setupSurpriseControls(){
   document.querySelectorAll('#sup-region-toggle button').forEach(b=>b.addEventListener('click', ()=>{
     document.querySelectorAll('#sup-region-toggle button').forEach(x=>x.classList.toggle('active', x === b));
     SUP_STATE.region = b.dataset.region;
+    populateSupSectorFilter(); // 섹터별 종목 수가 국내/해외에 따라 달라서 다시 센다
     renderSurprise();
   }));
   document.querySelectorAll('#sup-sort-toggle button').forEach(b=>b.addEventListener('click', ()=>{
@@ -8939,7 +8998,11 @@ function populateSupSectorFilter(){
     SUP_STATE.sort = b.dataset.sort;
     renderSurprise();
   }));
-  document.getElementById('sup-sector-filter').addEventListener('change', e=>{ SUP_STATE.sector = e.target.value; renderSurprise(); });
+  document.querySelector('#sup-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
+    SUP_STATE.sectors = new Set();
+    populateSupSectorFilter();
+    renderSurprise();
+  });
   const btn = document.querySelector('#reports-subtabs [data-sub="surprise"]');
   if(btn) btn.addEventListener('click', ()=> setTimeout(renderSurprise, 0)); // 숨겨진 상태에서 그린 차트 크기 보정
 })();
