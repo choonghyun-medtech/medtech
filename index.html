@@ -770,9 +770,14 @@ tr:last-child td{border-bottom:none}
         <option value="empty_buy">관심 유입</option>
         <option value="empty_sell">수급 약화</option>
       </select>
-      <select id="flowmap-sector-filter" class="filter-select">
-        <option value="all">섹터 전체</option>
-      </select>
+      <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(주가 Performance와 같은 UI) -->
+      <details class="gd-msel" id="flowmap-sector-msel">
+        <summary id="flowmap-sector-summary">섹터 전체</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+          <div id="flowmap-sector-options"></div>
+        </div>
+      </details>
       <a href="#" id="flowmap-reset-link" class="note" style="text-decoration:underline;align-self:center">초기화</a>
     </div>
 
@@ -1176,6 +1181,14 @@ tr:last-child td{border-bottom:none}
           <option value="KR">국내</option>
           <option value="GLOBAL">해외</option>
         </select>
+        <!-- 2026-10-12: 세부 섹터 필터(글로벌 대시보드 기준, 체크박스 다중 선택 — 실적 서프라이즈와 같은 UI) -->
+        <details class="gd-msel" id="rev-sector-msel">
+          <summary id="rev-sector-summary">섹터 전체</summary>
+          <div class="gd-msel-panel">
+            <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+            <div id="rev-sector-options"></div>
+          </div>
+        </details>
         <label class="note" style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="rev-min-coverage" checked> 해외는 커버 애널리스트 3인 이상만</label>
       </div>
       <div class="note" id="rev-metric-note" style="margin:0 0 10px"></div>
@@ -2529,39 +2542,56 @@ const FLOWMAP_PERIODS = {
   12: { midDays: MONTHS_TO_TRADING_DAYS[12], shortDays: 20 },
 };
 let flowMapSelectedMonths = 3;
-let flowMapFilters = { search: '', quadrant: 'all', sector: 'all' };
+// sectors: 체크한 세부 섹터(비어 있으면 전체) — 글로벌 대시보드 섹터 필터와 같은 규칙(2026-10-12).
+let flowMapFilters = { search: '', quadrant: 'all', sectors: new Set() };
 
+// 섹터 체크 목록 — 국내 종목 기준 개수, 많은 순.
 function populateFlowMapSectorFilter(){
-  const sel = document.getElementById('flowmap-sector-filter');
-  if(!sel) return;
-  const sectors = [...new Set(STOCK_PERF.filter(s => s.market === 'KR').map(s => s.sector))].sort();
-  const prev = sel.value || 'all';
-  sel.innerHTML = '<option value="all">섹터 전체</option>' + sectors.map(s => `<option value="${s}">${s}</option>`).join('');
-  if(sectors.includes(prev)) sel.value = prev;
+  const wrap = document.getElementById('flowmap-sector-options');
+  if(!wrap) return;
+  const counts = {};
+  STOCK_PERF.filter(s => s.market === 'KR').forEach(s => perfSectorsOf(s).forEach(sec => { counts[sec] = (counts[sec]||0) + 1; }));
+  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
+  flowMapFilters.sectors = new Set([...flowMapFilters.sectors].filter(sec => counts[sec]));
+  wrap.innerHTML = list.map(([sec, n]) => `
+    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${flowMapFilters.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-sector]').forEach(cb => {
+    cb.onchange = () => {
+      if(cb.checked) flowMapFilters.sectors.add(cb.dataset.sector); else flowMapFilters.sectors.delete(cb.dataset.sector);
+      updateFlowMapSectorSummary(); renderFlowMap();
+    };
+  });
+  updateFlowMapSectorSummary();
+}
+function updateFlowMapSectorSummary(){
+  const el = document.getElementById('flowmap-sector-summary');
+  const sel = [...flowMapFilters.sectors];
+  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
 }
 
 // 검색어(종목명/티커)·구분(사분면)·섹터 세 조건을 모두 만족하는 행만 남긴다.
 // quadrant 필드명이 다른 두 종류(rows의 quadrant, transitions의 qNow)를 함께
-// 다루기 위해 quadrantKey를 인자로 받는다.
-function flowMapRowMatchesFilters(name, ticker, sector, quadrantKey){
+// 다루기 위해 quadrantKey를 인자로 받는다. sectors는 종목의 세부 섹터 배열.
+function flowMapRowMatchesFilters(name, ticker, sectors, quadrantKey){
   const f = flowMapFilters;
   if(f.search){
     const q = f.search.trim().toLowerCase();
     if(q && !name.toLowerCase().includes(q) && !ticker.toLowerCase().includes(q)) return false;
   }
   if(f.quadrant !== 'all' && quadrantKey !== f.quadrant) return false;
-  if(f.sector !== 'all' && sector !== f.sector) return false;
+  if(f.sectors.size && !sectors.some(sec => f.sectors.has(sec))) return false;
   return true;
 }
 function applyFlowMapFilters(rows){
-  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sector, r.quadrant.key));
+  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sectors, r.quadrant.key));
 }
 function applyFlowMapFiltersToTransitions(rows){
-  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sector, r.qNow.key));
+  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sectors, r.qNow.key));
 }
 function hasActiveFlowMapFilters(){
   const f = flowMapFilters;
-  return !!f.search.trim() || f.quadrant !== 'all' || f.sector !== 'all';
+  return !!f.search.trim() || f.quadrant !== 'all' || f.sectors.size > 0;
 }
 
 // 사분면 4구분 — 가로축(중기 수급 포지션, 순매수 누적 부호) x 세로축(최근 수급 모멘텀,
@@ -2597,7 +2627,7 @@ function computeFlowMapRows(months){
     const shortSum = sumLast(period.shortDays);
     const x = midSum / cap * 100, y = shortSum / cap * 100;
     rows.push({
-      ticker: s.ticker, name: s.name, sector: s.sector,
+      ticker: s.ticker, name: s.name, sectors: perfSectorsOf(s),
       x, y, midSum, shortSum, cap, lastDate: flow.dates[flow.dates.length - 1],
       quadrant: classifyFlowMapQuadrant(x, y),
     });
@@ -2784,7 +2814,7 @@ function renderFlowMapTable(rows){
   const body = sorted.map(r => `
     <tr>
       <td>${escapeHtml(r.name)}</td>
-      <td>${escapeHtml(r.sector)}</td>
+      <td class="gd-sector-tag">${escapeHtml(r.sectors.join(', '))}</td>
       <td>${r.x.toFixed(1)}%</td>
       <td>${r.y.toFixed(1)}%</td>
       <td>
@@ -2837,7 +2867,7 @@ function computeFlowMapTransitions(){
 
     if(qPast.key === qNow.key) continue;
     rows.push({
-      ticker: s.ticker, name: s.name, sector: s.sector,
+      ticker: s.ticker, name: s.name, sectors: perfSectorsOf(s),
       xNow, yNow, qNow, qPast, lastDate: flow.dates[flow.dates.length - 1],
     });
   }
@@ -2857,7 +2887,7 @@ function renderFlowMapTransitions(rows){
   const body = rows.slice(0, 15).map(r => `
     <tr>
       <td>${escapeHtml(r.name)}</td>
-      <td>${escapeHtml(r.sector)}</td>
+      <td class="gd-sector-tag">${escapeHtml(r.sectors.join(', '))}</td>
       <td>
         <span style="color:${r.qPast.color}">${r.qPast.label}</span>
         <span style="color:var(--dim)"> → </span>
@@ -2894,16 +2924,17 @@ document.getElementById('flowmap-quadrant-filter').addEventListener('change', e 
   flowMapFilters.quadrant = e.target.value;
   renderFlowMap();
 });
-document.getElementById('flowmap-sector-filter').addEventListener('change', e => {
-  flowMapFilters.sector = e.target.value;
+document.querySelector('#flowmap-sector-msel .gd-msel-actions a').addEventListener('click', () => {
+  flowMapFilters.sectors = new Set();
+  populateFlowMapSectorFilter();
   renderFlowMap();
 });
 document.getElementById('flowmap-reset-link').addEventListener('click', e => {
   e.preventDefault();
-  flowMapFilters = { search: '', quadrant: 'all', sector: 'all' };
+  flowMapFilters = { search: '', quadrant: 'all', sectors: new Set() };
   document.getElementById('flowmap-search-input').value = '';
   document.getElementById('flowmap-quadrant-filter').value = 'all';
-  document.getElementById('flowmap-sector-filter').value = 'all';
+  populateFlowMapSectorFilter();
   renderFlowMap();
 });
 
@@ -4448,7 +4479,7 @@ function renderStockSearchResults(query){
     return;
   }
   results.innerHTML = matches.map(t=>
-    `<div class="stock-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${t.name} <span class="note">${t.ticker} · ${t.market} · ${t.sector}</span></div>`
+    `<div class="stock-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${t.name} <span class="note">${t.ticker} · ${t.market} · ${escapeHtml(fineSectorsOf(t.ticker, t.sector, t.sectors).join(', '))}</span></div>`
   ).join('');
   results.querySelectorAll('.stock-search-item').forEach(item=>{
     item.addEventListener('mouseenter', ()=> item.style.background='var(--bg2)');
@@ -4468,7 +4499,10 @@ async function loadTickerUniverse(){
   }
   renderTrackedChips();
   // 주가 Performance 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
-  if(STOCK_PERF.length){ populatePerfFilters(); renderPerfTables(); }
+  if(STOCK_PERF.length){
+    populatePerfFilters(); renderPerfTables();
+    populateFlowMapSectorFilter(); if(typeof renderFlowMap === 'function') renderFlowMap(); // 수급 판독기도 같은 세부 섹터
+  }
   renderStockStatCards(selectedStockTicker);
   renderPriceChart(selectedStockTicker, selectedPriceMonths);
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
@@ -8254,10 +8288,11 @@ loadBioReports();
 // ==================================================================
 let CONS_HIST = null;
 let revDetailChartInstance = null;
-// 2026-10-07: 섹터 필터·섹터별 리비전 막대 제거(사수 질문 "섹터별 분석이 의미 있나" 검토 결과) —
-// 전부 메드텍 한 업종이고, 섹터로 쪼개면 국내는 미용 외엔 1~3종목뿐, 국내·해외가 같은 섹터명에
-// 섞여 해석이 어려웠다. 전체 + 국내/해외 구분 + 종목 검색으로 본다.
-const REV_STATE = { days:30, metric:'eps', fy:1, region:'all', minCov:true, detail:null };
+// 2026-10-07: 섹터별 리비전 막대 제거(사수 질문 "섹터별 분석이 의미 있나" 검토 결과) — 전부 메드텍
+// 한 업종이고, 섹터로 쪼개면 국내는 미용 외엔 1~3종목뿐이라 섹터별 비율 비교는 해석이 어려웠다.
+// 2026-10-12: 다른 탭과 맞춰 세부 섹터(글로벌 대시보드 기준) "필터"만 다시 둔다 — 고른 섹터 종목으로
+// 리비전 방향·Top 10을 보는 용도(sectors 비어 있으면 전체).
+const REV_STATE = { days:30, metric:'eps', fy:1, region:'all', sectors:new Set(), minCov:true, detail:null };
 const REV_METRIC_META = {
   eps: { label:'EPS' },
   rev: { label:'매출' },
@@ -8318,6 +8353,7 @@ function revComputeRows(){
     if(REV_STATE.region === 'KR' && h.market !== 'KR') return;
     if(REV_STATE.region === 'GLOBAL' && h.market === 'KR') return;
     const sm = revStockMeta(ticker, h);
+    if(REV_STATE.sectors.size && !sm.sectors.some(sec=>REV_STATE.sectors.has(sec))) return;
     const cov = revLastNonNull(h.n);
     if(REV_STATE.minCov && h.market !== 'KR' && (cov == null || cov < REV_MIN_COVERAGE)) return;
     const s = revSeriesFor(h, REV_STATE.metric, REV_STATE.fy);
@@ -8409,7 +8445,7 @@ function renderRevTables(rows){
     // 섹터는 열 대신 마우스오버 툴팁으로 — 두 표를 나란히 놓으면 열이 많아 오른쪽 표가 넘친다.
     const header = `<thead><tr><th>#</th><th>종목</th><th>기준 → 현재</th><th>변화율(%)</th><th style="white-space:nowrap" title="선택한 기간 동안 ${REV_METRIC_META[metric].label}${metric==='tp' ? '' : ' FY'+REV_STATE.fy} 컨센서스의 일별 변화 — 행마다 자기 최저~최고 범위로 그려 모양(방향·시점)만 보는 용도">컨센 추이</th>${showCov ? '<th title="이 종목 컨센서스에 추정치를 낸 애널리스트 수 — 적을수록 한두 명의 수정에 크게 흔들림(해외만 제공)" style="white-space:nowrap">애널리스트</th>' : ''}</tr></thead>`;
     const body = list.map((r,i)=>`
-      <tr class="rev-row" data-ticker="${r.ticker}" style="cursor:pointer${REV_STATE.detail === r.ticker ? ';background:var(--accent-soft)' : ''}" title="${escapeHtml(r.sector)} · ${r.fy ? 'FY'+r.fy+' · ' : ''}${r.baseDate} → ${r.curDate}${r.currency ? ' · '+r.currency : ''}">
+      <tr class="rev-row" data-ticker="${r.ticker}" style="cursor:pointer${REV_STATE.detail === r.ticker ? ';background:var(--accent-soft)' : ''}" title="${escapeHtml(r.sectors.join(', '))} · ${r.fy ? 'FY'+r.fy+' · ' : ''}${r.baseDate} → ${r.curDate}${r.currency ? ' · '+r.currency : ''}">
         <td>${i+1}</td>
         <td style="white-space:nowrap"><span style="font-weight:600; display:inline-block; max-width:7.5em; overflow:hidden; text-overflow:ellipsis; vertical-align:middle">${escapeHtml(r.name)}</span><span class="market-badge">${r.market}</span></td>
         <td style="white-space:nowrap">${revFmtVal(r.base, metric, r.market)} → ${revFmtVal(r.cur, metric, r.market)}</td>
@@ -8561,6 +8597,7 @@ function renderRevision(){
 }
 
 function populateRevFilters(){
+  populateRevSectorFilter();
   // 검색 자동완성·빠른 선택 목록 — 컨센서스 값이 하나라도 있는 종목만(국내 일부는 커버 애널리스트가
   // 없어 이력이 전부 비어 있다). 빠른 선택은 국내/해외로 나눠 이름순.
   const list = revSearchableStocks();
@@ -8570,6 +8607,37 @@ function populateRevFilters(){
     ? `<optgroup label="${label} (${items.length})">${items.map(s=>`<option value="${s.ticker}">${escapeHtml(s.name)} · ${s.ticker}</option>`).join('')}</optgroup>` : '';
   document.getElementById('rev-pick-select').innerHTML = '<option value="">전체 종목에서 고르기</option>'
     + group('국내', list.filter(s=>s.market === 'KR')) + group('해외', list.filter(s=>s.market !== 'KR'));
+}
+
+// 섹터 체크 목록 — 지금 고른 지역(전체/국내/해외)에서 컨센서스 값이 있는 종목 기준 개수, 많은 순.
+// 지역을 바꿔도 체크는 유지하고, 그 지역에 없는 섹터는 (0)으로 남긴다(실적 서프라이즈와 같은 방식).
+function populateRevSectorFilter(){
+  if(!CONS_HIST) return;
+  const counts = {};
+  Object.entries(CONS_HIST.stocks).forEach(([t, h])=>{
+    if(REV_STATE.region === 'KR' && h.market !== 'KR') return;
+    if(REV_STATE.region === 'GLOBAL' && h.market === 'KR') return;
+    if(!revHasAnyData(h)) return;
+    revStockMeta(t, h).sectors.forEach(sec=>{ counts[sec] = (counts[sec]||0) + 1; });
+  });
+  REV_STATE.sectors.forEach(sec=>{ if(!(sec in counts)) counts[sec] = 0; });
+  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
+  const wrap = document.getElementById('rev-sector-options');
+  wrap.innerHTML = list.map(([sec, n])=>`
+    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${REV_STATE.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
+  `).join('');
+  wrap.querySelectorAll('input[data-sector]').forEach(cb=>{
+    cb.onchange = ()=>{
+      if(cb.checked) REV_STATE.sectors.add(cb.dataset.sector); else REV_STATE.sectors.delete(cb.dataset.sector);
+      updateRevSectorSummary(); renderRevision();
+    };
+  });
+  updateRevSectorSummary();
+}
+function updateRevSectorSummary(){
+  const el = document.getElementById('rev-sector-summary');
+  const sel = [...REV_STATE.sectors];
+  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
 }
 
 function revHasAnyData(h){
@@ -8642,7 +8710,16 @@ function revRunSearch(input){
   bindToggle('rev-period-toggle', 'days', v=>{ REV_STATE.days = parseInt(v, 10); });
   bindToggle('rev-metric-toggle', 'metric', v=>{ REV_STATE.metric = v; });
   bindToggle('rev-fy-toggle', 'fy', v=>{ REV_STATE.fy = parseInt(v, 10); });
-  document.getElementById('rev-region-filter').addEventListener('change', e=>{ REV_STATE.region = e.target.value; renderRevision(); });
+  document.getElementById('rev-region-filter').addEventListener('change', e=>{
+    REV_STATE.region = e.target.value;
+    populateRevSectorFilter(); // 섹터별 종목 수가 지역에 따라 달라서 다시 센다
+    renderRevision();
+  });
+  document.querySelector('#rev-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
+    REV_STATE.sectors = new Set();
+    populateRevSectorFilter();
+    renderRevision();
+  });
   document.getElementById('rev-min-coverage').addEventListener('change', e=>{ REV_STATE.minCov = e.target.checked; renderRevision(); });
   // 자동완성 항목 선택·포커스 이동(change)과 Enter 둘 다로 검색한다.
   const searchInput = document.getElementById('rev-search-input');
