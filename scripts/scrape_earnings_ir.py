@@ -61,6 +61,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
+from company_names import glossary_text, normalize_text
+
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 MAX_QUARTERS_PER_TICKER = 8
 
@@ -256,6 +258,30 @@ SYSTEM_PROMPT = """당신은 한국 증권사 애널리스트를 위한 해외 �
 
 출력 형식: {"date":"...", "quarter":"...", "metrics":[...], "summary_ko":["...","..."], "ceo_quote_ko":"..."}
 보도자료에 없는 내용은 추측하지 말고 비워두세요."""
+# 2026-10-12: 번역문의 해외 기업 한글 표기를 대시보드 표기로 통일("덱스콤"→"덱스컴" 등) —
+# 뉴스 요약·브리핑과 같은 표준 표기 목록(scripts/company_names_ko.json)을 지시문에 덧붙인다.
+SYSTEM_PROMPT += glossary_text()
+
+
+def normalize_names_in(obj):
+    """번역 결과(중첩된 dict/list의 문자열 전부)에서 알려진 기업명 오표기를 표준 표기로 바꾼다.
+    바뀐 문자열 개수를 함께 반환한다."""
+    if isinstance(obj, str):
+        fixed = normalize_text(obj)
+        return fixed, int(fixed != obj)
+    if isinstance(obj, list):
+        out, n = [], 0
+        for v in obj:
+            v2, k = normalize_names_in(v)
+            out.append(v2); n += k
+        return out, n
+    if isinstance(obj, dict):
+        out, n = {}, 0
+        for key, v in obj.items():
+            v2, k = normalize_names_in(v)
+            out[key] = v2; n += k
+        return out, n
+    return obj, 0
 
 
 class GeminiProvider:
@@ -552,6 +578,11 @@ def main():
 
     if dedupe_and_trim(out_data):
         changed = True
+    # 기업명 표기 통일 — 새로 번역한 항목뿐 아니라 이미 쌓인 항목에도 적용해 과거 오표기도 고친다
+    # (API 호출 없는 단순 치환). 내용 갱신이 아니므로 "updated" 시각은 바꾸지 않는다.
+    out_data["companies"], n_renamed = normalize_names_in(out_data.get("companies", []))
+    if n_renamed:
+        print(f"[INFO] 기업명 표기 통일 {n_renamed}곳", file=sys.stderr)
     if changed:
         out_data["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 

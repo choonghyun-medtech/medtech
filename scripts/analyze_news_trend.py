@@ -110,8 +110,10 @@ CATEGORY_SOURCES = {
 LEGACY_CATEGORY_ALIASES = {
     "Aesthetics": "미용", "Bio-Processing": "생명공학", "Dental": "치과",
     "Digital Health": "디지털헬스", "Humanoid": "휴머노이드", "IVD": "체외진단",
-    "Robotics": "로보틱스", "Therapeutics": "치료제", "MedTech": "의료기기",
-    "Surgical Robot": "로보틱스", "Healthcare Provider": "의료서비스", "Cash Pay Market": "미용",
+    "Robotics": "수술로봇", "Therapeutics": "치료제", "MedTech": "의료기기",
+    "Surgical Robot": "수술로봇", "Healthcare Provider": "의료서비스", "Cash Pay Market": "미용",
+    # 2026-10-12: MedTech 트랙의 "로보틱스"를 "수술로봇"으로 이름 변경(Robotics 트랙과 혼동 방지)
+    "로보틱스": "수술로봇",
 }
 
 
@@ -144,13 +146,19 @@ def load_current_categories():
 
 
 def normalize_category(record, current_categories):
-    """기사 기록의 cat이 현재 카테고리명이 아니면(옛 영문 라벨 등) 현재 기준으로 바꿔 반환."""
+    """기사 기록의 cat을 현재 카테고리 기준으로 바꿔 반환.
+    - 기업 하나짜리 기사: 그 기업의 현재 카테고리(기업 분류를 바꾸면 과거 기사도 따라가게 —
+      2026-10-12 리브스메드 의료기기→수술로봇 등).
+    - 여러 기업이 묶인 기사: 현재 카테고리명이면 수집 당시 분류를 존중하고, 옛 이름(영문 라벨,
+      "로보틱스" 등)이면 묶인 기업 중 첫 매칭 → 라벨 대응표 순으로 바꾼다."""
     cat = record.get("cat")
     company_map, current = current_categories.get(record.get("region"), ({}, set()))
+    cos = [c.strip() for c in str(record.get("co") or "").split(",") if c.strip()]
+    if len(cos) == 1 and cos[0] in company_map:
+        return company_map[cos[0]]
     if not cat or cat in current:
         return cat
-    for co in str(record.get("co") or "").split(","):
-        co = co.strip()
+    for co in cos:
         if co in company_map:
             return company_map[co]
     return LEGACY_CATEGORY_ALIASES.get(cat, cat)

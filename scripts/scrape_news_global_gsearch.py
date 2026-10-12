@@ -77,7 +77,7 @@ CATEGORY_SITES = {
     # 사이트가 없지만(회사명 검색만으로 커버) build_query_list가 .get(cat, [])로 조회해
     # 키가 없어도 에러 없이 넘어간다.
     "의료기기": ["fiercebiotech.com", "medtechdive.com", "massdevice.com"],
-    "로보틱스": ["surgicalroboticstechnology.com", "medchina.tech"],
+    "수술로봇": ["surgicalroboticstechnology.com", "medchina.tech"],  # 2026-10-12 "로보틱스"에서 이름 변경
     "체외진단": ["360dx.com"],
     "디지털헬스": ["fiercehealthcare.com"],
     "의료서비스": ["fiercehealthcare.com", "healthcaredive.com"],

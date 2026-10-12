@@ -424,6 +424,10 @@ tr:last-child td{border-bottom:none}
 .perf-capture-stage .perf-grid{grid-template-columns:1fr 1fr}
 .news-cat-h{font-size:12px; font-weight:700; color:var(--accent); margin:16px 0 4px}
 .news-cat-h:first-child{margin-top:0}
+/* 뉴스 두 트랙(MedTech / Robotics) 제목 — 클리핑 목록·브리핑 카드 묶음 위에 (2026-10-12) */
+.news-track-h{font-size:13px; font-weight:800; letter-spacing:.04em; color:var(--text); margin:22px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--border)}
+.news-track-h:first-child{margin-top:4px}
+.news-track-h + .news-cat-h{margin-top:6px}
 .news-co{font-weight:700; margin-right:4px}
 .news-ctx{color:var(--dim); font-weight:600}
 #news-briefing-wrap mark{background:var(--accent-soft); color:var(--accent); font-weight:700; padding:0 2px; border-radius:3px}
@@ -1391,8 +1395,12 @@ function newsCtxTag(ctx){
 function renderNewsSection(wrapId, groups){
   const wrap = document.getElementById(wrapId);
   let html = '';
-  groups.forEach(g=>{
+  let lastTrack = null;
+  // MedTech 카테고리 먼저, Robotics 카테고리를 그 아래에 — 트랙이 바뀔 때 트랙 제목을 단다.
+  newsSortByTrack(groups, g=>g.cat).forEach(g=>{
     if(g.items.length===0) return;
+    const track = newsTrackOf(g.cat);
+    if(track !== lastTrack){ html += newsTrackHeaderHtml(track); lastTrack = track; }
     html += `<div class="news-cat-h">${g.cat} <span class="note">(${g.items.length})</span></div><div class="card" style="padding:0 16px">`;
     g.items.forEach(it=>{
       const titleHtml = it.url
@@ -1442,7 +1450,8 @@ const NEWS_TRACKED_DOMESTIC = {
   "클래시스": "미용", "휴젤": "미용", "파마리서치": "미용",
   "시지메드텍": "미용", "한스바이오메드": "미용", "엘앤씨바이오": "미용",
   "에이피알": "미용", "메디톡스": "미용", "리센스메디컬": "미용",
-  "고영": "로보틱스", "큐렉소": "로보틱스", "리브스메드": "의료기기",
+  // 2026-10-12: MedTech 트랙 "로보틱스"→"수술로봇"(Robotics 트랙과 혼동 방지), 리브스메드 의료기기→수술로봇
+  "고영": "수술로봇", "큐렉소": "수술로봇", "리브스메드": "수술로봇",
   "현대차그룹": "휴머노이드", "레인보우로보틱스": "휴머노이드", "삼성전자": "휴머노이드",
   "두산로보틱스": "산업용·서비스 로봇", "HL홀딩스": "산업용·서비스 로봇",
   "로보티즈": "로보틱스 밸류체인", "에스비비테크": "로보틱스 밸류체인",
@@ -1454,14 +1463,14 @@ const NEWS_TRACKED_DOMESTIC = {
   "그래피": "치과", "바텍": "치과", "디오": "치과", "덴티움": "치과",
 };
 const NEWS_CATEGORY_ORDER_DOMESTIC = [
-  "디지털헬스", "미용", "로보틱스", "휴머노이드", "산업용·서비스 로봇",
+  "디지털헬스", "미용", "수술로봇", "휴머노이드", "산업용·서비스 로봇",
   "로보틱스 밸류체인", "치료제", "체외진단", "생명공학", "의료기기", "치과",
 ];
 
 const NEWS_TRACKED_GLOBAL = {
   "Abbott": "체외진단", "Stryker": "의료기기", "Medtronic": "의료기기",
   "Boston Scientific": "의료기기", "Edwards Lifesciences": "의료기기",
-  "Intuitive Surgical": "로보틱스", "Edge Medical": "의료기기", "Microport MedBot": "의료기기",
+  "Intuitive Surgical": "수술로봇", "Edge Medical": "수술로봇", "Microport MedBot": "수술로봇",
   "Thermo Fisher": "체외진단", "Natera": "생명공학", "Guardant Health": "생명공학", "Tempus AI": "생명공학",
   "Dexcom": "의료기기", "RadNet": "의료기기", "iRhythm": "디지털헬스",
   "Hims & Hers": "디지털헬스", "Teladoc": "디지털헬스",
@@ -1477,7 +1486,7 @@ const NEWS_TRACKED_GLOBAL = {
   "Schaeffler": "로보틱스 밸류체인", "Bosch": "로보틱스 밸류체인", "Magna": "로보틱스 밸류체인",
 };
 const NEWS_CATEGORY_ORDER_GLOBAL = [
-  "의료기기", "로보틱스", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
+  "의료기기", "수술로봇", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
   "휴머노이드", "산업용·서비스 로봇", "로보틱스 밸류체인",
 ];
 
@@ -1494,8 +1503,34 @@ function newsAllCategories(){
   [...NEWS_CATEGORY_ORDER_DOMESTIC, ...NEWS_CATEGORY_ORDER_GLOBAL].forEach(c=>{
     if(!seen.has(c)){ seen.add(c); out.push(c); }
   });
-  return out;
+  return newsSortByTrack(out, c=>c);
 }
+
+// ---- 뉴스 두 트랙(2026-10-12) ----
+// MedTech: 글로벌 대시보드 대분류와 같은 기준의 메드텍 카테고리(의료기기·미용·디지털헬스·체외진단·
+// 생명공학·치과·의료서비스·수술로봇 등). Robotics: 대시보드 밖 로봇 기업을 일부러 다루는 트랙.
+// 섹터 필터·클리핑 목록·브리핑을 이 두 트랙으로 나눠 보여준다(카테고리 자체는 그대로).
+const NEWS_ROBOTICS_CATEGORIES = ['휴머노이드', '산업용·서비스 로봇', '로보틱스 밸류체인'];
+const NEWS_TRACKS = [{ key:'medtech', label:'MedTech' }, { key:'robotics', label:'Robotics' }];
+function newsTrackOf(cat){ return NEWS_ROBOTICS_CATEGORIES.includes(cat) ? 'robotics' : 'medtech'; }
+function newsTrackLabel(key){ return (NEWS_TRACKS.find(t=>t.key === key) || {}).label || key; }
+// 트랙 순서(MedTech → Robotics)로 정렬하되 트랙 안에서는 원래 순서를 유지한다.
+function newsSortByTrack(list, catOf){
+  const rank = x => NEWS_TRACKS.findIndex(t=>t.key === newsTrackOf(catOf(x)));
+  return list.map((x, i)=>[x, i]).sort((a, b)=> rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(p=>p[0]);
+}
+// 섹터 필터 값: '' = 전체, 'track:medtech' 같은 트랙 전체, 그 외 = 카테고리 하나.
+function newsCategoryMatches(cat){
+  const f = NEWS_STATE.category;
+  if(!f) return true;
+  if(f.startsWith('track:')) return newsTrackOf(cat) === f.slice(6);
+  return cat === f;
+}
+function newsCategoryFilterLabel(){
+  const f = NEWS_STATE.category;
+  return f.startsWith('track:') ? `${newsTrackLabel(f.slice(6))} 트랙` : `${f} 섹터`;
+}
+function newsTrackHeaderHtml(key){ return `<div class="news-track-h">${escapeHtml(newsTrackLabel(key))}</div>`; }
 
 function populateNewsCompanySelect(){
   const sel = document.getElementById('news-company-select');
@@ -1508,7 +1543,12 @@ function populateNewsCategorySelect(){
   const sel = document.getElementById('news-category-select');
   if(!sel) return;
   const cats = newsAllCategories();
-  sel.innerHTML = '<option value="">전체 섹터</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  // 트랙별 묶음(optgroup) + 맨 위에 그 트랙 전체를 한 번에 고르는 항목
+  sel.innerHTML = '<option value="">전체 섹터</option>' + NEWS_TRACKS.map(tr=>{
+    const list = cats.filter(c=>newsTrackOf(c) === tr.key);
+    return `<optgroup label="${tr.label}"><option value="track:${tr.key}">${tr.label} 전체</option>${
+      list.map(c=>`<option value="${c}">${c}</option>`).join('')}</optgroup>`;
+  }).join('');
 }
 
 // 여러 기업에 동시에 매칭된 기사는 scrape_news.py가 co 필드를 "클래시스, 휴젤"처럼
@@ -1524,7 +1564,7 @@ function newsItemCompanies(it){
 function filterNewsGroups(groups){
   const q = NEWS_STATE.q.trim().toLowerCase();
   return groups.map(g=>{
-    if(NEWS_STATE.category && g.cat !== NEWS_STATE.category) return { cat: g.cat, items: [] };
+    if(!newsCategoryMatches(g.cat)) return { cat: g.cat, items: [] };
     const items = g.items.filter(it=>{
       if(NEWS_STATE.company && !newsItemCompanies(it).includes(NEWS_STATE.company)) return false;
       if(q){
@@ -2038,7 +2078,7 @@ function filterNewsHistory(){
   const q = NEWS_STATE.q.trim().toLowerCase();
   return NEWS_HISTORY.filter(r=>{
     if(NEWS_STATE.region && r.region !== NEWS_STATE.region) return false;
-    if(NEWS_STATE.category && r.cat !== NEWS_STATE.category) return false;
+    if(!newsCategoryMatches(r.cat)) return false;
     if(NEWS_STATE.company && !newsItemCompanies(r).includes(NEWS_STATE.company)) return false;
     if(NEWS_STATE.from && r.date && r.date < NEWS_STATE.from) return false;
     if(NEWS_STATE.to && r.date && r.date > NEWS_STATE.to) return false;
@@ -2145,9 +2185,20 @@ let NEWS_BRIEFING_PERIOD_DAYS = 30;
 function renderMonthlyBriefing(){
   const wrap = document.getElementById('news-briefing-wrap');
   if(!wrap) return;
-  const matches = NEWS_TREND
+  // MedTech 섹터 카드 먼저, Robotics 섹터 카드를 그 아래에(트랙 안에서는 가나다순).
+  const matches = newsSortByTrack(NEWS_TREND
     .filter(t=>t.scope==='category' && t.region===NEWS_STATE.region && t.period_days===NEWS_BRIEFING_PERIOD_DAYS)
-    .slice().sort((a,b)=> a.key.localeCompare(b.key));
+    .slice().sort((a,b)=> a.key.localeCompare(b.key)), t=>t.key);
+  // 카드 목록에 트랙이 바뀌는 지점마다 트랙 제목을 끼운다.
+  const withTrackHeaders = items => {
+    let last = null;
+    return items.map(({ t, html })=>{
+      const track = newsTrackOf(t.key);
+      const head = track !== last ? newsTrackHeaderHtml(track) : '';
+      last = track;
+      return head + html;
+    }).join('');
+  };
   const periodLabel = NEWS_BRIEFING_PERIOD_DAYS === 7 ? '주간' : '월간';
   if(matches.length === 0){
     wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 ${periodLabel} 브리핑이 없습니다(최근 ${NEWS_BRIEFING_PERIOD_DAYS}일 기사가 섹터당 기준 건수 미만이거나, process-news 워크플로가 아직 안 돌았을 수 있습니다).</div>`;
@@ -2166,11 +2217,11 @@ function renderMonthlyBriefing(){
   // 위 공통 필터(섹터/기업/검색어) 적용. 섹터는 카드 단위로, 기업·검색어는 문장 단위로 거른다.
   const q = NEWS_STATE.q.trim();
   const co = NEWS_STATE.company;
-  const scoped = NEWS_STATE.category ? matches.filter(t=>t.key === NEWS_STATE.category) : matches;
+  const scoped = matches.filter(t=>newsCategoryMatches(t.key));
   if(!q && !co){
     wrap.innerHTML = scoped.length
-      ? scoped.map(t=>card(t, renderBriefingBullets(t.text))).join('')
-      : `<div class="note" style="padding:8px 0">${escapeHtml(NEWS_STATE.category)} 섹터의 ${periodLabel} 브리핑이 없습니다.</div>`;
+      ? withTrackHeaders(scoped.map(t=>({ t, html: card(t, renderBriefingBullets(t.text)) })))
+      : `<div class="note" style="padding:8px 0">${escapeHtml(newsCategoryFilterLabel())}의 ${periodLabel} 브리핑이 없습니다.</div>`;
     return;
   }
 
@@ -2192,7 +2243,7 @@ function renderMonthlyBriefing(){
     const rest = lines.length > hits.length
       ? `<details style="margin-top:6px"><summary class="note" style="cursor:pointer">섹터 브리핑 전체 보기 (${lines.length}개 문장)</summary>${renderBriefingBullets(t.text, terms)}</details>`
       : '';
-    cards.push(card(t, renderBriefingBullets(hits.map(l=>'- '+l).join('\n'), terms) + rest, ` · ${escapeHtml(label)} 관련 ${hits.length}개 문장`));
+    cards.push({ t, html: card(t, renderBriefingBullets(hits.map(l=>'- '+l).join('\n'), terms) + rest, ` · ${escapeHtml(label)} 관련 ${hits.length}개 문장`) });
   });
 
   // 기업을 골랐는데 그 기업이 현재 국내/해외 토글과 다른 쪽 트래킹 기업이면 안내.
@@ -2205,7 +2256,7 @@ function renderMonthlyBriefing(){
     nLines ? `${escapeHtml(label)} 관련 브리핑 문장 ${nLines}개 (섹터 ${cards.length}곳)`
            : `${periodLabel} 브리핑 본문에 ${escapeHtml(label)} 관련 언급이 없습니다. 브리핑은 섹터 단위 AI 종합이라 그 기간 비중이 작은 기업은 빠질 수 있어요 — 개별 기사는 "뉴스 아카이브" 탭에서 확인하세요.${regionHint}`
   }</div>`;
-  html += cards.join('');
+  html += withTrackHeaders(cards);
 
   // 기업을 골랐는데 직접 언급이 없으면, 그 기업이 속한 섹터 브리핑 전체를 참고로 보여준다.
   const coCat = co && coRegion === NEWS_STATE.region

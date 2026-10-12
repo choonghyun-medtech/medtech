@@ -19,8 +19,8 @@ news.json의 "global" 섹션을 자동 갱신한다. "domestic"(국내) 섹션�
     · MobiHealthNews          https://www.mobihealthnews.com/rss.xml
       (2026-08-20 추가 — 하루 여러 건씩 올라오는 디지털헬스 전문 매체.)
   [로보틱스(수술로봇) 채널] — 기존에는 이 카테고리를 전담하는 소스가 없어 수집량이 0에
-  가까웠다. 신규 추가로 보강. (2026-09-17: Intuitive Surgical 등은 카테고리가 "수술로봇"
-  →"로보틱스"로 재배치됐지만, 이 소스가 주로 다루는 주제 자체는 그대로라 이름만 갱신)
+  가까웠다. 신규 추가로 보강. (2026-09-17 "수술로봇"→"로보틱스"로 바꿨다가, 2026-10-12
+  Robotics 트랙과의 혼동 때문에 다시 "수술로봇"으로 — 대시보드 세부 섹터 이름과 같음)
     · Surgical Robotics Technology https://www.surgicalroboticstechnology.com/feed/
   [치과/미용 채널] — InMode/Align/Straumann 등 미용·자비부담 시장 뉴스 보강용(2026-09-17:
   이 3사는 카테고리가 "비급여시장"→치과/미용으로 재배치됐다).
@@ -134,12 +134,13 @@ GLOBAL_COMPANY_CATEGORY = {
     "Medtronic": "의료기기",
     "Boston Scientific": "의료기기",
     "Edwards Lifesciences": "의료기기",
-    "Edge Medical": "의료기기",
-    "Microport MedBot": "의료기기",
     "Dexcom": "의료기기",
     "RadNet": "의료기기",
-    # 2. 로보틱스
-    "Intuitive Surgical": "로보틱스",
+    # 2. 수술로봇 — 2026-10-12 "로보틱스"에서 이름 변경(Robotics 트랙과 혼동 방지, 대시보드
+    # 세부 섹터 이름에 맞춤). Edge Medical/Microport MedBot은 의료기기→수술로봇(대시보드 기준).
+    "Intuitive Surgical": "수술로봇",
+    "Edge Medical": "수술로봇",
+    "Microport MedBot": "수술로봇",
     # 3. 체외진단
     "Abbott": "체외진단",
     "Thermo Fisher": "체외진단",
@@ -188,7 +189,7 @@ GLOBAL_COMPANY_CATEGORY = {
 }
 
 CATEGORY_ORDER = [
-    "의료기기", "로보틱스", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
+    "의료기기", "수술로봇", "체외진단", "생명공학", "디지털헬스", "의료서비스", "치과", "미용",
     "휴머노이드", "산업용·서비스 로봇", "로보틱스 밸류체인",
 ]
 

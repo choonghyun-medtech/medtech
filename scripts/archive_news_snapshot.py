@@ -36,6 +36,7 @@ import datetime
 import json
 import sys
 
+from analyze_news_trend import load_current_categories, normalize_category
 from company_names import normalize_text
 
 # summarize_news.py가 요약 전 임시로 넣는 기본 태그(PLACEHOLDER_CTX와 동일) — 이 값이면 아직
@@ -135,12 +136,24 @@ def main():
             rec["summary"] = fixed
             renamed += 1
 
+    # 2026-10-12: 카테고리도 현재 기준으로 통일 — 9/16 이전 기사에 남은 옛 영문 라벨(Aesthetics,
+    # IVD 등)과 이름이 바뀐 카테고리("로보틱스"→"수술로봇"), 분류가 바뀐 기업(리브스메드 등)의
+    # 과거 기사가 뉴스 아카이브의 섹터 필터에 안 걸리던 문제. 브리핑(analyze_news_trend.py)과
+    # 같은 규칙(normalize_category)을 써서 두 화면의 분류가 항상 같다.
+    current_categories = load_current_categories()
+    recategorized = 0
+    for rec in kept_records:
+        new_cat = normalize_category(rec, current_categories)
+        if new_cat and new_cat != rec.get("cat"):
+            rec["cat"] = new_cat
+            recategorized += 1
+
     with open(args.history, "w", encoding="utf-8") as f:
         for rec in kept_records:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
     print(f"저장 완료: {args.history} 신규 {len(new_records)}건 추가, 뒤늦게 요약·태그된 {backfilled}건 백필, "
-          f"기업명 표기 통일 {renamed}건, {RETENTION_DAYS}일 초과 {expired}건 삭제 (누적 {len(kept_records)}건)")
+          f"기업명 표기 통일 {renamed}건, 카테고리 정리 {recategorized}건, {RETENTION_DAYS}일 초과 {expired}건 삭제 (누적 {len(kept_records)}건)")
 
 
 if __name__ == "__main__":
