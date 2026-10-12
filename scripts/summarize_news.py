@@ -401,10 +401,10 @@ def summarize_domestic(provider, items, debug=False):
 
 
 def summarize_global(provider, items, debug=False):
-    # search_news_global_claude.py(2026-08-21 추가)가 만든 기사는 검색 그라운딩 상태에서
-    # 이미 2줄 한국어 요약을 직접 생성해 "summary" 필드를 채워 넣는다 — 여기서 title/desc
-    # 만으로 다시 요약하면 오히려 근거가 약한 요약으로 덮어쓰게 되므로, 이미 summary가
-    # 채워진 항목은 건너뛴다(비용 절감 + 품질 유지 둘 다 목적).
+    # 이미 summary가 채워진 기사는 다시 요약하지 않는다 — 원래는 search_news_global_claude.py
+    # (2026-08-21, 유료 검색 그라운딩으로 요약까지 생성)가 만든 기사를 덮어쓰지 않으려던 것인데,
+    # 그 스크립트는 쓰지 않게 돼 2026-10-12 삭제했다. 지금은 수동 재실행 때 이미 요약된 기사로
+    # 일별 쿼터를 낭비하지 않기 위한 용도로 유지한다.
     # 2026-10-07: 맥락 태그(ctx)가 추가되면서, 요약은 이미 있지만 태그가 아직 기본값("News")인
     # 기사(검색 그라운딩으로 요약이 미리 채워진 기사 등)도 태그만 받으러 대상에 포함한다 — 이때
     # 기존 요약은 덮어쓰지 않는다(apply_result 참고).

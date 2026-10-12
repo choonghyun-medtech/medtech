@@ -378,8 +378,6 @@ tr:last-child td{border-bottom:none}
   display:inline-block; font-size:10.5px; color:var(--dim); background:var(--bg2);
   border:1px dashed var(--border); border-radius:6px; padding:4px 8px; margin-bottom:14px;
 }
-.chip-group{margin-bottom:10px}
-.chip-group-label{font-size:10.5px; color:var(--dim); font-weight:700; margin-bottom:4px; text-transform:uppercase; letter-spacing:.03em}
 .filter-select{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:8px; padding:6px 10px; font-size:12px}
 /* 추적 기업 카테고리 드롭다운 — 카테고리별로 옵션 텍스트 길이가 달라 폭이 제각각이었다.
    고정폭 + 말줄임으로 가지런히 정리(2026-09-04). */
@@ -514,7 +512,6 @@ tr:last-child td{border-bottom:none}
 .gw-legend{font-size:11px; color:var(--dim); margin-top:6px; line-height:1.7}
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
 #gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
-.gd-empty{padding:30px; text-align:center; color:var(--dim)}
 </style>
 </head>
 <body>
@@ -781,10 +778,9 @@ tr:last-child td{border-bottom:none}
       <a href="#" id="flowmap-reset-link" class="note" style="text-decoration:underline;align-self:center">초기화</a>
     </div>
 
-    <!-- [미리보기] 수급 전환점 랭킹 — 최근 며칠 사이 사분면이 바뀐 종목만 모아서
-         정적 산점도보다 "지금 막 방향이 바뀐 곳"을 바로 보여준다. 별로면 이 블록과
-         관련 JS 함수(computeFlowMapTransitions/renderFlowMapTransitions)만 지우면
-         원래대로 돌아감(기존 차트/표는 그대로 둠).
+    <!-- 수급 전환점 랭킹 — 최근 며칠 사이 사분면이 바뀐 종목만 모아서 정적 산점도보다
+         "지금 막 방향이 바뀐 곳"을 바로 보여준다. 2026-09 시험 도입 후 정식 기능으로 유지
+         (2026-10-12 결정). 관련 JS: computeFlowMapTransitions/renderFlowMapTransitions.
          [2026-09-17] 원래는 아래 "수급 포지셔닝" 토글 바로 다음(=토글에 반응하는 산점도/
          표 사이)에 있었는데, 이 섹션은 의도적으로 그 토글과 무관하게 항상 3개월 고정이라
          (아래 FLOWMAP_TRANSITION_PERIOD_KEY 주석 참고 — "오늘 뭐가 바뀌었나"를 매일 같은
@@ -2826,7 +2822,7 @@ function renderFlowMapTable(rows){
   wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>중기(%)</th><th>단기(%)</th><th>구분</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 
-// [미리보기] 수급 전환점 — 사분면(매집 강화/차익 실현/관심 유입/수급 약화)이 최근
+// 수급 전환점 — 사분면(매집 강화/차익 실현/관심 유입/수급 약화)이 최근
 // FLOWMAP_TRANSITION_LOOKBACK거래일 사이에 바뀐 종목만 뽑는다. computeFlowMapRows와
 // 같은 x(중기)/y(단기) 계산을, "오늘 기준"과 "lookback거래일 전 기준"(net 배열에서
 // 최근 lookback일을 잘라낸 것을 "그 시점의 오늘"로 보고 동일한 로직 재적용) 두 번
@@ -3957,14 +3953,6 @@ function gdTopBy(rows, getter){
   rows.forEach(r=>{
     const v = getter(r);
     if(v !== null && v !== undefined && !isNaN(v) && v > bestVal){ bestVal = v; best = r; }
-  });
-  return best ? {row: best, val: bestVal} : null;
-}
-function gdBottomBy(rows, getter){
-  let best = null, bestVal = Infinity;
-  rows.forEach(r=>{
-    const v = getter(r);
-    if(v !== null && v !== undefined && !isNaN(v) && v < bestVal){ bestVal = v; best = r; }
   });
   return best ? {row: best, val: bestVal} : null;
 }
@@ -5409,10 +5397,8 @@ function renderMedtourSectionTabs(){
 
 // medical_tour.json의 monthly[].amt는 데이터랩 사이트 표시(callBackChart_03_01/chart_11,
 // medical_tour_chart.js — unit:'천원')와 동일한 "천원" 단위로 저장돼 있다. 0이 너무 많아
-// 읽기 어렵다는 지적(2026-08-25)에 따라 화면에서는 1,000으로 한 번 더 나눠 "백만원" 단위로
-// 보여주되, 소수점을 3자리까지 고정 표시해 정밀도 손실이 드러나게 한다
-// (예: 28,561,957천원 → 28,561.957백만원).
-function fmtMillionWon(v){ return (v / 1000).toLocaleString(undefined, {minimumFractionDigits:3, maximumFractionDigits:3}) + '백만원'; }
+// 읽기 어렵다는 지적(2026-08-25)에 따라 화면에서는 1,000으로 한 번 더 나눠 "백만원" 단위로 보여준다.
+// (2026-10-12 코드 정리: 소수점 3자리 표시용 fmtMillionWon은 더 이상 쓰는 곳이 없어 삭제.)
 // 상단 통계 카드는 폭이 좁아 소수점 3자리(예: "213,079.682백만원")까지 넣으면 두 줄로
 // 넘어가 보기 불편했다(2026-08-25 지적) — 카드에서만 정수로 반올림해 한 줄에 들어가게 한다.
 // 그래프·툴팁 쪽 소수점 3자리 표시는 그대로 유지(그쪽은 건드리지 말라는 요청).
