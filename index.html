@@ -629,99 +629,13 @@ tr:last-child td{border-bottom:none}
   <!-- ================= STOCK ================= -->
   <section class="view" id="view-stock">
     <div class="tabs" id="stock-subtabs" style="margin-bottom:14px">
-      <button class="region-tab active" data-sub="perf">주가 Performance</button>
-      <button class="region-tab" data-sub="global">글로벌 대시보드</button>
+      <!-- 2026-10-13: "주가 Performance" 하위 탭 폐지 — 수익률 Top/Bottom은 글로벌 대시보드로,
+           외국인 지분율 Top10은 수급 판독기로, 추적 종목 차트(주가·외국인 지분율·수급)는 기업 스냅샷으로 이동. -->
+      <button class="region-tab active" data-sub="global">글로벌 대시보드</button>
       <button class="region-tab" data-sub="watch">글로벌 Watch List</button>
       <button class="region-tab" data-sub="flowmap">수급 판독기</button>
     </div>
 
-    <!-- ---- 주가 Performance ---- -->
-    <div id="stock-sub-perf">
-    <div class="sec-h"><h2>수익률 Top10 / Bottom10</h2><span class="note" id="perf-source-note">글로벌 헬스케어 유니버스 · 로컬 통화 기준</span></div>
-    <div class="toggle" id="perf-period-toggle">
-      <button data-p="d1" class="active">1일</button>
-      <button data-p="d5">5일</button>
-      <button data-p="m1">1개월</button>
-      <button data-p="m3">3개월</button>
-      <button data-p="m6">6개월</button>
-      <button data-p="y1">1년</button>
-      <button data-p="ytd">YTD</button>
-    </div>
-    <div class="note" id="perf-asof-note" style="margin:4px 0"></div>
-    <div class="note" id="perf-capture-note" style="margin:0 0 4px; font-size:10.5px; color:var(--dim)"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-      <select id="perf-cap-filter" class="filter-select">
-        <option value="all">시총 전체</option>
-        <option value="lt1">1조 미만</option>
-        <option value="1to5">1~5조</option>
-        <option value="5to20">5~20조</option>
-        <option value="gt20">20조 이상</option>
-      </select>
-      <!-- 2026-10-08: "지역" 드롭다운 → 글로벌 대시보드와 같은 "국가"(엑셀 국적 그룹) 체크박스 다중 선택. -->
-      <details class="gd-msel" id="perf-country-msel">
-        <summary id="perf-country-summary">국가 전체</summary>
-        <div class="gd-msel-panel">
-          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
-          <div id="perf-country-options"></div>
-        </div>
-      </details>
-      <!-- 2026-10-08: 섹터를 글로벌 대시보드와 같은 세부 섹터로 바꾸고, 드롭다운 대신 체크박스
-           다중 선택(글로벌 대시보드와 같은 UI). 아무것도 안 고르면 전체, 여러 개면 그중 하나라도 해당. -->
-      <details class="gd-msel" id="perf-sector-msel">
-        <summary id="perf-sector-summary">섹터 전체</summary>
-        <div class="gd-msel-panel">
-          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
-          <div id="perf-sector-options"></div>
-        </div>
-      </details>
-      <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장">📷 1일 표 저장</button>
-    </div>
-    <div id="perf-body">
-      <div class="na-msg">주가 데이터 불러오는 중...</div>
-    </div>
-
-    <div class="sec-h"><h2>외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목</span></div>
-    <div id="foreign-rank-table-wrap"></div>
-
-    <div class="sec-h"><h2>추적 종목</h2><span class="note" id="tracked-scope-note">칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가</span></div>
-    <div class="note" style="margin:-4px 0 8px; font-size:10.5px; color:var(--dim)">국내 종목은 주가 추이·외국인 지분율 추이·투자자 수급 세 차트가 모두 표시되고, 해외 종목은 주가 추이만 표시됩니다.</div>
-    <div style="position:relative;margin-bottom:8px;max-width:280px">
-      <input id="stock-search-input" class="filter-select" style="width:100%" placeholder="종목명 또는 티커 검색..." autocomplete="off" />
-      <div id="stock-search-results" class="card" style="display:none;position:absolute;top:36px;left:0;z-index:10;width:100%;max-height:240px;overflow-y:auto;padding:4px"></div>
-    </div>
-    <div class="chips" id="stock-tracked-chips"></div>
-
-    <div class="cards" id="stock-stat-cards"></div>
-
-    <div class="sec-h"><h2>주가 추이 <span class="note" id="stock-selected-label"></span></h2>
-      <div class="toggle" id="price-period-toggle">
-        <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
-      </div>
-    </div>
-    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가</div>
-    <div class="chart-box"><canvas id="priceChart"></canvas></div>
-
-    <div id="foreign-ratio-section">
-      <div class="sec-h"><h2>외국인 지분율 추이 <span class="note">· 국내 종목만</span></h2>
-        <div class="toggle" id="foreign-period-toggle">
-          <button data-months="1">1개월</button><button data-months="3">3개월</button><button data-months="6" class="active">6개월</button><button data-months="12">12개월</button>
-        </div>
-      </div>
-      <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%)</div>
-      <div class="chart-box"><canvas id="foreignChart"></canvas></div>
-    </div>
-
-    <div id="investor-flow-section">
-      <div class="sec-h"><h2>투자자 수급 <span class="note">· 국내 종목만</span></h2>
-        <div class="toggle" id="flow-period-toggle">
-          <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
-        </div>
-      </div>
-      <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인</div>
-      <div class="chart-box"><canvas id="flowChart"></canvas></div>
-    </div>
-    </div>
-    <!-- /주가 Performance -->
 
     <!-- ---- 글로벌 대시보드 (2026-09-15 개편: 엑셀 기반 Peer Table + 섹터별 하위 탭) ----
          이전 버전(2026-09-09 초안)은 tickers.json/stock_performance.json/consensus.json을
@@ -731,13 +645,35 @@ tr:last-child td{border-bottom:none}
          참고 — 이 데이터는 블룸버그 터미널 라이선스가 있는 로컬 PC에서만 갱신 가능해 다른
          *.json처럼 GitHub Actions로 자동 갱신되지 않고, 엑셀을 새로 저장한 뒤 수동으로
          변환 스크립트를 돌려 커밋해야 한다). -->
-    <div id="stock-sub-global" style="display:none">
+    <div id="stock-sub-global">
       <div class="sec-h"><h2>글로벌 대시보드<span class="data-updated-badge" id="gd-updated-badge" hidden></span></h2><span class="note" id="gd-source-note">출처: Bloomberg 컨센서스 · 수동 갱신</span></div>
       <div class="note" style="margin-bottom:14px">값이 없는 셀은 "-" · 표에는 1FY/2FY 추정치만 표시 · <span id="gd-fx-note">환율: 고정 가정치(1,400원/달러, 7.1위안/달러)</span> · 위안화 시총 구간은 원화 구간(1/3/5/10)을 그대로 적용</div>
 
       <div class="gd-tab-bar" id="gd-tab-bar"></div>
       <div class="gd-filter-bar" id="gd-filter-bar"></div>
       <div class="note" id="gd-result-count-note" style="margin-bottom:8px"></div>
+
+      <!-- 수익률 Top10 / Bottom10 (2026-10-13, 주가 Performance 탭에서 이동) — 따로 두던 국가·섹터·시총
+           필터 대신 위 글로벌 대시보드 필터·섹터 탭에 걸린 기업 기준으로 그린다. 📷 캡쳐는 예전처럼
+           필터와 무관하게 전체 유니버스 기준(국내/메가캡/중소형주 3장). -->
+      <div class="sec-h"><h2 style="font-size:14.5px">수익률 Top10 / Bottom10</h2><span class="note" id="perf-source-note">위 필터(국가·섹터·시총·검색)에 걸린 기업 기준 · 로컬 통화 기준</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div class="toggle" id="perf-period-toggle">
+          <button data-p="d1" class="active">1일</button>
+          <button data-p="d5">5일</button>
+          <button data-p="m1">1개월</button>
+          <button data-p="m3">3개월</button>
+          <button data-p="m6">6개월</button>
+          <button data-p="y1">1년</button>
+          <button data-p="ytd">YTD</button>
+        </div>
+        <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장(필터와 무관하게 전체 유니버스 기준)">📷 1일 표 저장</button>
+      </div>
+      <div class="note" id="perf-asof-note" style="margin:4px 0"></div>
+      <div class="note" id="perf-capture-note" style="margin:0 0 4px; font-size:10.5px; color:var(--dim)"></div>
+      <div id="perf-body" style="margin-bottom:20px">
+        <div class="na-msg">주가 데이터 불러오는 중...</div>
+      </div>
 
       <div class="sec-h"><h2 id="gd-table-title" style="font-size:14.5px">Peer Table</h2><span class="note">맨 왼쪽 체크박스로 평균 계산에서 제외할 기업을 고를 수 있습니다 · 표는 가로로 스크롤됩니다</span></div>
       <div id="gd-peer-table-wrap"></div>
@@ -772,7 +708,7 @@ tr:last-child td{border-bottom:none}
         <option value="empty_buy">관심 유입</option>
         <option value="empty_sell">수급 약화</option>
       </select>
-      <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(주가 Performance와 같은 UI) -->
+      <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(글로벌 대시보드와 같은 UI) -->
       <details class="gd-msel" id="flowmap-sector-msel">
         <summary id="flowmap-sector-summary">섹터 전체</summary>
         <div class="gd-msel-panel">
@@ -814,6 +750,11 @@ tr:last-child td{border-bottom:none}
 
     <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">종목별 수급 현황</h2></div>
     <div id="flowmap-table-wrap"></div>
+
+    <!-- 외국인 지분율 Top10 (2026-10-13, 주가 Performance 탭에서 이동) — 국내 종목 전용 데이터라
+         국내 전용인 이 탭으로 옮기고, 위 검색·섹터 필터를 그대로 따르게 했다(구분=사분면 필터는 무관). -->
+    <div class="sec-h" style="margin:20px 0 6px"><h2 style="font-size:13px">외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목</span></div>
+    <div id="foreign-rank-table-wrap"></div>
     </div>
     <!-- /수급 판독기 -->
   </section>
@@ -1227,7 +1168,7 @@ tr:last-child td{border-bottom:none}
         <div class="toggle" id="sup-region-toggle">
           <button data-region="KR" class="active">국내</button><button data-region="GLOBAL">해외</button>
         </div>
-        <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(주가 Performance와 같은 UI) -->
+        <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(글로벌 대시보드와 같은 UI) -->
         <details class="gd-msel" id="sup-sector-msel">
           <summary id="sup-sector-summary">섹터 전체</summary>
           <div class="gd-msel-panel">
@@ -1328,7 +1269,7 @@ document.querySelectorAll('.tab').forEach(btn=>{
   btn.addEventListener('click', ()=> activateTab(btn.dataset.view));
 });
 
-// ---- 상위 탭 안의 하위 탭(주가 데이터 → 주가 Performance/글로벌 대시보드/수급 판독기,
+// ---- 상위 탭 안의 하위 탭(주가 데이터 → 글로벌 대시보드/Watch List/수급 판독기,
 // 산업 데이터 → 수출 데이터/의료관광 데이터/진료행위 통계) — 뉴스 탭의 .region-tab 패턴을
 // 그대로 재사용해 클릭 시 data-sub 값과 짝지어지는 "#{prefix}-sub-{key}" 블록만 보여준다.
 function setupSubtabs(tabsId, prefix){
@@ -2475,8 +2416,9 @@ function sliceSeriesByMonths(series, months){
 }
 
 function renderPriceChart(ticker, months){
-  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const note = document.getElementById('price-chart-note');
+  if(!note || !document.getElementById('priceChart')) return; // 스냅샷에 기업이 아직 안 그려졌으면 건너뜀
+  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const sliced = perf ? sliceSeriesByMonths(perf.price_history, months) : null;
   if(!sliced){
     if(priceChartInstance){ priceChartInstance.destroy(); priceChartInstance=null; }
@@ -2506,7 +2448,8 @@ function renderForeignRatioChart(ticker, months){
     if(foreignChartInstance){ foreignChartInstance.destroy(); foreignChartInstance = null; }
     return;
   }
-  if(section) section.style.display = '';
+  if(!section) return;
+  section.style.display = '';
   const perf = STOCK_PERF.find(s=>s.ticker===ticker);
   const note = document.getElementById('foreign-chart-note');
   const sliced = perf ? sliceSeriesByMonths(perf.foreign_ratio_history, months) : null;
@@ -2524,22 +2467,6 @@ function renderForeignRatioChart(ticker, months){
   }]);
 }
 
-document.querySelectorAll('#price-period-toggle button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#price-period-toggle button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    selectedPriceMonths = parseInt(b.dataset.months,10);
-    renderPriceChart(selectedStockTicker, selectedPriceMonths);
-  });
-});
-document.querySelectorAll('#foreign-period-toggle button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#foreign-period-toggle button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    selectedForeignMonths = parseInt(b.dataset.months,10);
-    renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
-  });
-});
 
 // 투자자 수급 — 일별 순매수 누적(라인) · 국내 종목 실데이터(investor_flow.json) 전용
 // (해외 종목은 renderFlowChart 상단에서 섹션 자체를 숨김).
@@ -2559,7 +2486,8 @@ function renderFlowChart(ticker, months){
     if(flowChartInstance){ flowChartInstance.destroy(); flowChartInstance = null; }
     return;
   }
-  if(section) section.style.display = '';
+  if(!section) return;
+  section.style.display = '';
   const days = MONTHS_TO_TRADING_DAYS[months] || 65;
   const note = document.getElementById('flow-chart-note');
   const real = INVESTOR_FLOW[ticker];
@@ -2583,15 +2511,47 @@ function renderFlowChart(ticker, months){
     {label:'개인(누적,추정)', data: retail, borderColor:'#65a30d', backgroundColor:'rgba(101,163,13,.08)', fill:false, tension:.25, pointRadius:0, borderWidth:2}
   ]);
 }
-renderFlowChart('039840.KQ', selectedFlowMonths); // 초기 렌더 · TRACKED_DEFAULT[0]과 동일한 값(변수 선언 전이라 리터럴 사용) · loadInvestorFlow()가 로드되면 실제 선택 종목 기준으로 다시 그림
-document.querySelectorAll('#flow-period-toggle button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#flow-period-toggle button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    selectedFlowMonths = parseInt(b.dataset.months,10);
-    renderFlowChart(selectedStockTicker, selectedFlowMonths);
+
+// ---- 기업 스냅샷 주가 차트 3종 (2026-10-13, 주가 Performance "추적 종목"에서 이동) ----
+// 스냅샷 주가 박스(buildStockBoxHtml) 아래에 주가 추이 · 외국인 지분율 추이 · 투자자 수급을
+// 붙인다. 외국인 지분율/수급은 국내 종목만(해외는 위 render 함수들이 섹션을 숨김). 기간 토글
+// 선택값(selected*Months)은 기업을 바꿔도 유지된다.
+function snapChartPeriodToggleHtml(id, selected){
+  return `<div class="toggle" id="${id}">${[1,3,6,12].map(m=>
+    `<button data-months="${m}"${m===selected?' class="active"':''}>${m}개월</button>`).join('')}</div>`;
+}
+function snapStockChartsHtml(){
+  return `
+    <div class="sec-h" style="margin-top:14px"><h2 style="font-size:14px">주가 추이</h2>${snapChartPeriodToggleHtml('price-period-toggle', selectedPriceMonths)}</div>
+    <div class="note" id="price-chart-note" style="margin:-4px 0 8px">일별 종가</div>
+    <div class="chart-box"><canvas id="priceChart"></canvas></div>
+    <div id="foreign-ratio-section">
+      <div class="sec-h"><h2 style="font-size:14px">외국인 지분율 추이 <span class="note">· 국내 종목만</span></h2>${snapChartPeriodToggleHtml('foreign-period-toggle', selectedForeignMonths)}</div>
+      <div class="note" id="foreign-chart-note" style="margin:-4px 0 8px">일별 외국인 보유율(%)</div>
+      <div class="chart-box"><canvas id="foreignChart"></canvas></div>
+    </div>
+    <div id="investor-flow-section">
+      <div class="sec-h"><h2 style="font-size:14px">투자자 수급 <span class="note">· 국내 종목만</span></h2>${snapChartPeriodToggleHtml('flow-period-toggle', selectedFlowMonths)}</div>
+      <div class="note" id="flow-chart-note" style="margin:-4px 0 8px">일별 순매수 누적 · 억원 · 기관/외국인/개인</div>
+      <div class="chart-box"><canvas id="flowChart"></canvas></div>
+    </div>`;
+}
+function renderSnapStockCharts(ticker){
+  renderPriceChart(ticker, selectedPriceMonths);
+  renderForeignRatioChart(ticker, selectedForeignMonths);
+  renderFlowChart(ticker, selectedFlowMonths);
+  [['price-period-toggle', m=>{ selectedPriceMonths = m; renderPriceChart(ticker, m); }],
+   ['foreign-period-toggle', m=>{ selectedForeignMonths = m; renderForeignRatioChart(ticker, m); }],
+   ['flow-period-toggle', m=>{ selectedFlowMonths = m; renderFlowChart(ticker, m); }]].forEach(([id, apply])=>{
+    document.querySelectorAll(`#${id} button`).forEach(b=>{
+      b.onclick = ()=>{
+        document.querySelectorAll(`#${id} button`).forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        apply(parseInt(b.dataset.months,10));
+      };
+    });
   });
-});
+}
 
 async function loadInvestorFlow(){
   try{
@@ -2605,7 +2565,7 @@ async function loadInvestorFlow(){
   }catch(e){
     INVESTOR_FLOW = {};
   }
-  renderFlowChart(selectedStockTicker, selectedFlowMonths);
+  if(selectedSnapshotTicker) renderFlowChart(selectedSnapshotTicker, selectedFlowMonths);
   if(typeof renderFlowMap === 'function') renderFlowMap();
   if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
 }
@@ -2891,6 +2851,11 @@ function renderFlowMapStatCards(rows){
   `;
 }
 
+// 2026-10-13: 64종목이 전부 나열돼 아래 외국인 지분율 Top10이 너무 밀려나서, 상위
+// FLOWMAP_TABLE_PREVIEW개만 보이고 나머지는 "펼쳐보기"로 접는다. 펼침 상태는 필터·기간을
+// 바꿔 다시 그려도 유지한다.
+const FLOWMAP_TABLE_PREVIEW = 10;
+let flowMapTableExpanded = false;
 function renderFlowMapTable(rows){
   const wrap = document.getElementById('flowmap-table-wrap');
   if(!wrap) return;
@@ -2899,7 +2864,9 @@ function renderFlowMapTable(rows){
     return;
   }
   const sorted = [...rows].sort((a, b) => (b.x + b.y) - (a.x + a.y));
-  const body = sorted.map(r => `
+  const hidden = sorted.length - FLOWMAP_TABLE_PREVIEW;
+  const shown = flowMapTableExpanded || hidden <= 0 ? sorted : sorted.slice(0, FLOWMAP_TABLE_PREVIEW);
+  const body = shown.map(r => `
     <tr>
       <td>${escapeHtml(r.name)}</td>
       <td class="gd-sector-tag">${escapeHtml(r.sectors.join(', '))}</td>
@@ -2911,7 +2878,18 @@ function renderFlowMapTable(rows){
       </td>
     </tr>
   `).join('');
-  wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>중기(%)</th><th>단기(%)</th><th>구분</th></tr></thead><tbody>${body}</tbody></table>`;
+  const toggle = hidden <= 0 ? '' : `
+    <div style="text-align:center;margin-top:6px">
+      <a class="gd-reset-link" id="flowmap-table-toggle">${flowMapTableExpanded ? '접기 ▲' : `나머지 ${hidden}개 펼쳐보기 ▼ (전체 ${sorted.length}개)`}</a>
+    </div>`;
+  wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>중기(%)</th><th>단기(%)</th><th>구분</th></tr></thead><tbody>${body}</tbody></table>${toggle}`;
+  const btn = document.getElementById('flowmap-table-toggle');
+  if(btn) btn.onclick = () => {
+    flowMapTableExpanded = !flowMapTableExpanded;
+    renderFlowMapTable(rows);
+    // 접을 때는 표 머리로 돌아가 아래 외국인 지분율 Top10이 바로 이어 보이게 한다.
+    if(!flowMapTableExpanded) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 }
 
 // 수급 전환점 — 사분면(매집 강화/차익 실현/관심 유입/수급 약화)이 최근
@@ -2995,6 +2973,7 @@ function renderFlowMap(){
   renderFlowMapTransitions(applyFlowMapFiltersToTransitions(computeFlowMapTransitions()));
   renderFlowMapChart(rows, period);
   renderFlowMapTable(rows);
+  renderForeignRatioTop10();
 }
 document.querySelectorAll('#flowmap-period-toggle button').forEach(b => {
   b.addEventListener('click', () => {
@@ -3031,25 +3010,17 @@ document.getElementById('flowmap-reset-link').addEventListener('click', e => {
 // 종목 유니버스: stock_performance_requirements.md 기준 145종목
 // ==================================================================
 let STOCK_PERF = [];
-// sectors/countries: 체크한 세부 섹터·국가(비어 있으면 전체). 글로벌 대시보드 필터와 같은 규칙.
-let perfState = { period:'d1', cap:'all', countries:new Set(), sectors:new Set() };
+// 2026-10-13: 국가·섹터·시총 필터는 글로벌 대시보드 필터로 일원화 — 여기엔 기간만 남는다.
+let perfState = { period:'d1' };
 
-// 국가 표시 순서 — 글로벌 대시보드 국가 필터와 같은 순서(gdInit에서도 이 상수를 쓴다).
+// 국가 표시 순서 — 글로벌 대시보드 국가 필터(gdInit)에서 쓴다.
 const COUNTRY_ORDER = ['대한민국', '미국', '일본', '중국', '기타(미국)', '기타'];
-// 종목의 국가(글로벌 대시보드 엑셀 국적 그룹). stock_performance.json → tickers.json 순으로 찾고,
-// 둘 다 없으면 상장 시장으로 추정한다.
-function perfCountryOf(s){
-  if(s.country) return s.country;
-  const info = tickerInfo(s.ticker);
-  if(info && info.country) return info.country;
-  return ({KR:'대한민국', US:'미국', JP:'일본', CN:'중국', HK:'중국'})[s.market] || '기타';
-}
 
 // 종목의 세부 섹터(글로벌 대시보드 엑셀 C열, 여러 개 가능). stock_performance.json에 아직
 // sectors가 없으면(2026-10-08 추가 — 다음 자동 갱신 전) tickers.json에서, 그것도 없으면 대분류로.
 function perfSectorsOf(s){ return fineSectorsOf(s.ticker, s.sector, s.sectors); }
 // 세부 섹터 공통 조회 — 데이터에 실린 값(own) → tickers.json → 대분류(fallback) 순.
-// 주가 Performance·실적 서프라이즈 등 글로벌 대시보드 기준 세부 섹터를 쓰는 탭이 공유한다.
+// 수익률 표·실적 서프라이즈 등 글로벌 대시보드 기준 세부 섹터를 쓰는 탭이 공유한다.
 function fineSectorsOf(ticker, fallback, own){
   if(own && own.length) return own;
   const info = tickerInfo(ticker);
@@ -3057,18 +3028,6 @@ function fineSectorsOf(ticker, fallback, own){
   return fallback && fallback !== '-' ? [fallback] : [];
 }
 
-function capFilterPass(capTril, filterVal){
-  if(filterVal==='all') return true;
-  if(capTril == null) return false;
-  switch(filterVal){
-    // 구간이 서로 겹치지 않도록 정리(2026-10-02) — 유니버스 분포상 대략 81/69/48/59종목.
-    case 'lt1': return capTril < 1;
-    case '1to5': return capTril >= 1 && capTril < 5;
-    case '5to20': return capTril >= 5 && capTril < 20;
-    case 'gt20': return capTril >= 20;
-    default: return true;
-  }
-}
 function newsUrl(name){ return 'https://www.google.com/search?q=' + encodeURIComponent(name) + '&tbm=nws'; }
 // 종목명 링크 — 2026-10-13: 구글 뉴스 검색 대신 기업 스냅샷 탭의 해당 기업 화면으로 연결.
 // 스냅샷에 없는 종목(종목 목록 밖)만 예전처럼 구글 뉴스 검색을 새 탭으로 연다. 클릭 처리는 아래
@@ -3100,9 +3059,14 @@ function pctClass(v){ if(v==null || v===0) return 'perf-flat'; return v>0 ? 'per
 // foreign_ratio 필드 자체가 없음) 자동으로 국내 커버리지 종목만 대상이 된다. 이 표는
 // STOCK_PERF와 INVESTOR_FLOW 둘 다 필요하므로 두 로드 함수(loadStockPerformance/
 // loadInvestorFlow) 완료 시 각각 다시 호출해 재계산한다(수급 지도와 동일한 패턴).
+// 2026-10-13: 수급 판독기로 옮기면서 그 탭의 검색어·섹터 필터를 따른다(구분=사분면 필터는 무관).
 function computeForeignRatioTop10(){
+  const f = flowMapFilters;
+  const q = f.search.trim().toLowerCase();
   return STOCK_PERF
     .filter(s => s.market === 'KR' && s.foreign_ratio != null)
+    .filter(s => !q || s.name.toLowerCase().includes(q) || s.ticker.toLowerCase().includes(q))
+    .filter(s => !f.sectors.size || perfSectorsOf(s).some(sec => f.sectors.has(sec)))
     .map(s => {
       const hist = s.foreign_ratio_history;
       let changeM1 = null;
@@ -3130,16 +3094,17 @@ function renderForeignRatioTop10(){
   if(!wrap) return;
   const note = document.getElementById('foreign-rank-note');
   const krCount = STOCK_PERF.filter(s => s.market === 'KR').length;
-  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목) 중 지분율 상위 10개 · 출처: 네이버증권`;
+  const filtered = !!flowMapFilters.search.trim() || flowMapFilters.sectors.size > 0;
+  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목)${filtered ? ' 중 위 검색·섹터 필터에 걸린 종목' : ''} 지분율 상위 10개 · 출처: 네이버증권`;
   const rows = computeForeignRatioTop10();
   if(!rows.length){
-    wrap.innerHTML = '<div class="na-msg">아직 데이터가 없습니다.</div>';
+    wrap.innerHTML = `<div class="na-msg">${filtered ? '조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.'}</div>`;
     return;
   }
   const body = rows.map((r, i) => `
     <tr>
       <td>${i + 1}</td>
-      <td><span class="foreign-rank-name-link" data-ticker="${r.ticker}" style="cursor:pointer">${escapeHtml(r.name)}</span></td>
+      <td>${companyNameLinkHtml(r.ticker, r.name)}</td>
       <td>${r.foreignRatio.toFixed(2)}%</td>
       <td class="${r.changeM1 == null ? '' : pctClass(r.changeM1)}">${r.changeM1 == null ? '-' : fmtPct(r.changeM1) + '%p'}</td>
       <td class="${r.foreignNetBuyM1 == null ? '' : pctClass(r.foreignNetBuyM1)}">${r.foreignNetBuyM1 == null ? '-' : (r.foreignNetBuyM1 >= 0 ? '+' : '') + r.foreignNetBuyM1.toLocaleString(undefined, {maximumFractionDigits:1}) + '억원'}</td>
@@ -3147,75 +3112,10 @@ function renderForeignRatioTop10(){
   `).join('');
   wrap.innerHTML = `
     <table><thead><tr><th>순위</th><th>종목</th><th>외국인 지분율</th><th>1개월 변화</th><th>외국인 순매수(1개월)</th></tr></thead><tbody>${body}</tbody></table>
-    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 아래 추적 종목 정보로 연결됩니다.</div>
+    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 기업 스냅샷 탭에서 주가·외국인 지분율·수급 차트를 볼 수 있습니다.</div>
   `;
-  // 종목명 클릭 시 아래 "추적 종목" 파트가 그 종목으로 전환되도록 연결(2026-08-31 요청).
-  wrap.querySelectorAll('.foreign-rank-name-link').forEach(el => {
-    el.addEventListener('click', () => {
-      selectStock(el.dataset.ticker);
-      const target = document.getElementById('stock-tracked-chips');
-      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
 }
 
-// 섹터 체크 목록 — 글로벌 대시보드처럼 종목 수가 많은 순으로, 괄호 안은 해당 종목 수.
-function populatePerfSectorFilter(){
-  const counts = {};
-  STOCK_PERF.forEach(s=>perfSectorsOf(s).forEach(sec=>{ counts[sec] = (counts[sec]||0) + 1; }));
-  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
-  // 종목 목록이 바뀌어 사라진 섹터는 선택에서 뺀다.
-  perfState.sectors = new Set([...perfState.sectors].filter(sec=>counts[sec]));
-  const wrap = document.getElementById('perf-sector-options');
-  wrap.innerHTML = list.map(([sec, n])=>`
-    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${perfState.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
-  `).join('');
-  wrap.querySelectorAll('input[data-sector]').forEach(cb=>{
-    cb.onchange = ()=>{
-      if(cb.checked) perfState.sectors.add(cb.dataset.sector); else perfState.sectors.delete(cb.dataset.sector);
-      updatePerfSectorSummary(); renderPerfTables();
-    };
-  });
-  updatePerfSectorSummary();
-}
-function updatePerfSectorSummary(){
-  const el = document.getElementById('perf-sector-summary');
-  const sel = [...perfState.sectors];
-  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
-}
-function perfSectorPass(s){
-  if(perfState.sectors.size === 0) return true;
-  return perfSectorsOf(s).some(sec=>perfState.sectors.has(sec));
-}
-
-// 국가 체크 목록 — 글로벌 대시보드와 같은 순서, 괄호 안은 해당 종목 수.
-function populatePerfCountryFilter(){
-  const counts = {};
-  STOCK_PERF.forEach(s=>{ const c = perfCountryOf(s); counts[c] = (counts[c]||0) + 1; });
-  const rank = c => { const i = COUNTRY_ORDER.indexOf(c); return i === -1 ? COUNTRY_ORDER.length : i; };
-  const list = Object.keys(counts).sort((a,b)=> rank(a)-rank(b) || a.localeCompare(b,'ko'));
-  perfState.countries = new Set([...perfState.countries].filter(c=>counts[c]));
-  const wrap = document.getElementById('perf-country-options');
-  wrap.innerHTML = list.map(c=>`
-    <label class="gd-msel-row"><input type="checkbox" data-country="${escapeHtml(c)}" ${perfState.countries.has(c)?'checked':''}> ${escapeHtml(c)} <span class="note">(${counts[c]})</span></label>
-  `).join('');
-  wrap.querySelectorAll('input[data-country]').forEach(cb=>{
-    cb.onchange = ()=>{
-      if(cb.checked) perfState.countries.add(cb.dataset.country); else perfState.countries.delete(cb.dataset.country);
-      updatePerfCountrySummary(); renderPerfTables();
-    };
-  });
-  updatePerfCountrySummary();
-}
-function updatePerfCountrySummary(){
-  const el = document.getElementById('perf-country-summary');
-  const sel = [...perfState.countries];
-  el.textContent = sel.length === 0 ? '국가 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
-}
-function perfCountryPass(s){
-  return perfState.countries.size === 0 || perfState.countries.has(perfCountryOf(s));
-}
-function populatePerfFilters(){ populatePerfCountryFilter(); populatePerfSectorFilter(); }
 
 function renderPerfAsOfNote(){
   const byMarket = {};
@@ -3229,20 +3129,32 @@ function renderPerfAsOfNote(){
   el.textContent = '종가 기준일 — ' + markets.map(m=>`${m} ${byMarket[m]}`).join(' · ') + ' · 시장별 거래일 차이로 최대 1일 다를 수 있음 (행에 마우스를 올리면 종목별 기준일 확인 가능)';
 }
 
+// 2026-10-13: 글로벌 대시보드 안으로 옮기면서, 지금 탭(전체/섹터)·필터(국가·섹터·시총·검색)에 걸린
+// 기업(gdGetFilteredForActiveTab)만 대상으로 한다. 두 파일은 사명으로 1:1 매칭(gdTrendStockByName 참고).
+// Peer Table의 "평균 계산 제외" 체크는 평균용이라 여기엔 반영하지 않는다. 시총 단위는 화폐 선택을
+// 따라 백만달러면 십억달러, 그 외(원·위안)는 십억원으로 표기.
 function renderPerfTables(){
   const body = document.getElementById('perf-body');
+  if(!body) return;
   if(STOCK_PERF.length===0){
-    body.innerHTML = '<div class="na-msg">데이터 없음 — GitHub Actions가 아직 실행되지 않았다면 Actions 탭에서 "Update stock performance"를 수동 실행해주세요.</div>';
+    body.innerHTML = '<div class="na-msg">주가 데이터 불러오는 중...</div>';
     return;
   }
-  const filtered = STOCK_PERF.filter(s=>
-    capFilterPass(s.market_cap_krw_tril, perfState.cap) &&
-    perfCountryPass(s) &&
-    perfSectorPass(s) &&
-    s.returns[perfState.period] != null
-  );
-  body.innerHTML = buildPerfGridHtml(filtered, perfState.period) +
-    `<div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 기업 스냅샷 탭에서 해당 기업 화면이 열립니다. 해외 종목 시총은 ${PERF_FX.rate_date ? PERF_FX.rate_date+' ECB 기준 환율' : '고정 가정 환율'}로 원화 환산한 값입니다.</div>`;
+  if(!GD_RAW.length){
+    body.innerHTML = '<div class="na-msg">글로벌 대시보드 데이터 불러오는 중...</div>';
+    return;
+  }
+  const byName = {};
+  STOCK_PERF.forEach(s=>{ byName[s.name] = s; });
+  const seen = new Set();
+  const list = [];
+  gdGetFilteredForActiveTab().forEach(r=>{
+    const s = byName[r.name];
+    if(s && !seen.has(s.ticker) && s.returns[perfState.period] != null){ seen.add(s.ticker); list.push(s); }
+  });
+  const capUnit = gdGetTabState(GD_STATE.activeTab).currency === 'usd' ? 'usd' : 'krw';
+  body.innerHTML = buildPerfGridHtml(list, perfState.period, capUnit) +
+    `<div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">대상 ${list.length}개사 · 종목명을 클릭하면 기업 스냅샷 탭에서 해당 기업 화면(주가·외국인 지분율·수급 차트 포함)이 열립니다. 해외 종목 시총은 ${PERF_FX.rate_date ? PERF_FX.rate_date+' ECB 기준 환율' : '고정 가정 환율'}로 환산한 값입니다.</div>`;
 }
 
 // ---- 시가총액 단위 환산 (2026-09-28) ----
@@ -3511,17 +3423,6 @@ document.querySelectorAll('#perf-period-toggle button').forEach(b=>{
     renderPerfTables();
   });
 });
-document.getElementById('perf-cap-filter').addEventListener('change', e=>{ perfState.cap = e.target.value; renderPerfTables(); });
-document.querySelector('#perf-country-msel .gd-msel-actions a').addEventListener('click', ()=>{
-  perfState.countries = new Set();
-  populatePerfCountryFilter();
-  renderPerfTables();
-});
-document.querySelector('#perf-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
-  perfState.sectors = new Set();
-  populatePerfSectorFilter();
-  renderPerfTables();
-});
 
 async function loadStockPerformance(){
   try{
@@ -3530,16 +3431,12 @@ async function loadStockPerformance(){
     const data = await res.json();
     STOCK_PERF = data.stocks || [];
     if(data.fx_to_krw) PERF_SCRAPER_FX = Object.assign({KRW:1}, data.fx_to_krw);
-    populatePerfFilters();
     renderPerfAsOfNote();
     renderPerfTables();
     if(data.updated){
       const note = document.getElementById('perf-source-note');
-      note.textContent = `글로벌 헬스케어 유니버스(${STOCK_PERF.length}종목) · 로컬 통화 기준 · 출처: KRX·Yahoo Finance · ${updatedLabel(data.updated)}`;
+      note.textContent = `위 필터(국가·섹터·시총·검색)에 걸린 기업 기준 · 로컬 통화 기준 · 출처: KRX·Yahoo Finance · ${updatedLabel(data.updated)}`;
     }
-    if(typeof renderStockStatCards === 'function') renderStockStatCards(selectedStockTicker);
-    if(typeof renderPriceChart === 'function') renderPriceChart(selectedStockTicker, selectedPriceMonths);
-    if(typeof renderForeignRatioChart === 'function') renderForeignRatioChart(selectedStockTicker, selectedForeignMonths);
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
     if(typeof populateFlowMapSectorFilter === 'function') populateFlowMapSectorFilter();
     if(typeof renderFlowMap === 'function') renderFlowMap();
@@ -3549,8 +3446,8 @@ async function loadStockPerformance(){
     if(CONS_HIST){ populateRevFilters(); renderRevision(); }
     if(SUP_DATA){ populateSupSectorFilter(); renderSurprise(); } // 실적 서프라이즈의 주가 반응·섹터
   }catch(e){
-    document.getElementById('perf-body').innerHTML =
-      '<div class="na-msg">주가 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
+    const body = document.getElementById('perf-body');
+    if(body) body.innerHTML = '<div class="na-msg">주가 데이터를 불러오지 못했습니다 ('+e.message+').</div>';
   }
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
 }
@@ -3685,7 +3582,7 @@ async function gdInit(){
   }
   // 국가 드롭다운 표시 순서 고정(2026-09-16 요청): 대한민국(디폴트 선택) 다음
   // 미국-일본-중국-기타(미국)-기타 순. 목록에 없는 국가가 새로 생기면 맨 뒤에 붙는다.
-  const GD_COUNTRY_ORDER = COUNTRY_ORDER; // 주가 Performance 국가 필터와 같은 순서(상수 공유)
+  const GD_COUNTRY_ORDER = COUNTRY_ORDER;
   GD_COUNTRIES = Array.from(new Set(GD_RAW.map(r=>r.country))).sort((a,b)=>{
     const ia = GD_COUNTRY_ORDER.indexOf(a), ib = GD_COUNTRY_ORDER.indexOf(b);
     if(ia !== -1 && ib !== -1) return ia - ib;
@@ -4050,6 +3947,7 @@ function gdRender(){
     });
   }
 
+  renderPerfTables(); // 수익률 Top/Bottom도 같은 필터 기준(2026-10-13)
   gdRenderAnalysis(included, currency);
   gdRenderTrend(filtered, currency);
   gwRender();
@@ -4474,12 +4372,10 @@ function renderGlobalDashboard(){
 }
 
 // ==================================================================
-// 추적 종목 — 기본 10종목(국내) + 검색으로 145종목 유니버스에서 추가
+// 종목 유니버스(scripts/tickers.json) — 2026-10-13: 주가 Performance "추적 종목"(칩·검색·차트)은
+// 폐지하고 차트 3종은 기업 스냅샷으로 옮겼다(snapStockChartsHtml 참고).
 // ==================================================================
-const TRACKED_DEFAULT = ['039840.KQ','096530.KQ','214450.KQ','100120.KQ','098460.KQ','041830.KQ','043150.KQ','099190.KQ','145720.KS','214150.KS']; // 디오,씨젠,파마리서치,뷰웍스,고영,인바디,바텍,아이센스,덴티움,클래시스
 let TICKER_UNIVERSE = [];
-let extraTrackedTickers = [];
-let selectedStockTicker = TRACKED_DEFAULT[0];
 
 function tickerInfo(ticker){
   return TICKER_UNIVERSE.find(t=>t.ticker===ticker);
@@ -4488,26 +4384,6 @@ function stockDisplayName(ticker){
   const info = tickerInfo(ticker);
   if(!info) return ticker;
   return info.name === '씨어스테크놀로지' ? '씨어스' : info.name;
-}
-
-function renderTrackedChips(){
-  const wrap = document.getElementById('stock-tracked-chips');
-  const list = TRACKED_DEFAULT.concat(extraTrackedTickers);
-  wrap.innerHTML = list.map(t=>{
-    const label = stockDisplayName(t);
-    return `<div class="chip${t===selectedStockTicker?' active':''}" data-ticker="${t}">${label}</div>`;
-  }).join('');
-  wrap.querySelectorAll('.chip').forEach(chip=>{
-    chip.addEventListener('click', ()=> selectStock(chip.dataset.ticker));
-  });
-  // 수익률/외국인 지분율 표와 동일하게 종목 집단 범위를 숫자로 표기(2026-08-31 요청) —
-  // 검색으로 추가 가능한 전체 유니버스는 TICKER_UNIVERSE(scripts/tickers.json) 기준.
-  const scopeNote = document.getElementById('tracked-scope-note');
-  if(scopeNote){
-    scopeNote.textContent = TICKER_UNIVERSE.length
-      ? `칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 전체 유니버스(${TICKER_UNIVERSE.length}종목)에서 추가`
-      : '칩 클릭 시 해당 종목 데이터로 전환 · 검색으로 다른 종목 추가';
-  }
 }
 
 // 억원 값을 "1조 3,670억원" 형태로 표기 (1조 미만이면 "3,337억원").
@@ -4522,67 +4398,6 @@ function formatMarketCapEok(eok){
   return `${rounded.toLocaleString('ko-KR')}억원`;
 }
 
-function renderStockStatCards(ticker){
-  const name = stockDisplayName(ticker);
-  const label = document.getElementById('stock-selected-label');
-  if(label) label.textContent = `· ${name}`;
-  const cardsWrap = document.getElementById('stock-stat-cards');
-  const perf = STOCK_PERF.find(s=>s.ticker===ticker);
-  if(!perf){
-    cardsWrap.innerHTML = `<div class="stat-card"><div class="lbl">${name}</div><div class="val">데이터 없음</div><div class="delta">주가 데이터 대기 중</div></div>`;
-    return;
-  }
-  const r = perf.returns;
-  // market_cap_krw_eok(정밀 억원)이 있으면 우선 사용, 없으면(구버전 데이터) 조원값을 억원으로 환산해 폴백.
-  const capEok = perf.market_cap_krw_eok!=null ? perf.market_cap_krw_eok
-    : (perf.market_cap_krw_tril!=null ? perf.market_cap_krw_tril*10000 : null);
-  cardsWrap.innerHTML = `
-    <div class="stat-card"><div class="lbl">${name} · ${perf.market}</div><div class="val">${fmtPct(r.d1)}%</div><div class="delta ${pctClass(r.d1)}">1일 등락</div></div>
-    <div class="stat-card"><div class="lbl">시가총액</div><div class="val">${formatMarketCapEok(capEok)}</div><div class="delta">KRW 환산</div></div>
-    <div class="stat-card"><div class="lbl">1개월 등락</div><div class="val">${fmtPct(r.m1)}%</div><div class="delta ${pctClass(r.m1)}">거래일 기준</div></div>
-    <div class="stat-card"><div class="lbl">YTD</div><div class="val">${fmtPct(r.ytd)}%</div><div class="delta ${pctClass(r.ytd)}">연초 대비</div></div>
-    <div class="stat-card"><div class="lbl">외국인 지분율</div><div class="val">${perf.foreign_ratio!=null ? perf.foreign_ratio.toFixed(2)+'%' : '-'}</div><div class="delta">${perf.foreign_ratio!=null ? '보유율' : '국내 종목만 제공'}</div></div>
-  `;
-}
-
-function selectStock(ticker){
-  selectedStockTicker = ticker;
-  if(!TRACKED_DEFAULT.includes(ticker) && !extraTrackedTickers.includes(ticker)){
-    extraTrackedTickers.push(ticker);
-  }
-  renderTrackedChips();
-  renderStockStatCards(ticker);
-  renderPriceChart(ticker, selectedPriceMonths);
-  renderForeignRatioChart(ticker, selectedForeignMonths);
-  renderFlowChart(ticker, selectedFlowMonths);
-  const input = document.getElementById('stock-search-input');
-  const results = document.getElementById('stock-search-results');
-  if(input) input.value = '';
-  if(results) results.style.display = 'none';
-}
-
-function renderStockSearchResults(query){
-  const results = document.getElementById('stock-search-results');
-  if(!query){ results.style.display='none'; results.innerHTML=''; return; }
-  const q = query.toLowerCase();
-  const matches = TICKER_UNIVERSE.filter(t=>
-    t.name.toLowerCase().includes(q) || t.ticker.toLowerCase().includes(q)
-  ).slice(0, 8);
-  if(matches.length===0){
-    results.innerHTML = '<div class="note" style="padding:8px">일치하는 종목이 없습니다</div>';
-    results.style.display = 'block';
-    return;
-  }
-  results.innerHTML = matches.map(t=>
-    `<div class="stock-search-item" data-ticker="${t.ticker}" style="padding:7px 8px;cursor:pointer;border-radius:6px;font-size:12.5px">${t.name} <span class="note">${t.ticker} · ${t.market} · ${escapeHtml(fineSectorsOf(t.ticker, t.sector, t.sectors).join(', '))}</span></div>`
-  ).join('');
-  results.querySelectorAll('.stock-search-item').forEach(item=>{
-    item.addEventListener('mouseenter', ()=> item.style.background='var(--bg2)');
-    item.addEventListener('mouseleave', ()=> item.style.background='');
-    item.addEventListener('click', ()=> selectStock(item.dataset.ticker));
-  });
-  results.style.display = 'block';
-}
 
 async function loadTickerUniverse(){
   try{
@@ -4592,14 +4407,11 @@ async function loadTickerUniverse(){
   }catch(e){
     TICKER_UNIVERSE = [];
   }
-  renderTrackedChips();
-  // 주가 Performance 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
+  // 수익률 표·수급 판독기 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
   if(STOCK_PERF.length){
-    populatePerfFilters(); renderPerfTables();
-    populateFlowMapSectorFilter(); if(typeof renderFlowMap === 'function') renderFlowMap(); // 수급 판독기도 같은 세부 섹터
+    renderPerfTables();
+    populateFlowMapSectorFilter(); if(typeof renderFlowMap === 'function') renderFlowMap();
   }
-  renderStockStatCards(selectedStockTicker);
-  renderPriceChart(selectedStockTicker, selectedPriceMonths);
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
   // 리서치 보고서 섹터 드롭다운은 종목 목록으로 섹터를 찾으므로, 보고서가 먼저 와서 전부 "기타"로
   // 그려졌을 수 있다 — 다시 그린다(2026-10-12 발견, 원래부터 도착 순서에 따라 생길 수 있던 문제).
@@ -4609,16 +4421,6 @@ async function loadTickerUniverse(){
   if(SUP_DATA){ populateSupSectorFilter(); renderSurprise(); }
   if(typeof refreshSnapshotIfActive === 'function') refreshSnapshotIfActive();
   if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
-  const input = document.getElementById('stock-search-input');
-  if(input){
-    input.addEventListener('input', ()=> renderStockSearchResults(input.value.trim()));
-    input.addEventListener('focus', ()=>{ if(input.value.trim()) renderStockSearchResults(input.value.trim()); });
-    document.addEventListener('click', (e)=>{
-      if(!e.target.closest('#stock-search-input') && !e.target.closest('#stock-search-results')){
-        document.getElementById('stock-search-results').style.display='none';
-      }
-    });
-  }
 }
 
 // exportChart는 더 이상 목업이 아니라 export_data.json 기반 실데이터로 그린다
@@ -7446,7 +7248,7 @@ function buildStockBoxHtml(ticker, label){
     ? ((targetPrice - currentPrice) / currentPrice * 100) : null;
   const curSuffix = perf.currency==='KRW' ? '원' : ` ${perf.currency||''}`;
 
-  // renderStockStatCards()와 동일하게 1일/1개월/YTD 세 개로만 추림(5일/3개월/6개월은 중복 정보라 생략).
+  // 1일/1개월/YTD 세 개로만 추림(5일/3개월/6개월은 중복 정보라 생략).
   const perfRow = ['d1','m1','ytd'].map(k=>{
     const labelMap = {d1:'1일', m1:'1개월', ytd:'YTD'};
     return `<div class="stat-card"><div class="lbl">${labelMap[k]}</div><div class="val">${fmtPct(r[k])}%</div><div class="delta ${pctClass(r[k])}"></div></div>`;
@@ -7922,11 +7724,11 @@ function renderSnapshot(ticker){
     <div class="subsec-h snap-subsec-h" style="margin-top:14px"><span>리서치 보고서</span>${reportsJumpBtn}</div>
     <div class="note">연동된 리서치 보고서가 없습니다.</div>`;
 
-  const stockJumpBtn = `<button type="button" class="snap-jump-btn" onclick='jumpToStockFromSnapshot(${jsAttrJson(ticker)})'>주가 탭에서 더보기 →</button>`;
   const exportCfgs = snapshotExportCategoriesFor(info);
 
   // 섹션 순서(2026-09-14 사용자 지정): 주가 데이터 → 실적 전망 → 리서치 보고서 →
-  // 산업데이터 → 뉴스 및 공시. 각 블록의 내부 마크업은 그대로 두고 배치 순서만 바꿨다 —
+  // 산업데이터 → 뉴스 및 공시 → (2026-10-13 추가) 주가 차트 3종. 차트는 위쪽 흐름에 끼어들지 않게
+  // 맨 아래에 붙인다(사용자 요청). 각 블록의 내부 마크업은 그대로 두고 배치 순서만 바꿨다 —
   // 헤더(기업명/티커/섹터)는 5개 항목에 속하지 않는 식별 정보라 항상 맨 위에 고정.
   panel.innerHTML = `
     <div class="card">
@@ -7935,8 +7737,7 @@ function renderSnapshot(ticker){
         <div class="note">${info.market} · ${escapeHtml(fineSectorsOf(info.ticker, info.sector, info.sectors).join(', '))}${latestReport ? ` · 최신 의견 ${latestReport.op ? `<span class="badge ${repBadgeClass(latestReport.op)}">${repOpLabel(latestReport.op)}</span>` : '—'}` : ''}</div>
       </div>
     </div>
-    <div class="snap-subsec-h" style="margin-top:14px; justify-content:flex-end">${stockJumpBtn}</div>
-    <div id="snap-stock-box"></div>
+    <div id="snap-stock-box" style="margin-top:14px"></div>
     <div class="card" style="margin-top:14px">
       ${earningsForecastBlockHtml(ticker)}
     </div>
@@ -7950,15 +7751,22 @@ function renderSnapshot(ticker){
       ${newsHtml}
       ${calHtml}
     </div>
+    <div id="snap-stock-charts"></div>
   `;
   refreshTgCommentToggles(panel);
   if(exportCfgs.length) drawSnapshotExportCharts(exportCfgs);
   const stockBox = document.getElementById('snap-stock-box');
   if(stockBox) stockBox.innerHTML = buildStockBoxHtml(ticker, stockDisplayName(ticker));
+  // 2026-10-13: "주가 탭에서 더보기" 버튼 대신 차트 3종을 스냅샷 맨 아래에 바로 그린다(주가 Performance 폐지).
+  const chartsBox = document.getElementById('snap-stock-charts');
+  if(chartsBox && STOCK_PERF.some(s=>s.ticker===ticker)){
+    chartsBox.innerHTML = snapStockChartsHtml();
+    renderSnapStockCharts(ticker);
+  }
 }
 
 // 스냅샷 탭의 "탭에서 더보기" 버튼 — 해당 탭으로 전환하면서, 그 탭이 이미 갖고 있는 필터
-// 메커니즘(뉴스 기업 select/캘린더 검색어/리포트 카테고리 select/selectStock)을 같은
+// 메커니즘(뉴스 기업 select/캘린더 검색어/리포트 카테고리 select)을 같은
 // 기업으로 맞춰 그대로 재사용한다(2026-09-08 요청 — 스냅샷에서 더 자세히 보고 싶을 때
 // 해당 탭으로 바로 이동).
 function jumpToNewsFromSnapshot(newsCo){
@@ -7996,10 +7804,6 @@ function jumpToReportsFromSnapshot(co){
   syncRepDropdowns(co);
   renderReports(co);
   renderCompanyDetail(co);
-}
-function jumpToStockFromSnapshot(ticker){
-  activateTab('stock');
-  if(ticker) selectStock(ticker);
 }
 // jumpToReportsFromSnapshot과 동일한 패턴(setupSubtabs가 만든 하위 탭 구조를 그대로
 // 수동 재현) — industry-subtabs의 "수출 데이터" 칩을 활성화하고 해당 품목 칩까지 선택한다.
@@ -9246,7 +9050,7 @@ const TAB_DATA_LOADERS = {
   reports:  [loadTickerUniverse, loadStockPerformance, loadReports, loadBioReports, loadTelegramComments,
              loadConsensus, loadEarningsIR, loadConsensusHistory, loadEarningsSurprise],
   // 기업 스냅샷은 뉴스·주가·리포트·컨센서스·일정·수출을 모아 보여준다 — 표에 없는 것도 뒤에서 이어 받는다.
-  snapshot: [loadTickerUniverse, loadPerfFx, loadStockPerformance, loadReports, loadConsensus, loadNews,
+  snapshot: [loadTickerUniverse, loadPerfFx, loadStockPerformance, loadInvestorFlow, loadReports, loadConsensus, loadNews,
              loadNewsHistory, loadCalendar, loadEarningsIR, loadExportData],
 };
 const startedDataLoaders = new Map(); // load 함수 → Promise (각 함수는 한 번만 실행)
