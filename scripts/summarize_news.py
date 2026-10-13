@@ -36,7 +36,12 @@ import time
 
 from company_names import glossary_text, normalize_text
 
-MAX_ITEMS_PER_CALL = 50  # 한 번의 API 호출에 담는 기사 수 상한.
+MAX_ITEMS_PER_CALL = 25  # 한 번의 API 호출에 담는 기사 수 상한.
+# 2026-10-13: 50 → 25. 해외 기사가 많은 날(10/9·10/13 각 50건)만 해외 요약이 통째로 0건이 되고
+# 37건이던 10/8·10/11은 정상이었다 — 한 배치의 답변이 출력 토큰 한도(8000)를 넘겨 잘린 것으로
+# 판단(10/7부터 해외도 맥락 태그를 함께 생성해 답이 더 길어짐). 하루 기사 수 상한은 따로 없고
+# 카테고리당 6건(scrape_news*.py MAX_ITEMS_PER_CATEGORY) × 11개라 최대 66건 → 25건씩 최대 3번.
+# 호출은 1~2번 늘지만 하루 한도(20회) 안에서 충분하다.
 # 2026-09-03: Gemini 무료 티어의 실제 하루 호출 한도가 gemini-3.6-flash 기준 20회(RPD)로
 # 확인됨(워크플로 로그: "GenerateRequestsPerDayPerProjectPerModelFreeTier", quotaValue 20).
 # 20으로 배치를 쪼개면 기사 60~70건짜리 하루치 뉴스만으로도 배치 5개(재시도 포함 최대 10회)를
@@ -396,7 +401,7 @@ def summarize_domestic(provider, items, debug=False):
             it["summary"] = normalize_text(summary)[:300]  # 1줄→2줄로 늘리면서 상한도 global과 동일하게 300자로 상향
 
     # 2줄 요약으로 늘어난 만큼 항목당 토큰 배분도 global과 동일하게(120→150) 상향.
-    max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
+    max_tokens = min(8000, 400 + 200 * min(len(todo), MAX_ITEMS_PER_CALL))  # 기사당 태그+2줄 요약 여유(2026-10-13 150→200)
     summarize_batch(provider, todo, DOMESTIC_SYSTEM, max_tokens, build_payload, apply_result, debug=debug)
 
 
@@ -427,7 +432,7 @@ def summarize_global(provider, items, debug=False):
         if summary and not (it.get("summary") or "").strip():
             it["summary"] = normalize_text(summary)[:300]
 
-    max_tokens = min(8000, 400 + 150 * min(len(todo), MAX_ITEMS_PER_CALL))
+    max_tokens = min(8000, 400 + 200 * min(len(todo), MAX_ITEMS_PER_CALL))  # 기사당 태그+2줄 요약 여유(2026-10-13 150→200)
     # 해외 기업 한글 표기를 대시보드(tickers.json) 표기로 맞추도록 표준 표기 목록을 덧붙인다.
     system = GLOBAL_SYSTEM + glossary_text()
     summarize_batch(provider, todo, system, max_tokens, build_payload, apply_result, debug=debug)
