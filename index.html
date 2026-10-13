@@ -646,7 +646,9 @@ tr:last-child td{border-bottom:none}
          *.json처럼 GitHub Actions로 자동 갱신되지 않고, 엑셀을 새로 저장한 뒤 수동으로
          변환 스크립트를 돌려 커밋해야 한다). -->
     <div id="stock-sub-global">
-      <div class="sec-h"><h2>글로벌 대시보드<span class="data-updated-badge" id="gd-updated-badge" hidden></span></h2><span class="note" id="gd-source-note">출처: Bloomberg 컨센서스 · 수동 갱신</span></div>
+      <!-- 2026-10-14: 갱신일 배지·출처는 Peer Table 제목 옆으로 이동 — 맨 위에 두면 매일 갱신되는
+           수익률 Top/Bottom(stock_performance.json)까지 그 날짜 기준처럼 보였다. -->
+      <div class="sec-h"><h2>글로벌 대시보드</h2></div>
       <div class="note" style="margin-bottom:14px">값이 없는 셀은 "-" · 표에는 1FY/2FY 추정치만 표시 · <span id="gd-fx-note">환율: 고정 가정치(1,400원/달러, 7.1위안/달러)</span> · 위안화 시총 구간은 원화 구간(1/3/5/10)을 그대로 적용</div>
 
       <div class="gd-tab-bar" id="gd-tab-bar"></div>
@@ -675,7 +677,8 @@ tr:last-child td{border-bottom:none}
         <div class="na-msg">주가 데이터 불러오는 중...</div>
       </div>
 
-      <div class="sec-h"><h2 id="gd-table-title" style="font-size:14.5px">Peer Table</h2><span class="note">맨 왼쪽 체크박스로 평균 계산에서 제외할 기업을 고를 수 있습니다 · 표는 가로로 스크롤됩니다</span></div>
+      <!-- 제목 글자(gd-table-title)는 gdRender가 탭마다 textContent로 다시 쓰므로 배지와 분리된 span에 둔다. -->
+      <div class="sec-h"><h2 style="font-size:14.5px"><span id="gd-table-title">Peer Table</span><span class="data-updated-badge" id="gd-updated-badge" hidden></span></h2><span class="note"><span id="gd-source-note">출처: Bloomberg 컨센서스 · 수동 갱신</span> · 맨 왼쪽 체크박스로 평균 계산에서 제외할 기업을 고를 수 있습니다 · 표는 가로로 스크롤됩니다</span></div>
       <div id="gd-peer-table-wrap"></div>
 
       <div class="sec-h" style="margin-top:20px"><h2>주요 지표 요약</h2><span class="note">이 탭의 현재 필터·제외 설정이 반영된 결과 기준</span></div>
