@@ -24,6 +24,8 @@ from summarize_news import (  # noqa: E402
     ANTHROPIC_MODEL,
     GEMINI_MODEL,
     DailyQuotaExhausted,
+    ServerBusy,
+    build_gemini_provider,
     gemini_backoff_seconds,
     gemini_pace,
     is_daily_quota_exhausted,
@@ -88,15 +90,11 @@ class AnthropicObjectProvider:
 
 
 def build_object_provider():
-    """GEMINI_API_KEY(무료) 우선, 없으면 ANTHROPIC_API_KEY(유료). 둘 다 없으면 None."""
-    gemini_key = os.environ.get("GEMINI_API_KEY")
-    if gemini_key:
-        try:
-            return GeminiObjectProvider(gemini_key)
-        except ImportError:
-            print("[WARN] google-genai 패키지가 없어 Gemini를 사용할 수 없습니다.", file=sys.stderr)
-        except Exception as e:
-            print(f"[WARN] Gemini 클라이언트 초기화 실패 ({e})", file=sys.stderr)
+    """Gemini(무료, 키 여러 개면 첫 키 쿼터 소진 시 예비 키로 자동 전환 — summarize_news.
+    build_gemini_provider) 우선, 없으면 ANTHROPIC_API_KEY(유료). 둘 다 없으면 None."""
+    gemini = build_gemini_provider(GeminiObjectProvider)
+    if gemini is not None:
+        return gemini
 
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     if anthropic_key:
@@ -114,10 +112,12 @@ def build_object_provider():
 def call_llm_with_retries(provider, system, user_content, max_tokens, tag, debug=False):
     """analyze_news_trend.generate_trends_batch와 동일한 재시도/백오프 정책(최대 5회,
     429는 안내된 재시도 대기, 503/UNAVAILABLE은 20→40→80→120s 지수 백오프)."""
+    last_transient = False  # 2026-10-13: 503이 끝까지 계속되면 ServerBusy(남은 달은 시도하지 않음)
     for attempt in range(5):
         try:
             raw = provider.call(system, user_content, max_tokens=max_tokens)
         except Exception as e:
+            last_transient = is_transient_server_error(e)
             if is_daily_quota_exhausted(e):
                 print(f"[WARN] 일별 쿼터 소진 확인({tag}): {e}", file=sys.stderr)
                 raise DailyQuotaExhausted(str(e)) from e
@@ -134,6 +134,9 @@ def call_llm_with_retries(provider, system, user_content, max_tokens, tag, debug
         if debug:
             print(f"[DEBUG] LLM 응답 원문({tag}): {raw[:300]}", file=sys.stderr)
         return raw
+    if last_transient:
+        print(f"[WARN] Gemini 서버 과부하(503)가 재시도 후에도 계속됨({tag}) — 쿼터 낭비를 막으려 멈춥니다.", file=sys.stderr)
+        raise ServerBusy()
     return None
 
 
@@ -209,8 +212,8 @@ def run_months(args, data, out_data, section, analyze_once, save):
             continue
         try:
             target, summary, info = analyze_once(truncate_to_month(data, ym))
-        except DailyQuotaExhausted:
-            print(f"[WARN] 일별 쿼터 소진 — {ym}부터는 다음 실행 때 이어서 만듭니다(이미 만든 달: {made}).", file=sys.stderr)
+        except (DailyQuotaExhausted, ServerBusy):
+            print(f"[WARN] 일별 쿼터 소진 또는 서버 과부하 — {ym}부터는 다음 실행 때 이어서 만듭니다(이미 만든 달: {made}).", file=sys.stderr)
             break
         if target != ym:
             print(f"[WARN] {ym} {section}: 데이터에 이 달 수치가 없어 건너뜀(최신 달={target})", file=sys.stderr)

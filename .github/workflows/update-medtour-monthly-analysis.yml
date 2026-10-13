@@ -44,6 +44,7 @@ jobs:
       - name: Analyze medtour monthly highlights (Gemini 무료 티어 우선)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}  # 예비 키 — 첫 키 하루 쿼터 소진 시 자동 전환(2026-10-13)
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MONTHS: ${{ github.event.inputs.months }}
         run: python scripts/analyze_medtour_monthly.py --data medical_tour.json --out medtour_monthly_analysis.json --months "$MONTHS"

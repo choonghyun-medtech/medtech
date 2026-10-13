@@ -49,6 +49,7 @@ jobs:
         if: github.event.inputs.skip_summarize != 'true'  # 기사 요약이 이미 잘 된 상태에서 브리핑만 재시도할 때 건너뜀
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}  # 예비 키 — 첫 키 하루 쿼터 소진 시 자동 전환(2026-10-13)
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/summarize_news.py --out news.json
 
@@ -60,6 +61,7 @@ jobs:
         if: always() && github.event.inputs.skip_trend != 'true'  # news_history.jsonl이 이미 저장된 상태라면 계속 시도
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}  # 예비 키 — 첫 키 하루 쿼터 소진 시 자동 전환(2026-10-13)
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/analyze_news_trend.py --history news_history.jsonl --out news_trend.json
 

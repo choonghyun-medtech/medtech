@@ -70,6 +70,7 @@ import time
 from company_names import glossary_text, normalize_text
 from summarize_news import (
     DailyQuotaExhausted,
+    ServerBusy,
     build_provider,
     gemini_backoff_seconds,
     gemini_pace,
@@ -260,10 +261,12 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
     # 재조정(summarize_news.transient_backoff_seconds의 최대 120s와 맞춘 값). 백그라운드
     # 워크플로라 사람이 기다리는 게 아니므로, 몇 분 더 버티는 비용보다 성공률을 우선한다.
     # 503/UNAVAILABLE은 429와 별도의(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
+    last_transient = False  # 2026-10-13: 503이 끝까지 계속되면 남은 지역은 시도하지 않음(ServerBusy)
     for attempt in range(5):
         try:
             raw = provider.call(system, user_content, max_tokens=max_tokens)
         except Exception as e:
+            last_transient = is_transient_server_error(e)
             if is_daily_quota_exhausted(e):
                 print(f"[WARN] 일별 쿼터 소진 확인({tag}) — 재시도해도 못 풀리므로 남은 "
                       f"지역도 전부 건너뜁니다: {e}", file=sys.stderr)
@@ -281,6 +284,7 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
             else:
                 gemini_pace(provider)
             continue
+        last_transient = False
         gemini_pace(provider)
         obj = parse_json_object(raw)
         items_out = obj.get("sections") if obj else None
@@ -302,6 +306,10 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
                 return result
         if debug:
             print(f"[DEBUG] 트렌드 응답 파싱 실패({tag}) 원문: {raw[:300]}", file=sys.stderr)
+    if last_transient:
+        print(f"[WARN] Gemini 서버 과부하(503)가 재시도 후에도 계속돼 남은 지역의 브리핑을 멈춥니다({tag}) — "
+              "못 채운 구간은 이전 결과로 대체합니다.", file=sys.stderr)
+        raise ServerBusy()
     return {}
 
 
@@ -374,6 +382,8 @@ def main():
     for region, cat_period_items in region_cat_period_items.items():
         try:
             results_by_region[region] = generate_trends_batch(provider, region, cat_period_items, debug=args.debug)
+        except ServerBusy:
+            break  # 503 과부하 — 남은 지역도 똑같이 실패할 가능성이 높아 쿼터를 아끼려고 멈춘다(이전 결과로 대체)
         except DailyQuotaExhausted:
             print("[WARN] 일별 쿼터가 이미 소진된 상태라 남은 지역의 트렌드 생성을 전부 "
                   "건너뜁니다(어차피 똑같이 실패하므로 시간 낭비 방지) — 못 채운 구간은 "

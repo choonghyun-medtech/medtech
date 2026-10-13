@@ -30,6 +30,7 @@ import sys
 
 from monthly_analysis_common import (
     DailyQuotaExhausted,
+    ServerBusy,
     add_months_args,
     build_object_provider,
     call_llm_with_retries,
@@ -207,8 +208,8 @@ def main():
 
     try:
         target_month, summary, info = analyze_once(data, get_provider, args.debug)
-    except DailyQuotaExhausted:
-        print("[WARN] 일별 쿼터 소진으로 이번 실행은 건너뜁니다.", file=sys.stderr)
+    except (DailyQuotaExhausted, ServerBusy):
+        print("[WARN] 일별 쿼터 소진 또는 서버 과부하로 이번 실행은 건너뜁니다.", file=sys.stderr)
         sys.exit(0)
     if not summary:
         print(f"[INFO] 분석을 건너뜁니다 — {info}", file=sys.stderr)

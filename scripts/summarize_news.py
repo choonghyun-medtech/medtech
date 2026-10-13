@@ -289,17 +289,72 @@ class AnthropicProvider:
         return "[" + text
 
 
-def build_provider():
-    """GEMINI_API_KEY(무료)를 우선 사용하고, 없으면 ANTHROPIC_API_KEY(유료)로 대체.
-    둘 다 없거나 해당 패키지가 설치되어 있지 않으면 None을 반환(요약 단계 스킵)."""
-    gemini_key = os.environ.get("GEMINI_API_KEY")
-    if gemini_key:
+class ServerBusy(Exception):
+    """Gemini 서버 과부하(503 UNAVAILABLE "high demand")가 재시도를 다 써도 계속될 때. 2026-10-13
+    실제로 503 실패 요청도 하루 쿼터에 잡히는 것을 확인 — 남은 배치/지역/달까지 계속 시도하면
+    쿼터만 소진되므로, 한 번 이렇게 끝나면 이번 실행의 남은 AI 호출을 멈춘다."""
+    pass
+
+
+# 하루 쿼터가 Gemini 키(=구글 프로젝트)마다 따로라, 여러 키를 순서대로 쓴다(2026-10-13).
+# GEMINI_API_KEY_EARNINGS는 원래 실적 IR 번역 전용으로 따로 둔 키 — 실적 IR은 새 보도자료가
+# 있을 때만 호출해 대부분 날 쿼터가 남으므로, 첫 키가 소진되면 예비로 이어 쓴다.
+GEMINI_KEY_ENVS = ("GEMINI_API_KEY", "GEMINI_API_KEY_EARNINGS")
+
+
+class KeyFallbackProvider:
+    """여러 Gemini 키의 provider를 순서대로 쓴다 — 지금 키가 "하루 쿼터 소진"이면 다음 키로
+    바꿔 같은 요청을 바로 다시 보낸다(재시도 횟수로 세지 않음). 모든 키가 소진되면 그 오류를 올린다."""
+
+    name = "gemini"
+
+    def __init__(self, providers):
+        self.providers = providers
+        self.index = 0
+
+    def call(self, *args, **kwargs):
+        while True:
+            try:
+                return self.providers[self.index].call(*args, **kwargs)
+            except Exception as e:
+                if is_daily_quota_exhausted(e) and self.index + 1 < len(self.providers):
+                    self.index += 1
+                    print(f"[WARN] Gemini 키 {self.index}번 하루 쿼터 소진 — 예비 키({self.index + 1}번)로 전환합니다.",
+                          file=sys.stderr)
+                    continue
+                raise
+
+
+def build_gemini_provider(factory):
+    """GEMINI_KEY_ENVS에 있는 키마다 factory(key)로 provider를 만들어 KeyFallbackProvider로 묶는다.
+    키가 하나도 없거나 만들 수 없으면 None."""
+    keys = []
+    for env in GEMINI_KEY_ENVS:
+        k = (os.environ.get(env) or "").strip()
+        if k and k not in keys:
+            keys.append(k)
+    providers = []
+    for k in keys:
         try:
-            return GeminiProvider(gemini_key)
+            providers.append(factory(k))
         except ImportError:
             print("[WARN] google-genai 패키지가 없어 Gemini를 사용할 수 없습니다.", file=sys.stderr)
+            return None
         except Exception as e:
             print(f"[WARN] Gemini 클라이언트 초기화 실패 ({e})", file=sys.stderr)
+    if not providers:
+        return None
+    if len(providers) > 1:
+        print(f"[INFO] Gemini 키 {len(providers)}개 사용(첫 키 쿼터 소진 시 예비 키로 자동 전환)", file=sys.stderr)
+    return KeyFallbackProvider(providers)
+
+
+def build_provider():
+    """Gemini(무료, 키 여러 개면 순서대로)를 우선 사용하고, 없으면 ANTHROPIC_API_KEY(유료)로 대체.
+    둘 다 없거나 해당 패키지가 설치되어 있지 않으면 None을 반환(요약 단계 스킵)."""
+    gemini = build_gemini_provider(GeminiProvider)
+    if gemini is not None:
+        return gemini
 
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     if anthropic_key:
@@ -327,6 +382,11 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
         # 동일하게 4회로 늘렸다가, 같은 날 그마저도 부족한 사례가 또 있어 5회로 재조정
         # (transient_backoff_seconds의 최대 120s와 맞춘 값). 503/UNAVAILABLE은 429와
         # 다른(더 길게, 지수적으로 늘어나는) 백오프를 쓴다.
+        # 2026-10-13: (1) 응답이 잘려 파싱에 실패한 경우는 같은 묶음을 다시 보내도 또 잘리므로 1번만
+        # 재시도한다. (2) 503이 끝까지 계속되면 이 묶음 이후는 시도하지 않고 ServerBusy로 멈춘다
+        # (503 실패도 하루 쿼터에 잡혀, 남은 묶음까지 5번씩 시도하다 쿼터를 다 쓴 일이 있었음).
+        parse_failures = 0
+        last_transient = False
         for attempt in range(5):
             if not pending:
                 break
@@ -343,6 +403,7 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
                     print(f"[WARN] {provider.name} 일별 쿼터 소진 확인(항목 {start}~{start+len(chunk)-1}) — "
                           f"재시도해도 못 풀리므로 이 실행의 남은 요약을 전부 건너뜁니다: {e}", file=sys.stderr)
                     raise DailyQuotaExhausted(str(e)) from e
+                last_transient = is_transient_server_error(e)
                 tag = f"재시도({attempt}회차)도 " if attempt else ""
                 print(f"[WARN] {provider.name} 요약 API 호출 {tag}실패(항목 {start}~{start+len(chunk)-1}): {e}", file=sys.stderr)
                 # Gemini 무료 티어는 분당 5회 제한이라 429가 나면 일반 페이싱보다 더 오래 쉬어야
@@ -356,13 +417,17 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
                 else:
                     gemini_pace(provider)
                 continue
+            last_transient = False
             gemini_pace(provider)
             results = parse_json_array(raw)
             if results is None or not isinstance(results, list):
+                parse_failures += 1
                 tag = "재시도도 " if attempt else ""
                 print(f"[WARN] 요약 응답 JSON 파싱 {tag}실패(항목 {start}~{start+len(chunk)-1}), 원본 유지", file=sys.stderr)
                 if debug:
-                    print(f"[DEBUG] 응답 원문 앞 300자: {raw[:300]}", file=sys.stderr)
+                    print(f"[DEBUG] 응답 원문 앞 300자: {(raw or '')[:300]}", file=sys.stderr)
+                if parse_failures >= 2:
+                    break  # 같은 묶음은 또 잘릴 가능성이 높아 더 보내지 않는다
                 continue
             by_i = {r.get("i"): r for r in results if isinstance(r, dict)}
             for idx in idx_list:
@@ -376,6 +441,10 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
         if debug or pending:
             print(f"[DEBUG] 배치 {start}~{start+len(chunk)-1}: {applied}/{len(chunk)}건 요약 적용"
                   + (f" ({len(pending)}건은 재시도 후에도 실패, 원본 유지)" if pending else ""), file=sys.stderr)
+        if pending and last_transient:
+            print("[WARN] Gemini 서버 과부하(503)가 재시도 후에도 계속돼 이번 실행의 남은 요약을 멈춥니다 — "
+                  "나중에 Process news를 다시 실행하면 요약 안 된 기사만 이어서 처리합니다.", file=sys.stderr)
+            raise ServerBusy()
 
 
 def summarize_domestic(provider, items, debug=False):
@@ -459,18 +528,18 @@ def main():
         quota_exhausted = False
         try:
             summarize_domestic(provider, domestic_items, debug=args.debug)
-        except DailyQuotaExhausted:
+        except (DailyQuotaExhausted, ServerBusy):
             quota_exhausted = True
         except Exception as e:
             print(f"[WARN] 국내 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
 
         if quota_exhausted:
-            print("[WARN] 일별 쿼터가 이미 소진된 상태라 해외 요약도 건너뜁니다(어차피 똑같이 "
-                  "실패하므로 시간 낭비 방지).", file=sys.stderr)
+            print("[WARN] 일별 쿼터 소진 또는 서버 과부하로 해외 요약도 건너뜁니다(어차피 똑같이 "
+                  "실패하므로 시간·쿼터 낭비 방지).", file=sys.stderr)
         else:
             try:
                 summarize_global(provider, global_items, debug=args.debug)
-            except DailyQuotaExhausted:
+            except (DailyQuotaExhausted, ServerBusy):
                 pass
             except Exception as e:
                 print(f"[WARN] 해외 요약 생성 중 예외 발생, 원본 유지 ({e})", file=sys.stderr)
