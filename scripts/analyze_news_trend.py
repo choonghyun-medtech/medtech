@@ -111,10 +111,12 @@ CATEGORY_SOURCES = {
 LEGACY_CATEGORY_ALIASES = {
     "Aesthetics": "미용", "Bio-Processing": "생명공학", "Dental": "치과",
     "Digital Health": "디지털헬스", "Humanoid": "휴머노이드", "IVD": "체외진단",
-    "Robotics": "수술로봇", "Therapeutics": "치료제", "MedTech": "의료기기",
+    "Robotics": "수술로봇", "Therapeutics": "의료기기", "MedTech": "의료기기",
     "Surgical Robot": "수술로봇", "Healthcare Provider": "의료서비스", "Cash Pay Market": "미용",
     # 2026-10-12: MedTech 트랙의 "로보틱스"를 "수술로봇"으로 이름 변경(Robotics 트랙과 혼동 방지)
     "로보틱스": "수술로봇",
+    # 2026-10-14: "치료제" 폐지(유일한 소속 기업 시지바이오를 의료기기로 옮김)
+    "치료제": "의료기기",
 }
 
 
