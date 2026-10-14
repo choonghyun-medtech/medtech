@@ -15,6 +15,6 @@
   {"ticker": "NTRA", "name": "Natera", "ir_url": "https://investor.natera.com/", "events_url": "https://investor.natera.com/events-and-presentations/events/default.aspx", "scraper": "q4_feed", "scraper_url": "https://investor.natera.com/"},
   {"ticker": "GH", "name": "Guardant Health", "ir_url": "https://investors.guardanthealth.com/", "events_url": "https://investors.guardanthealth.com/events-and-presentations/default.aspx", "scraper": "q4_feed", "scraper_url": "https://investors.guardanthealth.com/"},
   {"ticker": "ALGN", "name": "Align Technology", "ir_url": "https://investor.aligntech.com/", "events_url": "https://investor.aligntech.com/events", "scraper": "nir_table", "scraper_url": "https://investor.aligntech.com/events"},
-  {"ticker": "INMD", "name": "InMode", "ir_url": "https://inmodeinvestors.com/", "scraper": "inmd_rss", "scraper_url": "https://www.stocktitan.net/rss/news/INMD"},
+  {"ticker": "INMD", "name": "InMode", "ir_url": "https://inmodeinvestors.com/", "events_url": "https://inmodeinvestors.com/press-release/", "scraper": "inmd_rss", "scraper_url": "https://www.stocktitan.net/rss/news/INMD"},
   {"ticker": "TEM", "name": "Tempus AI", "ir_url": "https://investors.tempus.com/", "events_url": "https://investors.tempus.com/news-events/investor-events", "scraper": "nir_llf", "scraper_url": "https://investors.tempus.com/news-events/investor-events"}
 ]

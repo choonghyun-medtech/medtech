@@ -76,6 +76,15 @@
   웹캐스트 링크만 있음)와 과거 실적(yfinance)은 이벤트 목록 페이지로 보낸다.
   InMode는 IR 사이트가 막혀 있어 수집 경로인 StockTitan 보도자료 원문으로 연결하고,
   source_name도 그에 맞게 표기한다.
+  [2026-10-14] InMode도 공식 IR 보도자료 목록(inmodeinvestors.com/press-release/)으로 바꿨다 —
+  "눌렀더니 공식 사이트가 아니라 다른 곳으로 간다"는 사용자 지적. Sucuri 챌린지는 스크립트
+  수집만 막을 뿐 실제 브라우저에서는 정상으로 열리고(헤드리스 Chrome으로 확인), 이 목록 맨
+  위에 해당 보도자료가 올라온다(공식 사이트도 개별 보도자료는 자체 상세 페이지 없이 PR
+  Newswire로 링크함). 수집은 여전히 StockTitan RSS로 한다.
+- [2026-10-14] 보도자료 제목에서 뽑은 일정(InMode RSS, Q4 보도자료 피드)은 제목이 "InMode to
+  Report Third Quarter 2026 Financial Results on November 11, 2026, Expects Third Quarter
+  Revenue of ..."처럼 줄글이라, 날짜 표현(" on/for {날짜}") 이후를 잘라 행사명만 남긴다
+  (shorten_pr_title). 날짜는 캘린더 칸에 따로 표시되므로 제목에 반복할 필요가 없다.
 
 사용법:
     python scrape_calendar_global.py --out calendar_events.json
@@ -121,6 +130,17 @@ def classify_global(title):
         if pattern.search(title):
             return ev_type
     return None
+
+
+# 보도자료 제목의 " on/for [요일,] {월} {일}[, {연도}]" 이후(날짜·시각·가이던스 문구)를 잘라낸다.
+_PR_TITLE_TAIL_RE = re.compile(
+    r"\s+(?:on|for)\s+(?:[A-Za-z]+day,?\s+)?[A-Z][a-z]{2,8}\.?\s+\d{1,2}\b.*$")
+
+
+def shorten_pr_title(title):
+    """보도자료 제목을 캘린더용 행사명으로 줄인다 — 날짜 표현이 없으면 그대로 둔다."""
+    short = _PR_TITLE_TAIL_RE.sub("", title).strip().rstrip(",.")
+    return short or title
 
 
 def load_ir_sources(path):
@@ -301,6 +321,11 @@ def scrape_unh_events(scraper_url, ticker, name, ir_url, today):
         return events
     d = md.replace(year=today.year)
     if d < today:
+        # [2026-10-14] 행사 직후엔 페이지가 아직 방금 끝난 일정("Oct. 13")을 띄우고 있어, 이걸 무조건
+        # 내년으로 넘기면 2027-10-13 같은 엉뚱한 미래 일정이 생겼다. 반년 이내로 지난 날짜는 이미
+        # 끝난 일정으로 보고 버리고(과거분은 yfinance가 채움), 그보다 더 지난 날짜만 내년(연말→연초)으로 본다.
+        if (today - d).days <= 180:
+            return events
         d = d.replace(year=today.year + 1)
 
     if d > today + datetime.timedelta(days=DAYS_FORWARD):
@@ -447,7 +472,7 @@ def _q4_press_release_earnings(base, ticker, name, ir_url, today):
             continue
         link = item.get("LinkToDetailPage") or ""
         detail_url = urljoin(base + "/", link) if link else None
-        events.append(make_event(d, ticker, name, ir_url, headline, "earn", detail_url))
+        events.append(make_event(d, ticker, name, ir_url, shorten_pr_title(headline), "earn", detail_url))
     return events
 
 
@@ -645,7 +670,6 @@ def scrape_inmd_rss(scraper_url, ticker, name, ir_url, today):
     item_re = re.compile(r"<item>([\s\S]*?)</item>")
     title_re = re.compile(r"<title>([\s\S]*?)</title>")
     pubdate_re = re.compile(r"<pubDate>([\s\S]*?)</pubDate>")
-    link_re = re.compile(r"<link>([\s\S]*?)</link>")
     date_with_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2},\s*\d{4})", re.I)
     date_no_year_re = re.compile(r"\bon\s+([A-Za-z]+\s+\d{1,2})\b(?:,|\s|$)", re.I)
 
@@ -687,14 +711,8 @@ def scrape_inmd_rss(scraper_url, ticker, name, ir_url, today):
 
         if d < today or d > today + datetime.timedelta(days=DAYS_FORWARD):
             continue
-        # 공식 IR 사이트는 막혀 있으므로, 날짜가 적힌 보도자료 원문(StockTitan)으로 연결한다.
-        link_m = link_re.search(block)
-        if link_m:
-            events.append(make_event(d, ticker, name, ir_url, title, ev_type,
-                                     html.unescape(link_m.group(1).strip()),
-                                     f"{name} 보도자료(StockTitan)"))
-        else:
-            events.append(make_event(d, ticker, name, ir_url, title, ev_type))
+        # [2026-10-14] 링크는 StockTitan 원문 대신 공식 IR 보도자료 목록(ir_url = events_url)으로.
+        events.append(make_event(d, ticker, name, ir_url, shorten_pr_title(title), ev_type))
     return events
 
 

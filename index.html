@@ -364,6 +364,8 @@ tr:last-child td{border-bottom:none}
 .up-row{display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px}
 .up-row:last-child{border-bottom:none}
 .up-row .d{width:44px; color:var(--dim); font-size:11.5px; flex-shrink:0}
+/* 제목이 길면 flex가 배지 폭까지 줄여 "실/적"처럼 세로로 쪼개졌다(2026-10-14, InMode 일정) — 배지는 줄이지 않는다. */
+.up-row .badge{flex-shrink:0; white-space:nowrap}
 /* 캘린더 상단 "다가오는 일정" 카드(최대 5개) — 하단 표 형태의 .up-row와 달리 한눈에
    훑어보기 좋은 타일 형태로 구성(2026-08-28) */
 .cal-next-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin-bottom:28px}
