@@ -1,57 +1,63 @@
 {
  "updated": "2026-10-13T23:47:30Z",
- "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료) · 요약: Gemini 자동 생성",
  "domestic": [
   {
    "cat": "디지털헬스",
    "items": [
     {
      "co": "씨어스",
-     "ctx": "뉴스",
+     "ctx": "모닝브리핑",
      "t": "[N2 모닝 경제 브리핑-10월 14일] 美 증시, 3대 지수 나란히 하락…반도...",
      "src": "news2day.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.news2day.co.kr/article/20261013500105"
+     "url": "https://www.news2day.co.kr/article/20261013500105",
+     "summary": "미국 증시 3대 지수가 나란히 하락 마감함."
     },
     {
      "co": "메쥬",
-     "ctx": "뉴스",
+     "ctx": "지역동향",
      "t": "[패트롤] 강원도-원주시의료기기산업진흥원…홍천군보건소",
      "src": "ekn.kr",
      "date": "2026-10-14",
-     "url": "https://www.ekn.kr/web/view.php?key=20261014022495844"
+     "url": "https://www.ekn.kr/web/view.php?key=20261014022495844",
+     "summary": "강원도와 원주시의료기기산업진흥원 등 유관기관 소식임."
     },
     {
      "co": "루닛",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "루닛, 미국면역항암학회서 AI 기반 분석 연구 발표",
      "src": "아시아경제",
      "date": "2026-10-14",
-     "url": "https://view.asiae.co.kr/article/2026101408283905836"
+     "url": "https://view.asiae.co.kr/article/2026101408283905836",
+     "summary": "미국면역항암학회에서 AI 기반 분석 연구 결과를 발표함."
     },
     {
      "co": "루닛",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "루닛, 미국면역항암학회서 '루닛스코프' 연구 발표…\"사업 성과로 연결...",
      "src": "mt.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.mt.co.kr/thebio/2026/10/14/2026101408173061834"
+     "url": "https://www.mt.co.kr/thebio/2026/10/14/2026101408173061834",
+     "summary": "미국면역항암학회에서 AI 바이오마커 루닛스코프 연구를 발표함.\n연구 성과를 바탕으로 사업적 성과 확대를 추진함."
     },
     {
      "co": "루닛",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "루닛, 美 면역항암학회서 AI 활용 난소암·방광암 연구 발표",
      "src": "news1.kr",
      "date": "2026-10-14",
-     "url": "https://www.news1.kr/bio/general/6319091"
+     "url": "https://www.news1.kr/bio/general/6319091",
+     "summary": "미국면역항암학회에서 AI를 활용한 난소암 및 방광암 연구를 발표함."
     },
     {
      "co": "에어스메디컬, 시지바이오",
-     "ctx": "뉴스",
+     "ctx": "지분변동",
      "t": "[더벨]TA어소시에이츠, 에어스메디컬 최대주주 됐다",
      "src": "thebell.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610070853588200106292"
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610070853588200106292",
+     "summary": "글로벌 PEF인 TA어소시에이츠가 에어스메디컬 최대주주에 올랐음."
     }
    ]
   },
@@ -60,51 +66,57 @@
    "items": [
     {
      "co": "에이피알",
-     "ctx": "뉴스",
+     "ctx": "실적",
      "t": "에이피알, '아마존 프라임 빅딜데이즈' 최대 성과…글로벌 속도",
      "src": "news.tf.co.kr",
      "date": "2026-10-14",
-     "url": "https://news.tf.co.kr/read/economy/2375946.htm"
+     "url": "https://news.tf.co.kr/read/economy/2375946.htm",
+     "summary": "아마존 프라임 빅딜데이즈 행사에서 역대 최대 성과를 달성함.\n이를 기반으로 글로벌 시장 공략에 속도를 낼 계획임."
     },
     {
      "co": "에이피알",
-     "ctx": "뉴스",
+     "ctx": "보안관리",
      "t": "글로벌 확장에 규제 강화까지…유통업계, 보안 조직·인력 확대 분주",
      "src": "dailian.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.dailian.co.kr/news/view/1700981/?sc=Naver"
+     "url": "https://www.dailian.co.kr/news/view/1700981/?sc=Naver",
+     "summary": "글로벌 확장과 규제 강화에 맞춰 보안 조직과 인력을 확대 중임."
     },
     {
      "co": "에이피알",
-     "ctx": "뉴스",
+     "ctx": "실적",
      "t": "에이피알 메디큐브, 아마존 빅딜데이즈 미국 매출 85%↑",
      "src": "cstimes.com",
      "date": "2026-10-14",
-     "url": "https://www.cstimes.com/news/articleView.html?idxno=723856"
+     "url": "https://www.cstimes.com/news/articleView.html?idxno=723856",
+     "summary": "아마존 빅딜데이즈 기간 메디큐브 미국 매출이 85% 증가함."
     },
     {
      "co": "메디톡스",
-     "ctx": "뉴스",
+     "ctx": "인력변동",
      "t": "[디깅노트] 키맨 떠나는 메디톡스, 정현호에게 필요한 것",
      "src": "bloter.net",
      "date": "2026-10-14",
-     "url": "https://www.bloter.net/news/articleView.html?idxno=675536"
+     "url": "https://www.bloter.net/news/articleView.html?idxno=675536",
+     "summary": "핵심 인력 이탈에 따른 경영진의 대응 필요성이 제기됨."
     },
     {
      "co": "클래시스",
-     "ctx": "뉴스",
+     "ctx": "인재영입",
      "t": "클래시스, 베인앤드컴퍼니 출신 배정희 부사장 영입",
      "src": "헤럴드경제",
      "date": "2026-10-13",
-     "url": "https://biz.heraldcorp.com/article/10901533?ref=naver"
+     "url": "https://biz.heraldcorp.com/article/10901533?ref=naver",
+     "summary": "베인앤드컴퍼니 출신 배정희 부사장을 신규 영입함."
     },
     {
      "co": "클래시스",
-     "ctx": "뉴스",
+     "ctx": "해외진출",
      "t": "클래시스, '쿼드세이·비클라라'로 유럽 메디컬 에스테틱 시장공략",
      "src": "rapportian.com",
      "date": "2026-10-13",
-     "url": "https://www.rapportian.com/news/articleView.html?idxno=241219"
+     "url": "https://www.rapportian.com/news/articleView.html?idxno=241219",
+     "summary": "쿼드세이와 비클라라를 앞세워 유럽 메디컬 에스테틱 시장을 공략함."
     }
    ]
   },
@@ -113,35 +125,39 @@
    "items": [
     {
      "co": "큐렉소",
-     "ctx": "뉴스",
+     "ctx": "학회참가",
      "t": "큐렉소, 북미척추학회서 '큐비스-스파인' 소개",
      "src": "hitnews.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=79870"
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=79870",
+     "summary": "북미척추학회에서 척추수술로봇 큐비스-스파인을 소개함."
     },
     {
      "co": "큐렉소",
-     "ctx": "뉴스",
+     "ctx": "학회참가",
      "t": "큐렉소, 북미척추학회서 척추수술로봇 공개…북미 현지 입지 넓힌다",
      "src": "한국경제",
      "date": "2026-10-14",
-     "url": "https://www.hankyung.com/article/202610140257i"
+     "url": "https://www.hankyung.com/article/202610140257i",
+     "summary": "북미척추학회에서 척추수술로봇을 공개하고 북미 입지 확대에 나섬."
     },
     {
      "co": "고영",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "고영 0.55% 상승…검사장비 회복과 의료로봇 상용화 투트랙",
      "src": "job-post.co.kr",
      "date": "2026-10-13",
-     "url": "https://www.job-post.co.kr/news/articleView.html?idxno=232028"
+     "url": "https://www.job-post.co.kr/news/articleView.html?idxno=232028",
+     "summary": "검사장비 회복과 의료로봇 상용화 추진 속에 주가가 0.55% 상승함."
     },
     {
      "co": "리브스메드",
-     "ctx": "뉴스",
+     "ctx": "수술로봇",
      "t": "[더벨][리브스메드 수술로봇 도전기] 국내 1호 수술로봇 스타크, 핵심 경...",
      "src": "thebell.co.kr",
      "date": "2026-10-13",
-     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610081603569760109041"
+     "url": "https://www.thebell.co.kr/free/content/ArticleView.asp?key=202610081603569760109041",
+     "summary": "국내 1호 수술로봇 스타크의 핵심 경쟁력과 도전 과제를 조명함."
     }
    ]
   },
@@ -150,35 +166,39 @@
    "items": [
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "대외협력",
      "t": "'K-테크 싹쓸이 구상' 美 미시간 주지사, 현대차·SK하이닉스·HL만도 비...",
      "src": "theguru.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.theguru.co.kr/news/article.html?no=108199"
+     "url": "https://www.theguru.co.kr/news/article.html?no=108199",
+     "summary": "미국 미시간 주지사가 현대차 등 주요 국내 기술 기업을 방문함."
     },
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "경영성과",
      "t": "[정의선 6년①] 만년 5위서 글로벌 3위로…현대차그룹 체질 바꿨다",
      "src": "ngetnews.com",
      "date": "2026-10-14",
-     "url": "https://www.ngetnews.com/news/articleView.html?idxno=554437"
+     "url": "https://www.ngetnews.com/news/articleView.html?idxno=554437",
+     "summary": "정의선 회장 취임 6년 만에 글로벌 3위로 도약하며 체질을 개선함."
     },
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "경영현황",
      "t": "취임 6주년 정의선, 매출 300조에 ‘빅 3’ 굳혔지만… 위기론 여전",
      "src": "biz.chosun.com",
      "date": "2026-10-14",
-     "url": "https://biz.chosun.com/industry/car/2026/10/14/NA4SYE4FIZFPFIAHW4WWBG3DHA/?utm_source=naver&utm_medium=original&utm_campaign=biz"
+     "url": "https://biz.chosun.com/industry/car/2026/10/14/NA4SYE4FIZFPFIAHW4WWBG3DHA/?utm_source=naver&utm_medium=original&utm_campaign=biz",
+     "summary": "연매출 300조 돌파와 글로벌 3위 안착에도 위기론이 상존함."
     },
     {
      "co": "레인보우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "지분변동",
      "t": "[더나은미래 경제브리핑] 홍라희 관장, 이재용 회장에 삼성전자 지분 2...",
      "src": "futurechosun.com",
      "date": "2026-10-13",
-     "url": "https://futurechosun.com/?p=162871"
+     "url": "https://futurechosun.com/?p=162871",
+     "summary": "홍라희 관장이 이재용 회장에게 삼성전자 지분을 매각함."
     }
    ]
   },
@@ -187,11 +207,12 @@
    "items": [
     {
      "co": "두산로보틱스",
-     "ctx": "뉴스",
+     "ctx": "기술협력",
      "t": "피지컬 AI 표준화에 힘 모은 KAIST·16개 기업…해외 시장도 겨냥",
      "src": "it.chosun.com",
      "date": "2026-10-13",
-     "url": "https://it.chosun.com/news/articleView.html?idxno=2023092171947"
+     "url": "https://it.chosun.com/news/articleView.html?idxno=2023092171947",
+     "summary": "KAIST와 16개 기업이 피지컬 AI 표준화 및 해외 시장 진출에 협력함."
     }
    ]
   },
@@ -200,35 +221,39 @@
    "items": [
     {
      "co": "나우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "국정감사",
      "t": "신보, 투자·보증 모두 손실만 94건···\"사후 관리 철저히 점검해야\"",
      "src": "한국경제",
      "date": "2026-10-14",
-     "url": "https://magazine.hankyung.com/business/article/202610140223b"
+     "url": "https://magazine.hankyung.com/business/article/202610140223b",
+     "summary": "신용보증기금의 투자 및 보증 동시 손실 기업이 94건으로 나타남.\n부실 지원 기업에 대한 철저한 사후 관리 점검이 요구됨."
     },
     {
      "co": "나우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "국정감사",
      "t": "보증 서고 투자도 했는데…'둘 다 손실' 신보 지원기업 약 100곳",
      "src": "연합뉴스",
      "date": "2026-10-14",
-     "url": "https://www.yna.co.kr/view/AKR20261013171500002?input=1195m"
+     "url": "https://www.yna.co.kr/view/AKR20261013171500002?input=1195m",
+     "summary": "신보가 보증과 투자를 병행했으나 동반 손실을 낸 기업이 약 100곳에 달함."
     },
     {
      "co": "로보티즈",
-     "ctx": "뉴스",
+     "ctx": "대외협력",
      "t": "미시간경제개발공사-한국AI·로봇산업협회, 회원사 방문 북미 로봇생태...",
      "src": "irobotnews.com",
      "date": "2026-10-13",
-     "url": "https://www.irobotnews.com/news/articleView.html?idxno=48967"
+     "url": "https://www.irobotnews.com/news/articleView.html?idxno=48967",
+     "summary": "미시간경제개발공사와 한국AI·로봇산업협회가 회원사를 방문함.\n북미 로봇 생태계 협력 방안을 논의함."
     },
     {
      "co": "로보티즈",
-     "ctx": "뉴스",
+     "ctx": "주가",
      "t": "로보티즈 24만4500원…로봇 양산 기대 속 4.86% 조정",
      "src": "job-post.co.kr",
      "date": "2026-10-13",
-     "url": "https://www.job-post.co.kr/news/articleView.html?idxno=231974"
+     "url": "https://www.job-post.co.kr/news/articleView.html?idxno=231974",
+     "summary": "로봇 양산 기대감이 지속되는 가운데 주가가 4.86% 조정받음."
     }
    ]
   },
@@ -237,19 +262,21 @@
    "items": [
     {
      "co": "시지바이오, 씨젠",
-     "ctx": "뉴스",
+     "ctx": "인허가",
      "t": "시지바이오, ‘페이스템’ 대만 TFDA 품목허가 획득",
      "src": "메디게이트뉴스",
      "date": "2026-10-13",
-     "url": "https://www.medigatenews.com/news/1972076855"
+     "url": "https://www.medigatenews.com/news/1972076855",
+     "summary": "시지바이오가 페이스템의 대만 TFDA 품목허가를 획득했음."
     },
     {
      "co": "시지바이오",
-     "ctx": "뉴스",
+     "ctx": "사업전략",
      "t": "의료∙바이오 사업화, 검증과 현장 네트워크에 무게",
      "src": "kdfnews.com",
      "date": "2026-10-13",
-     "url": "http://www.kdfnews.com/news/articleView.html?idxno=189233"
+     "url": "http://www.kdfnews.com/news/articleView.html?idxno=189233",
+     "summary": "의료·바이오 사업화에서 검증과 현장 네트워크의 중요성이 강조됨."
     }
    ]
   },
@@ -258,27 +285,30 @@
    "items": [
     {
      "co": "에스디바이오센서",
-     "ctx": "뉴스",
+     "ctx": "IPO",
      "t": "7·8월 적자 전환, 해외 성과 미미…IPO 앞둔 인텔리빅스 과제 산적",
      "src": "bloter.net",
      "date": "2026-10-14",
-     "url": "https://www.bloter.net/news/articleView.html?idxno=675505"
+     "url": "https://www.bloter.net/news/articleView.html?idxno=675505",
+     "summary": "인텔리빅스가 7·8월 적자 전환 및 해외 성과 부진 등 과제를 안고 있음."
     },
     {
      "co": "씨젠, 바디텍메드, 지노믹트리",
-     "ctx": "뉴스",
+     "ctx": "시장동향",
      "t": "진단키트 수요 둔화 우려에 차익 매물 출회… 실적 차별화 장세",
      "src": "pinpointnews.co.kr",
      "date": "2026-10-13",
-     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=494746"
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=494746",
+     "summary": "진단키트 수요 둔화 우려에 따른 차익 매물로 실적 차별화 장세가 나타남."
     },
     {
      "co": "바디텍메드",
-     "ctx": "뉴스",
+     "ctx": "파트너십",
      "t": "한림대, 바디텍메드·코어시큐리티와 AX대학원 업무협약 체결",
      "src": "kyosu.net",
      "date": "2026-10-13",
-     "url": "https://www.kyosu.net/news/articleView.html?idxno=211203"
+     "url": "https://www.kyosu.net/news/articleView.html?idxno=211203",
+     "summary": "한림대가 바디텍메드 및 코어시큐리티와 AX대학원 업무협약을 체결함."
     }
    ]
   },
@@ -287,11 +317,12 @@
    "items": [
     {
      "co": "지노믹트리",
-     "ctx": "뉴스",
+     "ctx": "시장진입",
      "t": "지노믹트리 방광암 검사, 비급여 검사 서비스 제공길 열렸다",
      "src": "hellodd.com",
      "date": "2026-10-13",
-     "url": "http://www.hellodd.com/news/articleView.html?idxno=113483"
+     "url": "http://www.hellodd.com/news/articleView.html?idxno=113483",
+     "summary": "지노믹트리의 방광암 비급여 검사 서비스 제공 길이 열렸음."
     }
    ]
   },
@@ -300,43 +331,39 @@
    "items": [
     {
      "co": "아이센스",
-     "ctx": "뉴스",
+     "ctx": "공급계약",
      "t": "김한신 프리시젼 대표 “북미 검사기 연내 130대 공급, 설치 확대+카트...",
      "src": "이데일리",
      "date": "2026-10-14",
-     "url": "https://www.edaily.co.kr/News/Read?newsId=02305846645612920&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article"
+     "url": "https://www.edaily.co.kr/News/Read?newsId=02305846645612920&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+     "summary": "프리시젼바이오가 연내 북미 검사기 130대 공급을 추진함."
     },
     {
      "co": "로킷헬스케어",
-     "ctx": "뉴스",
+     "ctx": "기업이슈",
      "t": "[N2 뷰] 탈모 강조한 로킷헬스케어, 주가 방어용 가성비 기획 의구심",
      "src": "news2day.co.kr",
      "date": "2026-10-14",
-     "url": "https://www.news2day.co.kr/article/20261013500233"
+     "url": "https://www.news2day.co.kr/article/20261013500233",
+     "summary": "로킷헬스케어가 탈모 치료 기술을 강조하며 주가 방어 의구심이 제기됨."
     },
     {
      "co": "아이센스",
-     "ctx": "뉴스",
+     "ctx": "해외전시",
      "t": "의료기기협회, 남아공 'WHX 2026'서 K-의료기기 저력 입증",
      "src": "bosa.co.kr",
      "date": "2026-10-13",
-     "url": "https://www.bosa.co.kr/news/articleView.html?idxno=3013839"
+     "url": "https://www.bosa.co.kr/news/articleView.html?idxno=3013839",
+     "summary": "의료기기협회가 남아공 WHX 2026에서 K-의료기기 저력을 입증함."
     },
     {
      "co": "아이센스",
-     "ctx": "뉴스",
+     "ctx": "해외전시",
      "t": "한국의료기기산업협회, 남아공 ‘WHX 요하네스버그 2026’ 한국관 운영...",
      "src": "메디게이트뉴스",
      "date": "2026-10-13",
-     "url": "https://www.medigatenews.com/news/982228981"
-    },
-    {
-     "co": "넥스트바이오메디컬",
-     "ctx": "뉴스",
-     "t": "[52주] 최고가 3개, 최저가 121개...코스피 4%대 급락",
-     "src": "itooza.com",
-     "date": "2026-10-13",
-     "url": "https://www.itooza.com/common/iview.php?no=2026101309340104970"
+     "url": "https://www.medigatenews.com/news/982228981",
+     "summary": "한국의료기기산업협회가 남아공 WHX 2026에서 한국관을 운영함."
     }
    ]
   },
@@ -345,19 +372,21 @@
    "items": [
     {
      "co": "디오",
-     "ctx": "뉴스",
+     "ctx": "실적",
      "t": "디오, 영업이익률 10% 근접…차세대 임플란트 해외 공략 확대",
      "src": "medipana.com",
      "date": "2026-10-14",
-     "url": "https://www.medipana.com/news/articleView.html?idxno=419229"
+     "url": "https://www.medipana.com/news/articleView.html?idxno=419229",
+     "summary": "디오가 영업이익률 10%에 근접하며 차세대 임플란트 해외 공략을 확대함."
     },
     {
      "co": "덴티움",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "[공시] 10월 14일, 코스피 상장사 54개 종목 자사주 매수 신청",
      "src": "newstnt.com",
      "date": "2026-10-13",
-     "url": "https://www.newstnt.com/news/articleView.html?idxno=722747"
+     "url": "https://www.newstnt.com/news/articleView.html?idxno=722747",
+     "summary": "10월 14일 코스피 상장사 54개 종목이 자사주 매수를 신청함."
     }
    ]
   }
