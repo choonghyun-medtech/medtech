@@ -336,11 +336,13 @@ def discover_fallback_models(client, primary):
         print(f"[WARN] 예비 모델 목록 조회 실패 ({e}) — 예비 모델 없이 진행", file=sys.stderr)
         return []
 
+    # 우선순위: 정식판 → lite(가벼운 모델 — 과부하를 피하는 게 목적이라 사람이 덜 몰리고 무료 한도도
+    # 보통 더 넉넉한 쪽을 먼저, 2026-10-14 최신 flash를 먼저 골랐다가 같이 503이었던 일로 변경) → 최신 버전.
     def rank(n):
         low = n.lower()
         unstable = any(x in low for x in ("preview", "exp", "latest"))
         ver = [int(x) for x in re.findall(r"\d+", low.split("flash")[0])] or [0]
-        return (unstable, [-v for v in ver], "lite" in low, n)
+        return (unstable, "lite" not in low, [-v for v in ver], n)
     return sorted(set(names), key=rank)
 
 
@@ -360,6 +362,9 @@ class GeminiFallbackProvider:
         self.discovered = False
         self._providers = {}
         self.exhausted, self.busy, self.dead = set(), set(), set()
+        # 503 재시도를 이미 한 모델 — 호출마다가 아니라 이번 실행 전체에서 모델당 1번만(2026-10-14:
+        # 호출마다 초기화돼서 예비 모델을 3번 부른 일이 있었음).
+        self.retried_503 = set()
 
     def _provider(self, ki, model):
         if (ki, model) not in self._providers:
@@ -389,7 +394,7 @@ class GeminiFallbackProvider:
         return None
 
     def call(self, *args, **kwargs):
-        retried_503 = set()
+        retried_503 = self.retried_503
         last_quota_error = None
         current = None
         while True:
