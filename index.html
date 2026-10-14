@@ -686,7 +686,7 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h" style="margin-top:20px"><h2>주요 지표 요약</h2><span class="note">이 탭의 현재 필터·제외 설정이 반영된 결과 기준</span></div>
       <div class="cards" id="gd-analysis-cards"></div>
 
-      <div class="sec-h" style="margin-top:20px"><h2>선택 기업 주가 추이</h2><span class="note" id="gd-trend-note">위 필터(국가·섹터·시총·검색)에 걸린 기업 기준</span></div>
+      <div class="sec-h" style="margin-top:20px"><h2>선택 기업 상대 성과</h2><span class="note" id="gd-trend-note">기간 시작 시총 = 100 · 위 필터(국가·섹터·시총·검색)에 걸린 기업 기준</span></div>
       <div id="gd-trend-wrap"></div>
     </div>
 
@@ -717,7 +717,7 @@ tr:last-child td{border-bottom:none}
       <details class="gd-msel" id="flowmap-sector-msel">
         <summary id="flowmap-sector-summary">섹터 전체</summary>
         <div class="gd-msel-panel">
-          <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+          <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
           <div id="flowmap-sector-options"></div>
         </div>
       </details>
@@ -1066,7 +1066,10 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h"><h2>리서치 보고서</h2><span class="note" id="rep-source-note">미래에셋증권</span></div>
 
     <div class="sec-h"><h2>추적 기업</h2><span class="note">섹터를 고른 뒤 기업을 선택하면 해당 리포트만 필터 ·<a href="#" id="rep-reset-link" style="color:var(--accent);text-decoration:none;font-weight:600">전체 보기</a></span></div>
-    <div id="rep-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;margin-bottom:12px">
+      <div id="rep-dropdown-wrap" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <input id="rep-search" class="filter-select" type="search" placeholder="기업명·키워드 검색 (제목·코멘트)" autocomplete="off" style="min-width:220px">
+    </div>
 
     <div class="card">
       <div id="rep-company-detail"></div>
@@ -1079,6 +1082,7 @@ tr:last-child td{border-bottom:none}
     <div class="sec-h" style="margin-top:24px"><h2>바이오/로보틱스</h2><span class="note">김승민·서미화·박선영 애널리스트 발간분</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
       <div id="bio-author-tabs" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <input id="bio-search" class="filter-select" type="search" placeholder="기업명·키워드 검색 (제목)" autocomplete="off" style="min-width:220px">
       <span class="note" id="bio-source-note"></span>
     </div>
     <div id="bio-table-wrap"></div>
@@ -1132,7 +1136,7 @@ tr:last-child td{border-bottom:none}
         <details class="gd-msel" id="rev-sector-msel">
           <summary id="rev-sector-summary">섹터 전체</summary>
           <div class="gd-msel-panel">
-            <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+            <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
             <div id="rev-sector-options"></div>
           </div>
         </details>
@@ -1177,7 +1181,7 @@ tr:last-child td{border-bottom:none}
         <details class="gd-msel" id="sup-sector-msel">
           <summary id="sup-sector-summary">섹터 전체</summary>
           <div class="gd-msel-panel">
-            <div class="gd-msel-actions"><a data-act="none">선택 해제(전체 보기)</a></div>
+            <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
             <div id="sup-sector-options"></div>
           </div>
         </details>
@@ -2996,11 +3000,13 @@ document.getElementById('flowmap-quadrant-filter').addEventListener('change', e 
   flowMapFilters.quadrant = e.target.value;
   renderFlowMap();
 });
-document.querySelector('#flowmap-sector-msel .gd-msel-actions a').addEventListener('click', () => {
-  flowMapFilters.sectors = new Set();
+document.querySelectorAll('#flowmap-sector-msel .gd-msel-actions a').forEach(a => a.addEventListener('click', () => {
+  flowMapFilters.sectors = a.dataset.act === 'all'
+    ? new Set([...document.querySelectorAll('#flowmap-sector-options input[data-sector]')].map(cb => cb.dataset.sector))
+    : new Set();
   populateFlowMapSectorFilter();
   renderFlowMap();
-});
+}));
 document.getElementById('flowmap-reset-link').addEventListener('click', e => {
   e.preventDefault();
   flowMapFilters = { search: '', quadrant: 'all', sectors: new Set() };
@@ -3476,7 +3482,7 @@ let GD_LOADED = false;
 
 let GD_STATE = {
   activeTab: 'ALL',
-  tabState: {}, // tabId -> {countries:Set, sectors:Set, currency, capMin, capMax, excluded:Set, search}
+  tabState: {}, // tabId -> {countries:Set, sectors:Set, currency, capBuckets:Set, excluded:Set, search}
 };
 
 function gdMakeDefaultTabState(){
@@ -3484,14 +3490,14 @@ function gdMakeDefaultTabState(){
     countries: new Set(['대한민국']), // 디폴트: 한국만(2026-09-15 요청)
     sectors: new Set(), // ALL 탭에서만 사용(빈 값=전체)
     currency: 'krw',
-    capMin: null,
-    capMax: null,
+    capBuckets: new Set(), // 시총 구간(gdBuildCapBuckets 인덱스) 복수 선택 — 비우면 전체(2026-10-14)
     excluded: new Set(),
     search: '',
     sortKey: null, // 첫 번째 열(사명) 클릭 정렬 — 2026-09-16 요청
     sortDir: 1, // 1=오름차순, -1=내림차순
     trendPeriod: '1Y', // 선택 기업 주가 추이 기간
     trendOn: null,     // 차트에 켠 기업 사명 Set — null이면 "시총 상위 GD_TREND_DEFAULT_N개" 기본값
+    trendPreset: null, // 'tb' = 기간 수익률 Top5·Bottom5 자동 선정(기간 바꾸면 재선정, 칩을 누르면 해제)
     trendHl: null,     // 칩 더블클릭으로 강조한 기업 사명
     trendShowAll: false, // 칩 목록 "더보기" 펼침 여부
   };
@@ -3662,8 +3668,14 @@ function gdRenderFilterBar(){
       </select>
     </div>
     <div class="gd-filter-group">
-      <span class="gd-filter-label">시가총액 구간</span>
-      <select id="gd-cap-range-select" class="filter-select"></select>
+      <span class="gd-filter-label">시가총액 구간 (복수 선택, 비우면 전체)</span>
+      <details class="gd-msel" id="gd-cap-msel">
+        <summary id="gd-cap-summary">전체 구간</summary>
+        <div class="gd-msel-panel">
+          <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
+          <div id="gd-cap-options"></div>
+        </div>
+      </details>
     </div>
     <div class="gd-filter-group">
       <span class="gd-filter-label">기업명 검색</span>
@@ -3680,9 +3692,16 @@ function gdRenderFilterBar(){
 
   gdBuildCountryOptions(ts);
   if(isAll) gdBuildSectorOptions(ts);
-  gdBuildCapSelect(ts);
+  gdBuildCapOptions(ts);
 
-  document.getElementById('gd-currency-select').onchange = (e)=>{ ts.currency = e.target.value; gdBuildCapSelect(ts); gdRender(); };
+  // 화폐를 바꾸면 구간 라벨(1조원/3억달러 등)만 바뀌고 구간 인덱스 구조는 같아 선택은 유지한다.
+  document.getElementById('gd-currency-select').onchange = (e)=>{ ts.currency = e.target.value; gdBuildCapOptions(ts); gdRender(); };
+  document.querySelectorAll('#gd-cap-msel .gd-msel-actions a').forEach(a=>{
+    a.onclick = ()=>{
+      ts.capBuckets = a.dataset.act === 'all' ? new Set(gdBuildCapBuckets(ts.currency).map((_,i)=>i)) : new Set();
+      gdBuildCapOptions(ts); gdRender();
+    };
+  });
   document.getElementById('gd-name-search').oninput = (e)=>{ ts.search = e.target.value.trim().toLowerCase(); gdRender(); };
   document.getElementById('gd-reset-link').onclick = ()=>{
     GD_STATE.tabState[GD_STATE.activeTab] = gdMakeDefaultTabState();
@@ -3748,17 +3767,38 @@ function gdUpdateSectorSummary(ts){
   s.textContent = n === 0 ? '섹터 전체' : n === 1 ? Array.from(ts.sectors)[0] : `${Array.from(ts.sectors)[0]} 외 ${n-1}개`;
 }
 
-function gdBuildCapSelect(ts){
-  const sel = document.getElementById('gd-cap-range-select');
+// 시총 구간 — 2026-10-14 사수 피드백으로 단일 선택 드롭다운에서 국가/섹터와 같은 복수 선택
+// 체크박스(전체 선택/해제 포함)로 변경. 선택한 구간 중 하나라도 걸리면 통과(비우면 전체).
+function gdBuildCapOptions(ts){
+  const wrap = document.getElementById('gd-cap-options');
   const buckets = gdBuildCapBuckets(ts.currency);
-  sel.innerHTML = `<option value="">전체 구간</option>` + buckets.map((b,i)=>`<option value="${i}">${b.label}</option>`).join('');
-  sel.value = '';
-  ts.capMin = null; ts.capMax = null;
-  sel.onchange = (e)=>{
-    if(e.target.value === ''){ ts.capMin = null; ts.capMax = null; }
-    else { const b = gdBuildCapBuckets(ts.currency)[+e.target.value]; ts.capMin = b.min; ts.capMax = b.max; }
-    gdRender();
-  };
+  wrap.innerHTML = buckets.map((b,i) => `
+    <label class="gd-msel-row"><input type="checkbox" data-cap="${i}" ${ts.capBuckets.has(i)?'checked':''}> ${escapeHtml(b.label)}</label>
+  `).join('');
+  wrap.querySelectorAll('input[data-cap]').forEach(cb=>{
+    cb.onchange = ()=>{
+      const i = +cb.dataset.cap;
+      if(cb.checked) ts.capBuckets.add(i); else ts.capBuckets.delete(i);
+      gdUpdateCapSummary(ts); gdRender();
+    };
+  });
+  gdUpdateCapSummary(ts);
+}
+function gdUpdateCapSummary(ts){
+  const s = document.getElementById('gd-cap-summary');
+  const buckets = gdBuildCapBuckets(ts.currency);
+  const picked = [...ts.capBuckets].sort((a,b)=>a-b).map(i => buckets[i] && buckets[i].label).filter(Boolean);
+  s.textContent = !picked.length || picked.length === buckets.length ? '전체 구간'
+    : picked.length === 1 ? picked[0] : `${picked[0]} 외 ${picked.length-1}개`;
+}
+function gdCapPass(r, ts){
+  if(!ts.capBuckets.size) return true;
+  if(r.mktcap === null || r.mktcap === undefined) return false;
+  const buckets = gdBuildCapBuckets(ts.currency);
+  return [...ts.capBuckets].some(i => {
+    const b = buckets[i];
+    return b && (b.min === null || r.mktcap >= b.min) && (b.max === null || r.mktcap <= b.max);
+  });
 }
 
 function gdGetFilteredForActiveTab(){
@@ -3770,8 +3810,7 @@ function gdGetFilteredForActiveTab(){
     if(!isAll && !(r.sectors||[]).includes(tabId)) return false;
     if(ts.countries.size && !ts.countries.has(r.country)) return false;
     if(isAll && ts.sectors.size && !(r.sectors||[]).some(s=> ts.sectors.has(s))) return false;
-    if(ts.capMin !== null && (r.mktcap === null || r.mktcap < ts.capMin)) return false;
-    if(ts.capMax !== null && (r.mktcap === null || r.mktcap > ts.capMax)) return false;
+    if(!gdCapPass(r, ts)) return false;
     if(ts.search){
       const hay = (r.name + ' ' + (r.ticker||'')).toLowerCase();
       if(!hay.includes(ts.search)) return false;
@@ -4011,6 +4050,7 @@ function gdRenderAnalysis(rows, currency){
 // (tickers.json이 global_dashboard.json 사명을 그대로 가져오므로 — sync_ticker_universe.py).
 // 기본은 시총 상위 10개만 켜고, 칩을 눌러 기업을 켜고 끈다.
 const GD_TREND_DEFAULT_N = 10;
+const GD_TREND_TB_N = 5; // "Top5·Bottom5" 버튼 — 기간 수익률 상위/하위 각 5개(2026-10-14)
 const GD_TREND_CHIP_PREVIEW = 20; // 칩은 켜진 기업 + 시총 상위 20개만 보이고 나머지는 "더보기"로 접는다
 const GD_TREND_PERIODS = [
   {key:'5D', label:'5일'}, {key:'1M', label:'1개월'}, {key:'3M', label:'3개월'},
@@ -4059,17 +4099,34 @@ function gdRenderTrend(rows, currency){
   }
   const colorOf = {};
   cands.forEach((r,i) => colorOf[r.name] = GD_TREND_COLORS[i % GD_TREND_COLORS.length]);
-  // trendOn: null → 기본(상위 N) · 빈 Set → 사용자가 "전체 끄기" · 그 외 → 고른 기업.
+  // 칩 수익률·Top/Bottom 선정용 기준일 — 후보 전체의 날짜축 기준(켜진 기업과 무관하게 고정)
+  const axisCands = Array.from(new Set(cands.flatMap(r => byName[r.name].price_history.dates))).sort();
+  const chipStart = gdTrendStartDate(axisCands, ts.trendPeriod);
+  const chipRet = name => {
+    const ph = byName[name].price_history;
+    let b = null; ph.dates.forEach((d,i) => { if(d <= chipStart) b = ph.close[i]; });
+    if(b == null) b = ph.close.find((v,i) => ph.dates[i] >= chipStart);
+    const l = ph.close[ph.close.length-1];
+    return b ? (l / b - 1) * 100 : null;
+  };
+
+  // trendPreset 'tb' → 기간 수익률 상위 GD_TREND_TB_N + 하위 GD_TREND_TB_N(기간을 바꾸면 다시 선정).
+  // trendOn: null → 기본(시총 상위 N) · 빈 Set → 사용자가 "전체 끄기" · 그 외 → 고른 기업.
   // 필터를 바꿔 고른 기업이 하나도 안 남으면 기본값으로 돌아간다.
-  const explicitNone = ts.trendOn && ts.trendOn.size === 0;
-  let on = ts.trendOn ? cands.filter(r => ts.trendOn.has(r.name)) : [];
-  if(!explicitNone && !on.length) on = cands.slice(0, GD_TREND_DEFAULT_N);
+  let on;
+  if(ts.trendPreset === 'tb'){
+    const ranked = cands.map(r => ({r, v: chipRet(r.name)})).filter(x => x.v != null).sort((a,b) => b.v - a.v);
+    const pick = [...ranked.slice(0, GD_TREND_TB_N), ...ranked.slice(-GD_TREND_TB_N)].map(x => x.r.name);
+    on = cands.filter(r => pick.includes(r.name));
+  } else {
+    const explicitNone = ts.trendOn && ts.trendOn.size === 0;
+    on = ts.trendOn ? cands.filter(r => ts.trendOn.has(r.name)) : [];
+    if(!explicitNone && !on.length) on = cands.slice(0, GD_TREND_DEFAULT_N);
+  }
   const onSet = new Set(on.map(r => r.name));
 
-  // 켠 기업들의 날짜 합집합 축(시장별 휴장일이 달라서) → 기간 슬라이스. 다 꺼져 있으면
-  // 칩 수익률 계산용으로 후보 전체의 날짜축을 쓴다.
-  const axisSrc = on.length ? on : cands;
-  const axisAll = Array.from(new Set(axisSrc.flatMap(r => byName[r.name].price_history.dates))).sort();
+  // 켠 기업들의 날짜 합집합 축(시장별 휴장일이 달라서) → 기간 슬라이스
+  const axisAll = on.length ? Array.from(new Set(on.flatMap(r => byName[r.name].price_history.dates))).sort() : axisCands;
   const start = gdTrendStartDate(axisAll, ts.trendPeriod);
   const axis = axisAll.filter(d => d >= start);
 
@@ -4092,15 +4149,6 @@ function gdRenderTrend(rows, currency){
     return { name: r.name, color: colorOf[r.name], caps, rel, ret, market: s.market };
   });
 
-  // 칩용 기간 수익률은 꺼진 기업도 보여주기 위해 따로 계산(같은 기준일)
-  const chipRet = name => {
-    const ph = byName[name].price_history;
-    let b = null; ph.dates.forEach((d,i) => { if(d <= start) b = ph.close[i]; });
-    if(b == null) b = ph.close.find((v,i) => ph.dates[i] >= start);
-    const l = ph.close[ph.close.length-1];
-    return b ? (l / b - 1) * 100 : null;
-  };
-
   const total = axis.map((_,i) => series.reduce((acc,s) => acc + (s.caps[i] || 0), 0));
   const totalRel = total.map(v => total[0] ? v / total[0] * 100 : null);
   const unit = gdCurrencyUnitLabel(currency);
@@ -4111,7 +4159,8 @@ function gdRenderTrend(rows, currency){
       <div style="display:flex; gap:6px; flex-wrap:wrap">${GD_TREND_PERIODS.map(p =>
         `<button class="gd-tab-btn ${p.key===ts.trendPeriod?'active':''}" data-period="${p.key}">${p.label}</button>`).join('')}</div>
       <span class="note">${onSet.size}/${cands.length}개사 표시 · 칩을 눌러 켜기/끄기</span>
-      <a class="gd-reset-link" id="gd-trend-top">시총 상위 ${GD_TREND_DEFAULT_N}개</a>
+      <a class="gd-reset-link" id="gd-trend-top" style="${!ts.trendPreset && !ts.trendOn ? 'font-weight:700' : ''}">시총 상위 ${GD_TREND_DEFAULT_N}개</a>
+      <a class="gd-reset-link" id="gd-trend-tb" style="${ts.trendPreset==='tb' ? 'font-weight:700' : ''}" title="선택한 기간의 수익률 상위 ${GD_TREND_TB_N}개 + 하위 ${GD_TREND_TB_N}개 (기간을 바꾸면 다시 선정)">Top${GD_TREND_TB_N}·Bottom${GD_TREND_TB_N}</a>
       <a class="gd-reset-link" id="gd-trend-all">전체 켜기</a>
       <a class="gd-reset-link" id="gd-trend-none">전체 끄기</a>
     </div>
@@ -4128,7 +4177,7 @@ function gdRenderTrend(rows, currency){
                              : `<a class="gd-reset-link" id="gd-trend-more">+${hidden}개 더보기</a>`;
     })()}</div>
     ${!series.length ? `<div class="card note">위 칩에서 차트에 표시할 기업을 골라주세요.</div>` : `<div class="gd-trend-grid">
-      <div><h3>상대 성과 (기간 시작 시총 = 100)</h3><div class="chart-box"><canvas id="gdTrendRelChart"></canvas></div></div>
+      <div><div class="chart-box"><canvas id="gdTrendRelChart"></canvas></div></div>
     </div>
     <div class="note" style="margin-top:4px">기간 ${axis[0]} ~ ${axis[axis.length-1]} · 현지통화 주가 기준(환율 효과 제외) · 굵은 점선 = 표시 기업 합산(시총가중, 과거 시총은 현재 시총 × 그날 종가 ÷ 최신 종가로 역산)${noPrice.length ? ` · 주가 데이터 없음: ${noPrice.map(escapeHtml).join(', ')}` : ''}</div>`}
   `;
@@ -4154,8 +4203,9 @@ function gdRenderTrend(rows, currency){
   if(gdTrendRelChart){ gdTrendRelChart.destroy(); gdTrendRelChart = null; }
   const bindEvents = () => {
     wrap.querySelectorAll('[data-period]').forEach(b => b.onclick = () => { ts.trendPeriod = b.dataset.period; gdRenderTrend(rows, currency); });
-    const setOn = names => { ts.trendOn = new Set(names); gdRenderTrend(rows, currency); };
-    document.getElementById('gd-trend-top').onclick = () => { ts.trendOn = null; ts.trendHl = null; gdRenderTrend(rows, currency); };
+    const setOn = names => { ts.trendOn = new Set(names); ts.trendPreset = null; gdRenderTrend(rows, currency); };
+    document.getElementById('gd-trend-top').onclick = () => { ts.trendOn = null; ts.trendPreset = null; ts.trendHl = null; gdRenderTrend(rows, currency); };
+    document.getElementById('gd-trend-tb').onclick = () => { ts.trendPreset = 'tb'; ts.trendHl = null; gdRenderTrend(rows, currency); };
     document.getElementById('gd-trend-all').onclick = () => setOn(cands.map(r => r.name));
     document.getElementById('gd-trend-none').onclick = () => { ts.trendHl = null; setOn([]); };
     const more = document.getElementById('gd-trend-more');
@@ -6881,9 +6931,31 @@ function renderPager(containerId, page, totalPages, onChange){
   });
 }
 
+// 리서치 보고서 검색(2026-10-14 사수 피드백) — 김충현 보고서·바이오/로보틱스 보고서 표 각각에
+// 검색창. 회사명(별칭/표기명 포함)·제목·텔레그램 코멘트를 대상으로, 공백으로 나눈 단어가 모두
+// 들어간 리포트만 남긴다(AND). 기존 기업/섹터/애널리스트 필터와 함께 적용된다.
+let repSearchQuery = '', bioSearchQuery = '';
+function reportMatchesQuery(r, q){
+  if(!q) return true;
+  const tg = findTelegramComment(r.co, r.d);
+  const hay = [r.co, companyLabel(r.co), r.code, String(r.t || '').replace(/<[^>]+>/g, ' '),
+               r.author, tg && tg.comment_clean].filter(Boolean).join(' ').toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(w => hay.includes(w));
+}
+(function(){
+  const bind = (id, apply) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    let t = null;
+    el.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => apply(el.value.trim()), 200); });
+  };
+  bind('rep-search', q => { repSearchQuery = q; repPage = 1; renderReports(selectedRepCompany || '전체'); });
+  bind('bio-search', q => { bioSearchQuery = q; bioPage = 1; renderBioReports(bioAuthorFilter); });
+})();
+
 function renderReports(filterCo){
   filterCo = filterCo || '전체';
-  const rows = REPORTS.filter(r => filterCo==='전체' || r.co===filterCo);
+  const rows = REPORTS.filter(r => (filterCo==='전체' || r.co===filterCo) && reportMatchesQuery(r, repSearchQuery));
   const totalPages = Math.max(1, Math.ceil(rows.length / REP_PAGE_SIZE));
   if(repPage > totalPages) repPage = totalPages;
   const start = (repPage - 1) * REP_PAGE_SIZE;
@@ -6898,6 +6970,9 @@ function renderReports(filterCo){
     const pdfLink = r.pdf ? `<a href="${pdfUrl}" target="_blank" rel="noopener" class="rep-pdf-link">PDF ↗</a>` : '—';
     html += `<tr><td>${r.d}</td><td>${repCompanyCellHtml(r.co, r.code)}</td><td><div class="rep-title-cell">${r.t}${telegramCommentBlockHtml(r.co, r.d)}</div></td><td>${opBadge}</td><td>${pdfLink}</td></tr>`;
   });
+  if(!displayRows.length && repSearchQuery){
+    html += `<tr><td colspan="5" class="note" style="padding:14px">"${escapeHtml(repSearchQuery)}" 검색 결과가 없습니다.</td></tr>`;
+  }
   html += '</tbody></table>';
   wrap.innerHTML = html;
   refreshTgCommentToggles(wrap);
@@ -8157,13 +8232,13 @@ let bioPage = 1;
 
 function renderBioReports(filterAuthor){
   filterAuthor = filterAuthor || '';
-  const rows = BIO_REPORTS.filter(r => !filterAuthor || r.author === filterAuthor);
+  const rows = BIO_REPORTS.filter(r => (!filterAuthor || r.author === filterAuthor) && reportMatchesQuery(r, bioSearchQuery));
   const wrap = document.getElementById('bio-table-wrap');
   if(!wrap) return;
   const totalPages = Math.max(1, Math.ceil(rows.length / REP_PAGE_SIZE));
   if(bioPage > totalPages) bioPage = totalPages;
   if(rows.length === 0){
-    wrap.innerHTML = '<div class="card note">표시할 바이오/로보틱스 리포트가 없습니다.</div>';
+    wrap.innerHTML = `<div class="card note">${bioSearchQuery ? `"${escapeHtml(bioSearchQuery)}" 검색 결과가 없습니다.` : '표시할 바이오/로보틱스 리포트가 없습니다.'}</div>`;
     renderPager('bio-pager', 1, 1, ()=>{});
   } else {
     const start = (bioPage - 1) * REP_PAGE_SIZE;
@@ -8653,11 +8728,14 @@ function revRunSearch(input){
     populateRevSectorFilter(); // 섹터별 종목 수가 지역에 따라 달라서 다시 센다
     renderRevision();
   });
-  document.querySelector('#rev-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
-    REV_STATE.sectors = new Set();
+  // 전체 선택 = 지금 목록에 보이는 섹터를 모두 체크 / 전체 해제 = 섹터 필터 없음(전체 보기)
+  document.querySelectorAll('#rev-sector-msel .gd-msel-actions a').forEach(a=>a.addEventListener('click', ()=>{
+    REV_STATE.sectors = a.dataset.act === 'all'
+      ? new Set([...document.querySelectorAll('#rev-sector-options input[data-sector]')].map(cb=>cb.dataset.sector))
+      : new Set();
     populateRevSectorFilter();
     renderRevision();
-  });
+  }));
   document.getElementById('rev-min-coverage').addEventListener('change', e=>{ REV_STATE.minCov = e.target.checked; renderRevision(); });
   // 자동완성 항목 선택·포커스 이동(change)과 Enter 둘 다로 검색한다.
   const searchInput = document.getElementById('rev-search-input');
@@ -9012,11 +9090,13 @@ function updateSupSectorSummary(){
     SUP_STATE.sort = b.dataset.sort;
     renderSurprise();
   }));
-  document.querySelector('#sup-sector-msel .gd-msel-actions a').addEventListener('click', ()=>{
-    SUP_STATE.sectors = new Set();
+  document.querySelectorAll('#sup-sector-msel .gd-msel-actions a').forEach(a=>a.addEventListener('click', ()=>{
+    SUP_STATE.sectors = a.dataset.act === 'all'
+      ? new Set([...document.querySelectorAll('#sup-sector-options input[data-sector]')].map(cb=>cb.dataset.sector))
+      : new Set();
     populateSupSectorFilter();
     renderSurprise();
-  });
+  }));
   const btn = document.querySelector('#reports-subtabs [data-sub="surprise"]');
   if(btn) btn.addEventListener('click', ()=> setTimeout(renderSurprise, 0)); // 숨겨진 상태에서 그린 차트 크기 보정
 })();
