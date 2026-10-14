@@ -193,9 +193,12 @@ def build_category_facts(cat):
             extra += f", 전년동월대비 {fmt_pct(top_region_stats['yoy_pct'])}"
         else:
             extra += " (전년동월 비교 불가·데이터 축적 중)"
+        # [2026-10-14] byRegion(시군구별 API)은 "천달러" 단위로 저장돼 있다(scrape_export_data.py
+        # fetch_sigungu_breakdown 주석 참고) — 달러로 보고 표기하던 탓에 "5,934달러"처럼 1000배
+        # 작게 서술되던 버그 수정(실제 5,934천달러 = 593.4만 달러).
         lines.append(
             f"- 지역별(기업 추정 프록시) {top_region}: {top_region_stats['latest_ym']} "
-            f"{fmt_usd(top_region_stats['latest_value'])}{extra}" + (f", {rank_txt}" if rank_txt else "")
+            f"{fmt_usd(top_region_stats['latest_value'] * 1000)}{extra}" + (f", {rank_txt}" if rank_txt else "")
         )
 
     if not lines:

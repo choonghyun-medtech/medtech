@@ -81,8 +81,8 @@
       2026-09-16 사용자 요청으로 하나의 "체외진단" 카테고리(HS 3822.19, 지역 서울
       송파구+경기 수원시, companies 씨젠·바디텍메드·에스디바이오센서)로 통합함.
     · 체성분 분석기 : 9018198000 (2026-09-02 신규 추가 — 인바디)
-  홈뷰터(가정용 미용기기, HS 8543702020)는 2026-08-21에 사용자 확인으로 카테고리
-  목록에서 제외됨(index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음).
+    · 가정용 미용기기 : 8543702020 (2026-10-14 — 에이피알. 2026-08-21엔 제외했다가 재편입,
+      지역은 신고지 이전으로 경기 성남시~2024-04 + 서울 송파구 2024-05~를 이어 붙임)
   각 카테고리는 여러 HS코드를 합산할 수 있어 CATEGORIES 딕셔너리 값이 리스트다.
 
 - 시계열 길이: "최대한 길게" 요청에 맞춰 기본 시작월을 START_YYMM(2015-01)로 잡았다.
@@ -162,7 +162,9 @@ CATEGORIES = [
         "countries": [("US", "미국"), ("CN", "중국"), ("BR", "브라질"), ("TH", "태국"), ("JP", "일본")],
         # 2026-09-02 index.html EXPORT_CATEGORY_CONFIG 기준 추가(경기=41, 강원=51 이미
         # SIDO_CD_BY_NAME에 등록돼 있어 바로 실데이터 수집 가능).
-        "regions": ["경기 화성시", "강원 춘천시"],
+        # 2026-10-14: 충북 청주시(메디톡스 오창·오송) 추가. 지역 조회는 6자리(300249/300290)지만
+        # 실측상 청주시 300290은 2022년 이후 거의 0이라 섞임이 적다.
+        "regions": ["경기 화성시", "강원 춘천시", "충북 청주시"],
     },
     {
         "key": "device_medical",
@@ -337,10 +339,31 @@ CATEGORIES = [
         "europeCountries": [("DE", "독일"), ("IT", "이탈리아"), ("GB", "영국")],
         "regions": ["강원 원주시", "인천 연수구"],
     },
+    {
+        # 2026-10-14 추가(2026-08-21엔 제외했다가 사용자 요청으로 다시 편입) — 에이피알
+        # 가정용 미용기기(메디큐브 AGE-R). HSK 8543.70-2020("미용기기", 관세청 무역통계
+        # 품목 조회로 유효 코드 확인).
+        # 지역: 신고지가 2024-05에 경기 성남시 → 서울 송파구로 바뀌었다(무역통계 실측: 2024-05에
+        # 성남시 8543.70 수출이 월 2,035만→924만 달러로 꺾이고 같은 달 송파구가 161만→771만
+        # 달러로 뜀). regionStitch로 두 지역을 이어 붙여 "서울 송파구" 키 하나로 저장한다.
+        # ⚠️ 시군구 조회는 6자리(854370 "그 밖의 기기" 전체)만 가능해 다른 전자기기가 섞인다.
+        # 특히 성남시 구간(~2024-04)은 에이피알 기기 사업 이전인 2016년에도 월 350만 달러,
+        # 이전 후(2025~26)에도 월 1,000만 달러 안팎이 잡혀 비(非)에이피알 몫이 크다 — 이어 붙인
+        # 시계열의 2024-04 이전 수준은 과대 계상될 수 있다. 전국(10자리) 시계열이 더 깨끗한 지표.
+        "key": "home_device",
+        "label": "가정용 미용기기",
+        "hsCodes": ["8543702020"],
+        "companies": "에이피알",
+        "countries": [],
+        "regions": ["서울 송파구"],
+        "regionStitch": {
+            "서울 송파구": [
+                {"region": "경기 성남시", "until": "202404"},
+                {"region": "서울 송파구", "from": "202405"},
+            ],
+        },
+    },
 ]
-# home_device(홈뷰터, HS 8543702020)는 2026-08-21 사용자 확인으로 목록에서 제외됨
-# (index.html EXPORT_CATEGORY_CONFIG의 8개 품목에 없었음 — "셋 다 지금 업데이트된
-# 그대로 유지" 답변으로 확정).
 
 # 국가별은 최근 132개월(11년)만 롤링 수집(호출량 절약). index.html이 표시 구간 전체(최근
 # 10년=120개월)에 걸쳐 YoY를 그리려면 뒤쪽 12개월치도 전년동기 비교 대상이 수집 범위 안에
@@ -388,6 +411,10 @@ SIDO_CD_BY_NAME = {
     # 51이었으므로 인천도 표준코드와 다를 가능성이 있다 — 지혈재 지역별(인천 연수구)
     # 데이터가 계속 비어 있으면 이 코드부터 의심할 것.
     "인천": "28",
+    # [2026-10-14] 충북=43 — 관세청 무역통계(tradedata.go.kr) 지역별 실적 화면의 시도 코드표에서
+    # 직접 확인(서울 11/경기 41/인천 28/강원 51이 이 스크립트 값과 같은 체계임도 같이 확인).
+    # 청주시는 구(상당·서원·흥덕·청원) 단위가 아니라 "청주시" 하나로 집계된다.
+    "충북": "43",
 }
 SIGUNGU_BREAKDOWN_MONTHS = 132  # 국가별과 동일한 이유로 132개월(11년)로 늘림(위 COUNTRY_BREAKDOWN_MONTHS 주석 참고)
 
@@ -474,6 +501,43 @@ def aggregate_countries_as(by_country, country_names, agg_name):
     return {agg_name: sorted(({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"])}
 
 
+def region_fetch_list(cat):
+    """실제로 조회해야 하는 시군구 목록 = regions + regionStitch가 참조하는 원천 지역(중복 제거)."""
+    out = list(cat.get("regions", []))
+    for parts in (cat.get("regionStitch") or {}).values():
+        for p in parts:
+            if p["region"] not in out:
+                out.append(p["region"])
+    return out
+
+
+def apply_region_stitch(by_region, cat):
+    """regionStitch({표시 지역: [{region, from?, until?}, ...]})에 따라 기간별로 원천 지역의 월별
+    값을 골라 표시 지역 키 하나로 이어 붙인다(신고지가 바뀐 기업용 — 예: 에이피알 성남시→송파구,
+    2026-10-14). from/until은 YYYYMM, 양 끝 포함. 이어 붙이기에만 쓰인 보조 지역(regions에 없는
+    지역)은 결과에서 제거한다."""
+    stitch = cat.get("regionStitch") or {}
+    if not stitch:
+        return by_region
+    out = dict(by_region)
+    for target, parts in stitch.items():
+        merged = {}
+        for p in parts:
+            frm, until = p.get("from", "000000"), p.get("until", "999999")
+            for row in by_region.get(p["region"], []):
+                yymm = row["ym"].replace("-", "")
+                if frm <= yymm <= until:
+                    merged[row["ym"]] = row["expDlr"]
+        if merged:
+            out[target] = sorted(({"ym": ym, "expDlr": v} for ym, v in merged.items()), key=lambda r: r["ym"])
+        else:
+            out.pop(target, None)
+    for region in list(out):
+        if region not in cat.get("regions", []):
+            out.pop(region)
+    return out
+
+
 def fetch_config(cat):
     """이 카테고리의 조회 범위를 결정하는 설정 중 출력 파일에 다른 형태로는 남지 않는 값
     (조회 국가/유럽 합산 국가/시군구/기간별 HS코드/조회 개월 수)을 JSON 그대로 비교할 수 있는
@@ -484,6 +548,7 @@ def fetch_config(cat):
         "countries": cat.get("countries", []),
         "europeCountries": cat.get("europeCountries", []),
         "regions": cat.get("regions", []),
+        "regionStitch": cat.get("regionStitch"),
         "hsCodesByPeriod": cat.get("hsCodesByPeriod"),
         "countryMonths": COUNTRY_BREAKDOWN_MONTHS,
         "sigunguMonths": SIGUNGU_BREAKDOWN_MONTHS,
@@ -845,9 +910,10 @@ def main():
                 by_country.pop(name, None)
             by_country.update(europe_agg)
         by_region = merge_breakdown_dicts(*[
-            fetch_sigungu_breakdown(service_key, hs, cat.get("regions", []), s, e, debug=args.debug)
+            fetch_sigungu_breakdown(service_key, hs, region_fetch_list(cat), s, e, debug=args.debug)
             for hs, s, e in resolve_hs_segments(cat, sigungu_start_yymm, end_yymm)
         ])
+        by_region = apply_region_stitch(by_region, cat)
         if not monthly:
             print(f"[WARN] {cat['label']}: 전국 시계열을 하나도 못 가져왔습니다(API 실패 또는 "
                   f"HS코드 문제 가능성) — 이 카테고리는 이전 데이터를 유지합니다.", file=sys.stderr)
