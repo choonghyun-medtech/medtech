@@ -671,7 +671,7 @@ tr:last-child td{border-bottom:none}
           <button data-p="y1">1년</button>
           <button data-p="ytd">YTD</button>
         </div>
-        <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장(필터와 무관하게 전체 유니버스 기준)">📷 1일 표 저장</button>
+        <button id="perf-capture-btn" class="filter-select perf-cap-btn" style="margin-left:auto" title="국내/메가캡/중소형주 Top·Bottom 10 표를 이미지로 저장(필터와 무관하게 전체 유니버스 기준, CDMO·CRO·뷰티 전업 종목 제외)">📷 1일 표 저장</button>
       </div>
       <div class="note" id="perf-asof-note" style="margin:4px 0"></div>
       <div class="note" id="perf-capture-note" style="margin:0 0 4px; font-size:10.5px; color:var(--dim)"></div>
@@ -3272,6 +3272,16 @@ const PERF_CAPTURE_SETS = [
   { key:'메가캡', capUnit:'usd', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c>=PERF_MEGACAP_USD_B; } },
   { key:'중소형주', capUnit:'usd', filter:s=>{ const c=perfCapUsdB(s); return c!=null && c<PERF_MEGACAP_USD_B; } },
 ];
+// 캡쳐 표에서 빼는 비메드텍 종목(2026-10-14 요청) — 섹터가 CDMO·뷰티(+CRO)뿐인 종목만 제외.
+// 써모피셔·애보트처럼 CDMO가 다른 섹터와 함께 붙은 대형 메드텍은 남기고, CRO 단독 종목도 남긴다.
+// 화면 표는 그대로(섹터 필터로 직접 거를 수 있음).
+const PERF_CAPTURE_EXCLUDE_CORE = ['CDMO','뷰티'];
+const PERF_CAPTURE_EXCLUDE_ALSO = ['CRO'];
+function perfCaptureExcluded(s){
+  const secs = perfSectorsOf(s);
+  return secs.some(x=> PERF_CAPTURE_EXCLUDE_CORE.includes(x))
+    && secs.every(x=> PERF_CAPTURE_EXCLUDE_CORE.includes(x) || PERF_CAPTURE_EXCLUDE_ALSO.includes(x));
+}
 const PERF_CAPTURE_PERIOD_LABEL = { d1:'전일 종가 기준', d5:'지난 5일 기준' };
 const PERF_CAPTURE_FILE_PERIOD = { d1:'1일', d5:'5일' };
 
@@ -3379,7 +3389,7 @@ async function capturePerfTables(period, btn){
   try{
     await perfLoadHtml2canvas();
     for(const set of PERF_CAPTURE_SETS){
-      const list = STOCK_PERF.filter(s=> set.filter(s) && s.returns[period] != null);
+      const list = STOCK_PERF.filter(s=> set.filter(s) && s.returns[period] != null && !perfCaptureExcluded(s));
       const asOf = list.reduce((m,s)=> s.as_of && s.as_of > m ? s.as_of : m, '');
       const capRule = set.key==='메가캡' ? ' · 메가캡: 시총 $10B 이상' : set.key==='중소형주' ? ' · 중소형주: 시총 $10B 미만' : '';
       // 제목: "국내 Top 10 / Bottom 10 (전일 종가 기준)" — 기간 문구는 괄호로 뒤에(2026-09-30 요청).
