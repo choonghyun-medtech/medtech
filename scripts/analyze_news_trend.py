@@ -267,6 +267,10 @@ def generate_trends_batch(provider, region, cat_period_items, debug=False):
     for attempt in range(5):
         try:
             raw = provider.call(system, user_content, max_tokens=max_tokens)
+        except ServerBusy:
+            print(f"[WARN] Gemini 기본·예비 모델 모두 과부하(503)({tag}) — 남은 지역의 브리핑을 멈춥니다(이전 결과로 대체).",
+                  file=sys.stderr)
+            raise
         except Exception as e:
             last_transient = is_transient_server_error(e)
             if is_daily_quota_exhausted(e):

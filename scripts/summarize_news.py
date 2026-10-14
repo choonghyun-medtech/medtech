@@ -221,10 +221,11 @@ class GeminiProvider:
 
     name = "gemini"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, model=None):
         from google import genai
         self._genai = genai
         self.client = genai.Client(api_key=api_key)
+        self.model = model or GEMINI_MODEL  # 2026-10-14: 예비 모델 전환을 위해 모델을 인스턴스별로
 
     def _generate(self, system, user_content, max_tokens, thinking_budget):
         from google.genai import types
@@ -245,7 +246,7 @@ class GeminiProvider:
             # 빠지던 문제(응답이 중간에 잘리던 문제)의 주된 원인으로 추정.
             config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=thinking_budget)
         resp = self.client.models.generate_content(
-            model=GEMINI_MODEL,
+            model=self.model,
             contents=user_content,
             config=types.GenerateContentConfig(**config_kwargs),
         )
@@ -290,9 +291,9 @@ class AnthropicProvider:
 
 
 class ServerBusy(Exception):
-    """Gemini 서버 과부하(503 UNAVAILABLE "high demand")가 재시도를 다 써도 계속될 때. 2026-10-13
-    실제로 503 실패 요청도 하루 쿼터에 잡히는 것을 확인 — 남은 배치/지역/달까지 계속 시도하면
-    쿼터만 소진되므로, 한 번 이렇게 끝나면 이번 실행의 남은 AI 호출을 멈춘다."""
+    """Gemini 서버 과부하(503 UNAVAILABLE "high demand")가 기본 모델·예비 모델 모두에서 계속될 때.
+    503 실패 요청도 하루 쿼터에 잡히므로(2026-10-13 확인) 이렇게 되면 이번 실행의 남은 AI 호출을
+    멈춘다(남은 묶음/지역/달은 다음 실행 때 이어서 처리)."""
     pass
 
 
@@ -301,52 +302,153 @@ class ServerBusy(Exception):
 # 있을 때만 호출해 대부분 날 쿼터가 남으므로, 첫 키가 소진되면 예비로 이어 쓴다.
 GEMINI_KEY_ENVS = ("GEMINI_API_KEY", "GEMINI_API_KEY_EARNINGS")
 
+# 예비 모델(2026-10-14): 과부하(503)와 하루 쿼터는 둘 다 "모델별"이라, 기본 모델이 막히면 다른 모델로
+# 피한다. 예비 모델은 실행할 때 구글에 이 키로 쓸 수 있는 모델 목록을 물어 자동으로 고른다(이름에 flash가
+# 들어간 텍스트 생성 모델 중 정식판·최신 버전 우선). GEMINI_FALLBACK_MODELS 환경변수(쉼표 구분)로
+# 직접 지정할 수도 있다. 503 재시도는 모델마다 1번뿐이고, 기본+예비 2개 모델이 모두 과부하면 멈춘다.
+MAX_BUSY_MODELS = 2
+RETRY_503_WAIT_SECONDS = 15
+_MODEL_NAME_EXCLUDE = ("image", "tts", "audio", "live", "embed", "native", "vision", "thinking", "computer")
 
-class KeyFallbackProvider:
-    """여러 Gemini 키의 provider를 순서대로 쓴다 — 지금 키가 "하루 쿼터 소진"이면 다음 키로
-    바꿔 같은 요청을 바로 다시 보낸다(재시도 횟수로 세지 않음). 모든 키가 소진되면 그 오류를 올린다."""
+
+def is_model_not_found(error):
+    s = str(error)
+    return "404" in s or "NOT_FOUND" in s
+
+
+def discover_fallback_models(client, primary):
+    """이 키로 쓸 수 있는 Gemini 모델 중 기본 모델 대신 쓸 후보를 우선순위대로 돌려준다."""
+    override = [m.strip() for m in (os.environ.get("GEMINI_FALLBACK_MODELS") or "").split(",") if m.strip()]
+    if override:
+        return [m for m in override if m != primary]
+    names = []
+    try:
+        for m in client.models.list():
+            name = (getattr(m, "name", "") or "").split("/")[-1]
+            actions = getattr(m, "supported_actions", None) or getattr(m, "supported_generation_methods", None) or []
+            if actions and "generateContent" not in actions:
+                continue
+            low = name.lower()
+            if "flash" not in low or name == primary or any(x in low for x in _MODEL_NAME_EXCLUDE):
+                continue
+            names.append(name)
+    except Exception as e:
+        print(f"[WARN] 예비 모델 목록 조회 실패 ({e}) — 예비 모델 없이 진행", file=sys.stderr)
+        return []
+
+    def rank(n):
+        low = n.lower()
+        unstable = any(x in low for x in ("preview", "exp", "latest"))
+        ver = [int(x) for x in re.findall(r"\d+", low.split("flash")[0])] or [0]
+        return (unstable, [-v for v in ver], "lite" in low, n)
+    return sorted(set(names), key=rank)
+
+
+class GeminiFallbackProvider:
+    """키 여러 개 × 모델(기본 + 예비)을 순서대로 쓴다.
+    - 하루 쿼터 소진(키·모델 조합별): 같은 모델의 다음 키 → 다음 모델 순으로 바꿔 바로 다시 보낸다.
+    - 503 과부하(모델 단위): 같은 모델로 1번만 다시 시도, 그래도 503이면 그 모델은 이번 실행에서 빼고
+      예비 모델로. 과부하 모델이 MAX_BUSY_MODELS개가 되면 ServerBusy로 멈춘다.
+    - 404(그 모델을 이 키로 못 씀): 그 모델을 빼고 다음 후보로.
+    모든 키·모델의 쿼터가 소진되면 마지막 쿼터 오류를 그대로 올린다(상위에서 DailyQuotaExhausted 처리)."""
 
     name = "gemini"
 
-    def __init__(self, providers):
-        self.providers = providers
-        self.index = 0
+    def __init__(self, factory, keys):
+        self.factory, self.keys = factory, keys
+        self.models = [GEMINI_MODEL]
+        self.discovered = False
+        self._providers = {}
+        self.exhausted, self.busy, self.dead = set(), set(), set()
+
+    def _provider(self, ki, model):
+        if (ki, model) not in self._providers:
+            self._providers[(ki, model)] = self.factory(self.keys[ki], model)
+        return self._providers[(ki, model)]
+
+    def _discover(self):
+        if self.discovered:
+            return
+        self.discovered = True
+        found = discover_fallback_models(self._provider(0, GEMINI_MODEL).client, GEMINI_MODEL)
+        self.models += [m for m in found if m not in self.models]
+        print(f"[INFO] 예비 모델 후보: {found[:3] if found else '없음'}", file=sys.stderr)
+
+    def _next_target(self):
+        for _ in range(2):
+            if len(self.busy) < MAX_BUSY_MODELS:
+                for model in self.models:
+                    if model in self.busy or model in self.dead:
+                        continue
+                    for ki in range(len(self.keys)):
+                        if (ki, model) not in self.exhausted:
+                            return ki, model
+            if self.discovered or len(self.busy) >= MAX_BUSY_MODELS:
+                return None
+            self._discover()
+        return None
 
     def call(self, *args, **kwargs):
+        retried_503 = set()
+        last_quota_error = None
+        current = None
         while True:
+            target = self._next_target()
+            if target is None:
+                if self.busy:
+                    raise ServerBusy()
+                raise last_quota_error or RuntimeError("사용 가능한 Gemini 키/모델이 없음")
+            ki, model = target
+            if target != current:
+                if current is not None:
+                    print(f"[INFO] Gemini 전환 → 키 {ki + 1}번 · 모델 {model}", file=sys.stderr)
+                current = target
             try:
-                return self.providers[self.index].call(*args, **kwargs)
+                return self._provider(ki, model).call(*args, **kwargs)
             except Exception as e:
-                if is_daily_quota_exhausted(e) and self.index + 1 < len(self.providers):
-                    self.index += 1
-                    print(f"[WARN] Gemini 키 {self.index}번 하루 쿼터 소진 — 예비 키({self.index + 1}번)로 전환합니다.",
-                          file=sys.stderr)
+                if is_daily_quota_exhausted(e):
+                    self.exhausted.add(target)
+                    last_quota_error = e
+                    print(f"[WARN] Gemini 키 {ki + 1}번 · {model} 하루 쿼터 소진", file=sys.stderr)
+                    continue
+                if is_transient_server_error(e):
+                    if model not in retried_503:
+                        retried_503.add(model)
+                        print(f"[WARN] {model} 과부하(503) — {RETRY_503_WAIT_SECONDS}초 뒤 1번만 다시 시도", file=sys.stderr)
+                        time.sleep(RETRY_503_WAIT_SECONDS)
+                        continue
+                    self.busy.add(model)
+                    print(f"[WARN] {model} 과부하(503) 계속 — 이번 실행에서는 이 모델을 쓰지 않음", file=sys.stderr)
+                    continue
+                if is_model_not_found(e) and model != GEMINI_MODEL:
+                    self.dead.add(model)
+                    print(f"[WARN] {model}은(는) 이 키로 쓸 수 없음(404) — 다음 후보로", file=sys.stderr)
                     continue
                 raise
 
 
 def build_gemini_provider(factory):
-    """GEMINI_KEY_ENVS에 있는 키마다 factory(key)로 provider를 만들어 KeyFallbackProvider로 묶는다.
-    키가 하나도 없거나 만들 수 없으면 None."""
+    """GEMINI_KEY_ENVS의 키들로 GeminiFallbackProvider를 만든다. factory(key, model) → provider.
+    키가 하나도 없거나 클라이언트를 만들 수 없으면 None."""
     keys = []
     for env in GEMINI_KEY_ENVS:
         k = (os.environ.get(env) or "").strip()
         if k and k not in keys:
             keys.append(k)
-    providers = []
-    for k in keys:
-        try:
-            providers.append(factory(k))
-        except ImportError:
-            print("[WARN] google-genai 패키지가 없어 Gemini를 사용할 수 없습니다.", file=sys.stderr)
-            return None
-        except Exception as e:
-            print(f"[WARN] Gemini 클라이언트 초기화 실패 ({e})", file=sys.stderr)
-    if not providers:
+    if not keys:
         return None
-    if len(providers) > 1:
-        print(f"[INFO] Gemini 키 {len(providers)}개 사용(첫 키 쿼터 소진 시 예비 키로 자동 전환)", file=sys.stderr)
-    return KeyFallbackProvider(providers)
+    provider = GeminiFallbackProvider(factory, keys)
+    try:
+        provider._provider(0, GEMINI_MODEL)  # 첫 클라이언트를 미리 만들어 설치·키 문제를 바로 드러낸다
+    except ImportError:
+        print("[WARN] google-genai 패키지가 없어 Gemini를 사용할 수 없습니다.", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"[WARN] Gemini 클라이언트 초기화 실패 ({e})", file=sys.stderr)
+        return None
+    print(f"[INFO] Gemini 키 {len(keys)}개 · 기본 모델 {GEMINI_MODEL} (쿼터 소진 시 예비 키, 과부하·소진 시 예비 모델로 자동 전환)",
+          file=sys.stderr)
+    return provider
 
 
 def build_provider():
@@ -398,6 +500,10 @@ def summarize_batch(provider, items, system, max_tokens, build_payload_fn, apply
             )
             try:
                 raw = provider.call(system, user_content, max_tokens)
+            except ServerBusy:
+                print("[WARN] Gemini 기본·예비 모델 모두 과부하(503) — 이번 실행의 남은 요약을 멈춥니다. "
+                      "나중에 Process news를 다시 실행하면 요약 안 된 기사만 이어서 처리합니다.", file=sys.stderr)
+                raise
             except Exception as e:
                 if is_daily_quota_exhausted(e):
                     print(f"[WARN] {provider.name} 일별 쿼터 소진 확인(항목 {start}~{start+len(chunk)-1}) — "

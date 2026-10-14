@@ -40,9 +40,10 @@ class GeminiObjectProvider:
 
     name = "gemini"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, model=None):
         from google import genai
         self.client = genai.Client(api_key=api_key)
+        self.model = model or GEMINI_MODEL  # 2026-10-14: 예비 모델 전환을 위해 모델을 인스턴스별로
 
     def _generate(self, system, user_content, max_tokens, thinking_budget):
         from google.genai import types
@@ -54,7 +55,7 @@ class GeminiObjectProvider:
         if thinking_budget is not None:
             config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=thinking_budget)
         resp = self.client.models.generate_content(
-            model=GEMINI_MODEL,
+            model=self.model,
             contents=user_content,
             config=types.GenerateContentConfig(**config_kwargs),
         )
@@ -116,6 +117,9 @@ def call_llm_with_retries(provider, system, user_content, max_tokens, tag, debug
     for attempt in range(5):
         try:
             raw = provider.call(system, user_content, max_tokens=max_tokens)
+        except ServerBusy:
+            print(f"[WARN] Gemini 기본·예비 모델 모두 과부하(503)({tag}) — 멈춥니다.", file=sys.stderr)
+            raise
         except Exception as e:
             last_transient = is_transient_server_error(e)
             if is_daily_quota_exhausted(e):
