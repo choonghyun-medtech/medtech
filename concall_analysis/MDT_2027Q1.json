@@ -1,0 +1,164 @@
+{
+ "ticker": "MDT",
+ "company": "Medtronic plc",
+ "quarter": "2027년 1분기(Q1)",
+ "call_date": "2026-09-01",
+ "file": "MDT_2027Q1.json",
+ "source_hash": "1ba1281b240b",
+ "prior_basis": "2026년 4분기(Q4) IR 보도자료 요약",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:20:37.977695+00:00",
+ "headline": [
+  "2027 회계연도 1분기 매출액 98억 달러, 조정 EPS 1.45달러로 시장 예상을 크게 상회하는 강력한 출발을 보임.",
+  "심장 절제술 솔루션(CAS)이 88% 고성장을 기록하고, CRM 및 CST 등 주력 사업부가 견조한 성장을 뒷받침함.",
+  "견조한 1분기 실적과 향후 성장 지속성에 대한 자신감을 바탕으로 FY27 유기적 매출 성장률과 EPS 가이던스를 상향 조정함."
+ ],
+ "changes": [
+  "FY27 유기적 매출 성장률 가이던스를 기존 대비 50 bps 상향 조정함.",
+  "FY27 조정 EPS 가이던스 상단을 높여 수정된 범위를 제시함.",
+  "코너스톤 로보틱스(Sentire 시스템) 관련 글로벌 유통 및 투자 계약 체결 소식이 새롭게 등장함."
+ ],
+ "prepared": {
+  "summary": [
+   "메드트로닉의 2027 회계연도 1분기 매출액은 전년 동기 대비 13.7% 증가한 98억 달러, 조정 EPS는 1.45달러를 기록함.",
+   "1분기는 53주 회계연도의 영향으로 첫 달에 여분의 주가 포함되었으며, 이를 제외해도 최근 8년 내 가장 강력한 분기 실적을 달성함.",
+   "심혈관 부문이 19% 성장한 가운데, 특히 심장 절제술 솔루션(CAS)이 88% 급성장하며 성장을 견인함.",
+   "호조를 보인 1분기 실적을 바탕으로 경영진은 FY27 연간 유기적 매출 성장률 가이던스를 7.25~7.75%로 상향하고, EPS 가이던스도 5.94~6.00달러로 상향 조정함."
+  ],
+  "sections": [
+   {
+    "title": "심혈관 (Cardiovascular)",
+    "points": [
+     "매출액 19% 성장(미국 25% 증가, 해외 14% 증가).",
+     "심장 절제술 솔루션(CAS)은 88% 급성장했으며(미국 139% 증가), Sphere-9 플랫폼이 미국 시장 점유율 9%p 확대 및 12개월 누적 매출 20억 달러를 돌파함."
+    ]
+   },
+   {
+    "title": "신경과학 (Neuroscience)",
+    "points": [
+     "전사 매출 9% 성장(미국 11% 증가, 해외 7% 증가).",
+     "두개골 및 척추 기술(CST) 부문이 13% 성장했으며, Stealth AXiS 플랫폼이 초기 출시 후 유의미한 초과 성과를 기록함."
+    ]
+   },
+   {
+    "title": "의료-외과 (Medical Surgical)",
+    "points": [
+     "글로벌 매출 10% 성장, 외과 부문 매출 9% 증가.",
+     "Hugo 로봇 수술 시스템이 목표대로 회계연도 말까지 50,000례를 돌파할 것으로 예상되며, 코너스톤의 Sentire 시스템과의 파트너십을 추가함."
+    ]
+   },
+   {
+    "title": "당뇨병 (Diabetes)",
+    "points": [
+     "미국 내 가속화와 강력한 해외 성장에 힘입어 15% 성장 기록.",
+     "미니메드 분할 계획은 회계연도 말 이전 완료를 목표로 차질 없이 진행 중임."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY27 유기적 매출 성장률",
+   "value": "7.25% to 7.75%",
+   "prev": "",
+   "change": "상향",
+   "quote": "On the top line, we are pleased with the strong performance in the first quarter, and are raising our fiscal year '27 organic revenue growth guidance to 7.25% to 7.75%, which represents a 50 basis points increase from our prior guidance."
+  },
+  {
+   "item": "FY27 조정 EPS",
+   "value": "$5.94 to $6",
+   "prev": "",
+   "change": "상향",
+   "quote": "Given the strength in the first quarter, we're also raising our fiscal '27 guidance range to $5.94 to $6."
+  },
+  {
+   "item": "Q2 유기적 매출 성장률",
+   "value": "roughly 6%",
+   "prev": "",
+   "change": "신규",
+   "quote": "In the second quarter, we're expecting roughly 6% organic revenue growth."
+  },
+  {
+   "item": "Q2 조정 EPS",
+   "value": "$1.32 to $1.34",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the second quarter, we expect EPS in the range of $1.32 to $1.34, which includes a roughly neutral impact from foreign exchange at recent rates."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Hugo RAS 50,000 completed procedures",
+   "target": "회계연도 말까지",
+   "status": "진행 중",
+   "note": "회계연도 말까지 Hugo 수술 50,000례를 돌파할 것으로 예상함.",
+   "quote": "By the end of the fiscal year, we expect Hugo to surpass 50,000 completed procedures with procedure growth continuing at more than twice the market rate."
+  },
+  {
+   "item": "Ardian transradial catheter launch",
+   "target": "FY27 하반기",
+   "status": "진행 중",
+   "note": "경요골 카테터가 이번 회계연도 하반기에 출시될 예정임.",
+   "quote": "Looking ahead for Ardian, our transradial catheter remains on track to launch in the second half of this fiscal year."
+  },
+  {
+   "item": "MiniMed separation completion",
+   "target": "FY27 회계연도 말 이전",
+   "status": "진행 중",
+   "note": "미니메드 분할이 회계연도 말 이전에 완료될 예정임.",
+   "quote": "This headwind is expected to reduce following the completion of the MiniMed separation, which we intend to close prior to fiscal year-end."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "코너스톤 투자 배경 및 Hugo 전략과의 관계",
+   "analysts": [
+    "Travis Steed (Bank of America)",
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "코너스톤 투자와 유통 계약이 Hugo에 대한 자신감 부족을 의미하는지, 그리고 재무적 영향과 미국 시장 포함 여부는 어떠한지 질의함.",
+   "answer": "경영진은 Hugo에 대한 확고한 자신감을 표명하며, 코너스톤의 Sentire 시스템은 글로벌 시장 확장과 고객 선택권을 넓히기 위한 상호 보완적 글로벌 전략이라고 답변함."
+  },
+  {
+   "theme": "CAS(심장 절제술 솔루션) 성장 지속성 및 전망",
+   "analysts": [
+    "Vijay Kumar (Evercore)"
+   ],
+   "question": "CAS 사업부가 시장 성장률의 2.5배 성장을 가이던스로 제시한 배경과 향후 성장 동력을 질의함.",
+   "answer": "Sphere-9의 초기 런칭 호조, 적응증 확대, 해외 진출 등으로 인해 가동률이 높으며 시장 리더십을 향해 탄탄하게 성장하고 있다고 설명함."
+  },
+  {
+   "theme": "당뇨병 부문 분할 및 자본 배분 전략",
+   "analysts": [
+    "Anthony Petrone (Mizuho)",
+    "Vijay Kumar (Evercore)"
+   ],
+   "question": "당뇨병 부문 분할 시기 및 분할 이후 자본 배분과 M&A 전략의 변화 방향을 질의함.",
+   "answer": "분할 일정에는 변함이 없으며 주주 가치가 최적일 때 진행할 예정이고, 고성장 및 고마진 영역인 심혈관, 신경과학, 의료-외과 분야에 자본과 R&D 투자를 집중할 것이라고 밝힘."
+  },
+  {
+   "theme": "신장신경차단술(Ardian/Symplicity) 시장 트렌드",
+   "analysts": [
+    "Matthew O'Brien (Piper Sandler)"
+   ],
+   "question": "신장신경차단술의 실적 궤적과 경요골 접근법 도입의 필요성 및 시장 반응을 질의함.",
+   "answer": "3년 장기 임상 데이터의 우수성과 환자 예후 개선, 상업 보험 급여 확대에 힘입어 병원과 의사들의 관심이 높아지고 있으며 하반기 경요골 카테터 출시로 성장이 가속화될 것으로 기대함."
+  },
+  {
+   "theme": "마진 개선 추이와 재투자 전략",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "매출 상향 분에 대한 재투자 비율과 영업이익률 개선 방향, 관세 환급 영향에 대해 질의함.",
+   "answer": "매출 상향 분의 일부는 고성장 영역에 재투자하고 일부는 마진 개선에 반영하여 연간 영업이익이 10% 증가하고 영업마진이 50 bps 확대되도록 관리할 것이라고 밝힘."
+  },
+  {
+   "theme": "애널리스트 데이 개최 배경 및 장기 성장 공식",
+   "analysts": [
+    "Joanne Wuensch (Citi)"
+   ],
+   "question": "찰롯트에서 개최되는 인베스터 데이의 취지와 과거 중기 성장 공식의 변화 여부를 질의함.",
+   "answer": "최근의 파이프라인 확장과 자본 배분 효율화로 고성장 인프라가 갖추어져 있으며, 찰롯트 IRCAD 시설에서 생생한 기술 시연과 심층적인 파이프라인 소개를 진행할 예정이라고 답변함."
+  }
+ ]
+}

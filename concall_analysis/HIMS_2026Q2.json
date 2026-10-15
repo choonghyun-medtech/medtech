@@ -1,0 +1,159 @@
+{
+ "ticker": "HIMS",
+ "company": "Hims & Hers Health, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-08-10",
+ "file": "HIMS_2026Q2.json",
+ "source_hash": "0f4e8419505a",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:19:46.972740+00:00",
+ "headline": [
+  "2026년 2분기 매출액은 전년 동기 대비 약 40% 증가한 7억 5,300만 달러를 기록함.",
+  "글로벌 구독자 수는 30만 명 순증하여 약 300만 명에 도달함.",
+  "유칼립투스(Eucalyptus) 인수 완료로 국제 부문 매출이 전년 동기 대비 17배 이상 증가한 1,310만 달러를 기록함.",
+  "AI 기반 고객 지원 및 진료 플랫폼 도입을 통해 비임상 태스크를 약 50% 절감하는 등 운영 효율성이 개선됨.",
+  "2026년 연간 매출액 가이던스를 31억~33억 달러, 조정 EBITDA를 2억 7,500만~3억 2,500만 달러로 상향 조정함."
+ ],
+ "changes": [
+  "연간 매출액 가이던스가 직전 분기 28억~30억 달러에서 31억~33억 달러로 상향 조정됨.",
+  "유칼립투스 인수 완료를 통해 호주, 독일에 이어 일본, 캐나다 등 글로벌 시장으로 영토가 확장됨.",
+  "FTC(연방거래위원회)의 제소에 따른 법적 우발부채 충당금 등 비경상적 비용(약 8,100만 달러)이 새롭게 반영됨.",
+  "체중 감량 외에 남성 호르몬 대체 요법(TRT), 펩타이드 등 고도화된 헬스케어 카테고리로 투자가 본격화됨."
+ ],
+ "prepared": {
+  "summary": [
+   "2분기 총 매출은 브랜드 체중 감량 제품 및 국제 부문의 성장에 힘입어 전년 동기 대비 약 40% 성장한 7억 5,300만 달러를 기록함.",
+   "조정 EBITDA는 6,000만 달러(마진 8%)를 기록했으며, 영업 레버리지 효과가 총마진 역풍을 상쇄함.",
+   "미국 국내 매출은 6억 2,200만 달러로 전년 동기 대비 16% 성장하며 가속화됨.",
+   "유칼립투스 인수를 포함한 국제 부문 매출은 1억 3,100만 달러를 기록하며 글로벌 확장 전략이 본격화되고 있음."
+  ],
+  "sections": [
+   {
+    "title": "재무 및 사업 성과",
+    "points": [
+     "2분기 매출액 7억 5,300만 달러(YoY 약 40% 증가), 구독자 수 약 300만 명 도달.",
+     "조정 EBITDA 6,000만 달러(마진 8%), 자유현금흐름은 운전자본 수요로 인해 마이너스 6,800만 달러 기록.",
+     "연간 매출액 가이던스를 31억~33억 달러, 조정 EBITDA를 2억 7,500만~3억 2,500만 달러로 상향."
+    ]
+   },
+   {
+    "title": "기술 및 AI 혁신",
+    "points": [
+     "Hers 체중 감량 고객 대상 AI 네이티브 경험 도입 결과 메시지 참여도가 3배 증가하고 AI가 질문의 80%를 응답함.",
+     "주문 업데이트 등 비임상 태스크가 약 50% 감소하여 운영 및 지원 비용 절감에 기여함.",
+     "실리콘밸리 멘로파크에 AI R&D 랩을 신설하고 우수 인재를 영입할 예정임."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 매출액",
+   "value": "$3.1 billion to $3.3 billion",
+   "prev": "28억~30억 달러",
+   "change": "상향",
+   "quote": "For the full year, we are raising our 2026 revenue outlook to $3.1 billion to $3.3 billion, representing a year-over-year increase of 32% to 41%."
+  },
+  {
+   "item": "FY26 조정 EBITDA",
+   "value": "$275 million to $325 million",
+   "prev": "2억 7,500만~3억 5,000만 달러",
+   "change": "유지",
+   "quote": "It is our expectation that 2026 adjusted EBITDA will be between $275 million and $325 million."
+  },
+  {
+   "item": "Q3 FY26 매출액",
+   "value": "$880 million to $900 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "In the third quarter, we're anticipating revenue in the range of $880 million to $900 million, representing a year-over-year increase of approximately 47% to 50%."
+  },
+  {
+   "item": "Q3 FY26 조정 EBITDA",
+   "value": "$75 million to $95 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "We expect adjusted EBITDA to be between $75 million to $95 million, representing an adjusted EBITDA margin of 10% at the midpoint of both ranges."
+  },
+  {
+   "item": "FY26 국제 부문 매출",
+   "value": "at least $600 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "Finally, we expect our international business to generate at least $600 million of revenue in 2026, which will continue to operate at or near breakeven on an adjusted EBITDA basis as we prioritize scale."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "브랜드 GLP-1 제품군 확대 및 월간 주기 전환",
+   "target": "2026년 연중",
+   "status": "진행 중",
+   "note": "브랜드 체중 감량 제품의 월간 주기 전환과 구색 확장을 통해 가입자 성장을 견인 중임.",
+   "quote": "The pivot we made in March to expand the assortment of branded weight loss products on our platform was a key driver of the reaccelerating growth in the second quarter..."
+  },
+  {
+   "item": "테스토스테론 대체 요법(TRT) 주사 및 경구용 제품군 확장",
+   "target": "2026년 연말 이전",
+   "status": "진행 중",
+   "note": "낮은 테스토스테론 제품군이 체중 감량 외 가장 빠르게 성장 중이며 연말 이전 주사 및 경구용 TRT로 확장을 추진함.",
+   "quote": "...that gives us real confidence in our ability to expand not only into injectable and oral TRT before the end of this year, but also to extend this model across other specialties."
+  },
+  {
+   "item": "펩타이드 치료제 포트폴리오 상용화",
+   "target": "2026년 연말 이전 (규제 승인 대기 중)",
+   "note": "FDA 승인 대기 중이며, 세모렐린, 글루타치온, NAD+ 등 기존 허용된 펩타이드 솔루션을 연말 전 제공할 예정임.",
+   "quote": "In the meantime, we plan to offer access to already allowed peptides with safe and well-established supply chains before the end of this year. This will include solutions like sermorelin, glutathione and NAD+."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "노보 노디스크 파트너십 및 체중 감량 코호트 리텐션",
+   "analysts": [
+    "Maria Ripps (Canaccord)"
+   ],
+   "question": "체중 감량 코호트가 성숙해짐에 따라 리텐션과 참여도가 과거 제품과 어떻게 비교되는지, 그리고 노보 노디스크와의 파트너십을 어떻게 심화할 계획인지 질의함.",
+   "answer": "노보와의 파트너십은 미국 및 유럽(독일, 영국 등)에서 매우 성공적으로 진행 중이며 리텐션은 예상 부합 수준임. AI 도구와 몰입형 앱 경험을 통해 이탈률이 감소하고 리텐션이 더욱 강화될 것으로 기대함."
+  },
+  {
+   "theme": "국제 인수(유칼립투스) 통합 및 카테고리 확장",
+   "analysts": [
+    "Ryan MacDonald (Needham)"
+   ],
+   "question": "유칼립투스 인수 후 국제 시장에서 가장 성과가 좋은 전문 분야와 해외 시장에 새롭게 도입할 저과실(Low-hanging fruit) 카테고리가 무엇인지 질의함.",
+   "answer": "체중 감량 분야에서 우수한 성과를 보이고 있으며, 향후 미국에서 검증된 남성 호르몬 대체 요법(TRT), 여성 갱년기 치료, 탈모, 성 건강 및 펩타이드 테라피 등을 5~6개 해외 시장으로 확장할 계획임."
+  },
+  {
+   "theme": "하반기 EBITDA 가이던스 하향 조정 요인 및 미국 사업 가속화",
+   "analysts": [
+    "Mark Mahaney (Evercore)"
+   ],
+   "question": "하반기 EBITDA 가이던스 조정에 유칼립투스 희석 효과가 포함되었는지, 그리고 하반기 미국 사업 가속화의 구체적 수준에 대해 질의함.",
+   "answer": "유칼립투스는 현재 손익분기점 부근에서 운영되고 있으며, 하반기 가이던스는 브랜드 체중 감량 제품의 월간 구독 누적 효과와 AI 기반 운영 효율성으로 인한 미국 사업의 가속화 및 선별적 해외 투자를 반영한 것임."
+  },
+  {
+   "theme": "AI 도입 전략 및 적용 범위(Hers에서 Hims로의 확대)",
+   "analysts": [
+    "Craig Hettenbach (Morgan Stanley)"
+   ],
+   "question": "Hers 부문 체중 감량에 AI를 우선 도입한 이유와 Hims 부문으로의 적용 시점에 대해 질의함.",
+   "answer": "체중 감량은 질문과 부작용 대응, 복용법 등 복잡성이 가장 높은 카테고리이기 때문에 우선 도입했으며, 향후 수개월 내 신규 카테고리 출시 및 Hims 부문의 남성 호르몬 치료 등에도 순차적으로 확대 적용할 계획임."
+  },
+  {
+   "theme": "구독자 수 300만 명 돌파 배경 및 국제 부문 실적 반영 여부",
+   "analysts": [
+    "Eric Percher (Nephron Research)"
+   ],
+   "question": "최근 구독자 300만 명 달성 배경과 2분기 실적에 유칼립투스 구독자가 포함되었는지 질의함.",
+   "answer": "체중 감량 제품군 확장 및 남성 호르몬 등 신규 카테고리의 재가속화가 성장을 견인했으며, 유칼립투스의 실적(약 4,000만 달러)은 2분기 실적에 온전히 포함됨."
+  },
+  {
+   "theme": "장기 마진 궤적 및 2027년 이후 전망",
+   "analysts": [
+    "Glen Santangelo (Barclays)"
+   ],
+   "question": "3분기 가이드 및 암묵적 4분기 EBITDA 마진을 바탕으로 2027년 및 2030년 목표 마진(20%) 달성 경로에 대해 질의함.",
+   "answer": "2027년에 대해 구체적으로 언급하기는 이르나, 강력한 현금 흐름 창출과 EBITDA 달성을 목표로 하며, 국내 사업의 가속화를 통해 확보한 재원을 국제 시장 등에 유연하게 재투자할 방침임."
+  }
+ ]
+}

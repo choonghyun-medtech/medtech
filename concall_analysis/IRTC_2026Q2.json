@@ -1,0 +1,115 @@
+{
+ "ticker": "IRTC",
+ "company": "iRhythm Holdings, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-08-06",
+ "file": "IRTC_2026Q2.json",
+ "source_hash": "dd841162d700",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:18:42.406637+00:00",
+ "headline": [
+  "2026년 2분기 매출액은 2억 2,420만 달러로 전년 동기 대비 20.1% 증가하며 7개 분기 연속 20%를 상회하는 성장세를 기록함.",
+  "바이탈 커넥트(Vital Connect) 인수 계약을 발표하며 모바일 심장 원격 측정(MCT) 시장 전반으로 포트폴리오를 확장하고 멀티 바이탈 및 병원-가정 연계 모니터링 기반을 마련함.",
+  "조정 EBITDA 마진은 19.3%로 전년 동기 대비 1,000bp 이상 개선되었으며, 견조한 실적을 반영하여 2026년 연간 매출 및 마진 가이던스를 상향 조정함.",
+  "미국 식품의약국(FDA)으로부터 3세대 알고리즘 허가를 획득하여 향후 임상 리뷰 시간 단축과 비용 절감이 기대됨."
+ ],
+ "changes": [
+  "바이탈 커넥트(Vital Connect) 인수 건이 신규 발표되었으며, 2027년부터 매출 기여가 예상됨.",
+  "연간 매출액 가이던스가 기존 8억 7,500만~8억 8,500만 달러에서 8억 8,000만~8억 9,000만 달러로 상향 조정됨.",
+  "연간 조정 EBITDA 마진 가이던스가 기존 12.0%~13.0%에서 13.0%~14.0%로 상향 조정됨.",
+  "노리디안(Noridian), CGS, 팔메토(Palmetto)의 최종 LCD 발표로 모달리티별 커버리지 불확실성이 해소됨.",
+  "박스터(Baxter), 웰치 알린(Welch Allyn), 바디 다이아그노틱스(Bardy Diagnostics)와의 특허 소송이 5,000만 달러에 합의 종결됨."
+ ],
+ "prepared": {
+  "summary": [
+   "2026년 2분기 매출액은 Zio 수요 지속에 힘입어 전년 동기 대비 20.1% 증가한 2억 2,420만 달러를 기록함.",
+   "매출총이익률은 72.8%로 전년 동기 대비 160bp 개선되었으며, 조정 EBITDA는 4,330만 달러(마진 19.3%)를 달성함.",
+   "바이탈 커넥트(Vital Connect) 인수를 통해 MCT 전체 시장을 커버하고 입원 및 원격 모니터링 분야로 확장할 수 있는 기반을 확보함.",
+   "하반기 투자 집행과 튼튼한 펀더멘털을 반영하여 연간 매출 및 조정 EBITDA 마진 가이던스를 상향 조정함."
+  ],
+  "sections": [
+   {
+    "title": "재무 성과 및 수익성",
+    "points": [
+     "2분기 매출액 2억 2,420만 달러(YoY +20.1%), 7개 분기 연속 20% 이상 성장 달성",
+     "매출총이익률 72.8%로 제조 자동화 및 운영 효율화에 힘입어 160bp 개선",
+     "조정 EBITDA 4,330만 달러(마진 19.3%), 자유현금흐름(FCF) 3,750만 달러 기록"
+    ]
+   },
+   {
+    "title": "전략적 인수 및 파이프라인",
+    "points": [
+     "바이탈 커넥트(Vital Connect) 인수 계약 체결로 30일 모니터링, 4-in-1 기능 등 MCT 시장 전체 커버리지 확보",
+     "Zio MCT 1.0은 2027년 상반기 허가 획득을 목표로 지속 추진 중",
+     "3세대 알고리즘 FDA 허가 획득으로 2027년 상반기 런칭 시 리뷰 시간 50% 단축 및 5년간 약 1억 달러 비용 절감 기대"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "2026 회계연도 전체 매출액",
+   "value": "8억 8,000만~8억 9,000만 달러",
+   "prev": "8억 7,500만~8억 8,500만 달러",
+   "change": "상향",
+   "quote": "We are raising full year 2026 revenue guidance to $880 million to $890 million, representing 18% to 19% year-over-year growth."
+  },
+  {
+   "item": "2026 회계연도 조정 EBITDA 마진",
+   "value": "13%~14%",
+   "prev": "12.0%~13.0%",
+   "change": "상향",
+   "quote": "Based on our performance year-to-date and outlook for the remainder of 2026, we are raising our full-year adjusted EBITDA margin guidance to 13% to 14%."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Zio MCT 1.0 FDA 허가",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 상반기 허가 획득을 목표로 지속 작업 중임.",
+   "quote": "To that end, we continue to work towards a clearance for Zio MCT in the first half of 2027."
+  },
+  {
+   "item": "3세대 알고리즘 런칭",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 상반기 런칭을 통해 임상 검토 시간을 단축하고 비용을 절감할 계획임.",
+   "quote": "Once launched in the first half of 2027, we expect it to reduce clinical technician review time by as much as 50%..."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "바이탈 커넥트 인수 시너지 및 MCT 전략",
+   "analysts": [
+    "John Young (Canaccord)",
+    "Allen Gong (JPMorgan)",
+    "Vijay Kumar (Evercore ISI)",
+    "Richard Newitter (Truist Securities)",
+    "Suraj Kalia (Oppenheimer)",
+    "Brandon Vazquez (William Blair)"
+   ],
+   "question": "바이탈 커넥트 인수가 기존 Zio AT 및 향후 출시될 Zio MCT 제품군과 어떻게 차별화되며, MCT 시장 내에서 포지셔닝이 어떻게 되는지 궁금함.",
+   "answer": "바이탈 커넥트는 30일 장기 모니터링과 라이프룩 기능 등을 통해 기존 AT가 커버하지 못했던 나머지 50%의 MCT 시장에 진입할 수 있게 해주며, 자사 MCT 개발과 병행하는 듀얼 제품 전략으로 시장 점유율을 극대화할 것임."
+  },
+  {
+   "theme": "2026년 하반기 EBITDA 마진 및 투자 계획",
+   "analysts": [
+    "Anthony (Citi)",
+    "Marie Thibault (U.S. Bancorp BTIG)"
+   ],
+   "question": "2분기 EBITDA 마진이 매우 높게 나왔는데, 추가로 마진 가이던스를 더 올리지 않은 이유와 하반기 투자 계획은 무엇인지?",
+   "answer": "하반기에는 1차 진료 확장, 혁신 채널, 직접판매(DTP) 마케팅 등에 대한 투자가 예정되어 있으며, 수익성 개선과 미래 성장을 위한 투자의 균형을 맞추기 위함임."
+  },
+  {
+   "theme": "혁신 채널(Innovative Channels) 및 신규 파트너십 성장세",
+   "analysts": [
+    "Nathan Treybeck (Wells Fargo)",
+    "Mason Carrico (Stephens Inc.)"
+   ],
+   "question": "혁신 채널에서의 고성장이 지속되고 있는지, 그리고 파일럿에서 전사적 도입으로 넘어가는 실무 데이터 공개 일정이 어떻게 되는지?",
+   "answer": "혁신 채널은 가치 기반 의료 및 고용주 지원 플랜 등을 통해 여전히 초기 성장 국면에 있으며, 하반기에 실제 비용 절감 및 임상 데이터를 시장에 공개할 예정임."
+  }
+ ]
+}

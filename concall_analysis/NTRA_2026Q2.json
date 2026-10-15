@@ -1,0 +1,160 @@
+{
+ "ticker": "NTRA",
+ "company": "Natera, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-08-06",
+ "file": "NTRA_2026Q2.json",
+ "source_hash": "c8194ec223b4",
+ "prior_basis": "2025년 4분기(Q4) IR 보도자료 요약",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:19:21.949192+00:00",
+ "headline": [
+  "2026년 2분기 매출액은 전년 동기 대비 약 38% 증가한 7억 5,300만 달러를 기록함.",
+  "시그나테라는 임상 MRD 검사 물량이 전년 동기 대비 약 56% 성장한 28만 3,000건을 기록하며 사상 최대 분기 실적을 달성함.",
+  "시그나테라가 미국 FDA로부터 동반진단(CDx) 허가를 받고, 일본 PMDA 승인 및 유럽 IVDR 인증을 획득함.",
+  "2026년 연간 매출액 가이던스를 기존 대비 1억 달러 상향 조정한 28억 5,000만~29억 1,000만 달러로 제시함."
+ ],
+ "changes": [
+  "2026년 연간 매출액 가이던스 중간값을 1억 달러 상향 조정함.",
+  "시그나테라 평균판매단가(ASP)가 약 1,275달러로 상승하며 지속적인 상향 흐름을 보임.",
+  "기존 대비 향상된 저(low) 태민소(fetal fraction) 대응 파노라마 테스트를 신규 런칭함."
+ ],
+ "prepared": {
+  "summary": [
+   "나테라는 2026년 2분기 총 104만 4,000건 이상의 검사를 처리하며 강력한 물량 성장을 기록함.",
+   "시그나테라는 FDA 승인 및 NCCN 가이드라인 Category 1 권고 등 주요 임상 및 규제 마일스톤을 달성함.",
+   "수익성 측면에서 ASP 상승과 전반적인 규모의 경제 효과로 총이익률 65% 수준을 유지하며 긍정적인 현금 유입을 기록함.",
+   "조기 암 진단(ECD) 연구인 FIND 임상의 환자 등록이 3분기 완료를 앞두고 있으며 원활하게 진행 중임."
+  ],
+  "sections": [
+   {
+    "title": "재무 및 실적",
+    "points": [
+     "2분기 매출액 7억 5,300만 달러 (YoY 약 38% 성장, 트루업 제외 시 약 40% 성장)",
+     "총이익률 약 65% 기록 (ASP 개선 및 순차적 마진 개선 추세 반영)",
+     "영업손실 축소 및 긍정적인 현금 흐름 창출 지속"
+    ]
+   },
+   {
+    "title": "여성 건강 및 장기 건강",
+    "points": [
+     "여성 건강 사업부는 계절적 비수기에도 불구하고 신규 계정 확보와 향상된 파노라마 테스트 런칭으로 높은 한 자리 수 성장을 기록함.",
+     "장기 건강 부문에서 프로스페라(Prospera)는 유리한 메디케어(Medicare) LCD 최종안 발표로 하반기 ASP 및 물량 성장 기대"
+    ]
+   },
+   {
+    "title": "종양학 (시그나테라)",
+    "points": [
+     "임상 MRD 검사 물량 28만 3,000건 (YoY 약 56% 증가, QoQ 3만 4,000건 증가)",
+     "미국 FDA 근육침습성 방광암 동반진단 허가, 일본 PMDA 대장암 승인, 유럽 IVDR 인증 획득"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "2026년 연간 매출액",
+   "value": "$2.85 billion to $2.91 billion",
+   "prev": "매출액 26.2억~27.0억 달러",
+   "change": "상향",
+   "quote": "Our new range is $2.85 billion to $2.91 billion in revenues, and we are holding OpEx steady."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Signatera FDA companion diagnostic approval in muscle-invasive bladder cancer",
+   "target": "2026년 상반기 (5월)",
+   "status": "달성",
+   "note": "5월에 근육침습성 방광암 대상 동반진단으로 미 FDA 승인을 획득함.",
+   "quote": "In May, the FDA approved Signatera as a companion diagnostic for patients with muscle-invasive bladder cancer."
+  },
+  {
+   "item": "Signatera PMDA approval in colorectal cancer in Japan",
+   "target": "2026년 중 (6월 승인)",
+   "status": "달성",
+   "note": "6월에 일본 PMDA로부터 대장암 환자 대상 승인을 획득함.",
+   "quote": "Then in June, the Japanese PMDA approved Signatera for patients with colorectal cancer, supported by the GALAXY study."
+  },
+  {
+   "item": "FIND study full enrollment completion in early cancer detection",
+   "target": "2026년 3분기",
+   "status": "진행 중",
+   "note": "FIND 임상의 환자 등록이 3분기에 완료될 예정이며 2027년 리드아웃을 목표로 함.",
+   "quote": "Our pivotal FIND study is now approaching full enrollment. We're on track to complete enrollment in the third quarter of this year with roughly 24,000 average risk adults enrolled to date."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "시그나테라 성장 동인 및 지속 가능성",
+   "analysts": [
+    "Puneet Souda (Leerink Partners)"
+   ],
+   "question": "시그나테라의 분기별 기록적인 물량 성장을 이끈 주된 요인과 이러한 성장 모멘텀이 2027년에도 지속될 수 있는지에 대한 질문.",
+   "answer": "경영진은 상용화 조직 및 메디컬 어페어에 대한 선제적 투자, 기술력, 임상 증거 확보 등이 종합적으로 작용했으며 분기 간 순증 물량이 견조하게 유지될 것으로 전망함."
+  },
+  {
+   "theme": "임상 시험 및 SIGNAL 프로그램",
+   "analysts": [
+    "Puneet Souda (Leerink Partners)"
+   ],
+   "question": "슬라이드 13에 제시된 2027~2028년 전향적 임상 리드아웃과 새로 소개된 SIGNAL-ER 101 연구의 임상적 의의에 대한 질문.",
+   "answer": "시그널 ER 101 연구는 초기 유방암 환자에서 ctDNA 음성 환자의 불필요한 독성 치료를 회피하게 하는 실질적인 가이드라인 변경 수준의 연구로 설계되었음."
+  },
+  {
+   "theme": "시그나테라 ASP 상승 잠재력 및 환급 전략",
+   "analysts": [
+    "Daniel Brennan (TD Cowen)"
+   ],
+   "question": "순차적인 ASP 상승 흐름과 향후 MolDX 급여 확대 및 상업 보험사 등재를 통해 2,000달러 목표에 도달할 수 있는지에 대한 질문.",
+   "answer": "단기적 전술에 의해 분기별 25달러 수준의 업사이드가 가능하며, 향후 12~18개월 내 MolDX 적응증 확대 등이 반영되면 2,000달러 목표 달성 가시성이 높아질 것으로 판단함."
+  },
+  {
+   "theme": "경쟁 환경 및 시장 침투율",
+   "analysts": [
+    "Dave Westenberg (Piper Sandler)"
+   ],
+   "question": "신규 경쟁사들의 시장 진입이 나테라의 50%대 성장에 미치는 영향과 시장 교육 효과에 대한 질문.",
+   "answer": "경쟁은 상시 존재하나 전체 시장 침투율이 아직 낮은 초기 단계여서 유의미한 영향은 없으며, 방대한 임상 데이터와 기술력으로 시장 리더십을 공고히 하고 있음."
+  },
+  {
+   "theme": "MolDX 적응증 제출 건의 타임라인과 ASP 기여도",
+   "analysts": [
+    "Daniel Markowitz (Evercore)"
+   ],
+   "question": "제출된 7개 적응증에 대한 MolDX 커버리지 확보 시기 및 ASP에 미치는 영향 규모에 대한 질문.",
+   "answer": "향후 12~18개월 내에 순차적으로 커버리지가 확보될 것으로 예상하며, ASP 측면에서 약 150~200달러 수준의 상승 기여를 할 것으로 추정함."
+  },
+  {
+   "theme": "바이오마커 주(State) 법안의 영향과 트루업",
+   "analysts": [
+    "Daniel Markowitz (Evercore)"
+   ],
+   "question": "바이오마커 법안 통과가 향후 매출 트루업(True-up)에 일회성 급증으로 작용할 것인지에 대한 질문.",
+   "answer": "일회성 급증보다는 페이버와의 개별 협상을 통해 점진적이고 선형적인 방식으로 트루업에 기여할 것으로 보고 있음."
+  },
+  {
+   "theme": "여성 건강 사업부 성장 및 시장 점유율",
+   "analysts": [
+    "Noah Kava (Jefferies)"
+   ],
+   "question": "여성 건강 부문의 양호한 성장의 배경과 경쟁사 대비 점유율 확대 여부에 대한 질문.",
+   "answer": "신규 런칭된 Fetal Focus와 저태민소 한계를 극복한 향상된 파노라마 테스트가 시장에서 큰 호응을 얻으며 점유율 확대의 견인차 역할을 함."
+  },
+  {
+   "theme": "일본 대장암 시장 런칭 및 전략",
+   "analysts": [
+    "Kallum Titchmarsh (Morgan Stanley)"
+   ],
+   "question": "일본 시장에서의 대장암 런칭 속도와 검사 빈도 확대에 대한 자신감의 근거에 대한 질문.",
+   "answer": "GALAXY 연구 등 현지 의료진의 높은 인지도와 학회 가이드라인 지지를 바탕으로 미국 도입기 이상의 빠른 수용이 기대되며 현지 파트너와 직접 영업을 병행할 것임."
+  },
+  {
+   "theme": "조기 암 진단(ECD) 연구 투자 및 비용 구조",
+   "analysts": [
+    "Subhalaxmi Nambi (Guggenheim)"
+   ],
+   "question": "ECD 프로그램 관련 R&D 예산 증가 배경과 마진 역학 관계에 대한 질문.",
+   "answer": "FIND 임상 환자 등록 완료 및 규제 제출을 위한 개발 작업이 계획대로 진행 중이며, 향후 상용화 시 대규모 성장 동력으로 작용할 것임."
+  }
+ ]
+}

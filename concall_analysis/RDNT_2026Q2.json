@@ -1,0 +1,196 @@
+{
+ "ticker": "RDNT",
+ "company": "RadNet, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-08-10",
+ "file": "RDNT_2026Q2.json",
+ "source_hash": "b5aad1be3b34",
+ "prior_basis": "",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:20:13.646457+00:00",
+ "headline": [
+  "2026년 2분기 전사 매출액은 전년 동기 대비 25% 증가한 6억 2,270만 달러, 조정 EBITDA는 22.7% 증가한 9,970만 달러를 기록함.",
+  "디지털 헬스 부문 매출은 전년 동기 대비 56.5% 증가한 3,240만 달러, 연간반복매출(ARR)은 1억 550만 달러를 기록함.",
+  "미국 식품의약국(FDA)으로부터 딥헬스(DeepHealth) 유방 초음파 AI 솔루션에 대한 510(k) 허가를 획득함.",
+  "견조한 2분기 실적과 긍정적 사업 추세를 바탕으로 2026년 연간 영상 센터 부문 가이던스(매출, 조정 EBITDA, 잉여현금흐름)를 상향 조정함."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "2분기 총 매출과 조정 EBITDA 모두 분기 사상 최대치를 기록하며 견조한 성장세를 보임.",
+   "영상 센터 부문은 고도화된 영상(MRI, CT, PET/CT)의 수요 증가와 인수합병 효과에 힘입어 높은 성장률을 달성함.",
+   "디지털 헬스 부문은 전사적 영상(Enterprise Imaging) 및 임상 AI 솔루션의 매출 확대와 글리머(Gleamer) 등 최근 인수한 기업들의 완전한 통합 효과를 확인함.",
+   "경영진은 실적 호조를 반영하여 영상 센터 부문의 연간 실적 가이던스를 상향 조정하고 디지털 헬스 부문 가이던스는 유지함."
+  ],
+  "sections": [
+   {
+    "title": "영상 센터 사업부",
+    "points": [
+     "전체 매출 6억 2,270만 달러(전년 동기 대비 +25%), 조정 EBITDA 9,970만 달러(+22.7%) 기록.",
+     "고도화 영상(MRI, CT, PET/CT) 시술 건수는 전년 동기 대비 21.2% 증가, 동일 센터 기준 9.6% 증가.",
+     "말단 기준 총 442개 센터 중 36%에 해당하는 157개 센터가 헬스 시스템 파트너십 형태로 운영 중."
+    ]
+   },
+   {
+    "title": "디지털 헬스 사업부",
+    "points": [
+     "매출 3,240만 달러(전년 동기 대비 +56.5%), 연간반복매출(ARR) 1억 550만 달러(+97%) 기록.",
+     "조정 EBITDA 250만 달러 기록, 글리머 인수 통합 완료 및 수익성 개선 궤도 진입.",
+     "딥헬스 유방 초음파 AI 솔루션 FDA 510(k) 승인 획득 및 미국 내 상용화 개시."
+    ]
+   },
+   {
+    "title": "재무 및 유동성",
+    "points": [
+     "기말 기준 현금 및 현금성 자산 7억 2,630만 달러, 순부채 대 조정 EBITDA 비율 1.8배 유지.",
+     "신용 계약 수정(Amendment #3)을 통해 2억 5,000만 달러 규모의 증액된 텀론을 조달하고 금리를 25bp 인하함.",
+     "매출채권 회전일수(DSO)는 업계 최저 수준인 31일 기록."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "영상 센터 부문 순매출",
+   "value": "$2.370 billion to $2.420 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "Total net revenue guidance for the Imaging Center segment increased to a range of $2.370 billion to $2.420 billion, an increase of $15 million at both the low and high end of the range as compared with the guidance we provided after our first quarter results."
+  },
+  {
+   "item": "영상 센터 부문 조정 EBITDA",
+   "value": "$345 million to $358 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "Adjusted EBITDA guidance increased to a range of $345 million to $358 million, an increase of $5 million at both the low and high end of the range."
+  },
+  {
+   "item": "영상 센터 부문 잉여현금흐름",
+   "value": "$115 million to $125 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "Free cash flow guidance increased to a range of $115 million to $125 million, an increase of $3 million at both the low and high ends of the range."
+  },
+  {
+   "item": "디지털 헬스 부문 매출",
+   "value": "$135 million to $145 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our guidance remains unchanged, $135 million to $145 million of revenue and $10 million to $12 million of adjusted EBITDA for the segment."
+  },
+  {
+   "item": "디지털 헬스 부문 조정 EBITDA",
+   "value": "$10 million to $12 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our guidance remains unchanged, $135 million to $145 million of revenue and $10 million to $12 million of adjusted EBITDA for the segment."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "연간 ARR(연간반복매출) 1억 4,000만 달러 달성",
+   "target": "2026년 연말",
+   "status": "진행 중",
+   "note": "경영진은 연말까지 ARR 1억 4,000만 달러 이상을 달성할 것으로 예상하며 순조롭게 진행 중이라고 밝힘.",
+   "quote": "We remain on track to grow full year ARR by approximately 91% from 2025 to over $140 million by the end of this year, end of 2026, with our recent acquisitions now layered on top of a healthy core business."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "유방 초음파 AI 승인 및 환급 전략",
+   "analysts": [
+    "Brian Tanquilut (Jefferies)"
+   ],
+   "question": "새로 승인된 유방 초음파 AI 솔루션의 사업적 파급 효과와 T 코드(수가 코드) 환급 전략의 타임라인은 어떻게 되는지?",
+   "answer": "갑상선 초음파 사례와 유사하게 판독 시간을 줄이고 슬롯 타임을 단축하며 동일한 0690T 코드를 적용받을 수 있음. 연말까지 주요 센터에 전면 배치하고 내년 상반기까지 완전한 규모로 확대할 계획임."
+  },
+  {
+   "theme": "고도화 영상(Advanced Imaging) 성장 동인 및 마진 지속성",
+   "analysts": [
+    "Brian Tanquilut (Jefferies)"
+   ],
+   "question": "MRI 등 고도화 영상의 동일 센터 볼륨이 10% 증가한 주된 원인과 기술 도입에 따른 마진 개선의 지속성은 어떠한지?",
+   "answer": "장비 업그레이드, 스캔 시간 단축, 원격 테크놀로지스트(Tech Live) 활용, PSMA 및 아밀로이드 같은 신규 방사성 추적자 활용 증가 등이 복합적으로 작용함. 향후 마진 개선 여지는 충분히 유효함."
+  },
+  {
+   "theme": "자동 판독 초안(Auto-Draft Reports)의 생산성 및 도입 계획",
+   "analysts": [
+    "David MacDonald (Truist)"
+   ],
+   "question": "자동 판독 초안 보고서가 방사선 전문의의 효율성과 용량에 미치는 영향 및 향후 배포 일정은?",
+   "answer": "갑상선 초음파에서 90% 수용률을 기록했으며 방사선 전문의의 판독 부담을 크게 줄여줌. 연말까지 래드넷 볼륨의 약 15%, 2027년 2분기 말까지 50% 이상이 AI 기반 자동 판독 초안 솔루션을 거치도록 할 계획임."
+  },
+  {
+   "theme": "최근 인수(플로리다 등) 통합 현황 및 M&A 기회",
+   "analysts": [
+    "David MacDonald (Truist)"
+   ],
+   "question": "최근 플로리다 지역 등을 포함한 인수 자산의 통합 진행 상황과 추가 M&A 및 헬스 시스템 협력 기회는?",
+   "answer": "13개 센터의 플로리다 인수는 성공적으로 통합되었으며 IT 및 운영 플랫폼 전환이 원활히 진행 중임. 병원들의 방사선 전문의 부족 문제로 인해 헬스 시스템 파트너십 및 추가 인수 기회가 지속적으로 유입되고 있음."
+  },
+  {
+   "theme": "인력 및 용량 제약(Capacity Constraints)",
+   "analysts": [
+    "Andrew Cooper (Raymond James)"
+   ],
+   "question": "테크놀로지스트와 방사선 전문의 인력난으로 인해 볼륨 트렌드가 여전히 제약을 받고 있는지, 아니면 비용 요인에 가까운지?",
+   "answer": "일부 시장에서 백로그가 존재하여 디노보(de novo) 센터를 적극 건설하고 있으며, 원격 테크놀로지스트와 AI 도입을 통해 용량을 확장하고 백로그를 관리하고 있음."
+  },
+  {
+   "theme": "디지털 헬스 부문 마진 궤도 및 투자 계획",
+   "analysts": [
+    "Andrew Cooper (Raymond James)"
+   ],
+   "question": "디지털 헬스 부문의 마진이 하반기에 개선될 것으로 보는데, 향후 20% 이상의 목표 마진으로 가기 위한 비용 및 레버리지 구조는?",
+   "answer": "인력 및 상업 조직에 대한 전략적 투자로 마진이 일시 희석되었으나, 핵심 SaaS 비즈니스의 30~40% 마진 역량을 바탕으로 2027~2028년 20% 이상 마진 목표를 확신함."
+  },
+  {
+   "theme": "유방 초음파 환급(Reimbursement) 속도 및 시장 반응",
+   "analysts": [
+    "Matthew Gillmor (KeyBanc)"
+   ],
+   "question": "유방 초음파 AI의 T 코드 환급률이 갑상선 초음파에 비해 더 빠르게 궤도에 오를 수 있는지?",
+   "answer": "이미 긍정적인 결정을 내린 보험사를 파악하고 있어 갑상선보다 빠르게 환급 수준에 도달할 수 있으며, 볼륨이 갑상선의 4배에 달해 기대치가 큼."
+  },
+  {
+   "theme": "디지털 헬스 계약(TCV/ARR)의 계절적 특성",
+   "analysts": [
+    "Matthew Gillmor (KeyBanc)"
+   ],
+   "question": "디지털 헬스 매출 및 계약 체결(TCV)에 하반기 편중 등 계절적 요인이 작용하는지?",
+   "answer": "특히 대형 엔터프라이즈 인포매틱스 거래를 중심으로 하반기 및 4분기에 계약이 몰리는 업계 전반의 계절성이 존재함."
+  },
+  {
+   "theme": "핵심 영상 센터 마진과 인플레이션 압력",
+   "analysts": [
+    "Larry Solow (CJS Securities)"
+   ],
+   "question": "고도화 영상 믹스 개선과 볼륨 증가에도 불구하고 마진 폭이 예상보다 제한적인 이유는 인건비 압력 때문인지?",
+   "answer": "테크놀로지스트 및 방사선 전문의 임금 인플레이션과 인수 초기 자산들의 마진 희석, 디지털 헬스 및 운영 통합 비용이 반영된 결과이며 장기적으로 100~150bp 마진 개선 목표는 유지됨."
+  },
+  {
+   "theme": "부채 증액 및 자본 배분 전략",
+   "analysts": [
+    "Larry Solow (CJS Securities)"
+   ],
+   "question": "최근 2억 5,000만 달러 규모의 텀론 증액과 금리 인하를 단행한 배경은 기회주의적 조달이었는지, 향후 M&A 대비인지?",
+   "answer": "기존 부채의 금리를 25bp 낮추는 순수 기회주의적 리프라이싱이었으며, 최근 인수 자금으로 소진된 자본을 보충하고 향후 M&A 및 유기적 성장에 대비하기 위함임."
+  },
+  {
+   "theme": "자본 배분 및 M&A 타겟 우선순위",
+   "analysts": [
+    "Jim Sidoti (Sidoti & Company)"
+   ],
+   "question": "추가 인수 타겟이 디지털 헬스 쪽인지, 아니면 영상 센터 서비스 쪽인지?",
+   "answer": "양쪽 모두 기회를 보고 있으나, 디지털 헬스 M&A는 상대적으로 규모가 작고, 영상 센터 M&A는 턱인(tuck-in)부터 대규모까지 다양하므로 자본 배분 관점에서는 영상 센터 쪽에 더 많이 배분될 가능성이 높음."
+  },
+  {
+   "theme": "메디케어 수가 제안 및 병원들의 아웃소싱 수요",
+   "analysts": [
+    "Jim Sidoti (Sidoti & Company)"
+   ],
+   "question": "2027년 메디케어 수가 제안(사이트 중립성 규정 등)이 병원들의 외래 전환 및 파트너십 논의에 미치는 영향은?",
+   "answer": "병원의 재정적 압박이 가중되면서 외래 전문 운영사인 래드넷과의 파트너십 및 디지털 솔루션 도입 수요가 더욱 증가하는 긍정적인 촉매로 작용하고 있음."
+  }
+ ]
+}

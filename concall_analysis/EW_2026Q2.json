@@ -1,0 +1,164 @@
+{
+ "ticker": "EW",
+ "company": "Edwards Lifesciences Corporation",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-23",
+ "file": "EW_2026Q2.json",
+ "source_hash": "7e72cec43059",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-15T08:18:19.627237+00:00",
+ "headline": [
+  "에드워즈 라이프사이언스의 2026년 2분기 매출액은 전년 동기 대비 12.5% 증가한 17억 4,000만 달러를 기록함.",
+  "호실적을 반영하여 2026년 연간 전체 매출 성장률 가이던스를 기존 9%~11%에서 10%~11%로 상향 조정함.",
+  "TAVR 및 TMTT 사업부 모두 글로벌 수요 호조와 적응증 확대에 힘입어 예상치를 상회하는 성장세를 시현함.",
+  "환율 역풍 및 세무 관련 일회성 요인에도 불구하고 조정 EPS 가이던스 $2.95~$3.05를 유지함."
+ ],
+ "changes": [
+  "전체 연간 매출 성장률 가이던스를 기존 9%~11%에서 10%~11%로 상향 조정함.",
+  "TAVR 사업부 연간 매출 성장률 가이던스를 기존 7%~9%에서 8%~9%로 상향 조정함.",
+  "TMTT 사업부 연간 매출 가이던스를 기존 7억 4,000만~7억 8,000만 달러에서 7억 6,000만~7억 8,000만 달러로 상향 조정함.",
+  "효과세율이 기존 16%~19% 범위의 최상단에 이를 것으로 전망을 수정함."
+ ],
+ "prepared": {
+  "summary": [
+   "경영진은 2분기 매출액이 전년 동기 대비 12.5% 증가한 17억 4,000만 달러를 기록하며 예상보다 강한 성장세를 보였다고 발표함.",
+   "TAVR 매출은 SAPIEN 플랫폼의 임상적 차별성과 임상 데이터 확산에 힘입어 전년 동기 대비 10.5% 증가한 13억 달러를 기록함.",
+   "TMTT 사업부는 PASCAL, EVOQUE, SAPIEN M3 등의 고른 성장에 힘입어 44.8% 급증한 1억 9,590만 달러의 매출을 달성함.",
+   "우수한 상반기 실적과 전 사업부의 견조한 펀더멘털을 바탕으로 연간 매출 성장률 가이던스를 상향 조정하고 주당순이익 가이던스를 재확인함."
+  ],
+  "sections": [
+   {
+    "title": "TAVR 사업부",
+    "points": [
+     "2분기 글로벌 매출 13억 달러로 전년 동기 대비 10.5% 증가함.",
+     "SAPIEN 3 Ultra RESILIA의 채택 확대 및 일본 내 무증상 적응증 승인 등으로 성장 모멘텀 유지함."
+    ]
+   },
+   {
+    "title": "TMTT 사업부",
+    "points": [
+     "2분기 글로벌 매출 1억 9,590만 달러로 전년 동기 대비 44.8% 급증함.",
+     "EVOQUE의 글로벌 센터 확장 가속화 및 PASCAL의 견조한 수요가 성장을 견인함."
+    ]
+   },
+   {
+    "title": "수술(Surgical) 사업부",
+    "points": [
+     "2분기 글로벌 매출 2억 8,400만 달러로 전년 동기 대비 5% 증가함.",
+     "INSPIRIS, MITRIS, KONECT 등 RESILIA 포트폴리오 채택이 지속됨."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "연간 매출 성장률",
+   "value": "10% to 11%",
+   "prev": "9%~11%",
+   "change": "상향",
+   "quote": "Our updated 2026 sales guidance is 10% to 11% for the company with strong earnings leverage and operating margin expansion."
+  },
+  {
+   "item": "조정 EPS",
+   "value": "$2.95 to $3.05",
+   "prev": "$2.95~$3.05",
+   "change": "유지",
+   "quote": "We have confidence in delivering our previously increased full year adjusted EPS guidance of $2.95 to $3.05..."
+  },
+  {
+   "item": "TAVR 매출 성장률",
+   "value": "8% to 9%",
+   "prev": "7%~9%",
+   "change": "상향",
+   "quote": "And given our Q2 results, we are increasing our full year sales growth guidance to 8% to 9% from 7% to 9%."
+  },
+  {
+   "item": "TMTT 매출",
+   "value": "$760 million to $780 million",
+   "prev": "$740 million to $780 million",
+   "change": "상향",
+   "quote": "As a result of our continued sustainable performance, we are increasing TMTT sales guidance to $760 million to $780 million from $740 million to $780 million."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "U.S. TAVR NCD finalization",
+   "target": "2026년 9월",
+   "status": "진행 중",
+   "note": "CMS의 NCD 재검토 초안에 이어 9월에 최종 정책 메모가 발표될 예정임.",
+   "quote": "We are also pleased that CMS continues to prioritize and progress the reconsideration of the NCD for TAVR, and we look forward to the final policy in September."
+  },
+  {
+   "item": "PROGRESS trial results presentation",
+   "target": "2026년 하반기 TCT",
+   "status": "진행 중",
+   "note": "중등도 대동맥 협착증 환자를 대상으로 한 PROGRESS 임상 결과가 TCT에서 발표될 예정임.",
+   "quote": "We will learn more about the clinical relevance of treating this patient with TAVR when the PROGRESS trial results are presented at TCT later this year."
+  },
+  {
+   "item": "PASCAL tricuspid U.S. approval and launch",
+   "target": "2026년 4분기",
+   "status": "진행 중",
+   "note": "미국 내 삼차판막 질환용 PASCAL 승인 및 출시가 4분기에 이루어질 것으로 예상함.",
+   "quote": "Also, in the fourth quarter, we continue to expect CLASP IITR results to be presented at TCT and the launch of PASCAL in the U.S. for tricuspid patients."
+  },
+  {
+   "item": "Next-generation PASCAL technology launch in U.S. and Europe",
+   "target": "2026년 4분기",
+   "status": "진행 중",
+   "note": "Capture Clarity 기술이 적용된 차세대 PASCAL의 미국 및 유럽 승인 및 출시를 4분기로 예상함.",
+   "quote": "We continue to expect that our next-generation PASCAL with Capture Clarity technology for both mitral and tricuspid patients in the U.S. and Europe will be approved in the fourth quarter."
+  },
+  {
+   "item": "ECLIPTIS surgical left atrial appendage technology U.S. introduction",
+   "target": "2026년 하반기",
+   "status": "진행 중",
+   "note": "외과용 좌심방이 기술인 ECLIPTIS의 미국 내 주요 롤아웃을 올해 하반기에 계획 중임.",
+   "quote": "We also received U.S. approval for ECLIPTIS, surgical left atrial appendage technology and are planning for a major rollout later this year..."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "TAVR 및 TMTT 실적 동향",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "TAVR의 강력한 실적을 이끈 무증상 환자 시장 확대 및 경쟁사 퇴출에 따른 점유율 변화 추이에 대해 설명해달라. 또한 TMTT 부문에서 7% 매출 상회를 견인한 핵심 제품이 무엇인지 궁금하다.",
+   "answer": "TAVR의 성장은 지난 20년간 구축한 임상 데이터와 SAPIEN 플랫폼의 차별화 덕분이며 미국과 해외 시장의 성장률이 유사함. TMTT는 PASCAL, EVOQUE, M3 전반에 걸쳐 고른 채택과 성장이 나타남."
+  },
+  {
+   "theme": "PROGRESS 임상 디자인 및 중등도 대동맥 협착증",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)",
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "PROGRESS 임상의 환자군 이질성을 뉴욕 밸브스 컨퍼런스에서 먼저 발표한 이유는 무엇이며, 중증과 중등도 환자군의 차이 및 향후 TAVR 사업에 미칠 영향은 무엇인가?",
+   "answer": "EARLY TAVR의 경험을 바탕으로 환자 질환에 대한 이해를 높이기 위해 베이스라인 특성을 분리하여 발표했으며, 중등도 AS 환자군은 전체 중등도 환자의 약 50%를 차지하는 대규모 집단임. 실질적인 임상 진료 변화는 점진적으로 이루어지므로 2026년 영향은 미미할 것임."
+  },
+  {
+   "theme": "TAVR NCD 개정안의 영향",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "CMS의 NCD 개정 초안이 내년 TAVR 성장과 신규 센터 개설에 미치는 영향은 어느 정도이며, TMTT 역량 확충에도 기여하는가?",
+   "answer": "NCD 초안은 무증상 적응증 커버리지 경로 마련, 증상성 중등도 대동맥 협착증의 근거 개발 면제, 환자 접근성 효율화 등 3가지 측면에서 긍정적이며 신규 센터의 대규모 추가보다는 프로세스 효율화가 핵심임."
+  },
+  {
+   "theme": "EVOQUE 및 TMTT 포트폴리오 모멘텀",
+   "analysts": [
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "TMTT 실적 강세 중 EVOQUE에서 뚜렷한 인플루언션(변곡점)이 나타나고 있는지, 아니면 포트폴리오 전반의 광범위한 성장인지 궁금하다.",
+   "answer": "EVOQUE는 출시 이후 지속적으로 높은 수요를 보이며 도입 센터가 매주/매월 증가하고 있으며 기존 센터의 환자 스크리닝 및 시술 프로세스 간소화로 활용도가 깊어지고 있음."
+  },
+  {
+   "theme": "TAVR-in-TAVR 및 장기 성장 전략",
+   "analysts": [
+    "Josh Jennings (TD Cowen)"
+   ],
+   "question": "저위험군 승인 후 8년 차에 접어드는 시점에서 TAVR-in-TAVR(lifetime management)이 볼륨 성장에 유의미하게 기여하는 시기와 내부 기대치는 어떻게 되는가?",
+   "answer": "밸브 내구성 한계를 넘어선 환자들이 늘어남에 따라 lifetime management의 중요성이 커지고 있으며, 이미 시장 모델에 반영되어 점진적으로 성장할 것으로 전망함."
+  }
+ ]
+}
