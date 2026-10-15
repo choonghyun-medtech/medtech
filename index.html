@@ -356,6 +356,8 @@ tr:last-child td{border-bottom:none}
 .cal-capture-stage .cal-capture-sub{font-size:11.5px; color:var(--dim); margin-bottom:12px}
 .cal-capture-stage .day{min-height:84px}
 .cal-capture-stage .grid.grid7{grid-template-columns:repeat(7,1fr)}
+/* 실적 시즌 이미지에서는 국내(초록)·해외(파랑) 실적을 색으로 구분(2026-10-15). 화면 달력은 종류별 색 그대로. */
+.cal-capture-stage .day .ev.earn.glb, .cal-capture-stage .cal-legend-chip.earn.glb{background:rgba(37,99,235,.12); color:var(--blue)}
 .cal-capture-stage .day.mstart .n{color:var(--accent); font-weight:800}
 .cal-capture-stage .cal-pend-cell{min-height:84px}
 .cal-capture-stage .legend .cal-legend-chip{cursor:default}
@@ -1886,7 +1888,7 @@ function calGridHtml(weeks, rangeFirst, rangeLast, events, pending, opts={}){
         const full = ev.cand
           ? `날짜 미정(후보일) · ${ev.company} ${ev.quarter||''} 실적발표 · IR 회신: "${ev.text}"`
           : `${meta.label} · ${ev.company||ev.ticker||''} · ${ev.title||''}`.trim();
-        return `<div class="ev ${meta.cls}${ev.cand?' cand':''}" title="${escapeHtml(full)}">${escapeHtml(label)}</div>`;
+        return `<div class="ev ${meta.cls}${ev.cand?' cand':''}${ev.region==='global'?' glb':''}" title="${escapeHtml(full)}">${escapeHtml(label)}</div>`;
       }).join('');
       let more = '';
       if(interactive && dayEvents.length > CAL_DAY_MAX){
@@ -1908,7 +1910,7 @@ function calGridHtml(weeks, rangeFirst, rangeLast, events, pending, opts={}){
     html += '<div class="cal-pend-cell">' + pendByWeek[wi].map(p=>{
       const key = calPendKey(p);
       const range = p.dates && p.dates.length ? '' : ` · ${calPendRange(p)}`;
-      const tip = `${p.company} ${p.quarter||''} 실적발표 · IR 회신: "${p.text}" (${calPendRange(p)})${p.memo ? ' · '+p.memo : ''}`;
+      const tip = `${p.company} ${p.quarter||''} 실적발표 · IR 회신: "${p.text}" (${calPendRange(p)})`;
       return `<div class="cal-pend-item${pinned && CAL_STATE.pinned===key?' pinned':''}" data-key="${escapeHtml(key)}" title="${escapeHtml(tip)}">
         <div class="pc">${escapeHtml(p.company)} 실적</div><div class="pp">${escapeHtml(p.text)}${range}</div></div>`;
     }).join('') + '</div>';
@@ -2206,7 +2208,8 @@ async function captureCalendar(btn){
       <div class="${gridCls}">${dows}</div>
       <div class="${gridCls}" style="margin-top:5px">${calGridHtml(weeks, start, end, season.events, season.pending, {noPendCol})}</div>
       <div class="legend">
-        <span class="cal-legend-chip earn">실적발표</span>
+        <span class="cal-legend-chip earn">국내 실적</span>
+        <span class="cal-legend-chip earn glb">해외 실적</span>
         ${season.pending.length ? '<span class="cal-legend-note">날짜 미정</span>' : ''}
       </div>`;
     const canvas = await html2canvas(stage, {

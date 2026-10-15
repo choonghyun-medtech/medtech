@@ -8,8 +8,9 @@
   경우가 많다. 그래서 글로벌 대시보드와 같은 방식으로, 사람이 엑셀에 회신 문구를 그대로 적고
   이 스크립트가 날짜 범위로 바꿔 calendar_domestic_manual.json을 만든다
   (update_domestic_earnings.bat 더블클릭 → 변환 → 변경 요약 확인 → Y면 커밋·푸시).
-- 엑셀(1행 머리글, 2행부터 데이터): 기업명 | 종목코드 | 분기 | 회신 일정(받은 그대로) | 메모
-  종목코드는 비워두면 scripts/tickers.json에서 기업명으로 찾아 채운다.
+- 엑셀(1행 머리글, 2행부터 데이터): 기업명 | 종목코드 | 분기 | 회신 일정 | 메모
+  종목코드는 비워두면 scripts/tickers.json에서 기업명으로 찾아 채운다. 메모는 작성자 참고용이라
+  읽지 않는다. 회신 일정이 비어 있으면(회신 대기)·"미정"이면 달력에 넣지 않고 실행 결과에 목록만 보여준다.
 - 회신 문구 해석 규칙(캘린더 화면의 표기도 이 규칙을 따른다):
     "10/23"                → 하루 확정 → 그 날짜 칸
     "11월 초/중순/말"       → 1~10일 / 11~20일 / 21일~말일
@@ -193,13 +194,22 @@ def main():
         sys.exit(1)
 
     tickers = load_ticker_lookup()
-    events, errors = [], []
+    events, errors, waiting, undecided = [], [], [], []
     for i, row in enumerate(rows[1:], start=2):
-        company, code, quarter, text, memo = [cell_text(row[j]) if j < len(row) else "" for j in range(5)]
+        # 메모(E열)는 작성자 참고용(컨콜 시간 등)이라 읽지 않는다 — 대시보드에 공개하지 않음(2026-10-15)
+        company, code, quarter, text = [cell_text(row[j]) if j < len(row) else "" for j in range(4)]
         if not company and not text:
             continue
         if not company:
             errors.append(f"{i}행: 기업명이 비어 있음")
+            continue
+        # 회신 일정이 비어 있으면 아직 회신을 못 받은 기업, "미정"이면 회사도 아직 날짜를 안 정한 것 —
+        # 둘 다 달력에 놓을 날짜가 없으니 오류가 아니라 목록으로만 알려주고 넘어간다.
+        if not text:
+            waiting.append(company)
+            continue
+        if re.fullmatch(r"(미정|미확정|TBD|tbd|추후\s*안내|추후\s*공지)", text):
+            undecided.append(company)
             continue
         code = code.zfill(6) if code.isdigit() else code
         if not code:
@@ -211,8 +221,6 @@ def main():
             continue
         # text는 화면 표기용으로 통일된 문구("10월 23일" → "10/23")
         ev = {"company": company, "ticker": code, "quarter": quarter, **span}
-        if memo:
-            ev["memo"] = memo
         events.append(ev)
         kind = "후보일 " + ", ".join(span["dates"]) if "dates" in span else (
             "확정 " + span["from"] if span["from"] == span["to"] else f"기간 {span['from']} ~ {span['to']}")
@@ -237,6 +245,10 @@ def main():
         f.write("\n")
 
     print(f"완료: {args.out} ({len(events)}건)")
+    if waiting:
+        print(f"  회신 대기 {len(waiting)}곳(달력 제외): {', '.join(waiting)}")
+    if undecided:
+        print(f"  '미정' 회신 {len(undecided)}곳(달력 제외): {', '.join(undecided)}")
     if errors:
         print("", file=sys.stderr)
         print(f"[확인 필요] 해석하지 못해 건너뛴 줄 {len(errors)}개 — 엑셀 문구를 고쳐 다시 실행하세요:", file=sys.stderr)
