@@ -1,0 +1,159 @@
+{
+ "ticker": "UNH",
+ "company": "UnitedHealth Group Incorporated",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-16",
+ "file": "UNH_2026Q2.json",
+ "source_hash": "1d805a72d23d",
+ "prior_basis": "",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:22:49.370320+00:00",
+ "headline": [
+  "유나이티드헬스 그룹은 2026년 2분기 조정 EPS $6.38, 총매출액 1,120억 달러를 기록함.",
+  "Medicare Advantage(메디케어 어드밴티지)의 의료 비용 추세가 자체 이니셔티브 덕분에 예상치를 밑돌며 양호한 실적을 견인함.",
+  "상용보험(Commercial) 부문은 No Surprises Act의 독립 분쟁 해결(IDR) 프로세스 부작용 등으로 의료 비용이 11%를 상회하며 마진 압박이 지속됨.",
+  "2026년 연간 가이던스를 조정하여 조정 EPS 범위를 $19.50~$20로 제시함."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "경영진은 2분기 실적이 전반적인 사업 부문의 규율 강화와 경영 효율성 개선을 반영하여 예상치에 부합하거나 상회했다고 밝힘.",
+   "Medicare 사업은 혜택 설계와 네트워크 관리를 통해 비용 추세가 안정화되었으나, Commercial 사업은 여전히 높은 비용 압박을 받고 있음.",
+   "Optum 부문은 OptumHealth의 통합 가치 기반 돌봄 모델 안착, Optum Rx의 투명성 이니셔티브 호조, Optum Insight의 AI 기반 기술 확대로 성장세를 보임.",
+   "연간 가이던스를 갱신하며 조정 EPS를 $19.50~$20로 제시하고, 자사주 매입 규모를 최소 50억 달러로 상향 조정함."
+  ],
+  "sections": [
+   {
+    "title": "UnitedHealthcare(보험업)",
+    "points": [
+     "Medicare Advantage 가입자 유지율이 예상보다 양호하여 연간 가입자 감소 폭을 약 110만 명으로 예상함.",
+     "Medicaid 사업은 비용 추세가 예상에 부합하며 마진 압박 속에서도 주 정부와 적정 수가 협의를 지속 중임.",
+     "Commercial 사업은 의료 비용 상승 추세가 11%를 상회하며 마진 회복 시점이 예상보다 지연됨."
+    ]
+   },
+   {
+    "title": "Optum(헬스케어 서비스)",
+    "points": [
+     "OptumHealth는 입원율 10% 감소 및 환자 만족도 5% 상승 등 가치 기반 돌봄 모델에서 가시적인 성과를 거둠.",
+     "Optum Rx는 투명성 제고를 위한 월 회원비 기반 접근법과 제조사 리베이트 100% 패스스루 확대로 높은 고객 유지율을 기록함.",
+     "Optum Insight는 AI 기반 코딩 및 인터페이스 등 신기술 도입을 통해 강력한 운영 효율성을 달성함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 조정 EPS",
+   "value": "$19.50~$20",
+   "prev": "",
+   "change": "신규",
+   "quote": "We're providing new adjusted earnings per share guidance range of $19.50 to $20 with slightly more earnings in 3Q relative to 4Q."
+  },
+  {
+   "item": "FY26 주식 환매(Share Repurchases)",
+   "value": "at least $5 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect to complete total share repurchases of at least $5 billion in 2026 compared to initial guidance of $2.5 billion."
+  },
+  {
+   "item": "FY26 의료관리비율(MCR)",
+   "value": "88.1%, plus or minus 25 basis points",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect a full year medical care ratio of 88.1%, plus or minus 25 basis points."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "사전 허가(Prior Authorization) 볼륨 축소",
+   "target": "2026년 말",
+   "status": "진행 중",
+   "note": "연말까지 사전 허가 볼륨의 30%와 소아과 진료 관련 요구사항의 거의 2/3를 폐기할 계획임.",
+   "quote": "For example, in the quarter, we committed to eliminating by the end of this year, 30% of prior authorization volume and nearly 2/3 of prior authorization requirements for pediatric care."
+  },
+  {
+   "item": "OptumHealth AI 앰비언트 리스닝(Ambient Listening) 도입 확대",
+   "target": "2026년 연말",
+   "status": "진행 중",
+   "note": "고용된 임상의의 70%에게 제공 중이며 연말까지 90% 이상으로 확대할 예정임.",
+   "quote": "There is real progress on the rollout of AI-based ambient listening capabilities available to 70% of our employed providers today and on track to exceed 90% by year-end."
+  },
+  {
+   "item": "Optum Rx 제조사 리베이트 패스스루 확대",
+   "target": "2026년 연말",
+   "status": "진행 중",
+   "note": "2026년 말까지 고객의 95% 이상을 100% 패스스루 조건으로 전환할 예정임.",
+   "quote": "We are well on our way as we expect to end 2026 with more than 95% of clients on 100% pass-through."
+  },
+  {
+   "item": "부채 대 자본 비율(Debt-to-Capital Ratio) 개선",
+   "target": "2026년 연말",
+   "status": "진행 중",
+   "note": "2분기 말 41.2%를 기록했으며 연말까지 약 40% 수준으로 낮추는 목표를 유지 중임.",
+   "quote": "We remain on track to reduce our debt-to-capital ratio to approximately 40% by the end of 2026."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "Medicaid 실적 및 2026년 마진 전망",
+   "analysts": [
+    "Justin Lake (Wolfe Research)"
+   ],
+   "question": "Medicaid 부문에서 일부 개선이 관찰되는데, 연말 마진이 어떻게 마무리될 것으로 예상하는지?",
+   "answer": "Medicaid 2분기 실적은 예상에 부합했으며, 연간 마진은 이전에 제시한 -1% ~ -1.7% 범위 내에 안착할 것으로 예상함."
+  },
+  {
+   "theme": "Commercial(상용보험) 의료 비용 추세와 마진 회복 시점",
+   "analysts": [
+    "Justin Lake (Wolfe Research)",
+    "Andrew Mok (Barclays)"
+   ],
+   "question": "상용보험 부문의 의료 비용 압박 수준과 2027년 목표했던 마진 회복 시점에 미치는 영향은 어떠한지?",
+   "answer": "의료 비용 추세가 11%를 상회하며 No Surprises Act의 IDR 프로세스 부작용 등이 비용을 가중시키고 있어, 2027년 마진 회복 시점은 지연될 것으로 보이나 장기적으로 7% 이상 회복 목표에는 변함이 없음."
+  },
+  {
+   "theme": "장기 성장률(13~16%) 달성 가능성",
+   "analysts": [
+    "A.J. Rice (UBS)",
+    "Kevin Fischbeck (Bank of America)"
+   ],
+   "question": "올해의 강력한 실적과 회복세를 바탕으로 향후 13~16% 장기 이익 성장 궤도에 복귀할 수 있는지?",
+   "answer": "경영진은 생산성 향상과 자본 활용, AI 기술 도입을 통해 13~16%의 장기 성장률 목표를 달성할 수 있다는 믿음을 가지고 있음."
+  },
+  {
+   "theme": "Medicare Advantage 의료 비용 추세와 입찰 환경",
+   "analysts": [
+    "Stephen Baxter (Wells Fargo)",
+    "Ann Hynes (Mizuho Securities)"
+   ],
+   "question": "MA 사업의 비용 추세가 예상보다 양호한 배경과 2027년 입찰에 반영된 기조는 무엇인지?",
+   "answer": "비용 추세가 역사적 수준보다는 높으나 자체적인 혜택 설계 및 네트워크 관리 이니셔티브와 호흡기 시즌의 영향 등으로 당초 예상보다는 낮게 형성되고 있음."
+  },
+  {
+   "theme": "OptumHealth 가치 기반 돌봄(VBC) 마진 및 운영 성과",
+   "analysts": [
+    "Lance W. Wilkes (Bernstein)",
+    "David Windley (Jefferies)"
+   ],
+   "question": "OptumHealth의 가치 기반 돌봄 마진 수준과 하반기 개선 전략은 무엇인지?",
+   "answer": "환우 관리 및 임상 효율화 노력으로 상반기 실적이 예상보다 양호했으며, 하반기에도 이러한 운영 규율과 기술 투자가 지속될 것임."
+  },
+  {
+   "theme": "AI 투자와 운영 효율성 및 상업화 전략",
+   "analysts": [
+    "Erin Wilson Wright (Morgan Stanley)"
+   ],
+   "question": "AI 관련 이니셔티브가 장기 마진 목표와 외부 제품 상업화에 미치는 영향은 어떠한지?",
+   "answer": "AI는 내부 운영 효율성 제고뿐만 아니라 사전 허가 자동화 등 외부 상용화 제품(Optum Real 등)으로도 확장되어 장기적인 성장 동력이 될 것임."
+  },
+  {
+   "theme": "CMS Stars 제도 동향",
+   "analysts": [
+    "Whit Mayo (Leerink Partners)"
+   ],
+   "question": "최근 Stars 제도와 관련된 업계 소송 및 향후 기대치에 대한 평가는?",
+   "answer": "품질 향상에 전념하고 있으며 CMS와 긴밀히 협력하여 프로그램 안정성과 혜택 수급자에게 최선의 결과를 도출하기 위해 노력하고 있음."
+  }
+ ]
+}
