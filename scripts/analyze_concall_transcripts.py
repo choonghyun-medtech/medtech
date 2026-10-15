@@ -30,6 +30,7 @@
 """
 import argparse
 import datetime
+import difflib
 import hashlib
 import json
 import os
@@ -71,8 +72,8 @@ JSON 객체 하나만 출력하세요(설명·코드블록 없이).
     "item": "가이던스 항목(예: FY26 유기적 매출 성장률, FY26 조정 EPS)",
     "value": "이번 분기 제시 값(원문 단위 그대로, 예: 8~10%, $6.10~6.20)",
     "prev": "직전 분기 정리에 같은 항목이 있으면 그 값, 없으면 빈 문자열",
-    "change": "상향|유지|하향|신규|철회|비교불가 중 하나",
-    "quote": "근거가 된 원문 영어 문장 1개(그대로 인용)"
+    "change": "상향|유지|하향|신규|철회|언급 없음|비교불가 중 하나",
+    "quote": "근거가 된 원문 영어 문장 1개(그대로 인용, 언급 없음이면 빈 문자열)"
   }],
   "milestones": [{
     "item": "경영진이 제시한 구체적 목표·일정(예: X 제품 FDA 승인 예상, 신공장 가동)",
@@ -91,9 +92,14 @@ JSON 객체 하나만 출력하세요(설명·코드블록 없이).
 
 규칙:
 - 숫자·단위·기간(FY/분기)은 원문 그대로 옮기고 계산하거나 지어내지 마세요. 원문에 없는 내용은 쓰지 마세요.
-- milestones: 직전 분기 정리에 있던 마일스톤은 이번 분기 원문에서 진행 상황을 찾아 status를 매기고(언급이 없으면
-  "언급 없음"), 이번 분기 새로 제시된 것은 "신규"로 추가하세요. 일반적 포부("성장을 지속")는 넣지 마세요.
-- guidance: 회사가 명시한 수치형 가이던스만. 직전 분기와 같은 항목이면 prev를 채우고 change를 판정하세요.
+- milestones: 직전 분기 정리에 있던 마일스톤은 이번 분기 언급 여부와 관계없이 **하나도 빠짐없이** 넣고, item은 직전 분기
+  표기를 글자 그대로 쓰세요. 이번 분기 원문에서 그 항목을 직접 언급한 문장이 있을 때만 진행 상황을 판정하고, 없으면
+  status를 "언급 없음", quote를 빈 문자열로 두세요. 비슷하지만 다른 이니셔티브의 수치로 대신 판정하지 마세요.
+  이번 분기 새로 제시된 것은 "신규"로 추가하세요. 일반적 포부("성장을 지속")는 넣지 마세요.
+- guidance: 회사가 명시한 수치형 가이던스만. 직전 분기 정리에 있던 가이던스 항목도 **하나도 빠짐없이** 넣고(item은 직전
+  분기 표기 그대로), prev를 채운 뒤 change를 판정하세요. 이번 분기에 다시 언급되지 않았으면 change="언급 없음", value는 빈 문자열.
+  가이던스가 아니라 이미 집행한 실적(예: 3분기까지 자사주 50억 달러 매입)은 value에 넣지 마세요.
+- 직전 분기 정리에 쓰인 한국어 표기(사업부명·용어)가 있으면 그 표기를 그대로 따라 분기 간 표기를 통일하세요.
 - qa: 같은 주제의 질문은 하나로 묶으세요(질문자 여러 명이면 analysts에 모두). 3~10개 주제. 중요한 순서로.
 - 회사·제품·인물 이름은 아래 표기 목록이 있으면 그 표기를 따르고, 없으면 영어 그대로 두세요.
 - 문장은 간결한 한국어 보고서체로."""
@@ -145,14 +151,42 @@ def prior_context(ticker, call_date, analyses, earnings_ir, quarter=""):
             "마일스톤": [{k: m.get(k) for k in ("item", "target", "status")} for m in p.get("milestones", [])
                       if m.get("status") not in ("달성", "철회")],
         }
-        return json.dumps(ctx, ensure_ascii=False, indent=1), f"{p.get('quarter')} 컨콜 분석"
+        return json.dumps(ctx, ensure_ascii=False, indent=1), f"{p.get('quarter')} 컨콜 분석", p
     irs = [c for c in earnings_ir.get("companies", []) if c.get("ticker") == ticker and (c.get("date") or "") < call_date
            and c.get("quarter") != quarter]
     if irs:
         c = max(irs, key=lambda c: c.get("date") or "")
         ctx = {"분기": c.get("quarter"), "보도자료 지표": c.get("metrics", []), "보도자료 요약": c.get("summary_ko", [])}
-        return json.dumps(ctx, ensure_ascii=False, indent=1), f"{c.get('quarter')} IR 보도자료 요약"
-    return "없음", ""
+        return json.dumps(ctx, ensure_ascii=False, indent=1), f"{c.get('quarter')} IR 보도자료 요약", None
+    return "없음", "", None
+
+
+def carry_over_prior(parsed, prior):
+    """직전 분기 분석의 가이던스·마일스톤 중 응답에서 빠진 것을 "언급 없음"으로 채운다(시계열이 끊기지 않게).
+    모델에 빠짐없이 넣으라고 지시하지만, 실제로 빠뜨린 사례가 있어(2026-10-15 UNH 3Q 샘플) 코드로 한 번 더 막는다."""
+    if not prior:
+        return 0
+    # 모델이 항목명을 조금 바꿔 쓰는 경우가 있어(예: "부채 대 자본 비율 개선" → "… 40% 도달") 이름이 비슷하면 같은 항목으로 본다
+    norm = lambda s: re.sub(r"[\s()\[\]·,~\-]", "", (s or "").lower())
+    def present(item, have):
+        n = norm(item)
+        return any(n == h or difflib.SequenceMatcher(None, n, h).ratio() >= 0.6 for h in have)
+    added = 0
+    have = {norm(g.get("item")) for g in parsed.get("guidance", [])}
+    for g in prior.get("guidance", []):
+        if g.get("change") in ("철회",) or present(g.get("item"), have):
+            continue
+        parsed["guidance"].append({"item": g.get("item"), "value": "", "prev": g.get("value") or g.get("prev") or "",
+                                   "change": "언급 없음", "quote": ""})
+        added += 1
+    have = {norm(m.get("item")) for m in parsed.get("milestones", [])}
+    for m in prior.get("milestones", []):
+        if m.get("status") in ("달성", "철회") or present(m.get("item"), have):
+            continue
+        parsed["milestones"].append({"item": m.get("item"), "target": m.get("target") or "", "status": "언급 없음",
+                                     "note": "이번 분기 컨콜에서 직접 언급되지 않음", "quote": ""})
+        added += 1
+    return added
 
 
 def parse_response(raw):
@@ -253,8 +287,8 @@ def main():
         if not tr:
             continue
         prepared, qa = transcript_text(tr)
-        prior, prior_label = prior_context(ticker, tr.get("call_date") or t.get("call_date") or "", analyses, earnings_ir,
-                                           tr.get("quarter") or t.get("quarter") or "")
+        prior, prior_label, prior_analysis = prior_context(ticker, tr.get("call_date") or t.get("call_date") or "",
+                                                           analyses, earnings_ir, tr.get("quarter") or t.get("quarter") or "")
         user = (f"[회사] {tr.get('company')} ({ticker})\n[분기] {tr.get('quarter')}\n[컨콜 날짜] {tr.get('call_date')}\n\n"
                 f"[직전 분기 정리]\n{prior}\n\n[실적발표]\n{prepared}\n\n[Q&A]\n{qa or '(Q&A 없음)'}")
         print(f"[INFO] {fname} 분석 중 (원문 약 {len(user):,}자, 직전 분기: {prior_label or '없음'})", file=sys.stderr)
@@ -280,6 +314,9 @@ def main():
         if parsed is None:
             pending_tickers.add(ticker)
             continue
+        carried = carry_over_prior(parsed, prior_analysis)
+        if carried:
+            print(f"[INFO] {fname}: 응답에서 빠진 직전 분기 항목 {carried}개를 '언급 없음'으로 채움", file=sys.stderr)
 
         out = {
             "ticker": ticker,
