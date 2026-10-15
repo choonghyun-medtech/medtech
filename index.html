@@ -942,8 +942,8 @@ tr:last-child td{border-bottom:none}
          여기도 위쪽 차트/표 묶음과 시각적으로 구분되도록 medtour-group-h를 준다
          (사용자 요청 — 두 탭의 월간 분석 섹션 형식을 통일). -->
     <div class="medtour-group-h">월간 분석</div>
-    <div class="sec-h"><h2 style="font-size:13px">수출 데이터 종합 <select id="export-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="export-monthly-analysis-note">매월 20일 자동 작성</span></div>
-    <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 20일 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">수출 데이터 종합 <select id="export-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="export-monthly-analysis-note">매월 19일 자동 작성</span></div>
+    <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 19일 자동 작성됩니다.</div>
     </div>
     <!-- /수출 데이터 -->
 
@@ -2640,7 +2640,7 @@ async function loadNewsTrend(){
 }
 
 // 산업데이터 "월간 분석" 카드 — export_monthly_analysis.json(scripts/analyze_export_monthly.py,
-// 매월 20일)과 medtour_monthly_analysis.json(scripts/analyze_medtour_monthly.py 매월 16일
+// 매월 19일)과 medtour_monthly_analysis.json(scripts/analyze_medtour_monthly.py 매월 16일
 // "medtour" 섹션 + scripts/analyze_visitor_monthly.py 매월 3일 "visitor" 섹션이 같은 파일의
 // 같은 대상월 키에 합쳐짐 — 둘 다 유의미한 변동이 있는 항목만 LLM이 서술한 텍스트라 값이
 // 아예 없는 달도 있을 수 있다(그 경우 안내 문구 유지).
@@ -2709,7 +2709,7 @@ async function loadExportMonthlyAnalysis(){
     const defs = [{ key: 'export', title: '수출 데이터' }];
     const show = ym => {
       renderMonthlyAnalysisCard(card, months, defs, ym);
-      if(note) note.textContent = `${ymLabel(ym)} 기준 · 매월 20일 자동 작성 · 지난 분석은 왼쪽에서 선택`;
+      if(note) note.textContent = `${ymLabel(ym)} 기준 · 매월 19일 자동 작성 · 지난 분석은 왼쪽에서 선택`;
     };
     const valid = Object.fromEntries(keys.map(k => [k, months[k]]));
     setupMonthlyAnalysisSelect(document.getElementById('export-monthly-analysis-month'), valid, null, show);

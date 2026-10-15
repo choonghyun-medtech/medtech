@@ -2,10 +2,11 @@ name: Update export monthly analysis
 
 on:
   schedule:
-    # export_data.json 수집 창(update-export-data.yml, 매월 16~19일)이 끝난 다음날인 매월
-    # 20일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다(사용자 지정, 2026-09-14).
-    # 시간은 다른 update-*.yml과 겹치지 않는 애매한 분으로 KST 08:12 = 23:12 UTC(전날).
-    - cron: "12 23 19 * *"
+    # export_data.json 수집 창(update-export-data.yml, KST 매월 15~18일)이 끝난 다음날인 매월
+    # 19일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다(사용자 지정 2026-09-14,
+    # 2026-10-15 수집 창과 함께 하루 앞당김 20일 → 19일). 시간은 KST 08:12 = 23:12 UTC(전날)이라
+    # cron 날짜는 18일로 적는다.
+    - cron: "12 23 18 * *"
   workflow_dispatch:  # Actions 탭에서 수동 실행 — 기간을 비우면 평소처럼 최신 달 1개만 분석
     inputs:
       months:
