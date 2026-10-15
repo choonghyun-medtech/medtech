@@ -1,0 +1,172 @@
+{
+ "ticker": "ABT",
+ "company": "Abbott Laboratories",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-16",
+ "file": "ABT_2026Q2.json",
+ "source_hash": "72f0cd4e0c3d",
+ "prior_basis": "",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:55:35.587598+00:00",
+ "headline": [
+  "애보트의 2026년 2분기 comparable 매출은 4.8% 증가하며 가속화되었고, 조정 EPS는 $1.31로 가이던스 중간값과 컨센서스를 상회함.",
+  "2분기 호실적과 하반기 전망을 바탕으로 연간 comparable 매출 성장률 가이던스 6.5%~7.5%를 유지하고, EPS 가이던스 범위를 $5.45~$5.60으로 상향함.",
+  "연속당뇨측정(CGM) 프랜차이즈인 Libre 매출은 분기 20억 달러를 돌파하며 9.5% 성장함.",
+  "하반기 매출 성장 가속화의 80%는 뉴트리션, 전기생리학(EP), 코어랩, 암 진단(Exact Sciences 인수 효과 등)의 4개 사업 영역이 견인할 것임."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "2분기 매출은 전년 대비 4.8% 증가하였으며, 조정 EPS는 $1.31로 예상치를 상회함.",
+   "조정 매출총이익률은 58.0%로 전년 동기 대비 100bp 개선됨.",
+   "의료기기와 뉴트리션 사업부가 고르게 성장하였으며, 특히 전기생리학과 연속당뇨측정이 견조한 실적을 기록함.",
+   "하반기 환율은 전체 매출에 약 1% 긍정적 영향을 미칠 것으로 예상하며, 3분기 조정 EPS는 $1.38~$1.46으로 전망함."
+  ],
+  "sections": [
+   {
+    "title": "진단 (Diagnostics)",
+    "points": [
+     "미국 코어랩 매출은 7.5% 성장하였으며, 특히 병원 내 실험실 사업은 13% 고성장함.",
+     "신속 및 분자 진단은 호흡기 바이러스 시즌 약화로 8% 감소함.",
+     "암 진단 매출은 Cologuard의 고성장에 힘입어 13% 증가함."
+    ]
+   },
+   {
+    "title": "뉴트리션 (Nutrition)",
+    "points": [
+     "매출은 전분기 대비 1억 2,500만 달러 증가함.",
+     "글로벌 소아 뉴트리션은 6.5% 성장하며 반등했고, 미국에서는 WIC 계약 수주로 시장 리더십을 확보함.",
+     "성인 뉴트리션은 가격 인상에도 불구하고 Ensure 리테일 소비가 두 자리수 증가세를 보이며 긍정적 볼륨 추세를 기록함."
+    ]
+   },
+   {
+    "title": "의료기기 (Medical Devices)",
+    "points": [
+     "심혈관 기기 매출은 8.5% 증가했으며, 전기생리학은 로틴틴(Low-teens) 성장을 기록함.",
+     "연속당뇨측정(CGM) 매출은 9.5% 성장하며 분기 20억 달러를 돌파함.",
+     "유럽에서 Volt와 TactiFlex Duo의 호조로 전기생리학 매출이 20% 이상 성장함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 comparable sales growth",
+   "value": "6.5% to 7.5%",
+   "prev": "",
+   "change": "유지",
+   "quote": "reaffirming our full year guidance for comparable sales growth of 6.5% to 7.5%, and raising our EPS guidance range to $5.45 to $5.60."
+  },
+  {
+   "item": "FY26 adjusted EPS",
+   "value": "$5.45 to $5.60",
+   "prev": "",
+   "change": "상향",
+   "quote": "reaffirming our full year guidance for comparable sales growth of 6.5% to 7.5%, and raising our EPS guidance range to $5.45 to $5.60."
+  },
+  {
+   "item": "Q3 2026 adjusted EPS",
+   "value": "$1.38 to $1.46",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the third quarter, we forecast adjusted earnings per share of $1.38 to $1.46."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "TECTONIC 관상동맥 IVL pivotal trial 환자 등록 완료",
+   "target": "",
+   "status": "신규",
+   "note": "2분기 실적 발표에서 TECTONIC 관상동맥 IVL pivotal trial 환자 등록을 완료했다고 밝힘.",
+   "quote": "completing patient enrollment in our TECTONIC coronary IVL pivotal trial, completing our FDA submission for approval of our new Amulet 360 left atrial appendage device, and obtaining CE Mark for Libre Duo, the world's first dual glucose-ketone monitoring sensor designed to detect rising ketone levels and help prevent diabetic ketoacidosis."
+  },
+  {
+   "item": "Amulet 360 좌심실 부속기(LAA) 기기 FDA 승인 신청 완료",
+   "target": "연내 승인 가능성 언급",
+   "status": "신규",
+   "note": "Amulet 360의 FDA 승인 신청을 완료했으며, 연내 승인 획득 가능성을 언급함.",
+   "quote": "completing patient enrollment in our TECTONIC coronary IVL pivotal trial, completing our FDA submission for approval of our new Amulet 360 left atrial appendage device, and obtaining CE Mark for Libre Duo, the world's first dual glucose-ketone monitoring sensor designed to detect rising ketone levels and help prevent diabetic ketoacidosis."
+  },
+  {
+   "item": "Libre Duo CE 마크 획득",
+   "target": "가을에 국제 출시 예정",
+   "status": "신규",
+   "note": "세계 최초의 듀얼 포도당-케톤 모니터링 센서인 Libre Duo의 CE 마크를 획득함.",
+   "quote": "completing patient enrollment in our TECTONIC coronary IVL pivotal trial, completing our FDA submission for approval of our new Amulet 360 left atrial appendage device, and obtaining CE Mark for Libre Duo, the world's first dual glucose-ketone monitoring sensor designed to detect rising ketone levels and help prevent diabetic ketoacidosis."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "미국 의료 시술 볼륨 및 의료 수요 건전성",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "병원 섹터의 부정적 프리앤나운스먼트로 인해 미국 내 시술 볼륨 둔화 우려가 있는데, 애보트의 진단 및 심혈관 데이터에서 이를 목격하고 있는지?",
+   "answer": "메드테크와 진단 부문은 메디케어 비중이 높아 메디케이드 변동성에 영향을 받지 않으며, 코어랩 및 심혈관 사업 모두 수요가 매우 견조하여 시술 볼륨 둔화 조견은 전혀 보이지 않음."
+  },
+  {
+   "theme": "하반기 매출 성장 가속화 동력",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "2분기 소폭의 유기적 매출 상회에 이어 하반기 가속화에 대한 자신감의 근거와 주요 성장 동력은 무엇인지?",
+   "answer": "성장 가속화의 80%는 뉴트리션, 전기생리학(EP), 코어랩, 암 진단 등 4개 사업부에서 비롯되며, 이들은 모두 하반기 강력한 모멘텀과 가시성을 확보하고 있음."
+  },
+  {
+   "theme": "Libre(CGM) 성장 전망 및 신제품(Libre Duo)·보험 등재 일정",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "Libre의 9.5% 글로벌 성장률에 대한 평가와 하반기 전망, 미국 제2형 비인슐린 환자 보험 커버리지 및 듀얼 케톤 센서의 미국 출시 시점은?",
+   "answer": "대규모 시장 잠재력이 남아있으며 보험 등재 확대가 성장을 크게 가속화할 것임. 미국 제2형 환자 대상 보장 확대와 Libre Duo의 미국 승인 시점은 정확히 예측하기 어렵지만 협의가 매우 진전된 단계에 있음."
+  },
+  {
+   "theme": "Exact Sciences 인수 사업(Cologuard) 및 혈액 기반 대장암 스크리닝",
+   "analysts": [
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "Exact Sciences의 13% 성장과 하반기 가속화(케어갭 프로그램 등)에 대한 가시성은 어떠하며, 경쟁사의 혈액 기반 데이터 발표 속에서 애보트의 혈액 스크리닝 시장 리더십 전략은?",
+   "answer": "하반기 케어갭 프로그램과 Cologuard Plus 전환으로 목표 달성에 대한 가시성이 높으며, 대변 검사와 혈액 검사 포트폴리오를 모두 갖추어 시장 리더로서 차별화된 입지를 다질 것임."
+  },
+  {
+   "theme": "전기생리학(EP) 시장 다이나믹스와 점유율 확대 전략",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "Volt 출시와 함께 EP 시장에서의 점유율 확대 및 내년까지의 성장 지속성에 대한 경영진의 견해는?",
+   "answer": "Volt의 맵핑 시스템 통합 우수성과 일반 진정 시술 가능 등으로 의사들로부터 큰 호응을 얻고 있으며, 하반기 미국 전면 출시와 함께 시장을 아웃퍼폼할 것으로 확신함."
+  },
+  {
+   "theme": "2027년 및 중장기 성장 프레임워크",
+   "analysts": [
+    "Travis Steed (BofA Securities)"
+   ],
+   "question": "뉴트리션 쉬운 기저효과, Libre 보장 확대, EP 가속화 등을 바탕으로 2027년 애보트 포트폴리오와 7% 탑라인 성장 목표의 지속 가능성은?",
+   "answer": "뉴트리션 2~4%, 진단 7~8%, EPD 7~9%, 메디컬 디바이스 8~10%의 포트폴리오 믹스를 통해 7% 탑라인 성장은 충분히 지속 가능하며 고마진 EPS 두 자리수 성장을 목표로 함."
+  },
+  {
+   "theme": "구조적 심질환(Structural Heart) 사업부 턴어라운드",
+   "analysts": [
+    "Joshua Jennings (TD Cowen)"
+   ],
+   "question": "미국 구조적 심질환 프랜차이즈의 회복 시점은 언제이며, 2027년 실적에 기여할 수 있는지?",
+   "answer": "미국 승소 및 조직 개편을 통해 승부하고 있으며, 올해 말까지 중고속 단일 자릿수(Mid-to-high single digit) 성장률로 복귀할 것으로 예상함."
+  },
+  {
+   "theme": "뉴트리션 사업부 현황 및 신제품 출시",
+   "analysts": [
+    "Joanne Wuensch (Citi)"
+   ],
+   "question": "WIC 계약 수주 효과와 뉴트리션 2~4% 성장 가이던스의 상태, 그리고 신제품 출시 현황은?",
+   "answer": "소아 국제 부문이 2년 내 최고 성장을 기록했고 미국 WIC 계약 효과도 반영되어 시장 리더십을 회복했으며, 하반기 콜라겐 프로틴 셰이크 및 크레아틴 첨가 제품 등 신제품 출시로 모멘텀을 이어갈 것임."
+  },
+  {
+   "theme": "Amulet 360 및 LAA(좌심실 부속기) 폐쇄 시장 전망",
+   "analysts": [
+    "Marie Thibault (BTIG)"
+   ],
+   "question": "Amulet 360 출시를 앞두고 현재 LAA 폐쇄 시장의 수요와 애보트의 시장 점유율 확대 전략은?",
+   "answer": "LAA는 매력적인 20억 달러 시장이며 경쟁사가 우세하지만, Amulet 360의 뛰어난 시술 경험을 바탕으로 EP 사업부 내에서 점유율을 적극적으로 확대할 계획임."
+  }
+ ]
+}

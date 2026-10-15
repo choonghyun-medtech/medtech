@@ -1,0 +1,166 @@
+{
+ "ticker": "ISRG",
+ "company": "Intuitive Surgical, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-16",
+ "file": "ISRG_2026Q2.json",
+ "source_hash": "378bbb5b113d",
+ "prior_basis": "",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:56:01.320494+00:00",
+ "headline": [
+  "인튜이티브 서지컬의 2026년 2분기 총 매출은 전년 동기 대비 19% 증가한 28억 9,000만 달러를 기록함.",
+  "2분기 총 수술 건수는 다빈치 및 아이온 플랫폼의 글로벌 채택 확대로 16% 증가함.",
+  "미국 내 다빈치 수술 성장세는 환자 본인부담금 및 보조금 변화 등의 영향으로 일부 지연 가능한 수술에서 다소 둔화됨.",
+  "2027년 상반기부터 고수요 양성 수술의 비용 절감을 위해 일부 엔도우리스트(EndoWrist) 기구의 사용 횟수를 확대하는 프로그램을 도입할 예정임."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "2분기 총 매출은 19% 증가한 28억 9,000만 달러, 비GAAP 영업이익률은 42%, 비GAAP 주당순이익(EPS)은 28% 증가한 2.80달러를 기록함.",
+   "전 세계 다빈치 시스템 설치 대수는 12%, 아이온은 21% 증가하여 전 세계 누적 설치 대수가 거의 13,000대에 이름.",
+   "미국 내 다빈치 수술 건수는 12% 증가했으며, 일부 환자들의 진료 시기 연기와 비만 치료제 GLP-1 사용 영향으로 바리아트릭 수술이 감소함.",
+   "해외 시장 다빈치 수술은 20% 증가했으며, 유럽과 아시아가 각각 20%, 기타 세계 시장이 22% 성장함.",
+   "2026년 연간 다빈치 수술 성장률 전망치는 기존 13.5%~15.5% 범위를 유지하며 중간값 수준을 예상함."
+  ],
+  "sections": [
+   {
+    "title": "실적 개요",
+    "points": [
+     "총 매출 28억 9,000만 달러 (전년 동기 대비 +19%), 반복 매출 24억 7,000만 달러로 전체의 85% 차지.",
+     "비GAAP 총 마진 70% (관세 환급 3,600만 달러 제외 시 68.7%).",
+     "현금 및 투자 자산은 86억 달러로 증가."
+    ]
+   },
+   {
+    "title": "사업부별 성과",
+    "points": [
+     "다빈치 시스템 468대, 아이온 시스템 55대 배치 (다빈치 5는 246대 포함하여 누적 1,700대 이상).",
+     "단일공(SP) 시스템 38대 배치, SP 수술 건수는 한국과 미국의 강세로 61% 증가.",
+     "아이온 수술 건수는 36% 증가한 48,000건 기록."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 da Vinci procedure growth",
+   "value": "13.5% to 15.5%",
+   "prev": "",
+   "change": "유지",
+   "quote": "In April, we forecast full year 2026 da Vinci procedure growth to be within a range of 13.5% to 15.5%. We are maintaining our forecast to be within this range with an expectation to be closer to the midpoint."
+  },
+  {
+   "item": "FY26 non-GAAP gross profit margin",
+   "value": "68% to 69%",
+   "prev": "",
+   "change": "상향",
+   "quote": "We are updating our estimate for non-GAAP gross profit margin to be within a range of 68% to 69% of revenue."
+  },
+  {
+   "item": "FY26 non-GAAP operating expense growth",
+   "value": "11% to 13%",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect non-GAAP operating expense growth to be between 11% and 13%."
+  },
+  {
+   "item": "FY26 non-GAAP income tax rate",
+   "value": "22% to 23%",
+   "prev": "",
+   "change": "유지",
+   "quote": "With regard to income tax, we continue to expect our non-GAAP income tax rate to be between 22% and 23% of pretax income."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Extended use program for EndoWrist instruments",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 상반기 내에 일부 엔도우리스트 기구의 사용 횟수를 늘려 양성 수술의 고객 비용을 절감할 계획임.",
+   "quote": "In the first half of 2027, we expect to increase the number of uses on a subset of EndoWrist instruments with the benefit targeted to reduce costs in a set of benign procedures."
+  },
+  {
+   "item": "FDA 510(k) clearance for foundational noncommercial, next-generation flexible robotic endoscope system for GI tract",
+   "target": "",
+   "status": "신규",
+   "note": "위장관용 차세대 비상업용 유연 로봇 내시경 시스템에 대해 FDA 510(k) 승인을 신청함.",
+   "quote": "Recently, we submitted for FDA 510(k) clearance, a foundational noncommercial, next-generation flexible robotic endoscope system for use in the gastrointestinal tract."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "미국 수술 성장 둔화 및 ACA 영향",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "미국 다빈치 수술 성장 둔화가 ACA(오바마케어) 보조금 종료 등 환자 요인 때문인지, 아니면 시장 성숙에 따른 것인지 어떻게 파악하는지, 하반기에 지연된 수술이 회복될 것으로 보는지?",
+   "answer": "고객 피드백과 연기 가능한 수술 유형에서 나타나는 트렌드 차이를 바탕으로 분석한 결과이며, ACA 영향과 대수의 법칙이 복합적으로 작용했을 것으로 봄."
+  },
+  {
+   "theme": "엔도우리스트 연장 사용 프로그램(Extended Use Program) 및 ASC·해외 영향",
+   "analysts": [
+    "Travis Steed (Bank of America)",
+    "Michael Polark (Wolfe Research)"
+   ],
+   "question": "2027년 도입 예정인 엔도우리스트 연장 사용 프로그램이 I&A(기구 및 액세서리) 매출에 미칠 영향의 프레임워크와 ASC 및 해외 시장 확대에 미칠 영향은?",
+   "answer": "구체적인 수치 모델링 결과는 다음 실적발표에서 공개할 예정이며, 비용 절감을 통해 외래 수술 센터(ASC) 및 저수가 국가에서의 채택을 촉진하는 전략적 조치임."
+  },
+  {
+   "theme": "미국 및 해외 자본(CapEx) 환경",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "병원들의 재정 건전성 우려 속에서 미국 및 해외의 자본 장비 투자 환경은 어떠하며 가이던스에 반영된 향후 전망은?",
+   "answer": "미국 자본 환경은 다빈치 5에 대한 강한 수요와 리스 프로그램의 유연성 덕분에 안정적인 상태를 유지하고 있으며, 해외는 국가별로 혼조세를 보이나 일본의 경우 호조를 보이고 있음."
+  },
+  {
+   "theme": "다빈치 5 플랫폼의 소프트웨어 및 기능 업데이트",
+   "analysts": [
+    "Rick Wise (Stifel)"
+   ],
+   "question": "다빈치 5 플랫폼에 예정된 100여 개 이상의 업데이트와 510(k) 승인을 신청한 기능들의 구체적인 내용과 전개 속도는?",
+   "answer": "원격 현장감, 시뮬레이션, 진료팀 워크플로우 개선 등을 포함하며, 툴 배출 기능, 암 조정 기능, 디지털 눈금자 등 사용자 편의와 효율성을 높이는 업데이트들이 순차적으로 적용될 예정임."
+  },
+  {
+   "theme": "신규 GI(위장관) 로봇 시스템",
+   "analysts": [
+    "Rick Wise (Stifel)"
+   ],
+   "question": "새롭게 공개된 GI 로봇 시스템 개발 배경과 예상되는 TAM(시장 규모) 및 인튜이티브의 전망은?",
+   "answer": "다빈치와 아이온의 기술을 결합하여 최소침습 치료의 영역을 넓히는 자연스러운 확장이며, 현재는 비상업용 시스템으로 510(k) 승인을 신청한 초기 단계로 추후 일정을 공유할 예정임."
+  },
+  {
+   "theme": "중국 시장 동향 및 입찰 제도 변화",
+   "analysts": [
+    "Lawrence Biegelsen (Wells Fargo)"
+   ],
+   "question": "중국 정부의 의료 장비 중앙화 입찰 제도(VBP)가 수술 로봇에도 적용되는지, 그리고 인튜이티브에 미칠 영향은?",
+   "answer": "전통적인 VBP라기보다는 병원별 개별 입찰의 중복과 낭비를 줄이기 위한 구조적 개편으로 보며, 로봇 수술의 가치를 강조하는 방향으로 전개될 것으로 예상함."
+  },
+  {
+   "theme": "다빈치 5 교체 주기의 지속성",
+   "analysts": [
+    "Ryan Zimmerman (BTIG)"
+   ],
+   "question": "기존 설치 대수 대비 다빈치 5 업그레이드 사이클은 과거 Xi 전환기와 비교해 현재 어느 국면에 있다고 볼 수 있는지?",
+   "answer": "Xi 전환 당시 정점에 이르기까지 약 7년이 걸렸으나 역사적 참고사항일 뿐이며, 다빈치 5는 소프트웨어 업데이트를 통해 시간이 지날수록 매력도가 높아져 다년간 점진적인 업그레이드가 진행될 것임."
+  },
+  {
+   "theme": "XiR 플랫폼의 성과와 전략",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "ASC와 비용 민감 지역에서 모멘텀을 보이고 있는 XiR 플랫폼의 배치 현황과 향후 믹스 비중 전망은?",
+   "answer": "전 세계적으로 약 130대의 XiR이 설치되었으며, 비용 민감 고객과 신규 로봇 도입 고객에게 4세대 에코시스템의 혜택을 제공하는 중요한 역할을 하고 있어 향후 상당한 비중을 차지할 것으로 기대함."
+  },
+  {
+   "theme": "일본 시장의 상환 제도 변경 영향",
+   "analysts": [
+    "Vikramjeet Chopra (BMO)"
+   ],
+   "question": "6월 1일부터 시행된 일본의 유리한 상환 제도 변경이 향후 몇 년간 일본 시장 성장에 미칠 기여도는?",
+   "answer": "서전 트레이닝 등 절차에 시간이 소요되므로 점진적으로 채택될 것이며, 재정적 도전 요인과 인센티브가 공존하고 있어 균형 있게 접근하고 있음."
+  }
+ ]
+}

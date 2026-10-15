@@ -1,0 +1,192 @@
+{
+ "ticker": "BSX",
+ "company": "Boston Scientific Corporation",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-29",
+ "file": "BSX_2026Q2.json",
+ "source_hash": "5828d30ca4ad",
+ "prior_basis": "",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:58:08.838065+00:00",
+ "headline": [
+  "보스턴 사이언티픽은 2026년 2분기 전사 유기적 매출 성장률 7%, 조정 EPS $0.86을 기록하며 가이던스를 상회함.",
+  "미국 시장 내 워치만(WATCHMAN)의 예상치 못한 성장 둔화와 전기생리학(EP) 부문의 경쟁 심화로 인해 하반기 및 연간 가이던스를 하향 조정함.",
+  "2029년 말까지 약 5억 달러의 비용 절감을 목표로 하는 전사적 구조조정 프로그램을 발표함.",
+  "펜룸브라 인수 건은 규제 승인을 거쳐 2026년 하반기 마감될 것으로 예상됨."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "2분기 총회사 유기적 매출은 7% 성장하여 가이던스(5~7%)를 충족했고, 조정 EPS는 $0.86으로 유리한 세제 효과에 힘입어 가이던스 상단을 상회함.",
+   "하반기 시장 압박 심화로 인해 2026년 연간 유기적 매출 성장률 가이던스를 5~6%, 조정 EPS를 $3.28~$3.32로 수정함.",
+   "워치만 사업부는 미국 시장의 둔화와 동반 시술(concomitant) 비교 기저 부담으로 인해 하반기 글로벌 매출이 전년 동기 대비 중한자리~고한자리 역성장할 것으로 전망됨.",
+   "전기생리학 부문은 미국 내 경쟁 심화와 PFA 시장 침투율 가속화로 인해 하반기 글로벌 성장이 플랫(flat)을 기록할 것으로 예상됨."
+  ],
+  "sections": [
+   {
+    "title": "주요 사업부 실적",
+    "points": [
+     "신경조절(Neuromodulation) 매출은 통증 및 뇌 부문의 두 자릿수 성장에 힘입어 12% 증가함.",
+     "심혈관(Cardiovascular) 매출은 8% 성장했으며, 중재술 및 혈관 치료 부문(ICVT)이 12% 성장함.",
+     "전기생리학(EP) 매출은 9% 성장했으나 미국 내 경쟁 압력과 점유율 변동을 겪음."
+    ]
+   },
+   {
+    "title": "지역별 성과",
+    "points": [
+     "미국 지역은 ICVT, 종양학, 신경조절 부문에 힘입어 운영 기준 6% 성장함.",
+     "유럽·중동·아프리카(EMEA)는 EP, 혈관, 신경조절 부문 주도로 4% 성장함.",
+     "아시아태평양은 일본, 중국, 한국의 두 자릿수 성장에 힘입어 운영 기준 11% 성장함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 유기적 매출 성장률",
+   "value": "5% to 6%",
+   "prev": "",
+   "change": "신규",
+   "quote": "To that end, we are updating our full year 2026 guidance for organic revenue of 5% to 6% with our full year adjusted EPS of $3.28 to $3.32, representing growth of 7% to 8%."
+  },
+  {
+   "item": "FY26 조정 EPS",
+   "value": "$3.28 to $3.32",
+   "prev": "",
+   "change": "신규",
+   "quote": "To that end, we are updating our full year 2026 guidance for organic revenue of 5% to 6% with our full year adjusted EPS of $3.28 to $3.32, representing growth of 7% to 8%."
+  },
+  {
+   "item": "Q3 유기적 매출 성장률",
+   "value": "3% to 5%",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the third quarter, we're guiding to organic revenue growth of 3% to 5% and adjusted EPS of $0.80 to $0.82."
+  },
+  {
+   "item": "Q3 조정 EPS",
+   "value": "$0.80 to $0.82",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the third quarter, we're guiding to organic revenue growth of 3% to 5% and adjusted EPS of $0.80 to $0.82."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Penumbra 인수 완료",
+   "target": "2026년 하반기",
+   "status": "진행 중",
+   "note": "규제 승인을 거쳐 2026년 하반기 마감될 것으로 예상됨.",
+   "quote": "Guidance excludes the previously announced agreement to acquire Penumbra, which is expected to close in the second half of 2026, subject to customary closing conditions."
+  },
+  {
+   "item": "SEISMIQ 4CE Coronary IVL Catheter 출시",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "FRACTURE 임상 성공에 이어 2027년 상반기 시장 출시 예정.",
+   "quote": "We look forward to bringing SEISMIQ 4CE to market in the first half of '27."
+  },
+  {
+   "item": "TIVUS ultrasound system (신장신경차단술) 시장 출시",
+   "target": "2028년",
+   "status": "진행 중",
+   "note": "THRIVE 임상 환자 등록을 진행 중이며 2028년 출시 예상.",
+   "quote": "We're making great progress in our THRIVE trial enrollment evaluating the TIVUS ultrasound system for renal denervation in the treatment of hypertension and continue to anticipate bringing our technology to market in '28."
+  },
+  {
+   "item": "PRECEDENT 제세동기 플랫폼 출시",
+   "target": "2027년 하반기",
+   "status": "진행 중",
+   "note": "포트폴리오 공백을 해소하기 위한 신규 제세동기 플랫폼 출시 예정.",
+   "quote": "Across our CRM franchise, we are seeing competitive pressure with some portfolio gaps, and we expect to make progress against these portfolio gaps with PRECEDENT, which is a new defib platform to be launched in second half 2027."
+  },
+  {
+   "item": "FARAWAVE Ultra 및 ICE 시장 진입 (EP 부문)",
+   "target": "2027년",
+   "status": "진행 중",
+   "note": "고밀도 매핑 및 절제 카테터인 FARAWAVE Ultra 출시 및 ICE 시장 진입으로 2027년 하반기 U.S. EP 실적 개선 기대.",
+   "quote": "As we look ahead, we anticipate that our U.S. EP performance will improve in the second half of 2027 after the introduction of FARAWAVE Ultra, which is a high-density mapping and ablation catheter as well as our entry into the ICE market."
+  },
+  {
+   "item": "FARAFLEX 출시 및 FARADIGM 임상",
+   "target": "2028년",
+   "status": "진행 중",
+   "note": "발작성 및 지속성 심방세동 환자 대상 FARAFLEX 매핑 및 PFA 카테터 임상 등록을 시작하였으며 2028년 가용화 예상.",
+   "quote": "We expect further improvement in 2028 as FARAFLEX, our novel large focal high-density map and ablate catheter, becomes available."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "하반기 가이던스 하향 배경 및 2027년 전망",
+   "analysts": [
+    "Robbie Marcus (JPMorgan)"
+   ],
+   "question": "이번 가이던스 하향이 보수적인 접근인지, 혹은 2분기 말 및 3분기 초 트렌드에 기반한 것인지, 그리고 2027년 가시성에 대해 설명해달라.",
+   "answer": "하향 조정은 주로 워치만과 전기생리학(EP) 부문의 역풍에 기인하며, 현재 관측된 시장 트렌드를 반영한 신중한 가이던스임. 75%의 여타 사업부는 6% 성장을 지속하고 있으며, 2027년 하반기 이후 신제품 카탈리스트를 통해 반등할 것으로 기대함."
+  },
+  {
+   "theme": "워치만(WATCHMAN) 시장 동향 및 경쟁 환경",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "2027년 워치만 시장이 개선되지 않는다는 가정의 의미와 신규 경쟁자 진입에 대한 전망은 어떠한가?",
+   "answer": "워치만 시장은 임상 데이터 발표 이후 참조 패턴 변화 및 동반 시술의 높은 기저효과로 인해 하반기 중~고한자리수 역성장을 예상하며, 2027년에도 이러한 트렌드가 이어질 것으로 보수적으로 가정함. 2027년 신규 경쟁자 진입에 따른 일부 점유율 영향이 있을 수 있음."
+  },
+  {
+   "theme": "2027~2028년 펀더멘털 및 성장 동력",
+   "analysts": [
+    "Joanne Wuensch (Citigroup)"
+   ],
+   "question": "2026년 유기적 매출 성장률 5~6%가 2027년의 좋은 출발점인지, 그리고 2028년 재가속화를 이끌 주요 신제품은 무엇인지 확인해달라.",
+   "answer": "2027년에 대해 구체적인 가이던스는 아직 제시하지 않으나 하반기 대비 개선을 목표로 함. 2028년 이후에는 ICVTx 분야의 7개 주요 신제품 출시(IVL, 고혈압 치료, 펜룸브라 인수, ICE, 울트라 등)와 핵심 사업부 강화를 통해 가속 성장할 것임."
+  },
+  {
+   "theme": "구조조정 프로그램 및 비용 절감 계획",
+   "analysts": [
+    "Rick Wise (Stifel)"
+   ],
+   "question": "구조조정 프로그램을 통한 5억 달러 절감 효과가 P&L상 어디에 반영되며, 성장 이니셔티브에 대한 재투자는 어떻게 이루어지는가?",
+   "answer": "절감액은 주로 SG&A에 먼저 반영되고 이후 COGS로 확대될 것이며, 이를 통해 2027년 하반기부터 효과가 나타나 2028년 이후 마진 확장을 뒷받침하는 동시에 고성장 기회에 대한 투자를 온전히 유지할 것임."
+  },
+  {
+   "theme": "워치만 임상 데이터 및 리퍼럴 패턴 변화 대응",
+   "analysts": [
+    "Michael Polark (Wolfe Research)"
+   ],
+   "question": "최근 축적된 임상 데이터(OCEAN 등)가 리퍼럴 패턴에 미치는 영향에 대해 어떤 플레이북으로 대응하고 있는가?",
+   "answer": "일부 소프트 인디케이션 환자군에서 대기 전략 등으로 인한 리퍼럴 감소가 있었음. 이에 대해 종합적인 임상 데이터 교육 강화, 직접 소비자 마케팅(DTP) 확대, 그리고 SIMPLAAFY 등 후속 임상 데이터를 통한 근거 확산으로 대응하고 있음."
+  },
+  {
+   "theme": "2027년 EPS 성장 제한 및 마진 압박 요인",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "2027년 제한적인 EPS 성장 전망의 원인이 마진이 낮은 매출 성장 때문인지, 아니면 투자 확대 때문인가?",
+   "answer": "워치만 및 EP 부문의 부진에 따른 매출총이익 압박과 펜룸브라 인수 초기 희석 효과가 복합적으로 작용하기 때문이며, 구조조정을 통해 비용 효율화를 도모할 것임."
+  },
+  {
+   "theme": "전기생리학(EP) 부문 성장 전망 및 파이프라인",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "2027년 EP 성장 가정과 파이프라인 기여 시점에 대해 구체적으로 설명해달라.",
+   "answer": "2027년 상반기까지는 현재와 유사한 경쟁 압력이 지속되겠으나, 하반기 FARAWAVE Ultra 출시와 ICE 시장 진입을 통해 실적이 개선되고 2028년에는 시장 성장률 이상으로 회복될 것으로 기대함."
+  },
+  {
+   "theme": "심혈관 중재술(ICVTx) 부문의 성장 지속 가능성",
+   "analysts": [
+    "Marie Thibault (BTIG)"
+   ],
+   "question": "ICVTx 부문의 주요 성장 동력 제품과 WAMGR 상회 성장의 지속 가능성을 어떻게 확신하는가?",
+   "answer": "복잡성 PCI, 영상 장비, AGENT 관상동맥 약물 코팅 풍선(DCB) 등이 강력한 모멘텀을 주도하고 있으며, 향후 관상동맥 IVL, 신장신경차단술, 펜룸브라 인수 등으로 대형 인접 시장에 진입하여 고성장을 이어갈 것임."
+  },
+  {
+   "theme": "WAMGR 조정 및 비뇨기과(Urology) 회복 계획",
+   "analysts": [
+    "Jayson Bedford (Raymond James)"
+   ],
+   "question": "워치만 둔화에 따른 회사의 WAMGR 수정치와 비뇨기과 부문의 회복 방안은 무엇인가?",
+   "answer": "회사의 가중평균시장성장률(WAMGR)은 약 7~8%로 조정됨. 비뇨기과 부문은 영업망 조직 개편과 인력 확충이 완료되었고, 향후 3개 분기 동안 스톤 관리 포트폴리오의 신제품 출시를 통해 2027년 시장 성장률 수준으로 회복될 것임."
+  }
+ ]
+}

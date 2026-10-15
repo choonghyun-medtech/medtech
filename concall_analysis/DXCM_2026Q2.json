@@ -1,0 +1,175 @@
+{
+ "ticker": "DXCM",
+ "company": "DexCom, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-30",
+ "file": "DXCM_2026Q2.json",
+ "source_hash": "3357fa7353b8",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:58:54.211785+00:00",
+ "headline": [
+  "2026년 2분기 매출액은 전년 동기 대비 13% 증가(오가닉 성장률 12%)한 13억 1,000만 달러를 기록함.",
+  "미국 내 신규 환자 유입이 전분기 대비 순증세를 보였으며, 글로벌 전반에서 견조한 수요가 지속됨.",
+  "연간 매출액 가이던스 상단 범위를 상향 조정하고 Non-GAAP 영업이익률 및 조정 EBITDA 마이진 가이던스를 상향함.",
+  "미국 FDA로부터 덱스컴 G7 15일 착용 시스템의 Tandem Mobi 연동 승인이 완료되어 모든 성인 G7 고객이 사용 가능해짐."
+ ],
+ "changes": [
+  "직전 분기 대비 연간 매출액 가이던스 범위가 51억 8,000만~52억 5,000만 달러로 상향 조정됨.",
+  "Non-GAAP 영업이익률 가이던스가 23.5%~24%로 상향 조정됨.",
+  "새로운 자사주 매입 프로그램 일환으로 2분기 동안 약 6억 달러 규모의 자사주를 매입함.",
+  "당뇨병 데이터 기반 뉴트리션 인사이트 플랫폼 기업 Nutrisense를 인수함."
+ ],
+ "prepared": {
+  "summary": [
+   "덱스컴은 2026년 2분기 글로벌 매출 13억 1,000만 달러를 기록하며 전년 대비 13% 성장함.",
+   "미국 및 해외 시장에서 신규 환자 유입이 견조하게 유지되었으며, 프랑스와 캐나다 등 접근성이 확대된 시장에서 고성장을 기록함.",
+   "제조 효율화 및 품질 개선, G7 15일 제품 초기 전환 효과로 2분기 총이익률이 64.1%로 전년 동기 대비 약 400bp 개선됨.",
+   "연간 매출액 가이던스를 소폭 상향하고, 영업이익률 및 조정 EBITDA 마이진 가이던스를 상향 조정함."
+  ],
+  "sections": [
+   {
+    "title": "실적 개요",
+    "points": [
+     "2분기 총 매출액 13억 1,000만 달러 (YoY +13%, 오가닉 +12%)",
+     "미국 매출 9억 3,300만 달러 (YoY +11%), 해외 매출 3억 7,500만 달러 (YoY +19%, 오가닉 +16%)",
+     "Non-GAAP 영업이익 3억 2,830만 달러 (매출액 대비 25.1%)",
+     "상반기 6억 달러 이상의 잉여현금흐름(FCF) 창출"
+    ]
+   },
+   {
+    "title": "주요 사업 및 임상 진척",
+    "points": [
+     "CONNECT 임상 결과 인슐린 미사용 제2형 당뇨병 환자군에서 A1c 1.6% 개선 및 97%의 높은 사용 지속성 확인",
+     "Tandem Mobi 연동을 통해 미국 내 모든 성인 G7 고객이 G7 15일 시스템 사용 가능",
+     "FDA의 TEMPO 디지털 기기 파일럿 프로그램에 최초로 선정되어 당뇨병 전단계 스크리닝 역량 입증 기대",
+     "대사 건강 및 영양 인사이트 강화를 위해 Nutrisense 인수 완료"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "연간 가이던스(매출액)",
+   "value": "$5.18 billion ~ $5.25 billion",
+   "prev": "51억 6,000만 ~ 52억 5,000만 달러",
+   "change": "상향",
+   "quote": "We are raising the midpoint of our guidance with an updated range of $5.18 billion to $5.25 billion, representing growth of 11% to 13% for the year."
+  },
+  {
+   "item": "연간 가이던스(영업이익률)",
+   "value": "23.5% ~ 24%",
+   "prev": "약 23 ~ 23.5%",
+   "change": "상향",
+   "quote": "We are also increasing our non-GAAP operating profit margin guidance to a range of 23.5% to 24% and adjusted EBITDA margin guidance to a range of 31.5% to 32%."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "미국 CMS 인슐린 미사용 제2형 당뇨병 환자 CGM 보장 확대 결정",
+   "target": "2027년 중반 시행 예상 (결정은 연내 예상)",
+   "status": "진행 중",
+   "note": "CONNECT 데이터 패키지를 CMS에 제출하였으며 연내 결정을 기대하고 있음.",
+   "quote": "We do expect to hear back from CMS on that decision before the end of this year. And in our plans right now, we've got it taking effect in the middle of 2027."
+  },
+  {
+   "item": "덱스컴 G7 15일 시스템 연말까지 미국 고객 50% 전환",
+   "target": "2026년 말",
+   "status": "진행 중",
+   "note": "긍정적인 고객 피드백과 채택 추세를 바탕으로 연말까지 50% 전환 목표를 유지 중임.",
+   "quote": "Based on this positive customer feedback, strong adoption trends and growing interest across the market, we remain on track to convert nearly 50% of our U.S. customer base to the G7 15 Day system by year-end."
+  },
+  {
+   "item": "덱스컴 G8 출시",
+   "target": "2027년 말 ~ 2028년 초",
+   "status": "진행 중",
+   "note": "신기술 적용 및 임상시험 준비를 위한 밸리데이션이 진행 중임.",
+   "quote": "So very much on track for that end of 2027, early 2028 depending on regulatory timing."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "미국 CGM 시장 성장 및 인슐린 미사용 제2형 당뇨병 접근성",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "미국 내 CGM 시장의 두 자리 수 성장 지속성에 대한 자신감과 Nutrisense 인수가 가이던스에 미치는 영향은 무엇인가?",
+   "answer": "미국 내 보장받았으나 아직 사용하지 않는 900만 명의 잠재 수요가 존재하며 내년 CMS 보장 확대가 큰 성장 동력이 될 것임. Nutrisense의 매출 기여는 미미하며 주로 Stelo 및 CGM 패스루 매출이 반영되어 오가닉 성장 프로필에 큰 영향은 없음."
+  },
+  {
+   "theme": "CONNECT 임상 결과와 향후 보장 확대",
+   "analysts": [
+    "Robert Marcus (JPMorgan)",
+    "Matthew Taylor (Jefferies)"
+   ],
+   "question": "CONNECT 임상 결과에 대한 의사들의 반응과 인슐린 미사용 제2형 환자 대상 CMS 보장 시점에 대한 업데이트가 있는가?",
+   "answer": "CONNECT 임상은 우수한 A1c 개선 효과와 97%의 높은 사용 지속성을 보여주어 의사들로부터 큰 호응을 얻고 있음. CMS 결정은 연내 나올 것으로 예상하며 2027년 중반 시행 계획은 변함없음."
+  },
+  {
+   "theme": "FDA TEMPO 파일럿 프로그램",
+   "analysts": [
+    "Gursimran Kaur (Wells Fargo)"
+   ],
+   "question": "FDA TEMPO 프로그램이 인슐린 미사용 제2형 및 당뇨병 전단계 보장에 구체적으로 어떤 의미를 갖는가?",
+   "answer": "TEMPO는 혁신적인 규제 프레임워크로 조기 대사 건강 관리를 위한 디지털 기술 도입을 가속화하며, CGM을 통한 당뇨병 전단계 스크리닝 혁신을 지원하지만 일반 CMS 보장 결정과는 별개임."
+  },
+  {
+   "theme": "G7 15일 시스템 전환 추세",
+   "analysts": [
+    "Anna Runci (Piper Sandler)"
+   ],
+   "question": "2분기 기준 G7 15일 제품으로의 전환율은 어느 정도이며 마진에 미치는 영향은 무엇인가?",
+   "answer": "전환은 예상대로 순조롭게 진행 중이며 탠덤 모비와의 연동 승인 등으로 하반기로 갈수록 기여도가 확대될 것임."
+  },
+  {
+   "theme": "의사들의 환자 보장 인지도 및 영업 활동",
+   "analysts": [
+    "Colin Clark (TD Cowen)"
+   ],
+   "question": "보험 보장을 적용받을 수 있는 700만 명 이상의 환자에 대해 의사들의 인지도는 어느 수준인가?",
+   "answer": "영업사원들이 과거 청구 판정 데이터를 활용해 의사들이 실무에서 보장 여부를 확인할 수 있도록 지원하고 있으며, 보장이 없는 경우 Stelo를 활용하는 등 다양한 도구를 제공하고 있음."
+  },
+  {
+   "theme": "영업이익 레버리지 및 아일랜드 공장 가동",
+   "analysts": [
+    "Jayson Bedford (Raymond James)"
+   ],
+   "question": "영업비용 레버리지가 매우 돋보이는데 향후 지속 가능한 수준이며 아일랜드 공장 관련 타임라인 영향이 있는가?",
+   "answer": "조직 내 효율화로 영업 레버리지가 개선되었으나, 하반기 아일랜드 공장 가동을 앞두고 인력 채용 및 감가상각 등의 투자가 3분기에 추가로 집행될 예정임."
+  },
+  {
+   "theme": "해외 시장 성장 동력",
+   "analysts": [
+    "Marie Thibault (BTIG)"
+   ],
+   "question": "해외 시장의 높은 오가닉 성장률을 하반기에도 유지하기 위한 촉매제는 무엇인가?",
+   "answer": "상위 10대 OUS 시장에서 IIT 및 basal 보장 확대 여지가 크며 덱스컴 원 플러스와 덱스컴 렉스 등 포트폴리오 확장을 통해 신규 텐더 수주를 지속하고 있음."
+  },
+  {
+   "theme": "G8 센서 사양 및 Nutrisense 인수 시너지",
+   "analysts": [
+    "Joanne Wuensch (Citi)"
+   ],
+   "question": "G8 센서 개발 타임라인과 Nutrisense 인수에 대한 전략적 판단은 무엇인가?",
+   "answer": "G8은 2027년 말에서 2028년 초 출시를 목표로 하며 정확도와 신뢰도가 대폭 개선될 예정임. Nutrisense 인수는 CGM 기반 영양 코칭 및 인사이트 역량을 Stelo 및 G7 전 제품군에 통합하기 위함임."
+  },
+  {
+   "theme": "총이익률 및 원유 가격 영향",
+   "analysts": [
+    "Jonathan Block (Stifel)",
+    "Richard Newitter (Truist Securities)"
+   ],
+   "question": "총이익률 가이던스 상향이 유가 가정 변경에 따른 것인지 아니면 근본적인 효율성 개선 때문인지, 그리고 15일 제품의 마진 정점 시점은 언제인가?",
+   "answer": "총이익률 상향은 수율 및 생산 라인 효율성 개선 덕분이며 유가 변동은 시차를 두고 반영됨. 아일랜드 공장 가동 비용으로 인해 3분기 일시적 마진 조정이 있을 수 있으나 15일 제품 전환에 따른 다년간의 긍정적 효과가 지속될 것임."
+  },
+  {
+   "theme": "앱 재설계 및 제품 성능",
+   "analysts": [
+    "Issie Kirby (Redburn)",
+    "Michael Polark (Wolfe Research)"
+   ],
+   "question": "새로 개편된 Stelo 앱에 대한 반응과 제품 불만족/스크랩 이슈 등 제품 성능 지표는 어떤가?",
+   "answer": "새로운 Stelo 앱은 사용자 피드백을 반영하여 큰 호응을 얻고 있으며 G7의 NPS(순 추천 고객지수)가 3분기 연속 상승하는 등 제품 성능과 품질 불만이 크게 개선되었음."
+  }
+ ]
+}

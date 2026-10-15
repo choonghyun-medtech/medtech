@@ -1,0 +1,202 @@
+{
+ "ticker": "GH",
+ "company": "Guardant Health, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-30",
+ "file": "GH_2026Q2.json",
+ "source_hash": "02eef1aefd06",
+ "prior_basis": "",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:59:16.140439+00:00",
+ "headline": [
+  "가던트 헬스는 2026년 2분기 매출 3억 3,500만 달러로 전년 동기 대비 44% 성장함.",
+  "종양학 사업부 매출은 38% 증가한 2,190만 달러, 검사 건수는 63% 증가한 약 10만 4,000건을 기록함.",
+  "스마트 플랫폼의 핵심인 가던트360 액체 생검 CDx가 FDA 승인을 획득함.",
+  "스크리닝 사업부의 쉴드는 미국암협회(ACS) 가이드라인 등재 및 유나이티드헬스 그룹의 보험 급여 적용을 확보함.",
+  "고처리량 및 저원가 쉴드 워크플로우에 대한 FDA 승인을 획득하여 원가 절감 기반을 마련함."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "가던트 헬스는 2026년 2분기에 전년 동기 대비 44% 증가한 3억 3,500만 달러의 매출을 기록하며 전 사업부문에서 고른 성장을 달성함.",
+   "종양학 부문은 가던트360 및 리빌의 고성장에 힘입어 볼륨이 63% 증가하였으며, 바이오파마 및 데이터 부문도 사상 최대 분기 매출을 경신함.",
+   "스크리닝 부문의 쉴드는 아메리칸 캔서 소사이어티(ACS) 가이드라인 등재와 유나이티드헬스 그룹의 커버리지 개시로 시장 접근성이 크게 확대됨.",
+   "경영진은 강력한 상반기 실적과 하반기 성장 가시성을 바탕으로 2026년 연간 매출 가이던스를 상향 조정함."
+  ],
+  "sections": [
+   {
+    "title": "종양학 사업부 실적",
+    "points": [
+     "종양학 매출은 38% 증가한 2억 1,900만 달러를 기록함.",
+     "검사 볼륨은 63% 증가한 약 10만 4,000건을 달성함.",
+     "가던트360 리퀴드는 30% 이상 성장했으며, 리빌은 볼륨이 100% 이상 증가함."
+    ]
+   },
+   {
+    "title": "바이오파마 및 데이터 실적",
+    "points": [
+     "바이오파마 및 데이터 매출은 9% 증가한 6,100만 달러로 사상 최대 분기 기록을 세움.",
+     "현재 28개의 CDx 승인을 보유하고 있으며 상반기에만 4개를 추가함."
+    ]
+   },
+   {
+    "title": "스크리닝 사업부 (쉴드)",
+    "points": [
+     "쉴드 매출은 5,300만 달러, 검사 볼륨은 약 6만 6,000건을 기록함.",
+     "미국암협회(ACS) 대장암 스크리닝 가이드라인에 등재됨.",
+     "유나이티드헬스 그룹이 45세 이상의 대장암 스크리닝에 대해 쉴드 커버리지를 제공하기로 결정함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 매출",
+   "value": "$1.34 billion to $1.36 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "We are raising full year 2026 revenue guidance to a range of $1.34 billion to $1.36 billion, representing growth of 36% to 38%."
+  },
+  {
+   "item": "FY26 종양학 매출 성장률",
+   "value": "approximately 30%",
+   "prev": "",
+   "change": "신규",
+   "quote": "For Oncology, we now expect revenue growth of approximately 30% and volume growth of approximately 50%."
+  },
+  {
+   "item": "FY26 종양학 볼륨 성장률",
+   "value": "approximately 50%",
+   "prev": "",
+   "change": "신규",
+   "quote": "For Oncology, we now expect revenue growth of approximately 30% and volume growth of approximately 50%."
+  },
+  {
+   "item": "FY26 바이오파마 및 데이터 성장률",
+   "value": "low double-digit growth",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our Biopharma & Data outlook is unchanged at low double-digit growth, supported by recent strategic partnerships and continued good progress across the companion diagnostic pipeline."
+  },
+  {
+   "item": "FY26 스크리닝 매출",
+   "value": "$218 million to $230 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "For Screening, we are raising revenue guidance to a range of $218 million to $230 million and now expect 270,000 to 285,000 Shield tests."
+  },
+  {
+   "item": "FY26 쉴드 검사 건수",
+   "value": "270,000 to 285,000",
+   "prev": "",
+   "change": "신규",
+   "quote": "For Screening, we are raising revenue guidance to a range of $218 million to $230 million and now expect 270,000 to 285,000 Shield tests."
+  },
+  {
+   "item": "FY26 비일반회계기준(Non-GAAP) 매출총이익률",
+   "value": "64% to 65%",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our full year non-GAAP gross margin outlook remains 64% to 65%."
+  },
+  {
+   "item": "FY26 비일반회계기준(Non-GAAP) 영업비용",
+   "value": "$1.08 billion to $1.1 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "As a result, we now expect 2026 non-GAAP operating expenses of $1.08 billion to $1.1 billion, representing growth of 20% to 22% compared with 2025."
+  },
+  {
+   "item": "FY26 잉여현금흐름(Free Cash Flow) 번",
+   "value": "$195 million to $205 million",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect full year free cash flow burn of $195 million to $205 million, $10 million above our prior outlook and an improvement compared with 2025."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "가던트360 액체 CDx의 ADLT 지정 획득",
+   "target": "20세기 상반기 / 2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 상반기에 가던트360 액체 CDx에 대한 ADLT 지정을 획득하는 일정이 유지되고 있음.",
+   "quote": "We remain on track to obtain ADLT designation for Guardant360 Liquid CDx in the first half of 2027."
+  },
+  {
+   "item": "리빌 울트라(Reveal Ultra) 출시",
+   "target": "올해 말 / Later this year",
+   "status": "진행 중",
+   "note": "가장 민감한 종양 정보 기반 MRD 테스트가 될 것으로 기대되는 리빌 울트라를 올해 말 출시할 예정임.",
+   "quote": "We continue to be excited about the commercial momentum behind Reveal, and we remain on track to launch Reveal Ultra later this year, which we believe will be the most sensitive tumor-informed MRD test."
+  },
+  {
+   "item": "회사 전체 현금흐름 손익분기점 달성",
+   "target": "2027년 말 / By the end of 2027",
+   "status": "진행 중",
+   "note": "2027년 말까지 회사 전체 현금흐름 손익분기점을 달성하겠다는 목표를 재확인함.",
+   "quote": "and we remain committed to achieving company-wide cash flow breakeven by the end of 2027."
+  },
+  {
+   "item": "쉴드 테스트 비용(COGS) 200달러 달성",
+   "target": "2028년 / 2028",
+   "status": "진행 중",
+   "note": "규모의 경제 확대와 주요 자동화 이니셔티브를 통해 2028년까지 쉴드 테스트 당 원가를 200달러까지 낮추겠다는 목표를 유지함.",
+   "quote": "Beyond 2026, further scale benefits and major automation initiatives are expected to drive the next wave of reductions and support our $200 cost per test target in 2028."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "스크리닝 사업부(쉴드)와 유나이티드헬스 보험 커버리지 및 ASP",
+   "analysts": [
+    "Kyle Mikson (Canaccord)",
+    "Mark Massaro (BTIG)",
+    "Dan Leonard (RBC Capital Markets)"
+   ],
+   "question": "유나이티드헬스 및 ACS 가이드라인 등재가 65세 미만 연령층을 포함하여 단기 및 장기 볼륨과 ASP에 미치는 영향은 무엇이며, 가격 협상 및 USPSTF 미팅에 대한 전망은 어떠한가?",
+   "answer": "유나이티드헬스 커버리지는 볼륨 확대에 큰 촉매제가 될 것이며, ASP는 수수료 및 수금 이력을 축적해야 하므로 시간이 다소 걸릴 것임. USPSTF 일정에 대한 기대치는 기존과 변함없이 모니터링 중임."
+  },
+  {
+   "theme": "종양학 볼륨 성장 가이드 상향 및 리빌/가던트360 동향",
+   "analysts": [
+    "Subbu Nambi (Guggenheim)",
+    "Puneet Souda (Leerink)"
+   ],
+   "question": "종양학 볼륨 50% 가이드 상향의 배경은 무엇이며, 리빌과 가던트360의 성장세와 S-커브 상의 위치는 어디인가?",
+   "answer": "가던트360이 30% 이상 성장하고, 티슈가 가속화되며, 리빌이 100% 이상 성장하는 등 전 제품군에서 고른 성장을 보이고 있어 하반기에도 가이던스를 달성할 자신감이 있음."
+  },
+  {
+   "theme": "가던트360 액체 CDx ADLT 가격 책정 및 수익성 반영",
+   "analysts": [
+    "Daniel Brennan (TD Cowen)",
+    "Daniel Markowitz (Evercore)"
+   ],
+   "question": "ADLT 가격(8,455달러) 적용 시 예상되는 ASP 상승 폭과, 이로 인한 추가 매출총이익이 영업이익 개선 및 재투자되는 비율은 어떻게 되는가?",
+   "answer": "장기적으로 가던트360의 ASP는 약 5,000달러 수준에 도달할 것으로 예상되나, 메디케어 어드밴티지 및 상업 보험사 전파에는 12~24개월이 소요될 것임. 추가 이익은 현금흐름 손익분기점 조기 달성을 위해 일부 하단에 반영하고 일부는 상업 인프라와 혁신에 재투자할 계획임."
+  },
+  {
+   "theme": "치료 모니터링 및 리빌 울트라 개발 현황",
+   "analysts": [
+    "Casey Woodring (JPMorgan)",
+    "Kallum Titchmarsh (Morgan Stanley)"
+   ],
+   "question": "리빌의 치료 모니터링 볼륨 트렌드와 리빌 울트라의 로드맵 및 상업화 전략은 무엇인가?",
+   "answer": "치료 모니터링은 미개척된 대규모 기회로 자리 잡고 있으며, 리빌 울트라는 1백만분의 1 이하의 LoD 성능을 보이며 개발이 원활히 진행 중으로 제품 포트폴리오와 조화롭게 출시할 것임."
+  },
+  {
+   "theme": "가던트360 티슈(Tissue) 성장 동력",
+   "analysts": [
+    "Noah Kava (Jefferies)"
+   ],
+   "question": "가던트360 티슈가 시장 평균을 상회하며 성장하는 이유는 액체 생검과의 동시 검사 트렌드 때문인가, 아니면 제공자 선호도의 변화 때문인가?",
+   "answer": "티슈 자체로 작은 샘플 처리 능력과 포괄적인 유전체 패널, 메틸화 분석 등 뛰어난 성능을 입증하며 독자적으로 점유율을 확대하고 있음."
+  },
+  {
+   "theme": "리빌(Reveal)의 MolDX 보험 급여 및 쉴드 저원가 워크플로우",
+   "analysts": [
+    "Catherine Schulte (Baird)"
+   ],
+   "question": "리빌의 MolDX 급여 승인 예상 시기와 쉴드의 메틸화 중심 저원가 워크플로우 개발 배경은 무엇인가?",
+   "answer": "면역항암(IO) 및 유방암 지표가 연말까지 승인받을 것으로 기대하며, 쉴드 워크플로우 개선은 메틸화에 집중하여 성능 개선과 원가 절감을 동시에 도모하고 있음."
+  }
+ ]
+}

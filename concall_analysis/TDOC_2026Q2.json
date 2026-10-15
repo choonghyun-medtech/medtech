@@ -1,0 +1,168 @@
+{
+ "ticker": "TDOC",
+ "company": "Teladoc Health, Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-29",
+ "file": "TDOC_2026Q2.json",
+ "source_hash": "e1402e6806fc",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:58:32.138165+00:00",
+ "headline": [
+  "2026년 2분기 통합 케어(Integrated Care) 부문 매출과 Adjusted EBITDA는 가이던스 상단 또는 상회 수준을 기록함.",
+  "베터헬프(BetterHelp) 부문은 보험 가입 수요 급증과 캐시 페이(cash pay) 사용자 감소가 예상보다 빠르게 진행됨.",
+  "베터헬프의 미국 내 전역 보험 서비스망을 조기 구축하고 이에 맞춰 광고 및 마케팅 지출을 재조정함.",
+  "연간 연결 매출액 가이던스를 하향 조정하는 한편, Adjusted EBITDA 전망치는 소폭 상향 조정함."
+ ],
+ "changes": [
+  "베터헬프 부문의 캐시 페이 사용자 감소 가속화와 보험 수요 대비 공급 부족 현상으로 연간 매출 가이던스 하향 조정.",
+  "미국 전역 보험 서비스망 조기 구축 완료 및 향후 광고비 감축과 비미국 지역 우선순위 조정을 통한 전략적 자원 재배치 단행."
+ ],
+ "prepared": {
+  "summary": [
+   "2026년 2분기 연결 매출액은 6억 700만 달러, Adjusted EBITDA는 6,600만 달러를 기록함.",
+   "통합 케어 부문은 국제 부문의 두 자릿수 성장과 만성질환 등록 증가에 힘입어 견조한 실적을 보임.",
+   "베터헬프 부문은 보험 관련 매출이 예상 범위 상단에 근접했으나, 캐시 페이 매출의 가속화된 감소로 전체 세그먼트 매출은 압박을 받음.",
+   "전체 2026년 연간 연결 매출액 가이던스는 하향 조정되었으나, Adjusted EBITDA 및 잉여현금흐름 전망은 유지 혹은 상향 조정됨."
+  ],
+  "sections": [
+   {
+    "title": "통합 케어",
+    "points": [
+     "2분기 매출 3억 9,400만 달러로 전년 동기 대비 0.7% 증가하며 가이던스 상단 기록.",
+     "미국 통합 케어 회원 수 1억 30만 명으로 가이던스 상단을 상회.",
+     "만성질환 프로그램 등록자 수는 전분기 대비 약 6% 증가한 127만 명을 기록함."
+    ]
+   },
+   {
+    "title": "베터헬프",
+    "points": [
+     "2분기 매출 2억 1,300만 달러로 전년 동기 대비 11.6% 감소.",
+     "보험 관련 매출은 2,200만 달러를 기록하며 예상 범위 상단에 근접.",
+     "전체 평균 유료 사용자는 전년 동기 대비 11% 감소한 34,600명을 기록함."
+    ]
+   },
+   {
+    "title": "재무 및 가이던스",
+    "points": [
+     "2분기 순손실은 주당 0.21달러, 잉여현금흐름은 3,600만 달러를 기록함.",
+     "2026년 연간 연결 매출액 가이던스는 23억 6,000만 ~ 24억 5,000만 달러로 조정함.",
+     "2026년 연간 Adjusted EBITDA 가이던스는 2억 7,100만 ~ 3억 300만 달러로 상향 조정함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "2026년 연간 연결 매출액",
+   "value": "$2.36B ~ $2.45B",
+   "prev": "24억 8,100만 ~ 25억 7,600만 달러",
+   "change": "하향",
+   "quote": "We expect 2026 consolidated revenue of $2.36 billion to $2.45 billion, a 5% reduction at the midpoint versus the prior range, primarily attributable to the updated BetterHelp cash pay outlook."
+  },
+  {
+   "item": "2026년 연간 Adjusted EBITDA",
+   "value": "$271M ~ $303M",
+   "prev": "2억 6,700만 ~ 3억 600만 달러",
+   "change": "상향",
+   "quote": "We expect adjusted EBITDA of $271 million to $303 million, up slightly at the midpoint versus the prior range, and representing approximately 85 basis points of margin expansion versus 2025."
+  },
+  {
+   "item": "2026년 연간 Adjusted EBITDA margin (BetterHelp)",
+   "value": "3.0% ~ 4.6%",
+   "prev": "3.0% ~ 4.6%",
+   "change": "유지",
+   "quote": "We are reaffirming our adjusted EBITDA margin guidance of 3.0% to 4.6%."
+  },
+  {
+   "item": "2026년 연간 보험 매출 (BetterHelp)",
+   "value": "$90M ~ $105M",
+   "prev": "9,000만 ~ 1억 500만 달러",
+   "change": "유지",
+   "quote": "We are reaffirming our expectation for 2026 insurance revenue of $90 million to $105 million."
+  },
+  {
+   "item": "2026년 연간 세그먼트 매출 (BetterHelp)",
+   "value": "decline 19.0% to 12.7%",
+   "prev": "",
+   "change": "신규",
+   "quote": "Based on the factors and actions described earlier, we now expect 2026 segment revenue to decline 19.0% to 12.7% versus 2025, reflecting a greater decline in cash pay revenue."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Teladoc One 출시 및 광범위 가용성 적용",
+   "target": "2027년 1월",
+   "status": "진행 중",
+   "note": "2027년 1월부터 대사 건강 상태에 있는 인구를 대상으로 우선 적용될 예정임.",
+   "quote": "With broad availability beginning January 2027, we will initially apply this care model to populations impacted by cardiometabolic health conditions, a major driver of health care cost and market focus for us."
+  },
+  {
+   "item": "베터헬프 보험 서비스 미국 전역 기본 발자취(baseline national footprint) 구축",
+   "target": "2026년 2분기",
+   "status": "달성",
+   "note": "예상보다 앞당겨 남은 주들을 모두 출시하여 미국 전역 보험 네트워크를 구축함.",
+   "quote": "Additionally, we established a baseline national footprint for insurance during the quarter ahead of our prior expected rollout schedule, launching all remaining states in the U.S."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "베터헬프 보험 공급 격차 및 치료사 확보",
+   "analysts": [
+    "Sarah James (Cantor)"
+   ],
+   "question": "보험 가입 환자들의 수요 대비 치료사 공급 격차를 줄이기 위한 구체적인 계획과 진행 상황은 어떠한가?",
+   "answer": "치료사 채용 및 유지 강화, 위임 자격 부여(delegated credentialing) 확대, 플랫폼 툴링 및 스케줄링 효율성 개선 등을 통해 대응하고 있음."
+  },
+  {
+   "theme": "베터헬프 보험 모델 전환에 따른 마진 및 환급 구조",
+   "analysts": [
+    "Lisa Gill (JPMorgan)"
+   ],
+   "question": "현금 결제와 비교해 보험 환급 시 치료사의 선호도와 텔라닥의 마진 구조에 미치는 영향은 어떠한가?",
+   "answer": "보험 모델은 서류 작업 등이 많아 일부 차이가 있으며, 광고비 절감 및 운영 레버리지 효과로 장기적으로는 내실 있는 마진 구조를 구축할 수 있을 것으로 기대함."
+  },
+  {
+   "theme": "베터헬프 네트워크 수용력 및 미실현 매출 규모",
+   "analysts": [
+    "George Hill (Deutsche Bank)"
+   ],
+   "question": "현재 8,000명의 치료사 네트워크로 보험 수요를 감당하는 데 있어 부족한 수용력의 규모나 손실된 매출액을 수치로 파악할 수 있는가?",
+   "answer": "구체적인 수치는 밝히지 않으나, 시장별·지불자별 역학 관계에 따라 상이하며 수요가 예상보다 빠르게 증가하여 수용력에 압박을 주고 있음."
+  },
+  {
+   "theme": "베터헬프 해외 시장 투자 우선순위 조정",
+   "analysts": [
+    "Daniel Grosslight (Citi)"
+   ],
+   "question": "미국 내 보험 사업에 집중하기 위해 해외 시장 투자를 후순위로 미룬 이유는 무엇이며, 언제 재가속화를 고려할 것인가?",
+   "answer": "한정된 자원을 가장 효과적인 미국 보험 시장 확장에 집중하기 위한 단기적 우선순위 조정이며, 향후 미국 보험 사업이 본궤도에 오른 후 해외 시장을 재검토할 것임."
+  },
+  {
+   "theme": "베터헬프 보험 가입자의 이용 행태 및 2027년 전망",
+   "analysts": [
+    "Jessica Tassan (Piper Sandler)"
+   ],
+   "question": "보험 가입 환자들의 세션 이용 횟수나 체류 기간 등 초기 행동 패턴은 어떠한가?",
+   "answer": "초기 단계이나 출시 90일 동안 현금 결제 대비 양호한 이용률과 세션 증가세를 보이고 있으며, 전국 확대를 통해 더 대표적인 사용자 행동을 파악할 수 있을 것임."
+  },
+  {
+   "theme": "베터헬프 광고비 축소와 마진 지속 가능성",
+   "analysts": [
+    "Allen Lutz (Bank of America)",
+    "Charles Rhyee (TD Cowen)"
+   ],
+   "question": "캐시 페이 감소와 광고비 축소 환경에서 EBITDA 마진 가이던스를 유지하는 전략이 얼마나 지속 가능한가?",
+   "answer": "보험 중심의 마케팅 전환과 광고 효율화, 운영 비용 레버리지를 통해 재무적 건전성을 관리하고 있으며 적절한 비용 통제를 지속할 것임."
+  },
+  {
+   "theme": "통합 케어 판매 시즌 동향 및 Teladoc One 반응",
+   "analysts": [
+    "Jailendra Singh (Truist)",
+    "Christopher Charlton (BMO Capital Markets)"
+   ],
+   "question": "현재 판매 시즌의 전반적인 분위기와 신제품 Teladoc One에 대한 고객 반응은 어떠한가?",
+   "answer": "고객들은 파편화 축소와 전략적 솔루션에 높은 관심을 보이고 있으며, 최근 클라이언트 포럼에서 공개된 Teladoc One에 대한 시장 반응도 매우 고무적임."
+  }
+ ]
+}

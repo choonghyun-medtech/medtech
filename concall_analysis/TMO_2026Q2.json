@@ -1,0 +1,121 @@
+{
+ "ticker": "TMO",
+ "company": "Thermo Fisher Scientific Inc.",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-23",
+ "file": "TMO_2026Q2.json",
+ "source_hash": "fc8dd4953364",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:57:17.149572+00:00",
+ "headline": [
+  "2026년 2분기 매출액은 전년 동기 대비 10% 증가한 119.9억 달러, 조정 EPS는 13% 증가한 6.03달러를 기록함.",
+  "제약·바이오 등 전방 시장의 고객 활동이 전반적으로 강화되면서 유기적 매출 성장률 5%를 달성함.",
+  "견조한 2분기 실적과 하반기 전망 상향을 반영하여 2026년 연간 매출액 가이던스는 474억~481억 달러, 조정 EPS 가이던스는 24.93~25.33달러로 상향 조정함.",
+  "클라리오(Clario) 인수 통합이 순항 중이며 미생물학 사업부 매각을 추진하는 등 적극적인 포트폴리오 관리를 지속함."
+ ],
+ "changes": [
+  "2026년 연간 유기적 매출 성장률 가이던스 범위를 3~4%로 유지하되, 해당 범위의 상단에서 달성할 것으로 전망을 구체화함.",
+  "연간 매출액 가이던스를 기존 대비 상향 조정하여 474억~481억 달러(보고 기준 6~8% 성장)로 제시함.",
+  "연간 조정 EPS 가이던스를 24.93~25.33달러로 상향 조정(중단점 기준 0.25달러 상향)함.",
+  "환율에 따른 매출 순풍 전망치를 기존 대비 1억 달러 축소된 2억 달러로 조정함."
+ ],
+ "prepared": {
+  "summary": [
+   "써모 피셔 사이엔티픽은 2026년 2분기 매출액 119.9억 달러(전년 대비 10% 증가, 유기적 성장 5%), 조정 EPS 6.03달러(13% 증가)를 기록하며 예상치를 상회하는 뛰어난 실적을 거둠.",
+   "제약·바이오(Pharma and Biotech) 시장을 중심으로 고객 활동이 지속 강화되었으며 바이오생산 및 임상 연구 부문이 성장을 견인함.",
+   "클라리오 및 여과·분리 사업 등 최근 완료된 인수가 성공적으로 통합되며 긍정적인 기여를 하고 있음.",
+   "미생물학 사업부 매각 합의를 발표했으며, 순매각 대금으로 10억 달러 규모의 자사주 매입을 단행함."
+  ],
+  "sections": [
+   {
+    "title": "2분기 전사 실적 요약",
+    "points": [
+     "매출액 119.9억 달러 (보고 기준 10% 증가, 유기적 성장 5%)",
+     "조정 영업이익 27.3억 달러 (15% 증가), 조정 영업이익률 22.8% (90 bps 개선)",
+     "조정 EPS 6.03달러 (13% 증가)"
+    ]
+   },
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "생명과학 솔루션(Life Sciences Solutions): 매출 13% 증가(유기적 3%), 바이오생산 부문이 성장을 주도",
+     "분석기기(Analytical Instruments): 매출 7% 증가(유기적 7%), 전자현미경 중심의 고성장 및 영업이익률 420 bps 개선",
+     "특수 진단(Specialty Diagnostics): 매출 6% 증가(유기적 5%), 헬스케어 채널 및 면역진단 부문 호조",
+     "실험실 제품 및 바이오파마 서비스(Laboratory Products and Biopharma Services): 매출 12% 증가(유기적 5%), 임상연구 및 연구안전 채널 주도"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 reported revenue growth",
+   "value": "$47.4 billion to $48.1 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "We are raising our revenue guidance to a new range of $47.4 billion to $48.1 billion, representing 6% to 8% reported revenue growth over 2025."
+  },
+  {
+   "item": "FY26 organic revenue growth",
+   "value": "about 4%",
+   "prev": "3% to 4%",
+   "change": "상향",
+   "quote": "Our expectation for full year organic revenue growth has increased to about 4%. Our guidance range remains 3% to 4%, and we now expect to deliver at the upper end of that range."
+  },
+  {
+   "item": "FY26 adjusted EPS",
+   "value": "$24.93 to $25.33",
+   "prev": "",
+   "change": "신규",
+   "quote": "We're also increasing our adjusted earnings per share guidance to be in the range of $24.93 to $25.33, which now represents 9% to 11% growth over 2025 and a $0.25 increase from our previous guidance at the midpoint."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "미생물학 사업부 매각 완료",
+   "target": "2026년 3분기",
+   "status": "진행 중",
+   "note": "경영진은 3분기 중 미생물학 사업부 매각이 완료될 것으로 예상하고 있음.",
+   "quote": "This transaction, which we expect to close in the third quarter, reflects our active management of the company."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "제약·바이오 시장 수요 및 전방 활동 회복",
+   "analysts": [
+    "Michael Ryskin (Bank of America)",
+    "Jack Meehan (Operon Research)",
+    "Daniel Brennan (TD Cowen)"
+   ],
+   "question": "전방 시장에서 고객 활동이 강화되는 구체적인 동인과 제약·바이오 및 바이오생산 부문의 회복 추세에 대한 의견을 물음.",
+   "answer": "제약 및 바이오 고객의 R&D 및 생산 지출이 전반적으로 개선되고 있으며, 특히 바이오생산과 임상연구 부문에서 강력한 모멘텀이 확인되고 있음."
+  },
+  {
+   "theme": "임상 연구(PPD) 및 파테온(Patheon) 사업 동향",
+   "analysts": [
+    "Tycho Peterson (Jefferies)",
+    "Daniel Arias (Stifel)",
+    "Patrick Donnelly (Citi)"
+   ],
+   "question": "PPD 임상 연구 및 파테온 바이오파마 서비스의 수주 잔고 추이와 하반기 실적 가시성에 대해 질의함.",
+   "answer": "임상연구 사업은 수주와 매출 모두 우수한 성장을 보이고 있으며, 파테온 역시 생산 일정에 맞춰 하반기에 의미 있는 실적 성장세를 보일 것으로 예상함."
+  },
+  {
+   "theme": "분석기기 및 학술·정부(Aca/Gov) 시장 동향",
+   "analysts": [
+    "Matthew Larew (William Blair)",
+    "Patrick Donnelly (Citi)"
+   ],
+   "question": "분석기기 부문의 높은 성장 동인과 학술 및 정부 연구 시장의 사이클 위치에 대해 물음.",
+   "answer": "질량분석기 및 현미경 등 차별화된 혁신 제품 출시가 글로벌 학술 시장에서 높은 채택을 이끌어냈으며, 학술·정부 시장은 완만한 안정세를 보이고 있음."
+  },
+  {
+   "theme": "중국 시장 실적 및 전망",
+   "analysts": [
+    "Matthew Larew (William Blair)"
+   ],
+   "question": "중국 시장이 저단식 성장으로 돌아선 배경과 향후 턴어라운드 가능성에 대해 질의함.",
+   "answer": "중국 매출은 제약·바이오와 산업·응용 시장을 중심으로 저단식 성장을 기록하며 플러스로 전환되었으나, 학술·정부 부문은 여전히 정체된 상태임."
+  }
+ ]
+}

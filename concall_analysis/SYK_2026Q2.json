@@ -1,0 +1,140 @@
+{
+ "ticker": "SYK",
+ "company": "Stryker Corporation",
+ "quarter": "2026년 2분기(Q2)",
+ "call_date": "2026-07-30",
+ "file": "SYK_2026Q2.json",
+ "source_hash": "a197b0ca4155",
+ "prior_basis": "2026년 1분기(Q1) IR 보도자료 요약",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-15T06:59:35.389412+00:00",
+ "headline": [
+  "스트라이커의 2026년 2분기 유기적 매출 성장률은 9.0%를 기록함.",
+  "조정 EPS는 전년 동기 대비 17.9% 증가한 $3.69를 기록함.",
+  "말초혈관 사업부의 공급 차질에도 불구하고 메드서그, 신경기술 및 정형외과 사업부가 견조한 성장을 보임.",
+  "하반기 자본재 수요와 생산 확대 기대감을 반영하여 연간 유기적 매출 성장률 가이던스를 8.3%~9.3%로 상향 조정함."
+ ],
+ "changes": [
+  "2026년 연간 유기적 매출 성장률 가이던스 하단을 8.0%에서 8.3%로 상향하고, 범위를 8.3%~9.3%로 좁힘.",
+  "조정 EPS 가이던스 범위를 $14.95~$15.10로 조정함.",
+  "강한 현금창출력과 밸류에이션 매력을 고려하여 이번 분기부터 자사주 매입을 재개할 계획을 발표함.",
+  "말초혈관 사업부의 공급 차질(백오더 상황)이 신규로 언급되었으나 3분기 말까지 해소될 예정임."
+ ],
+ "prepared": {
+  "summary": [
+   "스트라이커의 2026년 2분기 매출은 사이버 보안 사고 이후의 생산 회복과 강력한 자본재 수요에 힘입어 9%의 유기적 매출 성장을 기록함.",
+   "메드서그 및 신경기술 부문과 정형외과 부문 모두 고른 성장을 보였으며, 국제 시장도 호조를 보임.",
+   "영업이익률과 총마진이 개선되었으며, 강력한 현금 흐름을 바탕으로 자사주 매입을 재개할 예정임.",
+   "연간 유기적 매출 성장률 가이던스를 8.3%~9.3%, 조정 EPS를 $14.95~$15.10로 좁혀서 제시함."
+  ],
+  "sections": [
+   {
+    "title": "실적 개요",
+    "points": [
+     "유기적 매출 성장률 9% 기록",
+     "조정 EPS $3.69로 전년 동기 대비 17.9% 증가",
+     "조정 영업이익률 27.4%로 전년 동기 대비 170bps 개선"
+    ]
+   },
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "메드서그 및 신경기술 유기적 매출 성장률 9.2% 기록",
+     "정형외과 유기적 매출 성장률 8.6% 기록",
+     "말초혈관 사업부는 공급 차질로 인해 U.S. 유기적 매출이 6.7% 감소함"
+    ]
+   },
+   {
+    "title": "제품 및 지역 하이라이트",
+    "points": [
+     "Mako 장비 설치 실적이 미국 및 국제 시장에서 역대 최고 2분기를 기록",
+     "국제 유기적 매출 8.9% 성장 (호주, 뉴질랜드, 독일, 캐나다, 한국 등 주도)"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "유기적 매출 성장률",
+   "value": "8.3% ~ 9.3%",
+   "prev": "8.0% ~ 9.5%",
+   "change": "상향",
+   "quote": "now expect organic net sales growth to be in the range of 8.3% to 9.3%"
+  },
+  {
+   "item": "조정 EPS",
+   "value": "$14.95 ~ $15.10",
+   "prev": "$14.90 ~ $15.10",
+   "change": "상향",
+   "quote": "adjusted net earnings per share to be in the range of $14.95 to $15.10"
+  }
+ ],
+ "milestones": [
+  {
+   "item": "PEERLESS II study data readout",
+   "target": "2027년 중반",
+   "status": "진행 중",
+   "note": "1,200명 환자 등록을 완료하였으며 데이터 분석에 약 1년이 소요되어 내년 중반에 결과가 나올 예정임.",
+   "quote": "The equivalent of that is a PEERLESS II study that we just finished enrolling, 1,200 patients just finished enrolling. It takes roughly a year to do the data readout on processing and everything. So that will come out kind of mid next year."
+  },
+  {
+   "item": "Pangea trauma plating System 유럽 전체 상용화",
+   "target": "2026년 4분기",
+   "status": "진행 중",
+   "note": "유럽에서 승인을 받고 제한적 런칭을 시작했으며 4분기에 전체 상용화 예정임.",
+   "quote": "Additionally, we recently received approval and have initiated a limited launch for our Pangea trauma plating System in Europe to be followed by a full commercial launch during the fourth quarter."
+  },
+  {
+   "item": "Mako RPS 미국 전체 상용화",
+   "target": "2026년",
+   "status": "신규",
+   "note": "Mako RPS의 미국 전면 상용화를 최근 발표하고 확대를 추진 중임.",
+   "quote": "Furthermore, we recently announced the full commercial launch of Mako RPS in the U.S., expanding our robotics portfolio"
+  }
+ ],
+ "qa": [
+  {
+   "theme": "연간 가이던스 상단 조정 및 하반기 실적 가시성",
+   "analysts": [
+    "Joanne Wuensch (Citigroup)",
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "1분기 실적 호조와 비교해 연간 가이던스 상단을 낮추고 좁힌 이유가 무엇이며, 하반기 11% 수준의 성장을 달성할 수 있는 근거는 무엇인가?",
+   "answer": "상반기가 이미 경과했고 생산 램프업과 자본재 주문 이행 능력을 반영하여 신중하면서도 확실한 범위로 조정하였으며, 강력한 자본재 수주잔고와 공장 가동 안정화로 하반기 목표 달성에 자신감을 갖고 있음."
+  },
+  {
+   "theme": "말초혈관(인어리) 사업부 공급 차질 및 영향",
+   "analysts": [
+    "Travis Steed (Bank of America)",
+    "Matthew Blackman (TD Cowen)"
+   ],
+   "question": "말초혈관 사업부의 공급 차질 원인과 구체적인 재무적 영향, 그리고 하반기 회복 가능성에 대해 설명해달라.",
+   "answer": "특정 공장의 운영 문제로 백오더가 발생해 일시적인 매출 타격을 입었으나 3분기 말까지 관리 가능한 수준으로 해소될 것이며, 안정화된 영업조직과 함께 점유율을 회복해 나갈 것임."
+  },
+  {
+   "theme": "자본 배분 및 자사주 매입 재개",
+   "analysts": [
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "M&A가 최우선 순위임에도 불구하고 자사주 매입을 재개하기로 한 배경과 규모는 어떻게 되는가?",
+   "answer": "M&A가 여전히 최우선 순위이나, 현금 창출력이 크게 향상되었고 최근 밸류에이션 압축을 고려하여 기존에 승인된 잔여 한도 등을 활용해 주주 가치 환원을 보완할 계획임."
+  },
+  {
+   "theme": "수술 건수 및 자본재 환경 추이",
+   "analysts": [
+    "Robert Marcus (JPMorgan)",
+    "Kevin Lobo"
+   ],
+   "question": "최근 수술 건수 둔화 우려와 자본재 시장 환경에 대해 어떻게 평가하는가?",
+   "answer": "스트라이커의 주력 사업 영역에서는 수술 수요가 여전히 건강하고 안정적이며, 자본재 역시 수주잔고가 높고 취소 건수가 없어 환경이 매우 견조함."
+  },
+  {
+   "theme": "마진 및 EPS 변동 요인",
+   "analysts": [
+    "Ryan Zimmerman (BTIG)"
+   ],
+   "question": "하반기 EPS 및 마진에 영향을 미치는 요인(관세 환급, 사이버 사고 비용 등)의 흐름을 어떻게 보아야 하는가?",
+   "answer": "관세 환급 효과가 긍정적으로 작용하는 반면, 사이버 사고 관련 유휴 비용 및 IT 안정화 비용이 상쇄 요인으로 작용하고 있으며 3개년 150bps 마진 개선 목표는 유지됨."
+  }
+ ]
+}
