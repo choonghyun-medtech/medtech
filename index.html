@@ -154,6 +154,33 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
 .tr-body mark{background:#fde68a; color:#111; border-radius:2px}
 .tr-body mark.cur{background:#f59e0b}
 .snap-jump-btn{background:none; border:1px solid var(--border); color:var(--accent); font-weight:600; cursor:pointer; padding:3px 10px; font-size:11px; border-radius:4px; white-space:nowrap}
+/* 해외기업 컨콜 — TIKR 원문 한국어 정리·시계열 분석(2026-10-15). 배지 색은 대시보드 관례(상승 빨강·하락 파랑)를 따른다. */
+.ca-block{margin-top:14px; padding-top:10px; border-top:1px dashed var(--border)}
+.ca-h{font-size:12.5px; font-weight:800; color:var(--accent); margin:14px 0 6px}
+.ca-ul{margin:0; padding-left:18px; font-size:13px; line-height:1.7}
+.ca-badge{display:inline-block; padding:1px 7px; border-radius:5px; font-size:11px; font-weight:700; white-space:nowrap}
+.ca-up{background:rgba(220,38,38,.1); color:var(--red)}
+.ca-down{background:rgba(37,99,235,.1); color:var(--blue)}
+.ca-keep{background:rgba(138,145,156,.15); color:var(--sub)}
+.ca-new{background:rgba(124,58,237,.12); color:var(--purple)}
+.ca-done{background:rgba(22,163,74,.12); color:var(--green)}
+.ca-late{background:rgba(217,119,6,.14); color:#d97706}
+.ca-none{background:transparent; color:var(--dim); border:1px dashed var(--border)}
+.ca-dim{color:var(--dim)}
+.ca-tbl-wrap{overflow-x:auto}
+.ca-tbl{width:100%; border-collapse:collapse; font-size:12.5px}
+.ca-tbl th{text-align:left; font-size:11px; color:var(--dim); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); white-space:nowrap}
+.ca-tbl td{padding:6px 8px; border-bottom:1px solid var(--border); vertical-align:top}
+.ca-tbl.ca-ts td:not(:first-child), .ca-tbl.ca-ts th:not(:first-child){white-space:nowrap}
+.ca-quote summary{font-size:10.5px; color:var(--dim); cursor:pointer; margin-top:2px; width:max-content}
+.ca-quote div{font-size:11.5px; color:var(--sub); font-style:italic; margin-top:3px; padding-left:8px; border-left:2px solid var(--border)}
+.ca-fold{margin-top:12px}
+.ca-fold > summary{font-size:12.5px; font-weight:800; color:var(--accent); cursor:pointer}
+.ca-sec{margin:8px 0 0; font-size:12.5px}
+.ca-qa{border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin-top:6px; font-size:12.5px; line-height:1.6}
+.ca-qa-t{font-weight:700; margin-bottom:2px}
+.ca-qa-l{display:inline-block; width:16px; font-weight:800; color:var(--accent)}
+.ca-qa-l.a{color:var(--green)}
 .chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px}
 .chip{
   border:1px solid var(--border); background:var(--bg2); color:var(--sub);
@@ -339,7 +366,6 @@ tr:last-child td{border-bottom:none}
   color:var(--lime); border:1px dashed var(--lime)}
 .cal-next-card.pend{border-style:dashed; border-color:var(--lime)}
 .up-row.pend .d{color:var(--lime); font-weight:700; width:auto; min-width:44px}
-/* "커버 기업 실적만" 토글 — 켜지면 강조색 */
 .cal-cap-btn{cursor:pointer; font-weight:600}
 .cal-cap-btn:hover{border-color:var(--accent); color:var(--accent)}
 .cal-cap-btn.busy{opacity:.5; pointer-events:none}
@@ -1148,10 +1174,12 @@ tr:last-child td{border-bottom:none}
          이용약관 위반·컨텐츠 저작권 문제 소지가 커서 보류 — 대신 기업이 직접 공개하는 IR
          보도자료(공식 발표자료)를 근거로 매출·수익성·가이던스·경영진 코멘트를 한국어로
          번역·요약해 보여준다(scripts/scrape_earnings_ir.py, earnings_ir.json).
-         Q&A 전체 스크립트까지는 포함하지 않는다(2026-09-08). -->
+         2026-10-15: TIKR 원문(수동 복사, concall_transcripts/)이 있는 분기는 실적발표·Q&A 한국어 정리와
+         직전 분기 대비 가이던스·마일스톤 추적을 IR 요약 아래에 붙인다(scripts/analyze_concall_transcripts.py,
+         concall_analysis/). -->
     <div id="reports-sub-concall" style="display:none">
       <div class="sec-h"><h2>해외기업 컨콜</h2><span class="note" id="earnings-ir-source-note">출처: 각 기업 IR 공식 보도자료</span></div>
-      <div class="note" style="margin-bottom:12px">Q&A까지 담긴 완전한 컨콜 스크립트가 아니라, 기업이 공식 공개한 실적 보도자료(매출·수익성·가이던스·경영진 코멘트)를 한국어로 번역·요약한 것입니다. TIKR 등 유료 사이트를 스크래핑하는 방식은 이용약관·저작권 문제로 채택하지 않았습니다.</div>
+      <div class="note" style="margin-bottom:12px">실적 숫자는 발표 당일 IR 보도자료를 한국어로 요약하고, 컨콜 원문(TIKR, 2026년 2분기부터)이 들어온 분기는 실적발표·Q&amp;A 정리와 직전 분기 대비 가이던스·마일스톤 변화를 함께 보여줍니다. 기업을 선택하면 분기별 추이를 볼 수 있습니다.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
         <select id="earnings-ir-company-select" class="filter-select"></select>
         <select id="earnings-ir-quarter-select" class="filter-select" style="display:none"></select>
@@ -8407,7 +8435,95 @@ document.addEventListener('keydown', e => {
   s.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); gotoTranscriptHit(transcriptHitIdx + (e.shiftKey ? -1 : 1)); } });
 })();
 
-function earningsIrCardHtml(c){
+// ---- 컨콜 심층 분석 (2026-10-15, 사수 피드백) ----
+// concall_analysis/ — scripts/analyze_concall_transcripts.py가 TIKR 원문을 Gemini로 한국어 정리 +
+// 직전 분기 대비 비교(가이던스·마일스톤)한 결과. IR 보도자료 요약(발표 당일 숫자)은 그대로 두고, 원문이
+// 들어온 분기에만 그 아래에 붙인다. IR 요약이 아직 없는 분기라도 분석이 있으면 분석만으로 카드를 만든다.
+let CONCALL_ANALYSES = [];
+async function loadConcallAnalyses(){
+  try{
+    const res = await fetch('concall_analysis/index.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows = (await res.json()).analyses || [];
+    const loaded = await Promise.all(rows.map(r=> fetch('concall_analysis/' + encodeURIComponent(r.file), {cache:'no-store'})
+      .then(x=> x.ok ? x.json() : null).catch(()=> null)));
+    CONCALL_ANALYSES = loaded.filter(Boolean);
+  }catch(e){ CONCALL_ANALYSES = []; }
+}
+
+// IR 요약과 컨콜 분석을 (티커, 분기)로 묶은 목록 — 화면의 기업·분기 선택은 이 목록 기준.
+function concallEntries(){
+  const map = new Map();
+  const keyOf = (ticker, quarter, date)=> `${ticker}|${quarter || date || ''}`;
+  (EARNINGS_IR.companies || []).forEach(c=>{
+    const k = keyOf(c.ticker || c.name, c.quarter, c.date);
+    map.set(k, {key:k, ticker:c.ticker || c.name || '', name:c.name || '', quarter:c.quarter || '', date:c.date || '', ir:c, an:null});
+  });
+  CONCALL_ANALYSES.forEach(a=>{
+    const k = keyOf(a.ticker, a.quarter, a.call_date);
+    const e = map.get(k) || {key:k, ticker:a.ticker, name:'', quarter:a.quarter || '', date:'', ir:null, an:null};
+    e.an = a;
+    if(!e.date) e.date = a.call_date || '';
+    if(!e.name) e.name = (EARNINGS_IR.companies || []).find(c=> c.ticker === a.ticker)?.name || a.company || a.ticker;
+    map.set(k, e);
+  });
+  return [...map.values()];
+}
+
+const CA_GUIDE_CLS = {'상향':'ca-up', '하향':'ca-down', '유지':'ca-keep', '신규':'ca-new', '철회':'ca-none', '언급 없음':'ca-none', '비교불가':'ca-none'};
+const CA_MILE_CLS = {'달성':'ca-done', '진행 중':'ca-keep', '지연':'ca-late', '신규':'ca-new', '철회':'ca-none', '언급 없음':'ca-none'};
+function caBadge(text, map){ return text ? `<span class="ca-badge ${map[text] || 'ca-none'}">${escapeHtml(text)}</span>` : ''; }
+function caQuote(q){ return q ? `<details class="ca-quote"><summary>근거</summary><div>${escapeHtml(q)}</div></details>` : ''; }
+function caList(items){ return (items || []).length ? `<ul class="ca-ul">${items.map(s=> `<li>${escapeHtml(s)}</li>`).join('')}</ul>` : ''; }
+
+function concallAnalysisHtml(a, compact){
+  const headline = `<div class="ca-h">컨콜 핵심 <span class="note" style="font-weight:400">· TIKR 원문 한국어 정리</span></div>${caList(a.headline)}`;
+  if(compact){
+    return `<div class="ca-block">${headline}
+      <button class="snap-jump-btn" data-concall-open="${escapeHtml(a.ticker)}|${escapeHtml(a.quarter)}" style="margin-top:6px">가이던스·마일스톤·Q&amp;A 자세히 보기</button></div>`;
+  }
+  const changes = (a.changes || []).length
+    ? `<div class="ca-h">지난 분기 대비 달라진 점 <span class="note" style="font-weight:400">· 비교 기준: ${escapeHtml(a.prior_basis || '-')}</span></div>${caList(a.changes)}`
+    : `<div class="ca-h">지난 분기 대비 달라진 점</div><div class="note">비교할 직전 분기 자료가 없습니다(이 회사의 첫 컨콜 원문).</div>`;
+  const guide = (a.guidance || []).length ? `
+    <div class="ca-h">가이던스</div>
+    <div class="ca-tbl-wrap"><table class="ca-tbl">
+      <thead><tr><th>항목</th><th>직전</th><th>이번</th><th>변화</th></tr></thead>
+      <tbody>${a.guidance.map(g=> `<tr>
+        <td>${escapeHtml(g.item || '')}${caQuote(g.quote)}</td>
+        <td class="ca-dim">${escapeHtml(g.prev || '-')}</td>
+        <td>${escapeHtml(g.value || '-')}</td>
+        <td>${caBadge(g.change, CA_GUIDE_CLS)}</td></tr>`).join('')}</tbody>
+    </table></div>` : '';
+  const miles = (a.milestones || []).length ? `
+    <div class="ca-h">마일스톤 트래킹</div>
+    <div class="ca-tbl-wrap"><table class="ca-tbl">
+      <thead><tr><th>항목</th><th>목표 시기</th><th>상태</th><th>판단 근거</th></tr></thead>
+      <tbody>${a.milestones.map(m=> `<tr>
+        <td>${escapeHtml(m.item || '')}</td>
+        <td class="ca-dim" style="white-space:nowrap">${escapeHtml(m.target || '-')}</td>
+        <td>${caBadge(m.status, CA_MILE_CLS)}</td>
+        <td>${escapeHtml(m.note || '')}${caQuote(m.quote)}</td></tr>`).join('')}</tbody>
+    </table></div>` : '';
+  const prep = a.prepared || {};
+  const prepared = `
+    <details class="ca-fold"><summary>실적발표 요약 <span class="note">(${(prep.sections || []).length}개 부문)</span></summary>
+      ${caList(prep.summary)}
+      ${(prep.sections || []).map(s=> `<div class="ca-sec"><b>${escapeHtml(s.title || '')}</b>${caList(s.points)}</div>`).join('')}
+    </details>`;
+  const qa = (a.qa || []).length ? `
+    <details class="ca-fold" open><summary>Q&amp;A 주제별 정리 <span class="note">(${a.qa.length}개 주제)</span></summary>
+      ${a.qa.map(q=> `<div class="ca-qa">
+        <div class="ca-qa-t">${escapeHtml(q.theme || '')} <span class="note">${escapeHtml((q.analysts || []).join(', '))}</span></div>
+        <div><span class="ca-qa-l">Q</span>${escapeHtml(q.question || '')}</div>
+        <div><span class="ca-qa-l a">A</span>${escapeHtml(q.answer || '')}</div>
+      </div>`).join('')}
+    </details>` : '';
+  return `<div class="ca-block">${headline}${changes}${guide}${miles}${prepared}${qa}
+    <div class="note" style="margin-top:8px;font-size:10.5px">AI(${escapeHtml(a.model || 'Gemini')})가 컨콜 원문을 번역·정리한 내용입니다. 수치·표현은 "근거" 또는 컨콜 스크립트 원문으로 확인하세요.</div></div>`;
+}
+
+function earningsIrHtml(c){
   // 지표를 stat-card 그리드에 넣으면 value+note가 좁은 칸 안에서 여러 줄로 접혀 가독성이
   // 떨어졌다(2026-09-08 피드백) — 표(구분/내용) 형태로 한 줄씩 나열하는 방식으로 변경.
   const metricsHtml = (c.metrics || []).length ? `
@@ -8424,58 +8540,87 @@ function earningsIrCardHtml(c){
   const summaryHtml = (c.summary_ko || []).length
     ? `<ul style="margin:10px 0 0;padding-left:18px;font-size:13px;line-height:1.7">${(c.summary_ko||[]).map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul>`
     : '';
-  const quoteHtml = c.ceo_quote_ko
-    ? `<div class="note" style="margin-top:8px;padding-left:10px;border-left:2px solid var(--border)">${escapeHtml(c.ceo_quote_ko)}</div>`
-    : '';
-  // 번역·요약은 어디까지나 요약이라, 원문(IR 공식 보도자료)을 바로 확인할 수 있도록 눈에
-  // 띄는 버튼으로 카드 하단에 둔다(2026-09-08 요청 — 기존엔 note 줄 안의 작은 링크뿐이었음).
-  const sourceBtn = c.source_url
-    ? `<a class="snap-jump-btn" href="${c.source_url}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block">원문 IR 보도자료 보기 ↗</a>` : '';
-  const tr = concallTranscriptFor(c);
+  // 경영진 인용문(ceo_quote_ko)은 2026-10-15부터 화면에 표시하지 않는다 — 대부분 원론적인 소감이라
+  // 정보량이 적었다(데이터는 earnings_ir.json에 그대로 남아 있음).
+  return `<div class="ca-h" style="margin-top:4px">실적 숫자 요약 <span class="note" style="font-weight:400">· IR 보도자료</span></div>${metricsHtml}${summaryHtml}`;
+}
+
+function concallCardHtml(e, compact){
+  const irPart = e.ir ? earningsIrHtml(e.ir)
+    : `<div class="note" style="margin-top:6px">IR 보도자료 요약이 아직 수집되지 않았습니다(다음 자동 갱신 때 추가).</div>`;
+  const anPart = e.an ? concallAnalysisHtml(e.an, compact) : '';
+  // 번역·요약은 어디까지나 요약이라, 원문을 바로 확인할 수 있도록 눈에 띄는 버튼으로 카드 하단에 둔다.
+  const sourceBtn = e.ir && e.ir.source_url
+    ? `<a class="snap-jump-btn" href="${e.ir.source_url}" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block">원문 IR 보도자료 보기 ↗</a>` : '';
+  const tr = concallTranscriptFor({ticker:e.ticker, quarter:e.quarter});
   const transcriptBtn = tr
-    ? ` <button class="snap-jump-btn" data-transcript="${escapeHtml(tr.file)}" style="margin-left:6px">컨콜 스크립트 보기</button>` : '';
+    ? ` <button class="snap-jump-btn" data-transcript="${escapeHtml(tr.file)}" style="margin-left:6px">컨콜 스크립트 원문 보기</button>` : '';
   return `
     <div class="card" style="margin-bottom:12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
-        <div style="font-weight:700;font-size:14px">${escapeHtml(c.name||'')} <span class="note">(${escapeHtml(c.ticker||'')})</span> · ${escapeHtml(c.quarter||'')}</div>
-        <div class="note">${c.date||''}</div>
+        <div style="font-weight:700;font-size:14px">${escapeHtml(e.name||'')} <span class="note">(${escapeHtml(e.ticker||'')})</span> · ${escapeHtml(e.quarter||'')}</div>
+        <div class="note">${e.date||''}</div>
       </div>
-      ${metricsHtml}
-      ${summaryHtml}
-      ${quoteHtml}
+      ${irPart}
+      ${anPart}
       <div style="margin-top:10px">${sourceBtn}${transcriptBtn}</div>
     </div>
   `;
 }
 
-// 회사당 여러 분기가 쌓이면(2026-09-15부터 --since 백필로 4Q25까지 늘어남) 죽 나열하는
-// 대신 기업을 고르고, 그 안에서도 분기 하나를 콕 집어서 볼 수 있어야 한다는 요청
-// (2026-09-15) — 기업 드롭다운은 그대로 두고, 기업을 고르면 그 기업이 보유한 분기 목록으로
-// 두 번째(분기) 드롭다운이 채워진다. "전체보기" 상태에서는 기업마다 최신 분기 카드 1개만
-// 보여주고(그 아래 개수만 note로 표시), 과거 분기를 보려면 기업을 선택하게 한다.
-let selectedEarningsIrTicker = '';
-let selectedEarningsIrDate = '';
+// 기업을 고르면 그 기업의 컨콜 분석이 쌓인 분기들로 가이던스·마일스톤 추이 표를 만든다(분석 2개 분기 이상일 때).
+function concallTimelineHtml(ticker){
+  const list = CONCALL_ANALYSES.filter(a=> a.ticker === ticker).sort((a,b)=> (a.call_date||'').localeCompare(b.call_date||''));
+  if(!list.length) return '';
+  if(list.length < 2){
+    return `<div class="note" style="margin:-4px 0 12px">분기별 추이(가이던스·마일스톤)는 컨콜 원문 분석이 2개 분기 이상 쌓이면 표시됩니다.</div>`;
+  }
+  const qLabel = q=> (q || '').replace(/^(\d{4})년 (\d)분기.*$/, (m, y, n)=> `${n}Q${y.slice(2)}`) || q;
+  const norm = s=> (s || '').replace(/\s+/g, '');
+  const build = (field, cell)=>{
+    const rows = [];
+    list.forEach(a=> (a[field] || []).forEach(x=>{ if(!rows.some(r=> norm(r) === norm(x.item))) rows.push(x.item); }));
+    if(!rows.length) return '';
+    return `<div class="ca-tbl-wrap"><table class="ca-tbl ca-ts">
+      <thead><tr><th>항목</th>${list.map(a=> `<th>${escapeHtml(qLabel(a.quarter))}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map(item=> `<tr><td>${escapeHtml(item)}</td>${list.map(a=>{
+        const x = (a[field] || []).find(y=> norm(y.item) === norm(item));
+        return `<td>${x ? cell(x) : '<span class="ca-dim">-</span>'}</td>`;
+      }).join('')}</tr>`).join('')}</tbody></table></div>`;
+  };
+  const guide = build('guidance', g=> `${g.value ? escapeHtml(g.value) + ' ' : ''}${caBadge(g.change, CA_GUIDE_CLS)}`);
+  const miles = build('milestones', m=> caBadge(m.status, CA_MILE_CLS));
+  return `<div class="card" style="margin-bottom:12px">
+    <div style="font-weight:700;font-size:14px">분기별 추이 <span class="note" style="font-weight:400">· 컨콜 원문 분석 ${list.length}개 분기</span></div>
+    ${guide ? `<div class="ca-h">가이던스</div>${guide}` : ''}
+    ${miles ? `<div class="ca-h">마일스톤</div>${miles}` : ''}
+  </div>`;
+}
 
-function earningsIrGroupKey(c){ return c.ticker || c.name || ''; }
+// 회사당 여러 분기가 쌓이므로 기업을 고르고, 그 안에서 분기 하나를 골라 본다(2026-09-15).
+// "전체보기"에서는 기업마다 최신 분기 카드 1개(컨콜 분석은 핵심만)만 보여준다.
+let selectedEarningsIrTicker = '';
+let selectedConcallKey = '';
 
 function renderEarningsIrDropdown(){
   const sel = document.getElementById('earnings-ir-company-select');
   if(!sel) return;
-  const byKey = {};
-  (EARNINGS_IR.companies || []).forEach(c=>{
-    const key = earningsIrGroupKey(c);
-    if(!byKey[key]) byKey[key] = c;
-  });
-  const companies = Object.values(byKey).sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  const byTicker = {};
+  concallEntries().forEach(e=>{ if(!byTicker[e.ticker]) byTicker[e.ticker] = e; });
+  const companies = Object.values(byTicker).sort((a,b)=> (a.name||'').localeCompare(b.name||''));
   sel.innerHTML = `<option value="">전체보기 (${companies.length}개 기업)</option>` +
-    companies.map(c=> `<option value="${escapeHtml(c.ticker||'')}">${escapeHtml(c.name||'')} (${escapeHtml(c.ticker||'')})</option>`).join('');
+    companies.map(c=> `<option value="${escapeHtml(c.ticker)}">${escapeHtml(c.name||'')} (${escapeHtml(c.ticker)})</option>`).join('');
   sel.value = selectedEarningsIrTicker;
   sel.onchange = ()=>{
     selectedEarningsIrTicker = sel.value;
-    selectedEarningsIrDate = ''; // 기업을 바꾸면 분기 선택은 최신 분기로 리셋
+    selectedConcallKey = ''; // 기업을 바꾸면 분기 선택은 최신 분기로 리셋
     renderEarningsIrQuarterDropdown();
     renderEarningsIR();
   };
+}
+
+function concallRowsFor(ticker){
+  return concallEntries().filter(e=> e.ticker === ticker).sort((a,b)=> (b.date||'').localeCompare(a.date||''));
 }
 
 function renderEarningsIrQuarterDropdown(){
@@ -8486,43 +8631,35 @@ function renderEarningsIrQuarterDropdown(){
     qsel.innerHTML = '';
     return;
   }
-  const rows = (EARNINGS_IR.companies || [])
-    .filter(c=> earningsIrGroupKey(c) === selectedEarningsIrTicker)
-    .slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  const rows = concallRowsFor(selectedEarningsIrTicker);
   qsel.style.display = rows.length ? '' : 'none';
-  qsel.innerHTML = rows.map(c=> `<option value="${escapeHtml(c.date||'')}">${escapeHtml(c.quarter || c.date || '(날짜 미상)')}</option>`).join('');
-  if(!rows.some(c=> c.date === selectedEarningsIrDate)){
-    selectedEarningsIrDate = rows[0] ? rows[0].date : '';
-  }
-  qsel.value = selectedEarningsIrDate;
-  qsel.onchange = ()=>{ selectedEarningsIrDate = qsel.value; renderEarningsIR(); };
+  qsel.innerHTML = rows.map(e=> `<option value="${escapeHtml(e.key)}">${escapeHtml(e.quarter || e.date || '(날짜 미상)')}${e.an ? ' · 컨콜 분석' : ''}</option>`).join('');
+  if(!rows.some(e=> e.key === selectedConcallKey)) selectedConcallKey = rows[0] ? rows[0].key : '';
+  qsel.value = selectedConcallKey;
+  qsel.onchange = ()=>{ selectedConcallKey = qsel.value; renderEarningsIR(); };
 }
 
 function renderEarningsIR(){
   const wrap = document.getElementById('earnings-ir-wrap');
   if(!wrap) return;
-  const all = EARNINGS_IR.companies || [];
+  const all = concallEntries();
   if(!all.length){
     wrap.innerHTML = '<div class="card note">아직 수집된 실적 IR 요약이 없습니다.</div>';
     return;
   }
   if(selectedEarningsIrTicker){
-    const rows = all.filter(c=> earningsIrGroupKey(c) === selectedEarningsIrTicker)
-      .slice().sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-    const picked = rows.find(c=> c.date === selectedEarningsIrDate) || rows[0];
-    wrap.innerHTML = picked ? earningsIrCardHtml(picked) : '<div class="card note">선택한 분기 데이터를 찾을 수 없습니다.</div>';
+    const rows = concallRowsFor(selectedEarningsIrTicker);
+    const picked = rows.find(e=> e.key === selectedConcallKey) || rows[0];
+    wrap.innerHTML = picked
+      ? concallCardHtml(picked, false) + concallTimelineHtml(selectedEarningsIrTicker)
+      : '<div class="card note">선택한 분기 데이터를 찾을 수 없습니다.</div>';
     return;
   }
-  // 전체보기: 기업별로 묶어 최신 분기 카드 1개만 보여준다(과거 분기는 기업 선택 후 조회).
+  // 전체보기: 기업별로 묶어 최신 분기 카드 1개만 보여준다(과거 분기·분석 상세는 기업 선택 후 조회).
   const groups = {};
-  all.forEach(c=>{
-    const key = earningsIrGroupKey(c);
-    (groups[key] = groups[key] || []).push(c);
-  });
-  const groupList = Object.values(groups).map(rows=>{
-    rows.sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-    return rows;
-  }).sort((a,b)=> (b[0].date||'').localeCompare(a[0].date||''));
+  all.forEach(e=> (groups[e.ticker] = groups[e.ticker] || []).push(e));
+  const groupList = Object.values(groups).map(rows=> rows.sort((a,b)=> (b.date||'').localeCompare(a.date||'')))
+    .sort((a,b)=> (b[0].date||'').localeCompare(a[0].date||''));
   wrap.innerHTML = groupList.map(rows=>{
     const head = rows[0];
     const quarterCount = rows.length > 1
@@ -8530,11 +8667,26 @@ function renderEarningsIR(){
     return `
       <div style="margin-bottom:18px">
         <div style="font-weight:700;font-size:14.5px;margin-bottom:6px">${escapeHtml(head.name||'')} <span class="note">(${escapeHtml(head.ticker||'')})</span> ${quarterCount}</div>
-        ${earningsIrCardHtml(head)}
+        ${concallCardHtml(head, true)}
       </div>
     `;
   }).join('');
 }
+
+// 전체보기 카드의 "자세히 보기" — 그 기업·분기를 골라 상세 화면으로
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('[data-concall-open]');
+  if(!btn) return;
+  const [ticker, quarter] = btn.dataset.concallOpen.split('|');
+  selectedEarningsIrTicker = ticker;
+  selectedConcallKey = `${ticker}|${quarter}`;
+  const sel = document.getElementById('earnings-ir-company-select');
+  if(sel) sel.value = ticker;
+  renderEarningsIrQuarterDropdown();
+  renderEarningsIR();
+  const wrap = document.getElementById('earnings-ir-wrap');
+  if(wrap) wrap.scrollIntoView({block:'start', behavior:'smooth'});
+});
 
 async function loadEarningsIR(){
   try{
@@ -8543,13 +8695,12 @@ async function loadEarningsIR(){
     EARNINGS_IR = await res.json();
     const note = document.getElementById('earnings-ir-source-note');
     if(note && EARNINGS_IR.updated){
-      const dt = new Date(EARNINGS_IR.updated);
-      note.textContent = `출처: 각 기업 IR 공식 보도자료 · ${updatedLabel(EARNINGS_IR.updated)}`;
+      note.textContent = `출처: 각 기업 IR 공식 보도자료 · TIKR 컨콜 원문 · ${updatedLabel(EARNINGS_IR.updated)}`;
     }
   }catch(e){
     EARNINGS_IR = { companies: [] };
   }
-  await loadConcallTranscriptIndex();
+  await Promise.all([loadConcallTranscriptIndex(), loadConcallAnalyses()]);
   renderEarningsIrDropdown();
   renderEarningsIrQuarterDropdown();
   renderEarningsIR();

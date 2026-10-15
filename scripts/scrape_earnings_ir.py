@@ -339,18 +339,40 @@ class AnthropicProvider:
         return resp.content[0].text
 
 
+class _FallbackAdapter:
+    """summarize_news.GeminiFallbackProvider(키 여러 개 × 기본/예비 모델 자동 전환)를 이 스크립트의
+    provider.call(user_content) 형태로 감싼다."""
+    name = "gemini"
+
+    def __init__(self, fb):
+        self.fb = fb
+
+    def call(self, user_content):
+        return self.fb.call(SYSTEM_PROMPT, user_content, 3000)
+
+
+# 2026-10-15: 예전엔 키 하나(GEMINI_API_KEY_EARNINGS)·모델 하나만 써서, 그 키가 막히면 그날 실적 번역이
+# 통째로 실패했다 — 10/13부터 뉴스 요약이 이 키를 예비로 같이 쓰게 되면서 UNH 3분기(10/13 발표)가
+# 사흘 내리 "성공"으로 끝난 실행 속에서 번역만 실패해 안 들어왔다. 컨콜 분석 전용 키까지 순서대로 쓰고,
+# 503 과부하면 예비 모델로 넘어가도록 뉴스 요약과 같은 자동 전환을 쓴다.
+IR_KEY_ENVS = ("GEMINI_API_KEY_EARNINGS", "GEMINI_API_KEY_CONCALL", "GEMINI_API_KEY")
+
+
 def get_provider():
     import os
-    # 뉴스 요약(summarize_news.py)/월간 브리핑(analyze_news_trend.py)이 GEMINI_API_KEY를
-    # 이미 같이 쓰고 있어서 하루 20회 무료 쿼터를 셋이 나눠 쓰다 소진되는 문제가 있었다
-    # (2026-09-08) — 이 스크립트 전용으로 별도 무료 키를 GEMINI_API_KEY_EARNINGS에
-    # 등록하면 그 키를 우선 쓰고(완전히 독립된 하루 쿼터), 아직 안 만들었으면 기존
-    # GEMINI_API_KEY로 자동 대체한다.
-    gemini_key = os.environ.get("GEMINI_API_KEY_EARNINGS") or os.environ.get("GEMINI_API_KEY")
+    keys = []
+    for env in IR_KEY_ENVS:
+        k = (os.environ.get(env) or "").strip()
+        if k and k not in keys:
+            keys.append(k)
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
-    if gemini_key:
+    if keys:
         try:
-            return GeminiProvider(gemini_key)
+            from summarize_news import GeminiFallbackProvider, GeminiProvider as NewsGeminiProvider, GEMINI_MODEL as NEWS_MODEL
+            fb = GeminiFallbackProvider(NewsGeminiProvider, keys)
+            fb._provider(0, NEWS_MODEL)
+            print(f"[INFO] Gemini 키 {len(keys)}개 · 쿼터 소진·과부하 시 예비 키/모델로 자동 전환", file=sys.stderr)
+            return _FallbackAdapter(fb)
         except Exception as e:
             print(f"[WARN] Gemini provider 초기화 실패: {e}", file=sys.stderr)
     if anthropic_key:
@@ -544,6 +566,7 @@ def main():
 
     changed = False
     quota_exhausted = False
+    failed = []  # 번역·본문 조회 실패 — Actions 화면에 경고로 띄운다(예전엔 로그에만 묻혀 "성공"처럼 보였음)
     for ticker, info in EDGAR_SOURCES.items():
         if quota_exhausted:
             break
@@ -568,11 +591,14 @@ def main():
                     changed = True
                     if not since_date:
                         break
+                elif status == FAILED:
+                    failed.append(f"{ticker} {release['date']}")
             except DailyQuotaExhausted:
                 # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
                 # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한
                 # 회사들은 dedup으로 건너뛰니 다음 실행 때 나머지가 자연히 이어서 채워진다).
                 print(f"[WARN] Gemini 무료 티어 하루 쿼터 소진 — 이번 실행은 여기까지만 진행하고 남은 회사는 다음 실행 때 이어서 수집합니다.", file=sys.stderr)
+                failed.append(f"{ticker} {release['date']}(하루 쿼터 소진, 이후 회사 미처리)")
                 quota_exhausted = True
                 break
 
@@ -589,6 +615,9 @@ def main():
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(out_data, f, ensure_ascii=False, indent=2)
     print(f"완료: {args.out} (기업 {len(out_data.get('companies', []))}건)", file=sys.stderr)
+    # GitHub Actions 실행 화면에 노란 경고로 표시된다(워크플로 자체는 실패시키지 않음 — 다음 실행 때 재시도)
+    for f in failed:
+        print(f"::warning title=실적 IR 번역 실패::{f} — 다음 실행 때 다시 시도합니다(로그의 [WARN] 참고)")
 
 
 if __name__ == "__main__":

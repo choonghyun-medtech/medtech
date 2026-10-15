@@ -43,6 +43,7 @@ jobs:
           # 등록해두면 우선 쓴다(secrets에 아직 등록 전이면 빈 값이라 기존 GEMINI_API_KEY로
           # 자동 대체됨 — scripts/scrape_earnings_ir.py의 get_provider() 참고).
           GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}
+          GEMINI_API_KEY_CONCALL: ${{ secrets.GEMINI_API_KEY_CONCALL }}  # 2026-10-15: 실적 키가 막히면 이어 씀
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
