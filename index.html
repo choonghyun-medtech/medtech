@@ -316,7 +316,51 @@ tr:last-child td{border-bottom:none}
 .cal-head{display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:8px}
 .cal-head button{border:1px solid var(--border); background:var(--card); border-radius:6px; width:28px; height:28px; cursor:pointer; color:var(--text)}
 .cal-head .m{font-weight:700; font-size:14px; min-width:90px; text-align:center}
-.grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px}
+/* 2026-10-15: 오른쪽에 "날짜 미정" 칸(8번째 열) 추가 — 국내 실적발표일은 IR 회신이 "11월 초"처럼
+   두루뭉술한 경우가 많아, 날짜가 하루로 안 정해진 일정을 그 주의 줄 끝에 모아 보여준다.
+   좁은 화면에선 칸이 너무 작아져 가로 스크롤로 둔다. */
+.cal-scroll{overflow-x:auto}
+.cal-scroll-inner{min-width:760px}
+.grid{display:grid; grid-template-columns:repeat(7,1fr) 1.25fr; gap:4px}
+.dow.pend-h{color:var(--lime); font-weight:700}
+.cal-pend-cell{border:1px dashed var(--border); border-radius:6px; padding:4px 5px; background:var(--bg2);
+  display:flex; flex-direction:column; gap:3px; min-height:104px}
+.cal-pend-item{border:1px dashed var(--lime); border-radius:5px; padding:2px 5px; background:var(--card); cursor:pointer; line-height:1.3}
+.cal-pend-item .pc{font-size:10px; font-weight:700; color:var(--lime); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cal-pend-item .pp{font-size:9.5px; color:var(--sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.cal-pend-item:hover, .cal-pend-item.pinned{background:rgba(101,163,13,.12)}
+.cal-pend-item.pinned{border-style:solid}
+/* 후보일이 몇 개로 정해진 미정 일정(예: 13일 또는 16일) — 그 날짜 칸에 점선 칩으로 직접 표시(캡쳐에도 보이게) */
+.day .ev.cand{background:transparent; border:1px dashed var(--lime); color:var(--lime); padding:0 2px}
+/* 미정 일정에 마우스를 올리거나 눌렀을 때 후보 기간 칸 강조 */
+.day.cand-hl{background:rgba(101,163,13,.09); outline:1.5px dashed var(--lime); outline-offset:-2px}
+.badge.pend{background:transparent; color:var(--lime); border:1px dashed var(--lime); padding:1px 7px}
+.cal-legend-note{display:inline-flex; align-items:center; padding:5px 12px; border-radius:14px; font-weight:700; font-size:11.5px;
+  color:var(--lime); border:1px dashed var(--lime)}
+.cal-next-card.pend{border-style:dashed; border-color:var(--lime)}
+.up-row.pend .d{color:var(--lime); font-weight:700; width:auto; min-width:44px}
+/* "커버 기업 실적만" 토글 — 켜지면 강조색 */
+.cal-cap-btn{cursor:pointer; font-weight:600}
+.cal-cap-btn:hover{border-color:var(--accent); color:var(--accent)}
+.cal-cap-btn.busy{opacity:.5; pointer-events:none}
+/* 캘린더 이미지 저장용 오프스크린 영역 — 테마와 무관하게 항상 라이트 팔레트(보고서 첨부용) */
+.cal-capture-stage{
+  position:fixed; left:-10000px; top:0; width:1000px; padding:20px 22px;
+  --bg:#ffffff; --bg2:#f7f8fa; --card:#ffffff; --border:#e6e8eb;
+  --text:#1a1d21; --sub:#5b6470; --dim:#8a919c;
+  --accent:#2563eb; --accent-soft:#eef2ff;
+  --green:#16a34a; --red:#dc2626; --purple:#7c3aed; --lime:#65a30d; --blue:#2563eb; --teal:#0d9488;
+  background:var(--bg); color:var(--text);
+}
+.cal-capture-stage h3{margin:0 0 2px; font-size:17px}
+.cal-capture-stage .cal-capture-sub{font-size:11.5px; color:var(--dim); margin-bottom:12px}
+.cal-capture-stage .day{min-height:84px}
+.cal-capture-stage .grid.grid7{grid-template-columns:repeat(7,1fr)}
+.cal-capture-stage .day.mstart .n{color:var(--accent); font-weight:800}
+.cal-capture-stage .cal-pend-cell{min-height:84px}
+.cal-capture-stage .legend .cal-legend-chip{cursor:default}
+.cal-capture-stage .day .ev{overflow:visible}
+.cal-capture-stage .cal-pend-item .pc, .cal-capture-stage .cal-pend-item .pp{white-space:normal; overflow:visible}
 .dow{text-align:center; font-size:11px; color:var(--dim); padding:4px 0}
 /* 캘린더 하루 칸 — 원래 aspect-ratio:1(정사각형)이라 화면에 비해 지나치게 컸던 걸
    고정 min-height로 낮췄다(2026-08-28). 일정 라벨(.ev)을 칸 안에 직접 표기하기 위해
@@ -777,6 +821,7 @@ tr:last-child td{border-bottom:none}
         <button class="region-tab" data-region="global">해외</button>
       </div>
       <a href="#" id="cal-reset-link" class="note" style="text-decoration:underline">초기화</a>
+      <button id="cal-capture-btn" class="filter-select cal-cap-btn" style="margin-left:auto" title="지금 보고 있는 달의 실적 시즌(예: 10~11월 3분기 실적)을 커버 기업 실적 일정만으로 한 장의 이미지로 저장 — 첫 실적 일정이 든 주부터 마지막 일정이 든 주까지, 화면 필터와 무관">📷 실적 일정 저장</button>
     </div>
     <div class="note" id="cal-filter-summary" style="margin-bottom:10px"></div>
 
@@ -785,10 +830,13 @@ tr:last-child td{border-bottom:none}
     <div class="cal-next-grid" id="cal-next-grid"><div class="card">일정을 불러오는 중...</div></div>
 
     <div class="cal-head"><button id="cal-prev">‹</button><div class="m" id="cal-month-label">2026년 8월</div><button id="cal-next">›</button></div>
+    <div class="cal-scroll"><div class="cal-scroll-inner">
     <div class="grid">
       <div class="dow">일</div><div class="dow">월</div><div class="dow">화</div><div class="dow">수</div><div class="dow">목</div><div class="dow">금</div><div class="dow">토</div>
+      <div class="dow pend-h">날짜 미정</div>
     </div>
     <div class="grid" style="margin-top:5px" id="cal-grid"></div>
+    </div></div>
     <!-- 범례를 클릭 가능한 토글 칩으로 사용 — 종류별로 켜고 꺼서 묶어 볼 수 있게(2026-09-03 사용자 요청).
          기본은 전체 켜짐. data-type은 CAL_TYPE_META 키와 일치해야 한다. -->
     <div class="legend" id="cal-legend">
@@ -798,6 +846,7 @@ tr:last-child td{border-bottom:none}
       <span class="cal-legend-chip agm" data-type="agm">주총·기준일</span>
       <span class="cal-legend-chip listing" data-type="listing">신주상장</span>
       <span class="cal-legend-chip exright" data-type="exright">권리락</span>
+      <span class="cal-legend-note" title="국내 실적발표일 중 IR 회신이 하루로 정해지지 않은 일정. 오른쪽 '날짜 미정' 칸에 회신 문구 그대로 표시하고, 후보일이 정해진 경우엔 그 날짜 칸에 점선으로 표시">날짜 미정</span>
     </div>
 
     <div class="sec-h"><h2>이번달 일정</h2><span class="note" id="cal-upcoming-note">이번달 기준</span></div>
@@ -1677,14 +1726,21 @@ const CAL_TYPE_META = {
   listing:  {cls:'listing',  label:'신주상장'},
   exright:  {cls:'exright',  label:'권리락'},
 };
-let CAL_DATA = {domestic:[], global:[]};
+// pending: 국내 커버 기업 실적발표 중 날짜가 하루로 안 정해진 일정(2026-10-15) —
+// calendar_domestic_manual.json(IR 담당자 회신을 엑셀에 적어 scripts/convert_domestic_earnings.py로
+// 변환)에서 온다. 하루로 확정된 회신은 일반 일정처럼 domestic에 섞여 들어가고(manual:true),
+// 기간·후보일인 것만 여기에 남아 달력 오른쪽 "날짜 미정" 칸에 표시된다.
+// 한 건: {company, ticker, quarter, text(회신 문구), from, to, dates?(후보일 목록)}
+let CAL_DATA = {domestic:[], global:[], pending:[]};
 const today0 = new Date();
 // expandedDates: "+N건"을 눌러 펼쳐놓은 날짜(YYYY-MM-DD) 집합. 달을 넘기면 초기화한다.
 // q: 기업명/키워드 검색어. types: 범례 토글로 켜져 있는 종류(CAL_TYPE_META 키) 집합 —
 // 기본은 전체 켜짐(2026-09-03, 검색·종류별 필터 추가).
+// pinned: 클릭해서 후보 기간 강조를 고정해 둔 미정 일정 키(없으면 null).
 const CAL_STATE = {
   year: today0.getFullYear(), month: today0.getMonth(), region: 'all',
   expandedDates: new Set(), q: '', types: new Set(Object.keys(CAL_TYPE_META)),
+  pinned: null,
 };
 const CAL_DAY_MAX = 5; // 하루 칸에 기본으로 보여줄 최대 일정 수(2026-08-28, 3->5 확대)
 const CAL_UP_PAGE_SIZE = 10; // "이번달 일정" 목록 페이지당 건수(리서치 보고서 탭과 동일, 2026-09-03)
@@ -1698,6 +1754,12 @@ function calEventsForRegion(){
 
 // 검색어(기업명/티커/제목) + 범례에서 켜둔 종류로 필터링. 캘린더 그리드·다가오는 일정·
 // 이번달 일정 목록이 전부 이 결과를 공유한다.
+// 커버 기업 실적 = 해외(scripts/calendar_ir_sources.json 18개사, 전부 실적 일정) + 국내 수동 입력.
+// 국내 자동 수집분의 "실적"은 DART 정기보고서 제출(기재정정 포함)이라 여기서 뺀다.
+function calIsCover(ev){
+  return ev.type === 'earn' && (ev.manual || ev.region === 'global');
+}
+
 function calFilterEvents(events){
   const q = CAL_STATE.q.trim().toLowerCase();
   return events.filter(ev=>{
@@ -1712,6 +1774,28 @@ function calFilterEvents(events){
 
 function calFmtDate(d){
   return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+// ---- 날짜 미정 일정(국내 IR 회신) ----
+// 지역·검색·종류 필터는 일반 일정과 같은 규칙을 따른다(전부 국내 실적이라 해외 탭이나 실적 끔이면 숨김).
+function calFilteredPending(){
+  if(CAL_STATE.region === 'global') return [];
+  return calFilterEvents(CAL_DATA.pending.map(p=> Object.assign({region:'domestic', type:'earn', manual:true, title:'실적발표'}, p)));
+}
+function calPendKey(p){ return `${p.ticker||p.company}|${p.quarter||''}`; }
+function calYmdShort(s){ const [, m, d] = s.split('-'); return `${+m}/${+d}`; }
+// 날짜 표기는 "10/21" 형식으로 통일(2026-10-15) — "11/1~11/10", 후보일이면 "11/13 또는 11/16"
+function calPendRange(p){
+  if(p.dates && p.dates.length) return p.dates.map(calYmdShort).join(' 또는 ');
+  return `${calYmdShort(p.from)}~${calYmdShort(p.to)}`;
+}
+function calPendCovers(p, dateStr){
+  return p.dates && p.dates.length ? p.dates.includes(dateStr) : (dateStr >= p.from && dateStr <= p.to);
+}
+function calHighlightPending(p){
+  document.querySelectorAll('#cal-grid .day[data-date]').forEach(el=>{
+    el.classList.toggle('cand-hl', !!p && calPendCovers(p, el.dataset.date));
+  });
 }
 
 // 달력 칸 라벨: 국내는 티커(종목코드)보다 기업명이 알아보기 쉬워 기업명으로,
@@ -1735,60 +1819,124 @@ function renderCalendar(){
   monthLabel.textContent = `${year}년 ${month+1}월`;
 
   const events = calFilterEvents(calEventsForRegion());
+  const pending = calFilteredPending();
   const summary = document.getElementById('cal-filter-summary');
-  if(summary) summary.textContent = `총 ${events.length}건 표시`;
+  if(summary) summary.textContent = `총 ${events.length + pending.length}건 표시` + (pending.length ? ` (날짜 미정 ${pending.length}건 포함)` : '');
+
+  const pad = n=> String(n).padStart(2,'0');
+  const monthFirst = `${year}-${pad(month+1)}-01`;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const monthLast = `${year}-${pad(month+1)}-${pad(daysInMonth)}`;
+  const firstDow = new Date(year, month, 1).getDay();
+
+  // 주(일~토) 단위 줄 — 줄마다 끝에 "날짜 미정" 칸이 붙으므로 마지막 주도 7칸을 채운다.
+  const cells = [];
+  for(let i=0;i<firstDow;i++) cells.push(null);
+  for(let d=1; d<=daysInMonth; d++) cells.push(`${year}-${pad(month+1)}-${pad(d)}`);
+  while(cells.length % 7) cells.push(null);
+  const weeks = [];
+  for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i, i+7));
+
+  grid.innerHTML = calGridHtml(weeks, monthFirst, monthLast, events, pending, {interactive:true});
+
+  renderCalNextUp(events, pending);
+  renderCalMonthList(events, pending);
+}
+
+// 주 단위 달력 칸 HTML — 화면(한 달)과 실적 시즌 이미지(여러 주, 2026-10-15)가 같이 쓴다.
+// weeks: [[YYYY-MM-DD|null ×7], ...], rangeFirst~rangeLast: 이 그림이 다루는 기간(미정 일정 배치 기준).
+// opts.interactive: 화면용(+N건 접기, 오늘·고정 강조). false면 하루 일정을 전부 펼치고, 1일과
+// 첫 칸 날짜는 "11/1"처럼 월을 붙여 여러 달에 걸친 그림에서도 날짜를 읽을 수 있게 한다.
+function calGridHtml(weeks, rangeFirst, rangeLast, events, pending, opts={}){
+  const interactive = !!opts.interactive;
   const byDate = {};
   events.forEach(ev=>{
     (byDate[ev.date] = byDate[ev.date] || []).push(ev);
   });
-
-  const firstDow = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month+1, 0).getDate();
+  // 후보일이 정해진 미정 일정(예: 13일 또는 16일)은 그 날짜 칸에도 점선 칩으로 넣는다 —
+  // 마우스 강조는 이미지 캡쳐에 안 남아서, 한 장으로 봐도 후보일이 보이게(2026-10-15).
+  pending.forEach(p=>{
+    (p.dates||[]).forEach(d=> (byDate[d] = byDate[d] || []).push(Object.assign({}, p, {date:d, cand:true})));
+  });
   const todayStr = today0.toISOString().slice(0,10);
-  let html = '';
-  for(let i=0;i<firstDow;i++) html += '<div class="day dim"></div>';
-  for(let d=1; d<=daysInMonth; d++){
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dayEvents = (byDate[dateStr]||[]).slice().sort((a,b)=> (a.type>b.type?1:-1));
-    const expanded = CAL_STATE.expandedDates.has(dateStr);
-    const shown = expanded ? dayEvents : dayEvents.slice(0, CAL_DAY_MAX);
-    const evHtml = shown.map(ev=>{
-      const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
-      const label = calEvLabel(ev, meta);
-      const full = `${meta.label} · ${ev.company||ev.ticker||''} · ${ev.title||''}`.trim();
-      return `<div class="ev ${meta.cls}" title="${full.replace(/"/g,'&quot;')}">${label}</div>`;
-    }).join('');
-    let more = '';
-    if(dayEvents.length > CAL_DAY_MAX){
-      more = expanded
-        ? `<div class="ev-collapse" data-date="${dateStr}">접기</div>`
-        : `<div class="ev-more" data-date="${dateStr}">+${dayEvents.length-CAL_DAY_MAX}건</div>`;
-    }
-    const isToday = dateStr === todayStr ? ' today' : '';
-    html += `<div class="day${isToday}"><div class="n">${d}</div><div class="evs">${evHtml}${more}</div></div>`;
-  }
-  grid.innerHTML = html;
 
-  renderCalNextUp(events);
-  renderCalMonthList(events);
+  // 미정 일정은 이 기간과 겹치는 부분의 첫날이 들어있는 주에 넣는다(두 달에 걸치면 두 달 모두 표시).
+  const pendByWeek = weeks.map(()=>[]);
+  pending.forEach(p=>{
+    const os = p.from > rangeFirst ? p.from : rangeFirst;
+    const oe = p.to < rangeLast ? p.to : rangeLast;
+    if(os > oe) return;
+    const wi = weeks.findIndex(w=> w.includes(os));
+    if(wi >= 0) pendByWeek[wi].push(p);
+  });
+
+  const pinned = interactive && CAL_STATE.pinned ? pending.find(p=> calPendKey(p) === CAL_STATE.pinned) : null;
+  let html = '';
+  let firstCell = true;
+  weeks.forEach((week, wi)=>{
+    week.forEach(dateStr=>{
+      if(!dateStr){ html += '<div class="day dim"></div>'; return; }
+      // 후보일 칩은 같은 날 일반 일정 뒤에 둔다
+      const dayEvents = (byDate[dateStr]||[]).slice().sort((a,b)=> (!!a.cand - !!b.cand) || (a.type>b.type?1:-1));
+      const expanded = !interactive || CAL_STATE.expandedDates.has(dateStr);
+      const shown = expanded ? dayEvents : dayEvents.slice(0, CAL_DAY_MAX);
+      const evHtml = shown.map(ev=>{
+        const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+        const label = calEvLabel(ev, meta);
+        const full = ev.cand
+          ? `날짜 미정(후보일) · ${ev.company} ${ev.quarter||''} 실적발표 · IR 회신: "${ev.text}"`
+          : `${meta.label} · ${ev.company||ev.ticker||''} · ${ev.title||''}`.trim();
+        return `<div class="ev ${meta.cls}${ev.cand?' cand':''}" title="${escapeHtml(full)}">${escapeHtml(label)}</div>`;
+      }).join('');
+      let more = '';
+      if(interactive && dayEvents.length > CAL_DAY_MAX){
+        more = expanded
+          ? `<div class="ev-collapse" data-date="${dateStr}">접기</div>`
+          : `<div class="ev-more" data-date="${dateStr}">+${dayEvents.length-CAL_DAY_MAX}건</div>`;
+      }
+      const cls = ['day'];
+      if(interactive && dateStr === todayStr) cls.push('today');
+      if(pinned && calPendCovers(pinned, dateStr)) cls.push('cand-hl');
+      const day = +dateStr.slice(8);
+      const withMonth = !interactive && (firstCell || day === 1);
+      if(withMonth) cls.push('mstart');
+      const n = withMonth ? `${+dateStr.slice(5,7)}/${day}` : day;
+      firstCell = false;
+      html += `<div class="${cls.join(' ')}" data-date="${dateStr}"><div class="n">${n}</div><div class="evs">${evHtml}${more}</div></div>`;
+    });
+    if(opts.noPendCol) return;
+    html += '<div class="cal-pend-cell">' + pendByWeek[wi].map(p=>{
+      const key = calPendKey(p);
+      const range = p.dates && p.dates.length ? '' : ` · ${calPendRange(p)}`;
+      const tip = `${p.company} ${p.quarter||''} 실적발표 · IR 회신: "${p.text}" (${calPendRange(p)})${p.memo ? ' · '+p.memo : ''}`;
+      return `<div class="cal-pend-item${pinned && CAL_STATE.pinned===key?' pinned':''}" data-key="${escapeHtml(key)}" title="${escapeHtml(tip)}">
+        <div class="pc">${escapeHtml(p.company)} 실적</div><div class="pp">${escapeHtml(p.text)}${range}</div></div>`;
+    }).join('') + '</div>';
+  });
+  return html;
 }
 
 // 캘린더보다 위쪽 카드 — 오늘 이후 다가오는 일정 최대 5건(2026-08-28)
-function renderCalNextUp(events){
+// 날짜 미정 일정도 기간 시작일(sort) 기준으로 섞어 넣는다(2026-10-15).
+function renderCalNextUp(events, pending=[]){
   const grid = document.getElementById('cal-next-grid');
   const note = document.getElementById('cal-next-note');
   if(!grid) return;
   const todayStr = today0.toISOString().slice(0,10);
-  const upcoming = events
-    .filter(ev => ev.date >= todayStr)
-    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
+  const upcoming = events.filter(ev => ev.date >= todayStr).map(ev=> ({sort:ev.date, ev}))
+    .concat(pending.filter(p => p.to >= todayStr).map(p=> ({sort:p.from, p})))
+    .sort((a,b)=> a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : 0)
     .slice(0, 6);
   if(note) note.textContent = `오늘 이후 · 최대 6건 · ${upcoming.length}건 표시`;
   if(upcoming.length === 0){
     grid.innerHTML = '<div class="card">다가오는 일정이 없습니다.</div>';
     return;
   }
-  grid.innerHTML = upcoming.map(ev=>{
+  grid.innerHTML = upcoming.map(({ev, p})=>{
+    if(p) return `<div class="cal-next-card pend" title="${escapeHtml(calPendRange(p))}">
+      <span class="dt">${escapeHtml(p.text)} <span class="badge pend">날짜 미정</span></span>
+      <span class="co">${escapeHtml(p.company)}</span>
+      <span class="ti">${escapeHtml(p.quarter||'')} 실적발표 · IR 회신 기준</span></div>`;
     const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
     const d = new Date(ev.date+'T00:00:00');
     const co = ev.company || ev.ticker || '';
@@ -1805,15 +1953,20 @@ function renderCalNextUp(events){
 // 캘린더 하단 표 — "이번달 일정"(현재 보고 있는 달 전체, 과거/미래 무관, 2026-08-28).
 // 일정이 많은 달은 계속 나열되면 보기 불편해서, 리서치 보고서 탭과 동일하게 10건씩
 // 페이지로 나눈다(2026-09-03 사용자 요청, renderPager 재사용).
-function renderCalMonthList(events){
+function renderCalMonthList(events, pending=[]){
   const list = document.getElementById('cal-up-list');
   const note = document.getElementById('cal-upcoming-note');
   if(!list) return;
   const {year, month} = CAL_STATE;
   const prefix = `${year}-${String(month+1).padStart(2,'0')}`;
+  const monthFirst = `${prefix}-01`, monthLast = `${prefix}-31`;
+  // 날짜 미정 일정은 이 달과 겹치면 넣고, 이 달 안의 시작일(sort) 기준으로 정렬한다.
   const monthEvents = events
     .filter(ev => ev.date && ev.date.startsWith(prefix))
-    .sort((a,b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    .map(ev => Object.assign({sort: ev.date}, ev))
+    .concat(pending.filter(p => p.from <= monthLast && p.to >= monthFirst)
+      .map(p => Object.assign({sort: p.from > monthFirst ? p.from : monthFirst, pend: true}, p)))
+    .sort((a,b)=> a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : 0);
 
   if(monthEvents.length === 0){
     if(note) note.textContent = `${year}년 ${month+1}월 · 0건`;
@@ -1829,13 +1982,14 @@ function renderCalMonthList(events){
 
   if(note) note.textContent = `${year}년 ${month+1}월 · ${monthEvents.length}건 · ${calUpPage}/${totalPages}페이지`;
   list.innerHTML = pageEvents.map(ev=>{
+    if(ev.pend) return `<div class="up-row pend"><span class="d">${escapeHtml(ev.text)}</span><span class="badge pend">날짜 미정</span><span>${escapeHtml(ev.company)} ${escapeHtml(ev.quarter||'')} 실적발표 <span class="note">IR 회신 기준 · ${escapeHtml(calPendRange(ev))}</span></span></div>`;
     const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
     const d = new Date(ev.date+'T00:00:00');
     const co = ev.company || ev.ticker || '';
     const link = ev.source_url ? ` <a href="${ev.source_url}" target="_blank" rel="noopener" style="color:var(--dim); font-size:11px">출처↗</a>` : '';
     return `<div class="up-row"><span class="d">${calFmtDate(d)}</span><span class="badge ${meta.cls}">${meta.label}</span><span>${co} ${ev.title||''}${link}</span></div>`;
   }).join('');
-  renderPager('cal-up-pager', calUpPage, totalPages, (p)=>{ calUpPage = p; renderCalMonthList(events); });
+  renderPager('cal-up-pager', calUpPage, totalPages, (p)=>{ calUpPage = p; renderCalMonthList(events, pending); });
 }
 
 function calChangeMonth(delta){
@@ -1880,10 +2034,29 @@ function updateCalLegendChips(){
     grid.addEventListener('click', (e)=>{
       const more = e.target.closest('.ev-more');
       const collapse = e.target.closest('.ev-collapse');
+      const pend = e.target.closest('.cal-pend-item');
       if(more){ CAL_STATE.expandedDates.add(more.dataset.date); renderCalendar(); }
       else if(collapse){ CAL_STATE.expandedDates.delete(collapse.dataset.date); renderCalendar(); }
+      else if(pend){
+        // 날짜 미정 일정 클릭 — 후보 기간 강조를 고정/해제(터치 화면에서도 볼 수 있게)
+        CAL_STATE.pinned = CAL_STATE.pinned === pend.dataset.key ? null : pend.dataset.key;
+        renderCalendar();
+      }
+    });
+    // 날짜 미정 일정에 마우스를 올리면 후보 기간 칸을 강조(고정해 둔 게 있으면 그대로 둠)
+    const pendOf = el=> calFilteredPending().find(p=> calPendKey(p) === el.dataset.key);
+    grid.addEventListener('mouseover', (e)=>{
+      const it = e.target.closest('.cal-pend-item');
+      if(it && !CAL_STATE.pinned) calHighlightPending(pendOf(it));
+    });
+    grid.addEventListener('mouseout', (e)=>{
+      const it = e.target.closest('.cal-pend-item');
+      if(it && !CAL_STATE.pinned && !it.contains(e.relatedTarget)) calHighlightPending(null);
     });
   }
+
+  const capBtn = document.getElementById('cal-capture-btn');
+  if(capBtn) capBtn.addEventListener('click', e=> captureCalendar(e.currentTarget));
 
   const searchInput = document.getElementById('cal-search-input');
   if(searchInput) searchInput.addEventListener('input', ()=>{
@@ -1918,6 +2091,7 @@ function updateCalLegendChips(){
     CAL_STATE.q = '';
     CAL_STATE.region = 'all';
     CAL_STATE.types = new Set(Object.keys(CAL_TYPE_META));
+    CAL_STATE.pinned = null;
     if(searchInput) searchInput.value = '';
     if(tabs){
       tabs.querySelectorAll('.region-tab').forEach(b=>b.classList.remove('active'));
@@ -1930,17 +2104,144 @@ function updateCalLegendChips(){
   });
 })();
 
+// 국내 커버 기업 실적발표 일정(IR 회신 수동 입력, 2026-10-15). 파일이 없거나 깨져도 캘린더는 그대로 뜬다.
+// 하루로 확정된 회신은 일반 실적 일정으로, 기간·후보일인 회신은 "날짜 미정"으로 나눈다.
+async function loadDomesticManualEarnings(){
+  try{
+    const res = await fetch('calendar_domestic_manual.json', {cache:'no-store'});
+    if(!res.ok) return {confirmed:[], pending:[]};
+    const data = await res.json();
+    const confirmed = [], pending = [];
+    (data.events || []).forEach(e=>{
+      if(!e.from || !e.to) return;
+      if(!(e.dates && e.dates.length) && e.from === e.to){
+        confirmed.push({date:e.from, region:'domestic', type:'earn', ticker:e.ticker||'', company:e.company,
+          title:`${e.quarter ? e.quarter+' ' : ''}실적발표 (IR 회신)`, source_name:'IR 담당자 회신', manual:true});
+      } else {
+        pending.push(e);
+      }
+    });
+    return {confirmed, pending};
+  }catch(e){
+    return {confirmed:[], pending:[]};
+  }
+}
+
+// ---- 실적 시즌 이미지 저장(2026-10-15) ----
+// 보고서 첨부용으로 "커버 기업 실적발표 일정만" 한 장에 담는다. 실적 시즌은 10~11월처럼 두 달에
+// 걸치므로 달 단위가 아니라, 지금 보고 있는 달의 실적 시즌(일정 사이 간격이 3주 넘게 벌어지면
+// 다른 시즌으로 본다)의 첫 일정이 든 주 ~ 마지막 일정이 든 주만 그린다. 화면의 필터·검색과는 무관.
+const CAL_SEASON_GAP_DAYS = 21;
+function calDayDiff(a, b){ return Math.round((new Date(b+'T00:00:00') - new Date(a+'T00:00:00')) / 86400000); }
+function calAddDays(s, n){
+  const d = new Date(s+'T00:00:00'); d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function calCoverSeason(){
+  const events = CAL_DATA.domestic.concat(CAL_DATA.global).filter(calIsCover);
+  const pending = CAL_DATA.pending.map(p=> Object.assign({region:'domestic', type:'earn', manual:true, title:'실적발표'}, p));
+  const points = events.map(ev=> ev.date).concat(...pending.map(p=> [p.from, p.to])).filter(Boolean).sort();
+  if(!points.length) return null;
+  const clusters = [[points[0], points[0]]];
+  points.slice(1).forEach(d=>{
+    const c = clusters[clusters.length-1];
+    if(calDayDiff(c[1], d) > CAL_SEASON_GAP_DAYS) clusters.push([d, d]); else c[1] = d;
+  });
+  const pad = n=> String(n).padStart(2,'0');
+  const mFirst = `${CAL_STATE.year}-${pad(CAL_STATE.month+1)}-01`;
+  const mLast = `${CAL_STATE.year}-${pad(CAL_STATE.month+1)}-31`;
+  // 보고 있는 달과 겹치는 시즌 → 없으면 그 뒤 가장 가까운 시즌 → 없으면 마지막 시즌
+  const c = clusters.find(c=> c[0] <= mLast && c[1] >= mFirst) || clusters.find(c=> c[0] > mLast) || clusters[clusters.length-1];
+  const inSeason = d=> d >= c[0] && d <= c[1];
+  const seasonPoints = points.filter(inSeason);
+  return {
+    first: c[0], last: c[1],
+    mid: seasonPoints[Math.floor(seasonPoints.length / 2)], // 분기 이름 판정용(가운데 일정)
+    events: events.filter(ev=> inSeason(ev.date)),
+    pending: pending.filter(p=> p.from <= c[1] && p.to >= c[0]),
+  };
+}
+// 발표 시기로 분기 이름 — 10~12월 발표는 3Q, 1~3월은 전년 4Q, 4~6월 1Q, 7~9월 2Q.
+// 시즌 첫 일정이 아니라 가운데 일정으로 판정한다 — 회계연도가 다른 회사(예: MDT)가 시즌 직전에
+// 발표하면 첫 날짜가 앞 분기 달에 걸려 이름이 한 분기 밀릴 수 있어서.
+function calSeasonQuarter(dateStr){
+  const y = +dateStr.slice(0,4), m = +dateStr.slice(5,7);
+  const q = m <= 3 ? 4 : m <= 6 ? 1 : m <= 9 ? 2 : 3;
+  return `${q}Q${String(m <= 3 ? y-1 : y).slice(2)}`;
+}
+
+async function captureCalendar(btn){
+  const season = calCoverSeason();
+  if(!season){ alert('커버 기업 실적 일정이 아직 없습니다.'); return; }
+  let dir = null;
+  try{
+    dir = await perfGetCaptureDir(false);
+  }catch(e){
+    if(e && e.name==='AbortError') return; // 폴더 선택 취소
+    dir = null;
+  }
+  btn.classList.add('busy');
+  const stage = document.createElement('div');
+  stage.className = 'cal-capture-stage';
+  document.body.appendChild(stage);
+  try{
+    await perfLoadHtml2canvas();
+    // 시즌 첫 일정이 든 주의 일요일 ~ 마지막 일정이 든 주의 토요일
+    const start = calAddDays(season.first, -new Date(season.first+'T00:00:00').getDay());
+    const end = calAddDays(season.last, 6 - new Date(season.last+'T00:00:00').getDay());
+    const weeks = [];
+    for(let d = start; d <= end; d = calAddDays(d, 7)) weeks.push([0,1,2,3,4,5,6].map(i=> calAddDays(d, i)));
+    const quarter = calSeasonQuarter(season.mid);
+    const todayStr = today0.toISOString().slice(0,10);
+    const span = `${calYmdShort(start)} ~ ${calYmdShort(end)}`;
+    const sub = `${span} · ${todayStr} 기준 · 해외: 기업 IR 공시 · 국내: IR 담당자 회신` + (season.pending.length ? ' (점선 = 날짜 미정·후보일)' : '');
+    // 이 시즌에 날짜 미정 일정이 없으면 빈 칸만 차지하므로 "날짜 미정" 열을 뺀다
+    const noPendCol = !season.pending.length;
+    const gridCls = noPendCol ? 'grid grid7' : 'grid';
+    const dows = ['일','월','화','수','목','금','토'].map(d=> `<div class="dow">${d}</div>`).join('')
+      + (noPendCol ? '' : '<div class="dow pend-h">날짜 미정</div>');
+    stage.innerHTML = `
+      <h3>${quarter} 실적발표 일정</h3>
+      <div class="cal-capture-sub">${escapeHtml(sub)}</div>
+      <div class="${gridCls}">${dows}</div>
+      <div class="${gridCls}" style="margin-top:5px">${calGridHtml(weeks, start, end, season.events, season.pending, {noPendCol})}</div>
+      <div class="legend">
+        <span class="cal-legend-chip earn">실적발표</span>
+        ${season.pending.length ? '<span class="cal-legend-note">날짜 미정</span>' : ''}
+      </div>`;
+    const canvas = await html2canvas(stage, {
+      backgroundColor:'#ffffff', scale:2, logging:false,
+      width: stage.scrollWidth, height: stage.scrollHeight,
+      windowWidth: Math.max(window.innerWidth, stage.scrollWidth + 40),
+    });
+    const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
+    const fileName = `${todayStr}_커버기업_${quarter}_실적발표_일정.png`;
+    await perfSaveBlob(dir, fileName, blob);
+    alert(`저장 완료${dir ? ' ('+dir.name+' 폴더)' : ' (다운로드 폴더)'}\n\n${fileName}`);
+  }catch(e){
+    alert('캘린더 저장 중 오류: ' + e.message);
+  }finally{
+    stage.remove();
+    btn.classList.remove('busy');
+  }
+}
+
 async function loadCalendar(){
   try{
-    const res = await fetch('calendar_events.json', {cache:'no-store'});
+    const [res, manual] = await Promise.all([
+      fetch('calendar_events.json', {cache:'no-store'}),
+      loadDomesticManualEarnings(),
+    ]);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    CAL_DATA.domestic = data.domestic || [];
+    CAL_DATA.domestic = (data.domestic || []).concat(manual.confirmed);
     CAL_DATA.global = data.global || [];
+    CAL_DATA.pending = manual.pending;
     const note = document.getElementById('cal-source-note');
     if(note){
       const when = updatedLabel(data.updated);
-      note.textContent = `실적발표 · IR · 공시 · 주총 · 출처: DART·기업 IR${when ? ' · ' + when : ''}`;
+      const manualSrc = manual.confirmed.length || manual.pending.length ? '·국내 IR 회신' : '';
+      note.textContent = `실적발표 · IR · 공시 · 주총 · 출처: DART·기업 IR${manualSrc}${when ? ' · ' + when : ''}`;
     }
     // 기본 화면은 항상 이번달로 연다(기존 동작 유지) — 7월 등 과거 백필 데이터는
     // ‹ 버튼으로 이전달을 눌러 확인한다.
