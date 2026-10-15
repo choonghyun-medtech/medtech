@@ -6,16 +6,17 @@ name: Analyze concall transcripts
 # - 하루 쿼터가 모자라 다 못 끝낸 원문은 매일 09:30 KST(쿼터가 09:00 KST에 초기화된 직후)에 이어서 처리한다.
 # - Actions 탭에서 수동 실행도 가능(특정 편만 다시 분석할 때 only/force 사용).
 
-# [2026-10-15] 결과 형식을 샘플(UNH 2Q→3Q)로 확인하기 전까지는 자동 실행(push·schedule)을 꺼두고
-# 수동 실행만 연다 — 형식을 바꾸면 전부 다시 분석해야 해서 그 전에 쿼터를 쓰지 않으려고.
-# 확인 후 아래 주석을 풀면 원문 push 시·매일 09:30 KST에 자동으로 돈다.
+# [2026-10-15] 샘플(UNH 2Q→3Q)로 형식을 확인한 뒤 자동 실행을 켰다 — 원문 push 시 + 매일 09:30 KST.
+# 이미 분석된 원문은 건너뛰므로(원문 파일이 바뀐 경우만 다시 분석) 매일 돌아도 쿼터를 쓰지 않는다.
 on:
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - "concall_transcripts/**"
-  # schedule:
-  #   - cron: "30 0 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "concall_transcripts/**"
+      - "scripts/analyze_concall_transcripts.py"
+      - ".github/workflows/analyze-concalls.yml"
+  schedule:
+    - cron: "30 0 * * *"
   workflow_dispatch:
     inputs:
       only:
