@@ -75,4 +75,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host ""
 Write-Host "완료 — 사이트 반영까지 1~2분 걸릴 수 있습니다." -ForegroundColor Green
+Write-Host "새 원문의 한국어 정리·시계열 분석은 GitHub Actions(Analyze concall transcripts)가 자동으로 시작합니다 — 한 편에 1~2분, 하루 한도를 넘으면 다음 날 09:30에 이어서." -ForegroundColor DarkGray
 Read-Host "종료하려면 Enter"
