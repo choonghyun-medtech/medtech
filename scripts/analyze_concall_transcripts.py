@@ -326,7 +326,7 @@ def main():
             "file": fname,
             "source_hash": h,
             "prior_basis": prior_label,
-            "model": GEMINI_MODEL,
+            "model": getattr(provider, "last_model", None) or GEMINI_MODEL,  # 503으로 예비(경량) 모델이 답했으면 그 이름
             "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             **{k: parsed[k] for k in ("headline", "changes", "prepared", "guidance", "milestones", "qa")},
         }

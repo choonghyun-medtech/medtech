@@ -409,7 +409,9 @@ class GeminiFallbackProvider:
                     print(f"[INFO] Gemini 전환 → 키 {ki + 1}번 · 모델 {model}", file=sys.stderr)
                 current = target
             try:
-                return self._provider(ki, model).call(*args, **kwargs)
+                result = self._provider(ki, model).call(*args, **kwargs)
+                self.last_model = model  # 실제로 답한 모델(예비 모델로 바뀌었는지 기록용, 2026-10-15)
+                return result
             except Exception as e:
                 if is_daily_quota_exhausted(e):
                     self.exhausted.add(target)
