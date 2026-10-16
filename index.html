@@ -504,6 +504,13 @@ tr:last-child td{border-bottom:none}
 .perf-capture-stage .perf-grid{grid-template-columns:1fr 1fr}
 .news-cat-h{font-size:12px; font-weight:700; color:var(--accent); margin:16px 0 4px}
 .news-cat-h:first-child{margin-top:0}
+/* 기업 브리핑(2026-10-16) */
+#news-company-brief-select[hidden], #news-briefing-period-toggle[hidden]{display:none}
+.cb-watch{margin-top:8px; padding:6px 10px; background:var(--bg2); border-radius:6px; font-size:12.5px; color:var(--sub)}
+.cb-watch b{color:var(--accent); margin-right:6px}
+.cb-sample{font-size:10.5px; font-weight:700; color:#d97706; border:1px dashed #d97706; border-radius:999px; padding:0 7px}
+.cb-list{margin-top:10px}
+.cb-list > summary{font-size:12.5px; font-weight:700; color:var(--accent); cursor:pointer}
 /* 뉴스 두 트랙(MedTech / Robotics) 제목 — 클리핑 목록·브리핑 카드 묶음 위에 (2026-10-12) */
 .news-track-h{font-size:13px; font-weight:800; letter-spacing:.04em; color:var(--text); margin:22px 0 8px; padding-bottom:5px; border-bottom:1px solid var(--border)}
 .news-track-h:first-child{margin-top:4px}
@@ -724,12 +731,22 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <div id="news-sub-briefing" style="display:none">
-      <div class="sec-h"><h2>브리핑</h2><span class="note">섹터별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 섹터를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
-      <div class="toggle" id="news-briefing-period-toggle" style="margin-bottom:12px">
-        <button data-days="7">주간(최근 7일)</button>
-        <button data-days="30" class="active">월간(최근 30일)</button>
+      <div class="sec-h"><h2>브리핑</h2><span class="note" id="news-briefing-desc">섹터별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 섹터를 따로 고르지 않아도 전체가 한 번에 보입니다</span></div>
+      <!-- 2026-10-16: 섹터 브리핑 / 기업 브리핑 전환(사수 피드백). 기업 브리핑은 company_briefs.json
+           (scripts/analyze_company_briefs.py, 주 1회) + 그 이후 새 기사를 바로 덧붙여 보여준다. -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+        <div class="toggle" id="news-briefing-mode-toggle">
+          <button data-mode="sector" class="active">섹터 브리핑</button>
+          <button data-mode="company">기업 브리핑</button>
+        </div>
+        <div class="toggle" id="news-briefing-period-toggle">
+          <button data-days="7">주간(최근 7일)</button>
+          <button data-days="30" class="active">월간(최근 30일)</button>
+        </div>
+        <select id="news-company-brief-select" class="filter-select" hidden></select>
       </div>
       <div id="news-briefing-wrap"></div>
+      <div id="news-company-brief-wrap" hidden></div>
     </div>
   </section>
 
@@ -1597,11 +1614,24 @@ function newsCategoryFilterLabel(){
 }
 function newsTrackHeaderHtml(key){ return `<div class="news-track-h">${escapeHtml(newsTrackLabel(key))}</div>`; }
 
+// 기업이 어느 쪽(국내/해외) 트래킹 기업이고 어느 섹터인지 — 드롭다운 연동용
+function newsCompanyRegion(co){ return NEWS_TRACKED_DOMESTIC[co] ? 'domestic' : NEWS_TRACKED_GLOBAL[co] ? 'global' : null; }
+function newsCompanyCat(co){ return NEWS_TRACKED_DOMESTIC[co] || NEWS_TRACKED_GLOBAL[co] || ''; }
+
+// 기업 드롭다운 — 리서치 보고서·기업 스냅샷 탭과 같은 연동 방식(2026-10-16): 지금 국내/해외 토글과
+// 섹터 필터에 맞는 기업만 보여준다. 예전엔 전체 기업이 다 나와서 "치과 섹터 + 씨어스"나 "해외 뉴스 + 국내
+// 기업"처럼 같이 고를 수 없는 조합이 가능했고 결과가 0건이 됐다. 고른 기업이 새 목록에 없으면 "전체 기업"으로
+// 풀어준다. 기업이 바뀌었으면 true를 돌려준다(호출한 쪽이 다시 그리도록).
 function populateNewsCompanySelect(){
   const sel = document.getElementById('news-company-select');
-  if(!sel) return;
-  const companies = newsAllCompanies();
-  sel.innerHTML = '<option value="">전체 기업</option>' + companies.map(co=>`<option value="${co}">${co}</option>`).join('');
+  if(!sel) return false;
+  const companies = newsAllCompanies().filter(co =>
+    (!NEWS_STATE.region || newsCompanyRegion(co) === NEWS_STATE.region) && newsCategoryMatches(newsCompanyCat(co)));
+  sel.innerHTML = `<option value="">전체 기업 (${companies.length})</option>` + companies.map(co=>`<option value="${co}">${co}</option>`).join('');
+  const changed = !!NEWS_STATE.company && !companies.includes(NEWS_STATE.company);
+  if(changed) NEWS_STATE.company = '';
+  sel.value = NEWS_STATE.company || '';
+  return changed;
 }
 
 function populateNewsCategorySelect(){
@@ -1698,6 +1728,8 @@ function setNewsPeriod(days, skipRender){
         const globalBlock = document.getElementById('news-global-block');
         if(domesticBlock) domesticBlock.style.display = region === 'domestic' ? '' : 'none';
         if(globalBlock) globalBlock.style.display = region === 'global' ? '' : 'none';
+        // 기업 드롭다운을 이 쪽(국내/해외) 기업으로 바꾼다 — 다른 쪽 기업을 골라뒀으면 "전체 기업"으로 풀림
+        if(populateNewsCompanySelect()) applyNewsFilters();
         if(typeof renderNewsFlow === 'function') renderNewsFlow();
         if(typeof renderMonthlyBriefing === 'function') renderMonthlyBriefing();
       });
@@ -1708,7 +1740,8 @@ function setNewsPeriod(days, skipRender){
   if(searchInput) searchInput.addEventListener('input', ()=>{ NEWS_STATE.q = searchInput.value; applyNewsFilters(); });
 
   const categorySelect = document.getElementById('news-category-select');
-  if(categorySelect) categorySelect.addEventListener('change', ()=>{ NEWS_STATE.category = categorySelect.value; applyNewsFilters(); });
+  // 섹터를 바꾸면 기업 드롭다운을 그 섹터 기업으로 좁힌다(보던 기업이 그 섹터에 있으면 유지)
+  if(categorySelect) categorySelect.addEventListener('change', ()=>{ NEWS_STATE.category = categorySelect.value; populateNewsCompanySelect(); applyNewsFilters(); });
 
   const companySelect = document.getElementById('news-company-select');
   if(companySelect) companySelect.addEventListener('change', ()=>{ NEWS_STATE.company = companySelect.value; applyNewsFilters(); });
@@ -1737,8 +1770,8 @@ function setNewsPeriod(days, skipRender){
     e.preventDefault();
     NEWS_STATE.q=''; NEWS_STATE.company=''; NEWS_STATE.category='';
     if(searchInput) searchInput.value='';
-    if(companySelect) companySelect.value='';
     if(categorySelect) categorySelect.value='';
+    populateNewsCompanySelect();
     applyNewsFilters();
   });
 
@@ -2501,6 +2534,8 @@ function queryBriefingTerms(q){
 // 7일/30일 두 구간을 한 번에 생성해 둔다).
 let NEWS_BRIEFING_PERIOD_DAYS = 30;
 function renderMonthlyBriefing(){
+  // 국내/해외 토글·기업 필터가 바뀔 때 이 함수가 불리므로, 기업 브리핑 화면이면 그것도 같이 갱신(2026-10-16)
+  if(NEWS_BRIEF_STATE && NEWS_BRIEF_STATE.mode === 'company') renderCompanyBrief();
   const wrap = document.getElementById('news-briefing-wrap');
   if(!wrap) return;
   // MedTech 섹터 카드 먼저, Robotics 섹터 카드를 그 아래에(트랙 안에서는 가나다순).
@@ -2598,6 +2633,96 @@ function renderMonthlyBriefing(){
   });
 })();
 
+// ---- 기업 브리핑 (2026-10-16 사수 피드백) ----
+// company_briefs.json — scripts/analyze_company_briefs.py가 주 1회(토) 최근 30일 기사 요약을 기업별로
+// AI 정리. 화면에서 기업을 고르면 정리본을 보여주고, 정리 이후 들어온 기사는 AI 없이 바로 아래에 붙인다
+// (정리본이 일주일 묵어도 최신 소식이 빠지지 않게). 국내/해외 토글(NEWS_STATE.region)을 따른다.
+var COMPANY_BRIEFS = null; // var: 위쪽 renderMonthlyBriefing에서 먼저 읽힐 수 있어 선언 전 접근 오류 방지
+var NEWS_BRIEF_STATE = { mode: 'sector', company: '' };
+async function loadCompanyBriefs(){
+  try{
+    const res = await fetch('company_briefs.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    COMPANY_BRIEFS = await res.json();
+  }catch(e){ COMPANY_BRIEFS = null; }
+  if(NEWS_BRIEF_STATE.mode === 'company') renderCompanyBrief();
+}
+// 해외 기업 키는 영문("UnitedHealth")이라 한글 표기를 앞에 붙인다(브리핑 검색과 같은 표기 목록).
+function companyBriefLabel(key){
+  if(/[가-힣]/.test(key)) return key; // 국내 기업(한글 키)은 그대로
+  const ko = (NEWS_BRIEFING_NAME_ALIASES[key] || [])[0];
+  return ko && ko !== key ? `${ko} (${key})` : key;
+}
+function newsItemHtml(r){
+  const titleHtml = r.url
+    ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
+    : escapeHtml(r.t);
+  const summaryHtml = r.summary ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}</div>` : '';
+  return `<div class="news-item"><div class="t"><span class="note" style="margin-right:6px">${escapeHtml(r.date || '')}</span>${newsCtxTag(r.ctx)}${titleHtml}</div>${summaryHtml}</div>`;
+}
+function renderCompanyBrief(){
+  const wrap = document.getElementById('news-company-brief-wrap');
+  const sel = document.getElementById('news-company-brief-select');
+  if(!wrap || !sel) return;
+  const all = (COMPANY_BRIEFS && COMPANY_BRIEFS.companies) || {};
+  const keys = Object.keys(all).filter(k => all[k].region === NEWS_STATE.region).sort((a, b) => all[b].n - all[a].n);
+  if(!keys.length){
+    sel.innerHTML = '';
+    wrap.innerHTML = `<div class="note" style="padding:8px 0">아직 기업 브리핑이 없습니다(주 1회 토요일 자동 생성 · 최근 30일 기사 3건 이상인 기업 대상).</div>`;
+    return;
+  }
+  // 위쪽 공통 기업 필터에서 고른 기업이 있으면 그 기업을 먼저 보여준다
+  if(NEWS_STATE.company && all[NEWS_STATE.company] && all[NEWS_STATE.company].region === NEWS_STATE.region) NEWS_BRIEF_STATE.company = NEWS_STATE.company;
+  if(!keys.includes(NEWS_BRIEF_STATE.company)) NEWS_BRIEF_STATE.company = keys[0];
+  sel.innerHTML = keys.map(k => `<option value="${escapeHtml(k)}">${escapeHtml(companyBriefLabel(k))} · ${all[k].n}건</option>`).join('');
+  sel.value = NEWS_BRIEF_STATE.company;
+  sel.onchange = () => { NEWS_BRIEF_STATE.company = sel.value; renderCompanyBrief(); };
+
+  const key = NEWS_BRIEF_STATE.company, b = all[key];
+  const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8)}` : '';
+  const items = NEWS_HISTORY.filter(r => newsItemCompanies(r).includes(key)).sort((x, y) => (y.date || '').localeCompare(x.date || ''));
+  const after = items.filter(r => (r.date || '') > (b.to || ''));      // 정리 이후 새 기사
+  const within = items.filter(r => (r.date || '') >= (b.from || '') && (r.date || '') <= (b.to || ''));
+  const body = b.headline ? `
+      <div style="font-size:14px;font-weight:700;line-height:1.6;margin-bottom:6px">${escapeHtml(b.headline)}</div>
+      <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">${(b.points || []).map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>
+      ${b.watch ? `<div class="cb-watch"><b>체크포인트</b> ${escapeHtml(b.watch)}</div>` : ''}`
+    : `<div class="note">이번 주 AI 정리본이 아직 없습니다(다음 토요일 자동 생성). 아래 기사 목록을 참고하세요.</div>`;
+  wrap.innerHTML = `
+    <div class="card" style="margin-bottom:12px;border-left:3px solid var(--accent)">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <span style="font-size:15px;font-weight:800;color:var(--accent)">🏢 ${escapeHtml(companyBriefLabel(key))}</span>
+        <span class="note">${escapeHtml(b.cat || '')} · 최근 30일(${md(b.from)}~${md(b.to)}) 기사 ${b.n}건 근거${b.generated_at ? ` · AI 정리 ${md(b.generated_at.slice(0, 10))}` : ''}</span>
+        ${b.sample ? '<span class="cb-sample">미리보기 샘플</span>' : ''}
+      </div>
+      ${body}
+    </div>
+    ${after.length ? `<div class="news-cat-h">정리 이후 새 기사 <span class="note">(${after.length}건 · AI 정리 전)</span></div><div class="card" style="padding:0 16px">${after.map(newsItemHtml).join('')}</div>` : ''}
+    <details class="cb-list"><summary>정리에 쓴 기사 ${within.length}건 보기</summary><div class="card" style="padding:0 16px;margin-top:6px">${within.map(newsItemHtml).join('')}</div></details>`;
+}
+function renderNewsBriefingMode(){
+  const company = NEWS_BRIEF_STATE.mode === 'company';
+  const toggle = document.getElementById('news-briefing-mode-toggle');
+  if(toggle) toggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === NEWS_BRIEF_STATE.mode));
+  document.getElementById('news-briefing-period-toggle').hidden = company; // 주간/월간은 섹터 브리핑 전용
+  document.getElementById('news-company-brief-select').hidden = !company;
+  document.getElementById('news-briefing-wrap').hidden = company;
+  document.getElementById('news-company-brief-wrap').hidden = !company;
+  const desc = document.getElementById('news-briefing-desc');
+  if(desc) desc.textContent = company
+    ? '기업별 최근 30일 뉴스를 AI가 정리(주 1회 토요일 갱신) · 정리 이후 기사는 바로 아래에 덧붙임 · 국내/해외 토글 기준'
+    : '섹터별 흐름을 AI가 글로 종합 · 국내/해외 토글 + 주간/월간 기준, 섹터를 따로 고르지 않아도 전체가 한 번에 보입니다';
+  if(company) renderCompanyBrief(); else renderMonthlyBriefing();
+}
+(function initNewsBriefingModeToggle(){
+  const toggle = document.getElementById('news-briefing-mode-toggle');
+  if(!toggle) return;
+  toggle.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    NEWS_BRIEF_STATE.mode = b.dataset.mode;
+    renderNewsBriefingMode();
+  }));
+})();
+
 // 선택한 기간(오늘/7일/30일 또는 직접 지정한 날짜 범위) 동안 누적된 기사를 날짜별로 나열한다.
 // 월간 브리핑이 "종합"이라면 이건 그 근거가 된 실제 기사 원문을 확인하는 용도(뉴스 아카이브
 // 서브탭 — 2026-09-02 사용자 요청으로 뉴스 플로우를 아카이브/브리핑 두 탭으로 분리).
@@ -2670,6 +2795,7 @@ async function loadNewsTrend(){
     NEWS_TREND = []; // 아직 워크플로가 한 번도 안 돌았으면 빈 상태 — renderMonthlyBriefing이 안내 문구를 보여줌
   }
   renderMonthlyBriefing();
+  loadCompanyBriefs(); // 기업 브리핑(2026-10-16)
 }
 
 // 산업데이터 "월간 분석" 카드 — export_monthly_analysis.json(scripts/analyze_export_monthly.py,
@@ -8333,9 +8459,20 @@ function renderSnapshot(ticker){
 function jumpToNewsFromSnapshot(newsCo){
   activateTab('news');
   if(!newsCo) return;
-  const sel = document.getElementById('news-company-select');
-  if(sel) sel.value = newsCo;
+  // 다른 탭과 같은 방식(2026-10-16): 그 기업이 다른 쪽(국내/해외)이면 토글을 옮기고, 지금 섹터에 없으면
+  // 섹터 필터를 풀어서(전체 섹터) 기업 드롭다운에 그 기업이 들어오게 한 뒤 고른다.
+  const region = newsCompanyRegion(newsCo);
+  if(region && region !== NEWS_STATE.region){
+    const tab = document.querySelector(`#news-region-tabs .region-tab[data-region="${region}"]`);
+    if(tab) tab.click();
+  }
+  if(NEWS_STATE.category && !newsCategoryMatches(newsCompanyCat(newsCo))){
+    NEWS_STATE.category = '';
+    const catSel = document.getElementById('news-category-select');
+    if(catSel) catSel.value = '';
+  }
   NEWS_STATE.company = newsCo;
+  populateNewsCompanySelect();
   applyNewsFilters();
 }
 function jumpToCalendarFromSnapshot(query){
