@@ -1,0 +1,63 @@
+name: Backfill news summaries
+
+# 뉴스 아카이브(news_history.jsonl)에서 요약이 빠진 기사를 채운다(scripts/backfill_news_summaries.py, 2026-10-16).
+# 수동 실행 전용 — since 날짜 이후 요약 없는 기사만 처리(해외 구글 뉴스 링크는 제목 기반 요약).
+# 매일 아침 뉴스 수집·요약(05~09시 KST)과 같은 파일을 고치므로 그 시간대는 피해서 실행할 것.
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "이 날짜 이후 기사만(YYYY-MM-DD)"
+        required: true
+        default: "2026-10-01"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news-history-write
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install google-genai requests beautifulsoup4
+
+      - name: Fill missing summaries
+        env:
+          GEMINI_API_KEY_CONCALL: ${{ secrets.GEMINI_API_KEY_CONCALL }}
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SINCE: ${{ github.event.inputs.since }}
+        run: python scripts/backfill_news_summaries.py --since "$SINCE"
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news_history.jsonl
+          if git diff --cached --quiet -- news_history.jsonl; then
+            echo "변경 없음, 커밋 건너뜀"
+          else
+            git commit -m "chore: 뉴스 아카이브 빠진 요약 보충 ($(date -u +%Y-%m-%d))"
+            for i in 1 2 3 4 5; do
+              if git push; then echo "푸시 성공"; exit 0; fi
+              echo "푸시 실패, 재시도 $i/5"
+              git fetch origin main
+              git rebase origin/main || { echo "리베이스 충돌 — 뉴스 수집과 겹쳤을 수 있음, 잠시 후 다시 실행"; exit 1; }
+              sleep $((RANDOM % 6 + 2))
+            done
+            exit 1
+          fi

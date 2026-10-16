@@ -2657,7 +2657,7 @@ function newsItemHtml(r){
   const titleHtml = r.url
     ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
     : escapeHtml(r.t);
-  const summaryHtml = r.summary ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}</div>` : '';
+  const summaryHtml = r.summary ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}${r.summary_src === 'title' ? ' <span class="note">(제목 기반 요약)</span>' : ''}</div>` : '';
   return `<div class="news-item"><div class="t"><span class="note" style="margin-right:6px">${escapeHtml(r.date || '')}</span>${newsCtxTag(r.ctx)}${titleHtml}</div>${summaryHtml}</div>`;
 }
 function renderCompanyBrief(){
@@ -2748,8 +2748,9 @@ function renderNewsFlowList(filtered){
       const titleHtml = r.url
         ? `<a href="${r.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${escapeHtml(r.t)}</a>`
         : escapeHtml(r.t);
+      // summary_src="title": 원문 소개글 없이 제목만으로 나중에 채운 요약(backfill_news_summaries.py, 2026-10-16)
       const summaryHtml = r.summary
-        ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}</div>` : '';
+        ? `<div class="news-summary">${escapeHtml(r.summary).replace(/\n/g,'<br>')}${r.summary_src === 'title' ? ' <span class="note">(제목 기반 요약)</span>' : ''}</div>` : '';
       html += `<div class="news-item">
         <div class="t"><span class="news-co">${escapeHtml(r.co||'')}</span><span class="note" style="margin-right:4px">${escapeHtml(r.cat||'')}</span>${ctxTag}${titleHtml}</div>
         ${summaryHtml}
