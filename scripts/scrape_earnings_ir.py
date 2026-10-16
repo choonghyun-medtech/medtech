@@ -189,7 +189,9 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, m
         if fname:
             url = f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{accession_nodash}/{fname}"
             found += 1
-            yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i]}
+            # is_202: SEC 분류상 실적 공시(8-K item 2.02) — AI가 "실적 아님"이라 해도 영구 제외하지 않는 근거(2026-10-16)
+            is_202 = form_type == "8-K" and "2.02" in (items_list[i] if i < len(items_list) else "")
+            yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i], "is_202": is_202}
     if found == 0:
         print(f"[INFO] {ticker} 최근 {form_type} 공시 중 실적 보도자료로 보이는 첨부문서를 찾지 못함", file=sys.stderr)
 
@@ -439,7 +441,10 @@ def looks_like_earnings_release(body):
 
 
 # process_release() 반환값
-OK, NOT_EARNINGS, FAILED = "ok", "not_earnings", "failed"
+# AI_NOT_EARNINGS: 본문 검사는 실적처럼 보였는데 AI가 "실적 아님"(요약을 비움)이라고 한 경우 —
+# 실적 공시(2.02)면 AI 쪽 오판(과부하로 넘어간 경량 모델·응답 잘림 등)일 수 있어 영구 제외하지 않는다(2026-10-16:
+# RDNT·NTRA 1Q26 실적 보도자료가 이렇게 영구 제외 목록에 들어가 있었다).
+OK, NOT_EARNINGS, AI_NOT_EARNINGS, FAILED = "ok", "not_earnings", "ai_not_earnings", "failed"
 
 
 def process_release(ticker, name, release, provider, out_data):
@@ -463,8 +468,8 @@ def process_release(ticker, name, release, provider, out_data):
     if not parsed.get("summary_ko"):
         # items="2.02" 필터를 못 쓰는 6-K이거나, 8-K인데도 첨부문서가 실적 발표가 아닌
         # 경우(SYSTEM_PROMPT가 이럴 때 모든 필드를 비워서 응답하도록 지시해뒀다) — 조용히 건너뜀.
-        print(f"[INFO] {ticker} 첨부문서가 실적 발표 보도자료가 아닌 것으로 판정되어 건너뜀: {release['url']}", file=sys.stderr)
-        return NOT_EARNINGS
+        print(f"[INFO] {ticker} AI가 실적 발표 보도자료가 아니라고 판정: {release['url']}", file=sys.stderr)
+        return AI_NOT_EARNINGS
     entry = {
         "ticker": ticker,
         "name": name,
@@ -483,6 +488,7 @@ def process_release(ticker, name, release, provider, out_data):
 
 
 MAX_SKIPPED_URLS = 1000
+MAX_FAILS = 3               # 같은 공시가 이만큼 실패하면 자동 재시도 중단(영구 제외 + 경고)
 
 
 def _quarter_key(entry):
@@ -567,14 +573,28 @@ def main():
     changed = False
     quota_exhausted = False
     failed = []  # 번역·본문 조회 실패 — Actions 화면에 경고로 띄운다(예전엔 로그에만 묻혀 "성공"처럼 보였음)
+    # [2026-10-16] 공시별 실패 횟수 — 실패한 공시는 다음 실행 때 다시 시도하되, 같은 공시가 MAX_FAILS번
+    # 실패하면 매일 한도를 먹지 않도록 영구 제외로 돌린다(그땐 경고로 알려 수동 확인).
+    fail_counts = out_data.setdefault("fail_counts", {})
+
+    def record_fail(release, why):
+        n = fail_counts.get(release["url"], 0) + 1
+        fail_counts[release["url"]] = n
+        if n >= MAX_FAILS:
+            mark_skipped(out_data, [release["url"]])
+            fail_counts.pop(release["url"], None)
+            failed.append(f"{ticker} {release['date']} — {MAX_FAILS}번 실패해 자동 재시도 중단({why}), 수동 확인 필요")
+        else:
+            failed.append(f"{ticker} {release['date']}({why}, {n}/{MAX_FAILS}회 — 다음 실행 때 다시 시도)")
+
     for ticker, info in EDGAR_SOURCES.items():
         if quota_exhausted:
             break
         # "99번대 첨부문서가 있다"는 것만으로는 실적 발표를 확신할 수 없어(2026-09-08,
         # HIMS가 M&A 완료 보도자료를 먼저 집은 사례) 후보를 여러 개 받아 순서대로 시도한다.
-        # 평상시(since_date 없음)는 하나라도 실적 발표로 판정되면(process_release가 True)
-        # 그 회사는 끝낸다(최신 분기 1개만 필요). --since 백필 모드에서는 그 날짜까지의
-        # 분기를 전부 모아야 하므로 성공해도 멈추지 않고 남은 후보를 계속 시도한다.
+        # 평상시(since_date 없음)는 최근 120일에서 최신 분기 1개를 성공하면 그 회사는 끝낸다. 번역에 실패한
+        # 최신 분기는 저장되지 않았으니 다음 날 실행에서 다시 시도된다. 과거 분기가 비면 --since 백필로 채운다
+        # (2026-10-16 결정 — 매일 과거 1년을 훑는 방식도 검토했으나 백필로 충분하다고 봄).
         max_candidates = 20 if since_date else 3
         for release in find_earnings_release_candidates(
                 ticker, info["cik"], info["form"], max_candidates=max_candidates, min_date=since_date):
@@ -587,12 +607,21 @@ def main():
                 if status == NOT_EARNINGS:
                     mark_skipped(out_data, [release["url"]])
                     changed = True
+                elif status == AI_NOT_EARNINGS:
+                    if release.get("is_202"):
+                        # SEC 분류(2.02)와 본문 검사는 실적인데 AI만 아니라고 함 — 영구 제외하지 않고 재시도
+                        record_fail(release, "실적 공시인데 AI가 실적 아님으로 판정")
+                    else:
+                        mark_skipped(out_data, [release["url"]])
+                    changed = True
                 elif status == OK:
+                    fail_counts.pop(release["url"], None)
                     changed = True
                     if not since_date:
                         break
                 elif status == FAILED:
-                    failed.append(f"{ticker} {release['date']}")
+                    record_fail(release, "번역·본문 조회 실패")
+                    changed = True
             except DailyQuotaExhausted:
                 # 오늘 Gemini 무료 티어 하루 쿼터를 다 썼다 — 남은 회사들도 똑같이 실패할 게
                 # 뻔하니 헛되이 계속 시도하지 않고 여기서 이번 실행을 마친다(이미 수집한
@@ -617,7 +646,7 @@ def main():
     print(f"완료: {args.out} (기업 {len(out_data.get('companies', []))}건)", file=sys.stderr)
     # GitHub Actions 실행 화면에 노란 경고로 표시된다(워크플로 자체는 실패시키지 않음 — 다음 실행 때 재시도)
     for f in failed:
-        print(f"::warning title=실적 IR 번역 실패::{f} — 다음 실행 때 다시 시도합니다(로그의 [WARN] 참고)")
+        print(f"::warning title=실적 IR 번역 실패::{f} (자세한 내용은 로그의 [WARN])")
 
 
 if __name__ == "__main__":
