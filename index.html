@@ -73,6 +73,9 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
   border:none; border-bottom:3px solid transparent; background:transparent; border-radius:0;
   padding:10px 16px 11px; margin-bottom:-2px;
   font-size:14.5px; font-weight:700; color:var(--dim);
+  /* 2026-10-16: 글자 길이마다 탭 폭이 달라 들쭉날쭉해 보여서, 줄 전체를 똑같이 나눠 갖게 한다.
+     좁은 화면에선 글자보다 좁아지지 않고(max-content) 다음 줄로 넘어간다. */
+  flex:1 1 0; min-width:max-content; text-align:center;
 }
 #main-tabs .tab:hover{color:var(--text)}
 #main-tabs .tab.active{background:transparent; color:var(--accent); border-bottom-color:var(--accent)}
@@ -571,7 +574,12 @@ tr:last-child td{border-bottom:none}
 /* 글로벌 Watch List(2026-10-07 초안) — 세부섹터 모멘텀 + 눈여겨볼 종목 스크리닝 */
 .gw-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px}
 .gw-seg{display:flex; gap:4px; flex-wrap:wrap}
-.gw-grid{display:grid; grid-template-columns:1fr; gap:18px}
+/* minmax(0,1fr)+min-width:0 — 그리드 칸은 기본적으로 내용물(넓은 표)보다 좁아지지 않아서, 표가 페이지 폭(1080px)
+   밖으로 튀어나가고 .gd-table-scroll의 가로 스크롤이 안 생겼다(2026-10-16). 칸을 페이지 폭에 맞추고 표는 스크롤. */
+.gw-grid{display:grid; grid-template-columns:minmax(0,1fr); gap:18px}
+.gw-grid > div{min-width:0}
+/* 종목 표의 세부섹터(여러 개면 "생명공학, 생명공학 서비스"처럼 길다)는 두 줄까지 허용 — 표가 페이지 폭 안에 들어오게 */
+.gw-table td.gd-sector-tag{white-space:normal; word-break:keep-all; max-width:9em; line-height:1.35}
 /* 표 제목 — 다른 탭 소제목처럼 크고 진하게 + 왼쪽 강조 바(2026-10-16) */
 .gw-grid h3{display:flex; align-items:baseline; flex-wrap:wrap; gap:6px; font-size:14.5px; margin:0 0 8px; color:var(--text); font-weight:800}
 .gw-grid h3::before{content:''; flex:none; width:4px; height:14px; background:var(--accent); border-radius:2px; align-self:center}
@@ -606,8 +614,8 @@ tr:last-child td{border-bottom:none}
 .gw-badge.earn.beat{color:#0F6E56} .gw-badge.earn.miss{color:#A32D2D} .gw-badge.earn.inline, .gw-badge.earn.none{color:var(--dim)}
 [data-theme="dark"] .gw-badge.earn.beat{color:#34d399} [data-theme="dark"] .gw-badge.earn.miss{color:#f87171}
 /* 52주 위치 — 저점(왼쪽)~고점(오른쪽) 사이 현재 위치 점 + 저점·고점 대비 % */
-.gw-table td.w52{min-width:150px}
-.w52-bar{position:relative; height:4px; width:120px; border-radius:2px; background:linear-gradient(90deg, rgba(37,99,235,.35), rgba(220,38,38,.35)); margin:4px 0 3px}
+.gw-table td.w52{min-width:0}
+.w52-bar{position:relative; height:4px; width:100px; border-radius:2px; background:linear-gradient(90deg, rgba(37,99,235,.35), rgba(220,38,38,.35)); margin:4px 0 3px}
 .w52-bar span{position:absolute; top:50%; width:8px; height:8px; margin-left:-4px; transform:translateY(-50%); border-radius:50%; background:var(--text); border:1.5px solid var(--card)}
 .w52-t{font-size:10.5px; color:var(--dim); white-space:nowrap}
 .w52-t b{font-weight:700}
@@ -4726,7 +4734,7 @@ function gw52wCell(s){
   const tip = `52주 저점 ${w.loDate} 대비 ${gwFmtPct(w.fromLo)} · 52주 고점 ${w.hiDate} 대비 ${gwFmtPct(w.fromHi)} (${w.from}부터 종가 기준)`;
   return `<td class="l w52" title="${escapeHtml(tip)}">
     <div class="w52-bar"><span style="left:${(w.pos * 100).toFixed(0)}%"></span></div>
-    <div class="w52-t">저점 <b class="up">${gwFmtPct(w.fromLo)}</b>(${md(w.loDate)}) · 고점 <b class="down">${gwFmtPct(w.fromHi)}</b></div></td>`;
+    <div class="w52-t">저점 <b class="up">${gwFmtPct(w.fromLo)}</b> · 고점 <b class="down">${gwFmtPct(w.fromHi)}</b></div></td>`; // 날짜는 마우스 올리면(title)
 }
 
 // ---- 최근 실적 발표 배지 (2026-10-16) — 실적 서프라이즈 탭과 같은 데이터·판정(±5%, 국내 영업이익·해외 EPS) ----
