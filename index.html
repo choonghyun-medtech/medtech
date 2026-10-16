@@ -204,6 +204,9 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
 }
 .export-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
 .toggle{display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
+/* 산업 데이터 표의 조회 기간 버튼 — 글자가 짧은 "3년/5년/10년"일 때 오른쪽이 비지 않게 칸 폭에 맞춰 3등분(2026-10-16) */
+#export-range-toggle, #medtour-range-toggle, #medtour-derma-range-toggle, #hira-range-toggle{display:flex}
+#export-range-toggle button, #medtour-range-toggle button, #medtour-derma-range-toggle button, #hira-range-toggle button{flex:1; white-space:nowrap; padding:6px 8px}
 .toggle button{
   border:none; background:var(--card); color:var(--sub); padding:6px 12px; font-size:12px; cursor:pointer;
   border-right:1px solid var(--border);
@@ -922,7 +925,7 @@ tr:last-child td{border-bottom:none}
       <button id="export-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
     </div>
     <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
-      <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+      <div style="display:flex; flex-direction:column; gap:10px; width:200px; flex:none">
         <div class="toggle" id="export-range-toggle">
           <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
         </div>
@@ -992,7 +995,7 @@ tr:last-child td{border-bottom:none}
         <button id="medtour-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
       </div>
       <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
-        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+        <div style="display:flex; flex-direction:column; gap:10px; width:200px; flex:none">
           <div class="toggle" id="medtour-range-toggle">
             <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
           </div>
@@ -1042,7 +1045,7 @@ tr:last-child td{border-bottom:none}
         <button id="medtour-derma-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
       </div>
       <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
-        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+        <div style="display:flex; flex-direction:column; gap:10px; width:200px; flex:none">
           <div class="toggle" id="medtour-derma-range-toggle">
             <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
           </div>
@@ -1113,7 +1116,7 @@ tr:last-child td{border-bottom:none}
         <button id="hira-table-copy" type="button" style="background:none;border:1px solid var(--border);color:var(--accent);font-weight:600;cursor:pointer;padding:3px 10px;font-size:11px;border-radius:4px">데이터 복사하기</button>
       </div>
       <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap">
-        <div style="display:flex; flex-direction:column; gap:10px; min-width:150px">
+        <div style="display:flex; flex-direction:column; gap:10px; width:200px; flex:none">
           <div class="toggle" id="hira-range-toggle">
             <button data-range="3m">3개월</button><button data-range="6m" class="active">6개월</button><button data-range="12m">12개월</button>
           </div>
@@ -4870,12 +4873,12 @@ function renderVisitorTrendChart(){
   const rows = aggregateMonthlyRows(monthlyRows, gran, ['visitors']);
   if(note){
     const when = updatedLabel(VISITOR_STATS_DATA && VISITOR_STATS_DATA.updated);
-    note.textContent = `${granLabel}(최근 ${rows.length}${unitLabel}) · 만명 · 출처: 한국관광 데이터랩${when ? ' · ' + when : ''}`;
+    note.textContent = `${granLabel}(최근 ${rows.length}${unitLabel}) · 만명 · 출처: 한국관광 데이터랩${when ? ' · ' + when : ''}${partialPeriodNote(rows)}`;
   }
   visitorTrendChartInstance = new Chart(document.getElementById('visitorChart'), {
     type: 'line',
     data: {
-      labels: rows.map(r => fmtPeriodLabel(r.label)),
+      labels: rows.map(r => fmtPeriodRow(r)),
       datasets: [{
         label: '방한 외국인', data: rows.map(r => r.visitors),
         borderColor: '#7c3aed', backgroundColor: 'rgba(124, 58, 237, 0.15)', fill: true,
@@ -4936,7 +4939,7 @@ function renderVisitorCountryChart(){
   const unitLabel = { month: '개월', quarter: '개 분기', year: '개년' }[gran];
   const rows = aggregateVisitorCountryRows(monthlyRows, gran);
   if(note) note.textContent = `${granLabel} 비중(최근 ${rows.length}${unitLabel}, 10년치 수집분 기준) · % · 기타 = 중국·일본·대만·미국 제외 전체`;
-  const labels = rows.map(r => fmtPeriodLabel(r.label));
+  const labels = rows.map(r => fmtPeriodRow(r));
   // 인원수(만명)는 표시하지 않고 국가별 비중(%)만 보여준다(2026-09-08 요청) — 분모는 그
   // 구간 방한 외국인 합계(5개 그룹 스택 합).
   const totals = rows.map(r => Object.values(r.countries).reduce((s, v) => s + (v || 0), 0));
@@ -5138,21 +5141,58 @@ function currentExportCategory(){
   return EXPORT_DATA.categories.find(c => c.key === EXPORT_STATE.cat) || null;
 }
 
+// ---- 진행 중인 분기·연도 처리(2026-10-16) ----
+// 예: 8월까지 발표됐으면 3Q26은 7~8월 두 달 합계뿐인데, 예전엔 이걸 3Q25(석 달)와 그대로 비교해 YoY가
+// 크게 빠지는 것처럼 보였다. 집계할 때 구간마다 실제로 들어간 달(months)을 기록해 두고, 덜 찬 구간
+// (partial)은 ① 라벨에 "*"를 붙이고 ② YoY를 전년 "같은 달"끼리(7~8월 vs 전년 7~8월) 비교한다.
+function periodFullMonths(gran){ return gran === 'quarter' ? 3 : gran === 'year' ? 12 : 1; }
+function finishPeriods(list, gran, src){
+  list.forEach(p => { p.partial = gran !== 'month' && p.months.length < periodFullMonths(gran); });
+  Object.defineProperty(list, '_src', { value: src, enumerable: false }); // 같은 달 YoY 계산용 원본(ym → 행)
+  return list;
+}
+// 차트 x축 라벨 — 진행 중인 구간이면 "3Q26*"
+function fmtPeriodRow(r){ return fmtPeriodLabel(r.label) + (r.partial ? '*' : ''); }
+// 차트 설명 줄에 붙이는 진행 중 구간 안내(마지막 구간만 해당)
+function partialPeriodNote(rows){
+  const last = rows && rows[rows.length - 1];
+  if(!last || !last.partial) return '';
+  const ms = last.months.map(m => +m.slice(5));
+  const span = ms.length > 1 ? `${ms[0]}~${ms[ms.length - 1]}월` : `${ms[0]}월`;
+  return ` · *${fmtPeriodLabel(last.label)}은 ${span} 합계(진행 중), YoY는 전년 같은 달 대비`;
+}
+// 진행 중 구간의 YoY 기준값 = 전년 같은 달들의 합(하나라도 없으면 null)
+function samePrevMonthsSum(agg, months, key){
+  const src = agg._src;
+  if(!src) return null;
+  let sum = 0;
+  for(const m of months){
+    const r = src.get(ymMinusYear(m));
+    if(!r || r[key] == null) return null;
+    sum += r[key];
+  }
+  return sum;
+}
+
 // monthly = [{ym:"YYYY-MM", expDlr, expWgt}] (오래된→최신 정렬 가정) 를 월/분기/연 단위로 합산.
 function aggregateExportMonthly(monthly, gran){
   if(!monthly || !monthly.length) return [];
-  if(gran === 'month') return monthly.map(m => ({ label: m.ym, expDlr: m.expDlr }));
+  const src = new Map(monthly.map(m => [m.ym, m]));
+  if(gran === 'month') return finishPeriods(monthly.map(m => ({ label: m.ym, expDlr: m.expDlr, months: [m.ym] })), gran, src);
   const map = new Map();
   monthly.forEach(m => {
     const [y, mo] = m.ym.split('-').map(Number);
     let key;
     if(gran === 'quarter') key = `${y}Q${Math.ceil(mo / 3)}`;
     else key = String(y); // 'year'
-    map.set(key, (map.get(key) || 0) + (m.expDlr || 0));
+    const acc = map.get(key) || { expDlr: 0, months: [] };
+    acc.expDlr += (m.expDlr || 0);
+    acc.months.push(m.ym);
+    map.set(key, acc);
   });
-  return Array.from(map.entries())
+  return finishPeriods(Array.from(map.entries())
     .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([label, expDlr]) => ({ label, expDlr }));
+    .map(([label, v]) => ({ label, expDlr: v.expDlr, months: v.months.sort() })), gran, src);
 }
 
 // "YYYY-MM" 문자열의 1년 전 같은 달을 반환 (YoY 비교용)
@@ -5191,7 +5231,8 @@ function computeYoYSeries(agg, gran){
   const byLabel = new Map(agg.map(a => [a.label, a.expDlr]));
   return agg.map(a => {
     const prevLabel = prevYearLabel(a.label, gran);
-    const prevVal = prevLabel != null ? byLabel.get(prevLabel) : null;
+    const prevVal = a.partial ? samePrevMonthsSum(agg, a.months, 'expDlr')
+      : prevLabel != null ? byLabel.get(prevLabel) : null;
     if(prevVal == null || !prevVal) return null;
     return (a.expDlr - prevVal) / prevVal * 100;
   });
@@ -5203,28 +5244,31 @@ function computeYoYSeries(agg, gran){
 // (2026-09-02, 의료관광 소비액/소비건수 차트에 월/분기/연 토글 추가).
 function aggregateMonthlyRows(rows, gran, keys){
   if(!rows || !rows.length) return [];
-  if(gran === 'month') return rows.map(r => { const o = { label: r.ym }; keys.forEach(k => o[k] = r[k]); return o; });
+  const src = new Map(rows.map(r => [r.ym, r]));
+  if(gran === 'month') return finishPeriods(rows.map(r => { const o = { label: r.ym, months: [r.ym] }; keys.forEach(k => o[k] = r[k]); return o; }), gran, src);
   const map = new Map();
   rows.forEach(r => {
     const [y, mo] = r.ym.split('-').map(Number);
     const key = gran === 'quarter' ? `${y}Q${Math.ceil(mo / 3)}` : String(y);
-    const acc = map.get(key) || Object.fromEntries(keys.map(k => [k, null]));
+    const acc = map.get(key) || Object.assign(Object.fromEntries(keys.map(k => [k, null])), { months: [] });
     keys.forEach(k => {
       if(r[k] == null) return; // 결측치는 합산에서 제외(그 구간에 실제 값이 하나도 없으면 null 유지)
       acc[k] = (acc[k] || 0) + r[k];
     });
+    acc.months.push(r.ym);
     map.set(key, acc);
   });
-  return Array.from(map.entries())
+  return finishPeriods(Array.from(map.entries())
     .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([label, vals]) => ({ label, ...vals }));
+    .map(([label, vals]) => ({ label, ...vals, months: vals.months.sort() })), gran, src);
 }
 
 function computeYoYSeriesFor(agg, gran, key){
   const byLabel = new Map(agg.map(a => [a.label, a[key]]));
   return agg.map(a => {
     const prevLabel = prevYearLabel(a.label, gran);
-    const prevVal = prevLabel != null ? byLabel.get(prevLabel) : null;
+    const prevVal = a.partial ? samePrevMonthsSum(agg, a.months, key)
+      : prevLabel != null ? byLabel.get(prevLabel) : null;
     if(prevVal == null || !prevVal || a[key] == null) return null;
     return (a[key] - prevVal) / prevVal * 100;
   });
@@ -5440,14 +5484,14 @@ function renderExportChart(){
   }
   const granLabel = { month: '월별', quarter: '분기별', year: '연도별' }[EXPORT_STATE.gran];
   const displayFrom = exportDisplayFromLabel(monthly, EXPORT_STATE.gran);
-  if(note) note.textContent = `${granLabel} · 수출금액(${exportAmountUnitWord()}, 막대) · YoY(%, 선) · HS ${hsCodesLabel(cfg)} · ${fmtPeriodLabel(displayFrom) || ''}부터 표시`;
   const aggFull = aggregateExportMonthly(monthly, EXPORT_STATE.gran);
+  if(note) note.textContent = `${granLabel} · 수출금액(${exportAmountUnitWord()}, 막대) · YoY(%, 선) · HS ${hsCodesLabel(cfg)} · ${fmtPeriodLabel(displayFrom) || ''}부터 표시${partialPeriodNote(aggFull)}`;
   const yoyFull = computeYoYSeries(aggFull, EXPORT_STATE.gran);
   const { agg, yoy } = sliceExportDisplay(aggFull, yoyFull, displayFrom);
   // mkBar()는 단일 y축 막대 전용이라 YoY 우측 보조축(막대+선 혼합)은 직접 Chart.js를 호출한다.
   exportChartInstance = new Chart(document.getElementById('exportChart'), {
     data: {
-      labels: agg.map(a => fmtPeriodLabel(a.label)),
+      labels: agg.map(a => fmtPeriodRow(a)),
       datasets: [
         {
           type: 'bar', label: `${cfg.label} 수출액(${exportAmountUnitWord()})`, data: agg.map(a => a.expDlr),
@@ -5484,35 +5528,15 @@ function renderExportChart(){
   });
 }
 
-// 월별 표 조회 기간 — 3개월/6개월/12개월 프리셋 버튼 + 항상 보이는 시작월/종료월 직접 선택
-// (2026-08-27 요청: '수동' 버튼은 없애되 기능 자체는 유지하고 항상 노출). 프리셋 버튼을 누르면
-// 시작월/종료월 입력칸도 그 범위로 맞춰 채워지고, 반대로 입력칸을 직접 바꾸면 'custom' 모드로
-// 전환되며 프리셋 버튼 선택은 해제된다. 전체 시계열(월별 수출 추이 차트와 동일한 데이터,
-// export_data.json의 monthly 전체)을 대상으로 하며, 카테고리 탭을 바꿔도 선택해둔 조회
-// 기간은 유지한다.
-let EXPORT_TABLE_RANGE = { mode: '6m', start: null, end: null };
-
-// monthly({ym, expDlr}[], 순서 무관)를 오름차순(과거→최신)으로 정렬한 뒤 현재 조회 기간에
-// 맞춰 잘라낸다.
-function exportTableFilteredRows(monthly){
-  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-  if(EXPORT_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
-  if(EXPORT_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
-  if(EXPORT_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
-  const { start, end } = EXPORT_TABLE_RANGE;
-  if(!start || !end) return sorted.slice(-6);
-  return sorted.filter(r => r.ym >= start && r.ym <= end);
-}
-
-function renderExportTable(){
-  const wrap = document.getElementById('export-table-wrap');
-  const monthly = currentExportMonthly();
-  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
-  const rows = exportTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
-  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
-  const rowHtml = r => `<tr><td>${r.ym}</td><td>${(r.expDlr || 0).toLocaleString()}</td></tr>`;
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>수출액(${exportAmountUnitWord()})</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
-}
+// ---- 산업 데이터 표 공통(2026-10-16) — 수출/의료관광(전체·피부과)/진료행위 네 개의 "데이터" 표 ----
+// 예전엔 표마다 같은 코드를 따로 두고 항상 월별 원본만 보여줬다. 사수 피드백으로 표도 바로 위 차트의
+// 월/분기/연 토글을 따르게 하고, 전년 동기 대비(YoY) 열을 붙였다.
+// - 조회 기간 버튼은 단위에 맞게 이름이 바뀐다: 월 3/6/12개월 · 분기 4/8/12분기 · 연 3/5/10년.
+//   시작월/종료월 직접 입력은 그대로(그 달들만 모아 분기·연으로 합산).
+// - 진행 중인 분기·연도(예: 8월까지 발표 → 3Q26)는 "3Q26 (7~8월)"로 표시하고, YoY는 전년 같은 달
+//   (2025년 7~8월)과 비교한다. 완결된 직전 분기(2Q26)도 그대로 아래 행에 있어 둘 다 볼 수 있다.
+// - "데이터 복사하기"는 화면과 같은 기간·단위로 복사하되 YoY 열은 빼고 값만(예전 엑셀 붙여넣기 형식 유지).
+//   기간 열: 월이면 그 달 말일(YYYY-MM-DD, 엑셀이 1일로 인식하지 않게), 분기·연이면 "3Q26"·"2025" 텍스트.
 
 // ym("YYYY-MM")을 그 달의 마지막 날짜("YYYY-MM-DD")로 바꾼다. 엑셀에 "YYYY-MM"을
 // 그대로 붙여넣으면 자동으로 매달 1일로 인식해버려서(2026-08-27 요청), 말일로 명시한다.
@@ -5522,57 +5546,177 @@ function ymToLastDay(ym){
   return `${ym}-${String(lastDay).padStart(2, '0')}`;
 }
 
-// "데이터 복사하기" — 현재 선택된 조회 기간의 월별 데이터(기간, 수출액)만 탭으로 구분된
-// 텍스트로 클립보드에 복사한다. 엑셀에 그대로 붙여넣으면 두 열(기간/수출액)로 나뉘어 들어간다.
-async function copyExportTable(){
-  const monthly = currentExportMonthly();
-  if(!monthly || !monthly.length) return;
-  const rows = exportTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
-  const lines = [`기간\t수출액(${exportAmountUnitWord()})`, ...rows.map(r => `${ymToLastDay(r.ym)}\t${r.expDlr || 0}`)];
-  const text = lines.join('\n');
-  const btn = document.getElementById('export-table-copy');
-  try{
-    await navigator.clipboard.writeText(text);
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }catch(e){
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }
-}
-document.getElementById('export-table-copy')?.addEventListener('click', copyExportTable);
+const PERIOD_TABLE_PRESETS = {
+  month:   { '3m': [3, '3개월'], '6m': [6, '6개월'], '12m': [12, '12개월'] },
+  quarter: { '3m': [4, '4분기'], '6m': [8, '8분기'], '12m': [12, '12분기'] },
+  year:    { '3m': [3, '3년'],   '6m': [5, '5년'],   '12m': [10, '10년'] },
+};
+const PERIOD_TABLE_TITLE = { month: '월별 데이터', quarter: '분기별 데이터', year: '연도별 데이터' };
 
-// 조회 기간 선택 UI — 3개월/6개월/12개월 프리셋 버튼 + 항상 보이는 시작월/종료월 입력칸.
-// 프리셋 버튼 클릭 시 입력칸도 해당 범위로 맞춰 채워주고, 입력칸을 직접 바꾸면 프리셋 버튼
-// 선택은 해제되고 'custom' 모드로 전환된다.
-(() => {
-  const toggle = document.getElementById('export-range-toggle');
-  const startInput = document.getElementById('export-range-start');
-  const endInput = document.getElementById('export-range-end');
-  if(!toggle || !startInput || !endInput) return;
-  toggle.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      EXPORT_TABLE_RANGE.mode = btn.dataset.range;
-      const monthly = currentExportMonthly();
-      if(monthly && monthly.length){
-        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
-        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
-        endInput.value = sorted[sorted.length - 1].ym;
-        EXPORT_TABLE_RANGE.start = startInput.value;
-        EXPORT_TABLE_RANGE.end = endInput.value;
+function periodTableKey(ym, gran){
+  if(gran === 'month') return ym;
+  const [y, m] = ym.split('-').map(Number);
+  return gran === 'quarter' ? `${y}Q${Math.ceil(m / 3)}` : String(y);
+}
+function periodTableLabel(p, gran){
+  const base = fmtPeriodLabel(p.label);
+  if(gran === 'month' || !p.partial) return base;
+  const ms = p.months.map(m => +m.slice(5));
+  return `${base} (${ms.length > 1 ? `${ms[0]}~${ms[ms.length - 1]}월` : `${ms[0]}월`})`;
+}
+
+// monthly → 표 행(오래된→최신). keys: 합산할 값 필드. range: {mode:'3m'|'6m'|'12m'|'custom', start, end}
+function buildPeriodTableRows(monthly, gran, keys, range){
+  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
+  const byYm = new Map(sorted.map(r => [r.ym, r]));
+  let src = sorted;
+  const custom = range.mode === 'custom' && range.start && range.end;
+  if(custom) src = sorted.filter(r => r.ym >= range.start && r.ym <= range.end);
+  const map = new Map();
+  src.forEach(r => {
+    const k = periodTableKey(r.ym, gran);
+    const acc = map.get(k) || { label: k, months: [], vals: Object.fromEntries(keys.map(x => [x, null])) };
+    keys.forEach(x => { if(r[x] != null) acc.vals[x] = (acc.vals[x] || 0) + r[x]; });
+    acc.months.push(r.ym);
+    map.set(k, acc);
+  });
+  let rows = Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+  rows.forEach(p => {
+    p.partial = gran !== 'month' && p.months.length < periodFullMonths(gran);
+    // YoY: 전년 같은 달들의 합과 비교(완결 구간이면 곧 전년 같은 구간). 전년 달이 하나라도 없으면 비교 안 함.
+    p.prev = {};
+    keys.forEach(x => {
+      let sum = 0;
+      for(const m of p.months){
+        const r = byYm.get(ymMinusYear(m));
+        if(!r || r[x] == null){ sum = null; break; }
+        sum += r[x];
       }
-      renderExportTable();
+      p.prev[x] = sum;
+    });
+  });
+  if(!custom){
+    const preset = (PERIOD_TABLE_PRESETS[gran] || PERIOD_TABLE_PRESETS.month)[range.mode] || PERIOD_TABLE_PRESETS[gran]['6m'];
+    rows = rows.slice(-preset[0]);
+  }
+  return rows;
+}
+
+function fmtYoYCell(cur, prev){
+  if(cur == null || prev == null || !prev) return '<td class="ca-dim">-</td>';
+  const v = (cur - prev) / prev * 100;
+  return `<td class="${v > 0 ? 'up' : v < 0 ? 'down' : ''}">${v > 0 ? '+' : ''}${v.toFixed(1)}%</td>`;
+}
+
+// cfg: { tableId, toggleId, startId, endId, copyId, getMonthly:()=>rows[], getGran:()=>gran,
+//        cols: [ {key, head, fmt?, yoy?:bool} | {head, calc:(vals)=>num|null, fmt?} ] }
+// 반환: { render(), onGranChange() }
+function setupPeriodTable(cfg){
+  const state = { mode: '6m', start: null, end: null };
+  const wrap = () => document.getElementById(cfg.tableId);
+  const toggle = document.getElementById(cfg.toggleId);
+  const startInput = document.getElementById(cfg.startId);
+  const endInput = document.getElementById(cfg.endId);
+  const copyBtn = document.getElementById(cfg.copyId);
+  const valueKeys = cfg.cols.filter(c => c.key).map(c => c.key);
+  const fmtNum = (v, c) => v == null ? '-' : (c.fmt ? c.fmt(v) : v.toLocaleString());
+  const headOf = c => typeof c.head === 'function' ? c.head() : c.head;
+
+  function rows(){
+    const monthly = cfg.getMonthly();
+    if(!monthly || !monthly.length) return null;
+    return buildPeriodTableRows(monthly, cfg.getGran(), valueKeys, state);
+  }
+  function syncLabels(){
+    const gran = cfg.getGran();
+    if(toggle) toggle.querySelectorAll('button').forEach(b => {
+      const p = PERIOD_TABLE_PRESETS[gran][b.dataset.range];
+      if(p) b.textContent = p[1];
+    });
+    // 표 제목(h2)은 복사 버튼 바로 앞에 있다
+    const title = copyBtn && copyBtn.previousElementSibling;
+    if(title && title.tagName === 'H2') title.textContent = PERIOD_TABLE_TITLE[gran];
+  }
+  function render(){
+    syncLabels();
+    const w = wrap();
+    if(!w) return;
+    const list = rows();
+    if(!list){ w.innerHTML = ''; return; }
+    if(!list.length){ w.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
+    if(state.mode !== 'custom') fillInputs(list); // 시작월/종료월 칸이 항상 지금 보이는 범위를 가리키게
+    const gran = cfg.getGran();
+    // th 공통 스타일이 영문을 대문자로 바꿔(text-transform:uppercase) "YOY"로 보여서 이 칸만 원래 표기 유지
+    const head = cfg.cols.map(c => c.key && c.yoy ? `<th>${headOf(c)}</th><th style="text-transform:none">YoY</th>` : `<th>${headOf(c)}</th>`).join('');
+    const body = list.slice().reverse().map(p => `<tr><td style="white-space:nowrap">${periodTableLabel(p, gran)}</td>${cfg.cols.map(c => {
+      if(c.calc) return `<td>${fmtNum(c.calc(p.vals), c)}</td>`;
+      const cell = `<td>${fmtNum(p.vals[c.key], c)}</td>`;
+      return c.yoy ? cell + fmtYoYCell(p.vals[c.key], p.prev[c.key]) : cell;
+    }).join('')}</tr>`).join('');
+    const partial = list.some(p => p.partial)
+      ? `<div class="note" style="margin-top:4px;font-size:10.5px">괄호 안 달은 진행 중인 구간에 들어간 달 — 그 구간의 YoY는 전년 같은 달끼리 비교한 값입니다.</div>` : '';
+    w.innerHTML = `<table><thead><tr><th>기간</th>${head}</tr></thead><tbody>${body}</tbody></table>${partial}`;
+  }
+  async function copy(){
+    const list = rows();
+    if(!list || !list.length) return;
+    const gran = cfg.getGran();
+    const lines = [['기간', ...cfg.cols.map(headOf)].join('\t'), ...list.map(p => [
+      gran === 'month' ? ymToLastDay(p.label) : periodTableLabel(p, gran),
+      ...cfg.cols.map(c => {
+        const v = c.calc ? c.calc(p.vals) : p.vals[c.key];
+        return v == null ? '' : (c.copyFmt ? c.copyFmt(v) : v);
+      }),
+    ].join('\t'))];
+    try{
+      await navigator.clipboard.writeText(lines.join('\n'));
+      if(copyBtn){ const orig = copyBtn.textContent; copyBtn.textContent = '복사됨 ✓'; setTimeout(() => { copyBtn.textContent = orig; }, 1500); }
+    }catch(e){
+      if(copyBtn){ const orig = copyBtn.textContent; copyBtn.textContent = '복사 실패'; setTimeout(() => { copyBtn.textContent = orig; }, 1500); }
+    }
+  }
+  // 프리셋 버튼을 누르면 시작월/종료월 칸도 그 범위로 맞춰 채우고, 칸을 직접 바꾸면 'custom' 모드로.
+  function fillInputs(list){
+    list = list || rows();
+    if(!list || !list.length || !startInput || !endInput) return;
+    startInput.value = list[0].months[0];
+    const lastP = list[list.length - 1];
+    endInput.value = lastP.months[lastP.months.length - 1];
+    state.start = startInput.value; state.end = endInput.value;
+  }
+  if(toggle) toggle.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      state.mode = btn.dataset.range;
+      fillInputs();
+      render();
     });
   });
   const onCustomChange = () => {
-    EXPORT_TABLE_RANGE.mode = 'custom';
-    EXPORT_TABLE_RANGE.start = startInput.value || null;
-    EXPORT_TABLE_RANGE.end = endInput.value || null;
-    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-    renderExportTable();
+    state.mode = 'custom';
+    state.start = startInput.value || null;
+    state.end = endInput.value || null;
+    if(toggle) toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    render();
   };
-  startInput.addEventListener('change', onCustomChange);
-  endInput.addEventListener('change', onCustomChange);
-})();
+  if(startInput) startInput.addEventListener('change', onCustomChange);
+  if(endInput) endInput.addEventListener('change', onCustomChange);
+  if(copyBtn) copyBtn.addEventListener('click', copy);
+  return {
+    render,
+    // 차트 단위(월/분기/연)가 바뀌면 프리셋 모드는 새 단위로 다시 고르고 입력칸도 맞춘다(직접 입력 기간은 유지).
+    onGranChange(){ if(state.mode !== 'custom') fillInputs(); render(); },
+  };
+}
+
+// 수출 "데이터" 표 — 위 차트의 월/분기/연 토글(EXPORT_STATE.gran)을 따른다.
+var EXPORT_TABLE = setupPeriodTable({
+  tableId: 'export-table-wrap', toggleId: 'export-range-toggle', startId: 'export-range-start', endId: 'export-range-end', copyId: 'export-table-copy',
+  getMonthly: () => currentExportMonthly(), getGran: () => EXPORT_STATE.gran,
+  cols: [{ key: 'expDlr', head: () => `수출액(${exportAmountUnitWord()})`, yoy: true }],
+});
+function renderExportTable(){ EXPORT_TABLE.render(); }
 
 function renderExportAll(){
   renderExportStatCards();
@@ -5586,6 +5730,7 @@ document.querySelectorAll('#export-period-toggle button').forEach(b => {
     b.classList.add('active');
     EXPORT_STATE.gran = b.dataset.gran;
     renderExportChart();
+    EXPORT_TABLE.onGranChange(); // 아래 데이터 표도 같은 단위로(2026-10-16)
   });
 });
 
@@ -5880,7 +6025,7 @@ function renderMedtourTrendChart(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab.label} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${tab.monthly[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab.label} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${tab.monthly[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준${partialPeriodNote(displayRows)}`
       : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -5893,7 +6038,7 @@ function renderMedtourTrendChart(){
 
   medTourAmtChartInstance = new Chart(document.getElementById('medTourAmtChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '의료 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1000),
@@ -5936,7 +6081,7 @@ function renderMedtourTrendChart(){
 
   medTourCntChartInstance = new Chart(document.getElementById('medTourCntChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '의료 소비건수(건)', data: displayRows.map(r => r.cnt),
@@ -6068,7 +6213,7 @@ function renderMedtourDermaTrendChart(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab ? tab.label : ''} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${monthlyRows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${tab ? tab.label : ''} · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${monthlyRows[0].ym}부터 수집) · 신한카드 외국인 카드소비 기준${partialPeriodNote(displayRows)}`
       : `${granLabel} · 한국관광 데이터랩 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -6092,7 +6237,7 @@ function renderMedtourDermaTrendChart(){
 
   medTourDermaAmtChartInstance = new Chart(document.getElementById('medTourDermaAmtChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '피부과 소비액(백만원)', data: displayRows.map(r => r.amt == null ? null : r.amt / 1e6),
@@ -6144,7 +6289,7 @@ function renderMedtourDermaTrendChart(){
 
   medTourDermaCntChartInstance = new Chart(document.getElementById('medTourDermaCntChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '피부과 소비건수(건)', data: displayRows.map(r => r.cnt),
@@ -6388,177 +6533,32 @@ function renderMedtourDermaCountryCharts(){
     buildMedtourDermaCountryShareDatasets('cnt', gran, periods), periods, '소비건수');
 }
 
-// "데이터 복사하기" — 수출 데이터/진료행위 통계 섹션과 동일한 패턴(3/6/12개월 프리셋 +
-// 시작월/종료월 직접 선택). "의료소비 전체" 탭(현재 선택된 국가, currentMedtourTab)의
-// 월별 소비액·소비건수·ASP를 대상으로 한다. 소비액은 raw 데이터 단위(천원)를 그대로 써서
-// 엑셀 붙여넣기 시 정밀도 손실이 없게 한다(진료행위 통계 표와 동일한 원칙).
-let MEDTOUR_TABLE_RANGE = { mode: '6m', start: null, end: null };
+// 의료관광 "데이터" 표(전체·피부과) — 공통 표(setupPeriodTable, 수출 데이터 섹션)를 쓴다. 각 탭 차트의
+// 월/분기/연 토글을 따르고, ASP는 합산된 소비액 ÷ 소비건수로 다시 계산한다(구간 평균이 아니라 가중 평균).
+// 소비액은 raw 단위 그대로(전체 탭 천원, 피부과 탭 원 — 피부과는 deptAmt 기준) 엑셀 붙여넣기 정밀도 유지.
+var MEDTOUR_TABLE = setupPeriodTable({
+  tableId: 'medtour-table-wrap', toggleId: 'medtour-range-toggle', startId: 'medtour-range-start', endId: 'medtour-range-end', copyId: 'medtour-table-copy',
+  getMonthly: () => { const tab = currentMedtourTab(); return tab && tab.monthly; }, getGran: () => MEDTOUR_STATE.trendGran,
+  cols: [
+    { key: 'amt', head: '의료 소비액(천원)', yoy: true },
+    { key: 'cnt', head: '의료 소비건수(건)', yoy: true },
+    { head: '의료 소비 ASP(만원)', calc: v => (v.cnt && v.amt != null) ? v.amt / v.cnt / 10 : null,
+      fmt: x => x.toLocaleString(undefined, { maximumFractionDigits: 1 }), copyFmt: x => x.toFixed(1) },
+  ],
+});
+function renderMedtourTable(){ MEDTOUR_TABLE.render(); }
 
-function medtourTableFilteredRows(monthly){
-  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-  if(MEDTOUR_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
-  if(MEDTOUR_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
-  if(MEDTOUR_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
-  const { start, end } = MEDTOUR_TABLE_RANGE;
-  if(!start || !end) return sorted.slice(-6);
-  return sorted.filter(r => r.ym >= start && r.ym <= end);
-}
-
-// ASP(만원) = 소비액(천원) / 소비건수 / 10 — 위 renderMedtourTrendChart의 공식과 동일.
-function medtourRowAsp(r){ return (r.cnt && r.amt != null) ? r.amt / r.cnt / 10 : null; }
-
-function renderMedtourTable(){
-  const wrap = document.getElementById('medtour-table-wrap');
-  if(!wrap) return;
-  const tab = currentMedtourTab();
-  const monthly = tab && tab.monthly;
-  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
-  const rows = medtourTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
-  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
-  const rowHtml = r => {
-    const asp = medtourRowAsp(r);
-    return `<tr><td>${r.ym}</td><td>${(r.amt || 0).toLocaleString()}</td><td>${(r.cnt || 0).toLocaleString()}</td><td>${asp == null ? '-' : asp.toLocaleString(undefined,{maximumFractionDigits:1})}</td></tr>`;
-  };
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>의료 소비액(천원)</th><th>의료 소비건수(건)</th><th>의료 소비 ASP(만원)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
-}
-
-async function copyMedtourTable(){
-  const tab = currentMedtourTab();
-  const monthly = tab && tab.monthly;
-  if(!monthly || !monthly.length) return;
-  const rows = medtourTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
-  const lines = ['기간\t의료 소비액(천원)\t의료 소비건수(건)\t의료 소비 ASP(만원)', ...rows.map(r => {
-    const asp = medtourRowAsp(r);
-    return `${ymToLastDay(r.ym)}\t${r.amt || 0}\t${r.cnt || 0}\t${asp == null ? '' : asp.toFixed(1)}`;
-  })];
-  const text = lines.join('\n');
-  const btn = document.getElementById('medtour-table-copy');
-  try{
-    await navigator.clipboard.writeText(text);
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }catch(e){
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }
-}
-document.getElementById('medtour-table-copy')?.addEventListener('click', copyMedtourTable);
-
-(() => {
-  const toggle = document.getElementById('medtour-range-toggle');
-  const startInput = document.getElementById('medtour-range-start');
-  const endInput = document.getElementById('medtour-range-end');
-  if(!toggle || !startInput || !endInput) return;
-  toggle.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      MEDTOUR_TABLE_RANGE.mode = btn.dataset.range;
-      const tab = currentMedtourTab();
-      const monthly = tab && tab.monthly;
-      if(monthly && monthly.length){
-        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
-        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
-        endInput.value = sorted[sorted.length - 1].ym;
-        MEDTOUR_TABLE_RANGE.start = startInput.value;
-        MEDTOUR_TABLE_RANGE.end = endInput.value;
-      }
-      renderMedtourTable();
-    });
-  });
-  const onCustomChange = () => {
-    MEDTOUR_TABLE_RANGE.mode = 'custom';
-    MEDTOUR_TABLE_RANGE.start = startInput.value || null;
-    MEDTOUR_TABLE_RANGE.end = endInput.value || null;
-    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-    renderMedtourTable();
-  };
-  startInput.addEventListener('change', onCustomChange);
-  endInput.addEventListener('change', onCustomChange);
-})();
-
-// "데이터 복사하기"(피부과 탭) — 위 medtour-table-copy와 동일한 패턴이되, 대상은
-// 피부과 탭에서 선택된 국가(currentMedtourDermaTab)의 buildMedtourDermaRows() 결과.
-// deptAmt/deptCnt 기준이라 amt 단위가 "원"이라 ASP 공식의 나눗셈 자릿수만 다르다
-// (renderMedtourDermaTrendChart의 ASP 공식과 동일: amt(원)/cnt/10000).
-let MEDTOUR_DERMA_TABLE_RANGE = { mode: '6m', start: null, end: null };
-
-function medtourDermaTableFilteredRows(monthly){
-  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
-  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
-  if(MEDTOUR_DERMA_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
-  const { start, end } = MEDTOUR_DERMA_TABLE_RANGE;
-  if(!start || !end) return sorted.slice(-6);
-  return sorted.filter(r => r.ym >= start && r.ym <= end);
-}
-
-function medtourDermaRowAsp(r){ return (r.cnt && r.amt != null) ? r.amt / r.cnt / 10000 : null; }
-
-function renderMedtourDermaTable(){
-  const wrap = document.getElementById('medtour-derma-table-wrap');
-  if(!wrap) return;
-  const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
-  if(!monthly.length){ wrap.innerHTML = ''; return; }
-  const rows = medtourDermaTableFilteredRows(monthly).slice().reverse();
-  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
-  const rowHtml = r => {
-    const asp = medtourDermaRowAsp(r);
-    return `<tr><td>${r.ym}</td><td>${(r.amt || 0).toLocaleString()}</td><td>${(r.cnt || 0).toLocaleString()}</td><td>${asp == null ? '-' : asp.toLocaleString(undefined,{maximumFractionDigits:1})}</td></tr>`;
-  };
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>의료 소비액(원)</th><th>의료 소비건수(건)</th><th>의료 소비 ASP(만원)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
-}
-
-async function copyMedtourDermaTable(){
-  const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
-  if(!monthly.length) return;
-  const rows = medtourDermaTableFilteredRows(monthly);
-  const lines = ['기간\t의료 소비액(원)\t의료 소비건수(건)\t의료 소비 ASP(만원)', ...rows.map(r => {
-    const asp = medtourDermaRowAsp(r);
-    return `${ymToLastDay(r.ym)}\t${r.amt || 0}\t${r.cnt || 0}\t${asp == null ? '' : asp.toFixed(1)}`;
-  })];
-  const text = lines.join('\n');
-  const btn = document.getElementById('medtour-derma-table-copy');
-  try{
-    await navigator.clipboard.writeText(text);
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }catch(e){
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }
-}
-document.getElementById('medtour-derma-table-copy')?.addEventListener('click', copyMedtourDermaTable);
-
-(() => {
-  const toggle = document.getElementById('medtour-derma-range-toggle');
-  const startInput = document.getElementById('medtour-derma-range-start');
-  const endInput = document.getElementById('medtour-derma-range-end');
-  if(!toggle || !startInput || !endInput) return;
-  toggle.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      MEDTOUR_DERMA_TABLE_RANGE.mode = btn.dataset.range;
-      const monthly = buildMedtourDermaRows(currentMedtourDermaTab());
-      if(monthly.length){
-        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
-        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
-        endInput.value = sorted[sorted.length - 1].ym;
-        MEDTOUR_DERMA_TABLE_RANGE.start = startInput.value;
-        MEDTOUR_DERMA_TABLE_RANGE.end = endInput.value;
-      }
-      renderMedtourDermaTable();
-    });
-  });
-  const onCustomChange = () => {
-    MEDTOUR_DERMA_TABLE_RANGE.mode = 'custom';
-    MEDTOUR_DERMA_TABLE_RANGE.start = startInput.value || null;
-    MEDTOUR_DERMA_TABLE_RANGE.end = endInput.value || null;
-    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-    renderMedtourDermaTable();
-  };
-  startInput.addEventListener('change', onCustomChange);
-  endInput.addEventListener('change', onCustomChange);
-})();
+var MEDTOUR_DERMA_TABLE = setupPeriodTable({
+  tableId: 'medtour-derma-table-wrap', toggleId: 'medtour-derma-range-toggle', startId: 'medtour-derma-range-start', endId: 'medtour-derma-range-end', copyId: 'medtour-derma-table-copy',
+  getMonthly: () => buildMedtourDermaRows(currentMedtourDermaTab()), getGran: () => MEDTOUR_STATE.dermaTrendGran,
+  cols: [
+    { key: 'amt', head: '의료 소비액(원)', yoy: true },
+    { key: 'cnt', head: '의료 소비건수(건)', yoy: true },
+    { head: '의료 소비 ASP(만원)', calc: v => (v.cnt && v.amt != null) ? v.amt / v.cnt / 10000 : null,
+      fmt: x => x.toLocaleString(undefined, { maximumFractionDigits: 1 }), copyFmt: x => x.toFixed(1) },
+  ],
+});
+function renderMedtourDermaTable(){ MEDTOUR_DERMA_TABLE.render(); }
 
 function renderMedtourDermaAll(){
   renderMedtourDermaTrendChart();
@@ -6786,6 +6786,7 @@ document.querySelectorAll('#medtour-trend-period-toggle button').forEach(b => {
     MEDTOUR_STATE.trendGran = b.dataset.gran;
     renderMedtourTrendChart();
     renderMedtourDeptCharts();
+    MEDTOUR_TABLE.onGranChange();
   });
 });
 document.querySelectorAll('#medtour-derma-trend-period-toggle button').forEach(b => {
@@ -6795,6 +6796,7 @@ document.querySelectorAll('#medtour-derma-trend-period-toggle button').forEach(b
     MEDTOUR_STATE.dermaTrendGran = b.dataset.gran;
     renderMedtourDermaTrendChart();
     renderMedtourDermaCountryCharts();
+    MEDTOUR_DERMA_TABLE.onGranChange();
   });
 });
 document.querySelectorAll('#visitor-period-toggle button').forEach(b => {
@@ -6871,7 +6873,7 @@ function renderHiraCharts(){
   const displayRows = rows.filter(r => byLabel.has(prevYearLabel(r.label, gran)));
   if(note){
     note.textContent = displayRows.length
-      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${code.code} ${code.name}(${code.admission}) · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${code.monthly[0].ym}부터 수집) · 건강보험심사평가원`
+      ? `${granLabel}(${fmtPeriodLabel(displayRows[0].label)} ~ ${fmtPeriodLabel(displayRows[displayRows.length-1].label)}, ${displayRows.length}${unitLabel}) · ${code.code} ${code.name}(${code.admission}) · YoY 비교 가능한 구간부터 표시(데이터 자체는 ${code.monthly[0].ym}부터 수집) · 건강보험심사평가원${partialPeriodNote(displayRows)}`
       : `${granLabel} · 건강보험심사평가원 · 아직 YoY 비교 가능한 데이터가 없습니다.`;
   }
   if(!displayRows.length) return;
@@ -6883,7 +6885,7 @@ function renderHiraCharts(){
 
   hiraUsageChartInstance = new Chart(document.getElementById('hiraUsageChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
@@ -6926,7 +6928,7 @@ function renderHiraCharts(){
 
   hiraAmountChartInstance = new Chart(document.getElementById('hiraAmountChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '진료금액(백만원)', data: displayRows.map(r => r.amount == null ? null : r.amount / 1000),
@@ -6974,7 +6976,7 @@ function renderHiraCharts(){
   // 진료금액=초록)해 세 차트 간 색 의미가 흔들리지 않게 한다.
   hiraComboChartInstance = new Chart(document.getElementById('hiraComboChart'), {
     data: {
-      labels: displayRows.map(r => fmtPeriodLabel(r.label)),
+      labels: displayRows.map(r => fmtPeriodRow(r)),
       datasets: [
         {
           type: 'bar', label: '총사용량(건)', data: displayRows.map(r => r.usage),
@@ -7017,86 +7019,18 @@ function renderHiraCharts(){
   });
 }
 
-// 월별 데이터 표 + "데이터 복사하기" — 수출 데이터 섹션(export-table-copy 등)과 동일한
-// 패턴: 3/6/12개월 프리셋 + 항상 보이는 시작월/종료월 직접 선택, 선택된 기간의 원본
-// 월별 행(기간·진료금액·총사용량)을 탭 구분 텍스트로 클립보드에 복사한다. 위 세 차트의
-// 월/분기/연 토글(HIRA_STATE.gran)과는 무관하게 항상 월별 원본(code.monthly) 기준이며,
-// 진료금액은 raw 데이터 단위(천원, hira_procedure.json의 unit.amount)를 그대로 쓴다 —
-// 차트처럼 백만원으로 반올림하면 엑셀에 붙여넣을 때 정밀도가 떨어지기 때문.
-let HIRA_TABLE_RANGE = { mode: '6m', start: null, end: null };
-
-function hiraTableFilteredRows(monthly){
-  const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-  if(HIRA_TABLE_RANGE.mode === '3m') return sorted.slice(-3);
-  if(HIRA_TABLE_RANGE.mode === '6m') return sorted.slice(-6);
-  if(HIRA_TABLE_RANGE.mode === '12m') return sorted.slice(-12);
-  const { start, end } = HIRA_TABLE_RANGE;
-  if(!start || !end) return sorted.slice(-6);
-  return sorted.filter(r => r.ym >= start && r.ym <= end);
-}
-
-function renderHiraTable(){
-  const wrap = document.getElementById('hira-table-wrap');
-  if(!wrap) return;
-  const code = currentHiraCode();
-  const monthly = code && code.monthly;
-  if(!monthly || !monthly.length){ wrap.innerHTML = ''; return; }
-  const rows = hiraTableFilteredRows(monthly).slice().reverse(); // 표에는 최신순으로 노출
-  if(!rows.length){ wrap.innerHTML = `<div class="note" style="padding:10px 0">선택한 기간에 데이터가 없습니다.</div>`; return; }
-  const rowHtml = r => `<tr><td>${r.ym}</td><td>${(r.amount || 0).toLocaleString()}</td><td>${(r.usage || 0).toLocaleString()}</td></tr>`;
-  wrap.innerHTML = `<table><thead><tr><th>기간</th><th>진료금액(천원)</th><th>총사용량(건)</th></tr></thead><tbody>${rows.map(rowHtml).join('')}</tbody></table>`;
-}
-
-async function copyHiraTable(){
-  const code = currentHiraCode();
-  const monthly = code && code.monthly;
-  if(!monthly || !monthly.length) return;
-  const rows = hiraTableFilteredRows(monthly); // 오름차순(과거→최신) 그대로 복사
-  const lines = ['기간\t진료금액(천원)\t총사용량(건)', ...rows.map(r => `${ymToLastDay(r.ym)}\t${r.amount || 0}\t${r.usage || 0}`)];
-  const text = lines.join('\n');
-  const btn = document.getElementById('hira-table-copy');
-  try{
-    await navigator.clipboard.writeText(text);
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }catch(e){
-    if(btn){ const orig = btn.textContent; btn.textContent = '복사 실패'; setTimeout(() => { btn.textContent = orig; }, 1500); }
-  }
-}
-document.getElementById('hira-table-copy')?.addEventListener('click', copyHiraTable);
-
-(() => {
-  const toggle = document.getElementById('hira-range-toggle');
-  const startInput = document.getElementById('hira-range-start');
-  const endInput = document.getElementById('hira-range-end');
-  if(!toggle || !startInput || !endInput) return;
-  toggle.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-      btn.classList.add('active');
-      HIRA_TABLE_RANGE.mode = btn.dataset.range;
-      const code = currentHiraCode();
-      const monthly = code && code.monthly;
-      if(monthly && monthly.length){
-        const sorted = monthly.slice().sort((a, b) => a.ym.localeCompare(b.ym));
-        const n = btn.dataset.range === '3m' ? 3 : btn.dataset.range === '6m' ? 6 : 12;
-        startInput.value = sorted[Math.max(0, sorted.length - n)].ym;
-        endInput.value = sorted[sorted.length - 1].ym;
-        HIRA_TABLE_RANGE.start = startInput.value;
-        HIRA_TABLE_RANGE.end = endInput.value;
-      }
-      renderHiraTable();
-    });
-  });
-  const onCustomChange = () => {
-    HIRA_TABLE_RANGE.mode = 'custom';
-    HIRA_TABLE_RANGE.start = startInput.value || null;
-    HIRA_TABLE_RANGE.end = endInput.value || null;
-    toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
-    renderHiraTable();
-  };
-  startInput.addEventListener('change', onCustomChange);
-  endInput.addEventListener('change', onCustomChange);
-})();
+// 진료행위 "데이터" 표 — 공통 표(setupPeriodTable, 수출 데이터 섹션)를 쓴다. 위 세 차트의 월/분기/연
+// 토글(HIRA_STATE.gran)을 따르고, 진료금액은 raw 단위(천원) 그대로 — 차트처럼 백만원으로 반올림하면
+// 엑셀에 붙여넣을 때 정밀도가 떨어지기 때문.
+var HIRA_TABLE = setupPeriodTable({
+  tableId: 'hira-table-wrap', toggleId: 'hira-range-toggle', startId: 'hira-range-start', endId: 'hira-range-end', copyId: 'hira-table-copy',
+  getMonthly: () => { const code = currentHiraCode(); return code && code.monthly; }, getGran: () => HIRA_STATE.gran,
+  cols: [
+    { key: 'amount', head: '진료금액(천원)', yoy: true },
+    { key: 'usage', head: '총사용량(건)', yoy: true },
+  ],
+});
+function renderHiraTable(){ HIRA_TABLE.render(); }
 
 async function loadHiraProcedureData(){
   try{
@@ -7120,6 +7054,7 @@ document.querySelectorAll('#hira-period-toggle button').forEach(b => {
     b.classList.add('active');
     HIRA_STATE.gran = b.dataset.gran;
     renderHiraCharts();
+    HIRA_TABLE.onGranChange();
   });
 });
 
@@ -8045,7 +7980,7 @@ function drawSnapshotExportCharts(cfgs){
     if(note) note.textContent = `월별 · 수출금액(달러, 막대) · YoY(%, 선) · ${displayFrom || ''}부터 표시`;
     snapExportChartInstances[cfg.key] = new Chart(canvas, {
       data: {
-        labels: agg.map(a => fmtPeriodLabel(a.label)),
+        labels: agg.map(a => fmtPeriodRow(a)),
         datasets: [
           { type: 'bar', label: `${cfg.label} 수출액($)`, data: agg.map(a => a.expDlr), backgroundColor: '#2563eb', yAxisID: 'y', order: 2 },
           { type: 'line', label: 'YoY(%)', data: yoy, borderColor: '#f59e0b', backgroundColor: '#f59e0b', yAxisID: 'y1', spanGaps: true, tension: 0.25, pointRadius: 2, order: 1 },
