@@ -572,7 +572,11 @@ tr:last-child td{border-bottom:none}
 .gw-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px}
 .gw-seg{display:flex; gap:4px; flex-wrap:wrap}
 .gw-grid{display:grid; grid-template-columns:1fr; gap:18px}
-.gw-grid h3{font-size:12.5px; margin:0 0 6px; color:var(--sub); font-weight:600}
+/* 표 제목 — 다른 탭 소제목처럼 크고 진하게 + 왼쪽 강조 바(2026-10-16) */
+.gw-grid h3{display:flex; align-items:baseline; flex-wrap:wrap; gap:6px; font-size:14.5px; margin:0 0 8px; color:var(--text); font-weight:800}
+.gw-grid h3::before{content:''; flex:none; width:4px; height:14px; background:var(--accent); border-radius:2px; align-self:center}
+.gw-more-btn{display:block; margin:8px auto 0; background:none; border:1px solid var(--border); color:var(--accent); font-weight:600; font-size:12px; padding:5px 16px; border-radius:6px; cursor:pointer}
+.gw-more-btn:hover{border-color:var(--accent)}
 .gw-table{font-size:12px; width:100%}
 .gw-table th, .gw-table td{padding:6px 8px; text-align:right; white-space:nowrap}
 .gw-table th{color:var(--dim); font-weight:600; font-size:10.5px; background:var(--bg2)}
@@ -592,6 +596,24 @@ tr:last-child td{border-bottom:none}
 .gw-stock-row.l3 td{background:rgba(220,38,38,.07)}
 .gw-stock-row.l3 td:first-child{box-shadow:inset 3px 0 0 #dc2626}
 .gw-legend{font-size:11px; color:var(--dim); margin-top:6px; line-height:1.7}
+/* 반전 후보(2026-10-16) — 랠리 지속(빨강)과 구분되게 청록 계열 */
+.gw-badge.rv-a{background:#0d9488; color:#fff}
+.gw-badge.rv-b{background:rgba(13,148,136,.16); color:var(--teal)}
+.gw-badge.rv-c{background:transparent; color:var(--teal); border:1px dashed var(--teal)}
+.gw-badge.fade{background:rgba(217,119,6,.14); color:#d97706}
+/* 최근 실적 발표 배지 — 색은 실적 서프라이즈 탭(Beat 초록·Miss 빨강·In-line 회색)과 같게 */
+.gw-badge.earn{background:transparent; border:1px solid currentColor}
+.gw-badge.earn.beat{color:#0F6E56} .gw-badge.earn.miss{color:#A32D2D} .gw-badge.earn.inline, .gw-badge.earn.none{color:var(--dim)}
+[data-theme="dark"] .gw-badge.earn.beat{color:#34d399} [data-theme="dark"] .gw-badge.earn.miss{color:#f87171}
+/* 52주 위치 — 저점(왼쪽)~고점(오른쪽) 사이 현재 위치 점 + 저점·고점 대비 % */
+.gw-table td.w52{min-width:150px}
+.w52-bar{position:relative; height:4px; width:120px; border-radius:2px; background:linear-gradient(90deg, rgba(37,99,235,.35), rgba(220,38,38,.35)); margin:4px 0 3px}
+.w52-bar span{position:absolute; top:50%; width:8px; height:8px; margin-left:-4px; transform:translateY(-50%); border-radius:50%; background:var(--text); border:1.5px solid var(--card)}
+.w52-t{font-size:10.5px; color:var(--dim); white-space:nowrap}
+.w52-t b{font-weight:700}
+.gw-conc-note{font-size:11.5px; color:var(--sub); margin-top:6px; padding:7px 10px; background:var(--bg2); border-radius:6px; line-height:1.6}
+.gw-stock-row.rv td{background:rgba(13,148,136,.06)}
+.gw-stock-row.rv td:first-child{box-shadow:inset 3px 0 0 #0d9488}
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
 #gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
 </style>
@@ -4614,7 +4636,8 @@ const GW_PERIODS = [
 const GW_TOP_N = 5;
 const GW_MIN_SECTOR_N = 3;
 const GW_STOCK_LIMIT = 20;
-const GW_STATE = { country:'ALL', weight:'cap', period:'5D', sector:null };
+// moreStocks/moreRev: 두 종목 표의 "더 보기"(20개 제한 해제) — 필터를 바꾸면 다시 접힌다(2026-10-16)
+const GW_STATE = { country:'ALL', weight:'cap', period:'5D', sector:null, moreStocks:false, moreRev:false };
 
 function gwHeatStyle(v, scale){
   if(v == null || isNaN(v)) return '';
@@ -4625,19 +4648,124 @@ function gwFmtPct(v){ return v == null || isNaN(v) ? '-' : (v >= 0 ? '+' : '') +
 // 기간별 색 진하기 기준(이 정도 수익률이면 가장 진한 색) — 기간이 길수록 크게
 const GW_HEAT_SCALE = {'1D':3, '5D':6, '1M':12, '3M':20, '6M':25, 'YTD':30, '1Y':35};
 
-function gwStockLevel(rt){
-  const p = k => rt[k] != null && rt[k] > 0;
+// 추세 등급 — 섹터·종목 모두 같은 기준(실제 수익률 플러스 여부, 2026-10-16 통일):
+//   3 = 5일·1개월·3개월 모두 플러스, 2 = 5일·1개월 플러스, 0 = 그 외.
+// 예전의 "5일만 플러스"(단기 반등/5일 반등) 등급은 뉴스 하루로도 생기는 약한 신호라 없앴다(사수 피드백) —
+// 장기 하락 후 돌아서는 의미 있는 반등은 아래 "반전 후보"가 따로 잡는다.
+// ret: 기간 키(d5/m1/m3)로 수익률(%)을 주는 객체(종목 returns 또는 섹터 바구니 수익률)
+function gwTrendLevel(ret){
+  const p = k => ret[k] != null && ret[k] > 0;
   if(p('d5') && p('m1') && p('m3')) return 3;
   if(p('d5') && p('m1')) return 2;
-  if(p('d5')) return 1;
   return 0;
 }
+function gwStockLevel(rt){ return gwTrendLevel(rt); }
 const GW_LEVEL_BADGE = {
   3: '<span class="gw-badge l3" title="5일·1개월·3개월 수익률 모두 플러스">5D→3M 지속</span>',
   2: '<span class="gw-badge l2" title="5일·1개월 수익률 플러스">5D→1M 지속</span>',
-  1: '<span class="gw-badge l1" title="5일만 플러스">단기 반등</span>',
   0: '',
 };
+// 바닥 반전(장기 하락 후 반전) — 종목·섹터 공통: 3개월·6개월·YTD·1년 모두 마이너스 + 1개월 플러스
+function gwBottomReversal(ret){
+  const has = k => ret[k] != null && !isNaN(ret[k]);
+  if(!['m1','m3','m6','ytd','y1'].every(has)) return false;
+  return ret.m3 < 0 && ret.m6 < 0 && ret.ytd < 0 && ret.y1 < 0 && ret.m1 > 0;
+}
+// 반전 신호가 떴는데 최근 5일이 이만큼 이상 빠졌으면 "되밀림" 경고 + 정렬 맨 뒤(제외하진 않음)
+const GW_FADE_D5 = -10;
+
+// ---- 반전 후보 (2026-10-16 사수 피드백) ----
+// 위 "눈여겨볼 종목"은 최근 상위 섹터 안에서 이어지는 랠리를 찾는다. 반대로 장기간 빠지던 종목이 돌아서는
+// 경우는 약한 섹터에 있어 거기엔 나올 수 없으므로, 전체 종목(국가·클릭한 섹터 필터는 따름)에서 따로 찾는다.
+//  A  바닥 반전  : 3개월·6개월·YTD·1년 모두 마이너스 + 1개월 플러스(반전 확인)
+//  A' 반전 초기  : 위 장기 조건 + 5일만 플러스(1개월은 아직) — 일시 반등일 수 있어 가장 낮은 등급
+//  B  단계적 개선 : 기간이 짧아질수록 수익률이 높아짐(예: YTD -40 → 6M -25 → 3M -8 → 1M +6) + 1개월 플러스.
+//                  짧은 기간 수익률이 더 높다 = 각 기간 시작 시점 주가가 갈수록 낮았다 = 꾸준히 빠지다 바닥을 지나는 모양.
+//                  YTD는 연초엔 1개월보다 짧아지므로 기간 길이(일수) 순으로 줄 세워 비교한다.
+// 정렬: 등급(A+B > A > B > A') → 돌아선 폭(1개월 − 6개월, 반전 초기는 5일 − 6개월)
+const GW_REV_LIMIT = 20;
+function gwReversalSignals(rt){
+  const has = k => rt[k] != null && !isNaN(rt[k]);
+  if(!['d5','m1','m3','m6','ytd','y1'].every(has)) return null;
+  const longNeg = rt.m3 < 0 && rt.m6 < 0 && rt.ytd < 0 && rt.y1 < 0;
+  const a = gwBottomReversal(rt);
+  const a0 = longNeg && !a && rt.d5 > 0;
+  const now = new Date();
+  const ytdDays = Math.round((now - new Date(now.getFullYear(), 0, 1)) / 86400000);
+  const chain = [['ytd', ytdDays], ['m6', 182], ['m3', 91], ['m1', 30]].sort((x, y) => y[1] - x[1]).map(x => rt[x[0]]);
+  const b = rt.m1 > 0 && chain.every((v, i) => i === 0 || v > chain[i - 1]);
+  if(!a && !a0 && !b) return null;
+  // 되밀림: 1개월 기준 반전(바닥 반전·단계적 개선)인데 최근 5일이 크게 빠짐 — 반등이 꺾였을 수 있음
+  const fade = (a || b) && rt.d5 <= GW_FADE_D5;
+  return { a, a0, b, fade, grade: a && b ? 4 : a ? 3 : b ? 2 : 1, turn: (a || b ? rt.m1 : rt.d5) - rt.m6 };
+}
+const GW_REV_BADGE = {
+  a:  '<span class="gw-badge rv-a" title="3개월·6개월·YTD·1년 모두 마이너스인데 1개월 플러스">바닥 반전</span>',
+  b:  '<span class="gw-badge rv-b" title="기간이 짧아질수록 수익률이 높아짐(YTD→6개월→3개월→1개월) + 1개월 플러스">단계적 개선</span>',
+  a0: '<span class="gw-badge rv-c" title="3개월·6개월·YTD·1년 모두 마이너스, 5일만 플러스(1개월은 아직 마이너스) — 일시 반등일 수 있음">반전 초기</span>',
+  fade: `<span class="gw-badge fade" title="1개월 기준으로는 반전인데 최근 5일 ${GW_FADE_D5}% 이하 — 반등이 꺾였을 수 있음">되밀림</span>`,
+};
+
+// ---- 52주 위치 (2026-10-16) — 반전 후보가 "지금 바닥에서 얼마나 올라왔고, 고점까지 얼마나 남았나" ----
+// stock_performance.json의 price_history(약 1년 일별 종가)로 계산. 표에는 열 하나로 레인지 바(저점~고점 사이
+// 현재 위치) + "저점 +42% · 고점 -78%"를 보여준다(열 두 개를 따로 두면 표가 너무 넓어져서).
+function gw52w(s){
+  const ph = s && s.price_history;
+  const c = ph && ph.close, d = ph && ph.dates;
+  if(!c || c.length < 60) return null; // 이력이 짧으면(신규 상장 등) 52주라고 하기 어려워 생략
+  let lo = 0, hi = 0;
+  c.forEach((v, i) => { if(v < c[lo]) lo = i; if(v > c[hi]) hi = i; });
+  const cur = c[c.length - 1];
+  return { fromLo: (cur / c[lo] - 1) * 100, fromHi: (cur / c[hi] - 1) * 100, loDate: d[lo], hiDate: d[hi],
+    pos: c[hi] > c[lo] ? (cur - c[lo]) / (c[hi] - c[lo]) : 0.5, from: d[0] };
+}
+function gw52wCell(s){
+  const w = gw52w(s);
+  if(!w) return '<td class="l note">-</td>';
+  const md = x => `${+x.slice(5, 7)}/${+x.slice(8)}`;
+  const tip = `52주 저점 ${w.loDate} 대비 ${gwFmtPct(w.fromLo)} · 52주 고점 ${w.hiDate} 대비 ${gwFmtPct(w.fromHi)} (${w.from}부터 종가 기준)`;
+  return `<td class="l w52" title="${escapeHtml(tip)}">
+    <div class="w52-bar"><span style="left:${(w.pos * 100).toFixed(0)}%"></span></div>
+    <div class="w52-t">저점 <b class="up">${gwFmtPct(w.fromLo)}</b>(${md(w.loDate)}) · 고점 <b class="down">${gwFmtPct(w.fromHi)}</b></div></td>`;
+}
+
+// ---- 최근 실적 발표 배지 (2026-10-16) — 실적 서프라이즈 탭과 같은 데이터·판정(±5%, 국내 영업이익·해외 EPS) ----
+// 최근 GW_EARN_DAYS일 안에 실적을 발표한 종목에만 붙는다. "실적이 좋아서 오른 건지"를 바로 구분하려는 용도.
+const GW_EARN_DAYS = 30;
+function gwEarningsBadge(ticker){
+  const e = SUP_DATA && SUP_DATA.stocks && SUP_DATA.stocks[ticker];
+  if(!e || !(e.quarters || []).length) return '';
+  const q = e.quarters.slice().sort((a, b) => (b.report_date || '').localeCompare(a.report_date || ''))[0];
+  if(!q.report_date) return '';
+  const days = (Date.now() - new Date(q.report_date + 'T00:00:00')) / 86400000;
+  if(days < 0 || days > GW_EARN_DAYS) return '';
+  const rule = e.market === 'KR' ? SUP_RULES.KR : SUP_RULES.GLOBAL;
+  const m = q[rule.metric] || {};
+  const cls = supClass(m.surprise, rule.band);
+  const md = `${+q.report_date.slice(5, 7)}/${+q.report_date.slice(8)}`;
+  const tip = `${md} 실적 발표 · ${rule.label} 컨센서스 대비 ${m.surprise == null ? '비교 불가' : gwFmtPct(m.surprise)}` +
+    (q.rev && q.rev.surprise != null ? ` · 매출 ${gwFmtPct(q.rev.surprise)}` : '') + ` · 판정 기준 ±${rule.band}%(실적 서프라이즈 탭과 동일)`;
+  const label = cls ? `실적 ${SUP_LABELS[cls]}${m.surprise != null ? ' ' + gwFmtPct(m.surprise) : ''}` : `실적 발표 ${md}`;
+  return `<span class="gw-badge earn ${cls || 'none'}" title="${escapeHtml(tip)}">${escapeHtml(label)}</span>`;
+}
+
+// 섹터 표 아래 "대장주 쏠림" 안내 한 줄 — 시총가중일 때, 시총 1위가 GW_LEADER_SHARE 이상인 섹터만.
+// 섹터 이름 옆에 일일이 붙이면 표가 어지러워서 한 줄로 모으고, 행에 마우스를 올리면 모든 섹터의 비중이 보인다.
+const GW_LEADER_SHARE = 0.5;
+function gwConcentrationNote(sectors){
+  if(GW_STATE.weight !== 'cap') return '';
+  const xs = sectors.filter(s => s.eligible && s.leaderShare >= GW_LEADER_SHARE).sort((a, b) => b.leaderShare - a.leaderShare);
+  if(!xs.length) return '';
+  return `<div class="gw-conc-note"><b>대장주 쏠림</b> · 시총 1위 비중 ${GW_LEADER_SHARE * 100}% 이상 섹터:
+    ${xs.map(s => `${escapeHtml(s.name)}(${escapeHtml(s.leader)} ${(s.leaderShare * 100).toFixed(0)}%)`).join(' · ')}
+    <span class="note">· 섹터 전반 흐름은 동일가중으로 확인</span></div>`;
+}
+
+// 종목 표 아래 "더 보기 / 접기" — 제한(20개)을 넘을 때만 보인다
+function gwMoreBtn(key, total, limit, open){
+  if(total <= limit) return '';
+  return `<button class="gw-more-btn" data-gw-more="${key}">${open ? '접기' : `더보기 (${total - limit}개 더)`}</button>`;
+}
 
 function gwRender(){
   const wrap = document.getElementById('gw-wrap');
@@ -4666,7 +4794,11 @@ function gwRender(){
   };
   const sectors = Object.entries(sectorMap).map(([name, rows]) => {
     const ret = {}; GW_PERIODS.forEach(p => ret[p.key] = agg(rows, p.rk));
-    return { name, rows, n: rows.length, ret, eligible: rows.length >= GW_MIN_SECTOR_N };
+    // 대장주 쏠림 — 시총 1위 종목의 섹터 내 비중. 높으면 시총가중 섹터 수익률 ≈ 대장주 주가(2026-10-16)
+    const capSum = rows.reduce((a, r) => a + r.mktcap, 0);
+    const leader = rows.reduce((a, r) => r.mktcap > a.mktcap ? r : a, rows[0]);
+    return { name, rows, n: rows.length, ret, eligible: rows.length >= GW_MIN_SECTOR_N,
+      leader: leader.name, leaderShare: capSum ? leader.mktcap / capSum : 0 };
   });
   // 기간별 순위(대상 섹터만)
   const rank = {};
@@ -4675,9 +4807,15 @@ function gwRender(){
     sectors.filter(s => s.eligible && s.ret[p.key] != null).sort((a,b) => b.ret[p.key] - a.ret[p.key])
       .forEach((s,i) => rank[p.key][s.name] = i + 1);
   });
-  const isTop = (s, k) => rank[k][s.name] != null && rank[k][s.name] <= GW_TOP_N;
+  // 상위(굵은 글씨·종목 목록용 섹터 선정) = 그 기간 상위 GW_TOP_N위 이면서 실제 수익률도 플러스.
+  // 순위만 보면 다 같이 빠지는 날(예: 대한민국 필터에서 11개 섹터 5일 전부 마이너스)엔 "덜 빠진 섹터"가
+  // 상위로 잡혔다(2026-10-16 사수 피드백).
+  const isTop = (s, k) => rank[k][s.name] != null && rank[k][s.name] <= GW_TOP_N && s.ret[k] > 0;
   sectors.forEach(s => {
-    s.persist = isTop(s,'5D') && isTop(s,'1M') && isTop(s,'3M') ? 3 : isTop(s,'5D') && isTop(s,'1M') ? 2 : 0;
+    // 추세 배지·반전 배지는 종목과 같은 기준(실제 플러스/마이너스)으로 통일 — 순위와 무관(2026-10-16)
+    const r = { d5: s.ret['5D'], m1: s.ret['1M'], m3: s.ret['3M'], m6: s.ret['6M'], ytd: s.ret['YTD'], y1: s.ret['1Y'] };
+    s.persist = gwTrendLevel(r);
+    s.reversal = gwBottomReversal(r);
   });
   const per = GW_STATE.period;
   sectors.sort((a,b) => (b.eligible - a.eligible) || ((b.ret[per] ?? -1e9) - (a.ret[per] ?? -1e9)));
@@ -4696,8 +4834,16 @@ function gwRender(){
       secs: (r.sectors || []).filter(x => pickedSectors.includes(x)) });
   }));
   stocks.sort((a,b) => (b.level - a.level) || ((b.s.returns[perRk] ?? -1e9) - (a.s.returns[perRk] ?? -1e9)));
-  const shownStocks = stocks.slice(0, GW_STOCK_LIMIT);
+  const shownStocks = GW_STATE.moreStocks ? stocks : stocks.slice(0, GW_STOCK_LIMIT);
   const strongCnt = stocks.filter(x => x.level === 3).length;
+
+  // 반전 후보 — 전체 유니버스(국가 필터, 클릭한 섹터가 있으면 그 섹터만)
+  const revPool = GW_STATE.sector ? (sectorMap[GW_STATE.sector] || []) : universe;
+  const revAll = revPool.map(r => ({ r, s: byName[r.name], sig: gwReversalSignals(byName[r.name].returns) }))
+    .filter(x => x.sig)
+    .sort((a, b) => (a.sig.fade - b.sig.fade) || (b.sig.grade - a.sig.grade) || (b.sig.turn - a.sig.turn)); // 되밀림은 맨 뒤
+  const revShown = GW_STATE.moreRev ? revAll : revAll.slice(0, GW_REV_LIMIT);
+  const revCnt = k => revAll.filter(x => x.sig[k]).length;
 
   const seg = (items, cur, attr) => `<div class="gw-seg">${items.map(([k,l]) =>
     `<button class="gd-tab-btn ${k===cur?'active':''}" ${attr}="${escapeHtml(k)}">${escapeHtml(l)}</button>`).join('')}</div>`;
@@ -4719,17 +4865,19 @@ function gwRender(){
             ${GW_PERIODS.map(p => `<th class="${p.key===per?'sel':''}">${p.label}</th>`).join('')}<th class="l">추세</th></tr></thead>
           <tbody>${sectors.map(s => `
             <tr class="gw-sector-row ${s.eligible?'':'dim'} ${GW_STATE.sector===s.name?'picked':''}" data-gw-sector="${escapeHtml(s.name)}"
-                title="${s.eligible ? '' : `종목 ${GW_MIN_SECTOR_N}개 미만 — 순위 제외`}">
+                title="${s.eligible ? '' : `종목 ${GW_MIN_SECTOR_N}개 미만 — 순위 제외 · `}시총 1위 ${escapeHtml(s.leader)} 비중 ${(s.leaderShare * 100).toFixed(0)}%">
               <td class="l">${s.eligible ? (rank[per][s.name] ?? '-') : '-'}</td>
               <td class="l">${escapeHtml(s.name)}</td><td>${s.n}</td>
               ${GW_PERIODS.map(p => `<td class="heat ${s.eligible && isTop(s,p.key)?'top':''}" style="${gwHeatStyle(s.ret[p.key], GW_HEAT_SCALE[p.key])}">${gwFmtPct(s.ret[p.key])}</td>`).join('')}
-              <td class="l">${s.eligible ? persistBadge(s.persist) : ''}</td>
+              <td class="l">${s.eligible ? persistBadge(s.persist) + (s.reversal ? '<span class="gw-badge rv-a" title="3개월·6개월·YTD·1년 모두 마이너스인데 1개월 플러스(종목의 바닥 반전과 같은 기준)">바닥 반전</span>' : '') : ''}</td>
             </tr>`).join('')}</tbody>
         </table></div>
-        <div class="gw-legend">굵은 글씨 = 그 기간 상위 ${GW_TOP_N}위 · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 모두 상위 ${GW_TOP_N}위 · <span class="gw-badge l3">5D→3M 지속</span> 3개월까지 상위 ${GW_TOP_N}위 · 섹터 수익률 ${GW_STATE.weight==='cap'?'시총가중(섹터 바구니 수익률)':'동일가중(단순 평균)'} · 한 기업이 여러 세부섹터에 속하면 각 섹터에 모두 포함</div>
+        <div class="gw-legend">굵은 글씨 = 그 기간 상위 ${GW_TOP_N}위이면서 플러스 · <span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 모두 플러스 · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <span class="gw-badge rv-a">바닥 반전</span> 3개월·6개월·YTD·1년 모두 마이너스인데 1개월 플러스 (배지는 아래 종목 표와 같은 기준 — 순위와 무관) · 섹터 수익률 ${GW_STATE.weight==='cap'?'시총가중(섹터 바구니 수익률)':'동일가중(단순 평균)'} · 한 기업이 여러 세부섹터에 속하면 각 섹터에 모두 포함</div>
+        ${gwConcentrationNote(sectors)}
       </div>
       <div>
-        <h3>눈여겨볼 종목 — ${GW_STATE.sector ? `${escapeHtml(GW_STATE.sector)} <a class="gd-reset-link" id="gw-clear-sector">상위 섹터로 돌아가기</a>` : `${GW_PERIODS.find(p=>p.key===per).label} 상위 ${GW_TOP_N}개 섹터 (${pickedSectors.map(escapeHtml).join(', ')})`}
+        <h3>눈여겨볼 종목 — ${GW_STATE.sector ? `${escapeHtml(GW_STATE.sector)} <a class="gd-reset-link" id="gw-clear-sector">상위 섹터로 돌아가기</a>` : pickedSectors.length ? `${GW_PERIODS.find(p=>p.key===per).label} 상위 섹터(${pickedSectors.map(escapeHtml).join(', ')}) 소속 종목`
+            : `${GW_PERIODS.find(p=>p.key===per).label} 수익률이 플러스인 섹터 없음 <span class="note" style="font-weight:400">· 위 섹터 행을 클릭해 개별로 보거나 아래 반전 후보 참고</span>`}
           <span class="note" style="font-weight:400">· ${stocks.length}개 중 ${shownStocks.length}개 표시 · 5D→3M 지속 ${strongCnt}개</span></h3>
         <div class="gd-table-scroll"><table class="gw-table">
           <thead><tr><th class="l">종목</th><th class="l">세부섹터</th><th class="l">국가</th><th>시총(십억원)</th>
@@ -4742,22 +4890,49 @@ function gwRender(){
               <td class="l gd-country-badge">${escapeHtml(x.r.country)}</td>
               <td>${capB(x.r)}</td>
               ${GW_PERIODS.map(p => `<td class="heat" style="${gwHeatStyle(x.s.returns[p.rk], GW_HEAT_SCALE[p.key])}">${gwFmtPct(x.s.returns[p.rk])}</td>`).join('')}
-              <td class="l">${GW_LEVEL_BADGE[x.level]}</td>
+              <td class="l">${GW_LEVEL_BADGE[x.level]}${gwEarningsBadge(x.s.ticker)}</td>
             </tr>`).join('') : `<tr><td colspan="${5 + GW_PERIODS.length}" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
         </table></div>
-        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <span class="gw-badge l1">단기 반등</span> 5일만 플러스 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 뉴스 검색</div>
+        ${gwMoreBtn('stocks', stocks.length, GW_STOCK_LIMIT, GW_STATE.moreStocks)}
+        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · 섹터는 기준 기간 상위 ${GW_TOP_N}위이면서 섹터 수익률이 플러스인 곳, 종목은 그 섹터의 전 종목 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
+      </div>
+      <div>
+        <h3>반전 후보 — ${GW_STATE.sector ? escapeHtml(GW_STATE.sector) : '전체 종목'}
+          <span class="note" style="font-weight:400">· 장기 하락 후 최근 돌아서는 종목 · ${revAll.length}개 중 ${revShown.length}개 표시 · 바닥 반전 ${revCnt('a')} · 단계적 개선 ${revCnt('b')} · 반전 초기 ${revCnt('a0')} · 되밀림 ${revCnt('fade')}(맨 뒤)</span></h3>
+        <div class="gd-table-scroll"><table class="gw-table">
+          <thead><tr><th class="l">종목</th><th class="l">세부섹터</th><th class="l">국가</th><th>시총(십억원)</th>
+            ${GW_PERIODS.map(p => `<th>${p.label}</th>`).join('')}
+            <th class="l" title="1년 종가 기준 — 막대는 52주 저점(왼쪽)~고점(오른쪽) 사이 현재 위치">52주 위치</th><th class="l">신호</th></tr></thead>
+          <tbody>${revShown.length ? revShown.map(x => `
+            <tr class="gw-stock-row ${x.sig.grade >= 3 && !x.sig.fade ? 'rv' : ''}" title="종가 기준일 ${x.s.as_of || '-'}">
+              <td class="l">${companyNameLinkHtml(x.s.ticker, x.r.name)}</td>
+              <td class="l gd-sector-tag">${escapeHtml((x.r.sectors || []).join(', '))}</td>
+              <td class="l gd-country-badge">${escapeHtml(x.r.country)}</td>
+              <td>${capB(x.r)}</td>
+              ${GW_PERIODS.map(p => `<td class="heat" style="${gwHeatStyle(x.s.returns[p.rk], GW_HEAT_SCALE[p.key])}">${gwFmtPct(x.s.returns[p.rk])}</td>`).join('')}
+              ${gw52wCell(x.s)}
+              <td class="l">${['a','b','a0','fade'].filter(k => x.sig[k]).map(k => GW_REV_BADGE[k]).join('')}${gwEarningsBadge(x.s.ticker)}</td>
+            </tr>`).join('') : `<tr><td colspan="${6 + GW_PERIODS.length}" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
+        </table></div>
+        ${gwMoreBtn('rev', revAll.length, GW_REV_LIMIT, GW_STATE.moreRev)}
+        <div class="gw-legend"><span class="gw-badge rv-a">바닥 반전</span> 3개월·6개월·YTD·1년 모두 마이너스인데 1개월 플러스 · <span class="gw-badge rv-b">단계적 개선</span> 기간이 짧아질수록 수익률이 높아짐(YTD→6개월→3개월→1개월, 꾸준히 빠지다 바닥을 지나는 모양) + 1개월 플러스 · <span class="gw-badge rv-c">반전 초기</span> 장기 모두 마이너스, 5일만 플러스(일시 반등일 수 있음) · <span class="gw-badge fade">되밀림</span> 1개월 기준 반전인데 최근 5일 ${GW_FADE_D5}% 이하(맨 뒤로 정렬) · 정렬: 신호 등급 → 돌아선 폭(1개월 − 6개월) · 위 섹터 표의 행을 클릭하면 그 섹터 안에서만 찾음 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
       </div>
     </div>`;
 
-  wrap.querySelectorAll('[data-gw-period]').forEach(b => b.onclick = () => { GW_STATE.period = b.dataset.gwPeriod; gwRender(); });
-  wrap.querySelectorAll('[data-gw-country]').forEach(b => b.onclick = () => { GW_STATE.country = b.dataset.gwCountry; GW_STATE.sector = null; gwRender(); });
+  const collapse = () => { GW_STATE.moreStocks = false; GW_STATE.moreRev = false; };
+  wrap.querySelectorAll('[data-gw-more]').forEach(b => b.onclick = () => {
+    const k = b.dataset.gwMore === 'stocks' ? 'moreStocks' : 'moreRev';
+    GW_STATE[k] = !GW_STATE[k]; gwRender();
+  });
+  wrap.querySelectorAll('[data-gw-period]').forEach(b => b.onclick = () => { GW_STATE.period = b.dataset.gwPeriod; collapse(); gwRender(); });
+  wrap.querySelectorAll('[data-gw-country]').forEach(b => b.onclick = () => { GW_STATE.country = b.dataset.gwCountry; GW_STATE.sector = null; collapse(); gwRender(); });
   wrap.querySelectorAll('[data-gw-weight]').forEach(b => b.onclick = () => { GW_STATE.weight = b.dataset.gwWeight; gwRender(); });
   wrap.querySelectorAll('[data-gw-sector]').forEach(tr => tr.onclick = () => {
     const sec = tr.dataset.gwSector;
-    GW_STATE.sector = GW_STATE.sector === sec ? null : sec; gwRender();
+    GW_STATE.sector = GW_STATE.sector === sec ? null : sec; collapse(); gwRender();
   });
   const clr = document.getElementById('gw-clear-sector');
-  if(clr) clr.onclick = () => { GW_STATE.sector = null; gwRender(); };
+  if(clr) clr.onclick = () => { GW_STATE.sector = null; collapse(); gwRender(); };
 }
 
 // 다른 탭들의 각종 로더가 완료될 때마다 방어적으로 호출하는 기존 관례
@@ -9531,6 +9706,7 @@ async function loadEarningsSurprise(){
     if(note) note.textContent = `출처: WiseReport(국내) · Yahoo Finance(해외) · ${updatedLabel(SUP_DATA.updated)}`;
     populateSupSectorFilter();
     renderSurprise();
+    gwRender(); // 글로벌 Watch List의 "최근 실적 발표" 배지도 이 데이터를 쓴다(주가 데이터보다 늦게 올 수 있음)
   }catch(e){
     SUP_DATA = null;
     const wrap = document.getElementById('sup-table-wrap');
