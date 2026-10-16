@@ -8,8 +8,8 @@
 - 요약 재료: 매일 요약은 제목 + 기사 첫머리 소개글(desc, RSS)을 쓰는데 소개글은 아카이브에 남지 않는다.
   · 기사 링크가 언론사 원문이면 페이지의 소개글(meta og:description/description)을 다시 읽어 평소처럼 요약.
   · 해외 기사 대부분은 구글 뉴스 중계 링크(news.google.com)라 원문 주소를 안정적으로 풀 수 없어
-    제목만으로 요약한다(사용자 결정 — 비워두는 것보다 낫다). 이 경우 summary_src="title"로 표시해
-    화면에서 "제목 기반 요약"임을 알린다.
+    제목만으로 요약한다(사용자 결정 — 비워두는 것보다 낫다). 이 경우 데이터에 summary_src="title"을 남긴다
+    (기록용 — 화면 표시는 하지 않음: 매일 요약도 구글 뉴스 기사는 소개글이 제목 반복이라 사실상 같은 수준).
 - 요약·맥락 태그는 매일 요약과 같은 함수(summarize_domestic/summarize_global)·같은 지시문으로 만든다.
   "단순 주가 등락" 기사로 판정되면 매일 요약처럼 아카이브에서 뺀다.
 - Gemini 키: GEMINI_API_KEY_CONCALL → GEMINI_API_KEY_EARNINGS → GEMINI_API_KEY(매일 뉴스용 키는 마지막).
