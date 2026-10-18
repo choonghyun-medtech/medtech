@@ -1000,12 +1000,20 @@ tr:last-child td{border-bottom:none}
     <!-- ---- 의료관광 데이터 ---- -->
     <div id="industry-sub-medtour" style="display:none">
     <div class="sec-h"><h2>방한 외국인 · 의료관광객 데이터</h2><span class="note">한국관광 데이터랩 · 신한카드 외국인 카드소비 · 실데이터 연동</span></div>
+    <!-- 요약 카드 월/분기/연 토글(2026-10-19) — 아래 차트 토글들과 따로 움직인다(카드가 여러 섹션 요약이라) -->
+    <div class="sec-h" style="margin:0 0 6px">
+      <h2 style="font-size:12px; color:var(--dim); font-weight:600">최근 실적 요약</h2>
+      <div class="toggle" id="medtour-overview-period-toggle">
+        <button data-gran="month" class="active">월</button><button data-gran="quarter">분기</button><button data-gran="year">연</button>
+      </div>
+    </div>
     <div class="cards" id="medtour-overview-cards">
       <div class="stat-card" id="medtour-visitors-card"></div>
       <div class="stat-card" id="medtour-derma-cnt-card"></div>
       <div class="stat-card" id="medtour-derma-amt-card"></div>
       <div class="stat-card" id="medtour-derma-ratio-card"></div>
     </div>
+    <div id="medtour-overview-partial-note"></div>
 
     <div class="medtour-group-h">의료관광객 소비 데이터</div>
     <div class="tabs" id="medtour-section-tabs" style="border-bottom:none; padding-bottom:0; margin-bottom:8px"></div>
@@ -5733,16 +5741,70 @@ function renderExportStatCards(){
     wrap.innerHTML = '<div class="note" style="padding:4px 2px">아직 이 범위(선택한 국가·지역)의 데이터가 수집되지 않았습니다 — 하위 탭 구조만 우선 만든 상태입니다.</div>';
     return;
   }
-  const m = monthly;
-  const last = m[m.length - 1];
-  const prev = m.length > 1 ? m[m.length - 2] : null;
-  const yoyRow = m.find(x => x.ym === ymMinusYear(last.ym));
-  const momPct = prev && prev.expDlr ? (last.expDlr - prev.expDlr) / prev.expDlr * 100 : null;
-  const yoyPct = yoyRow && yoyRow.expDlr ? (last.expDlr - yoyRow.expDlr) / yoyRow.expDlr * 100 : null;
+  // 카드도 바로 아래 차트의 월/분기/연 토글(EXPORT_STATE.gran)을 따른다(2026-10-19).
+  // 둘째 카드: 월 = 전월 대비(MoM), 분기 = 전분기 대비(QoQ, 진행 중 분기면 생략),
+  // 연 = 직전 완결 연도 수출액(첫 카드가 진행 중인 올해 누적이라 둘 다 보이게 — 표와 같은 방식).
+  const gran = EXPORT_STATE.gran;
+  const agg = aggregateMonthlyRows(monthly, gran, ['expDlr']);
+  const i = agg.length - 1;
+  const cur = periodCardCompare(agg, i, gran);
+  const yoyHtml = c => {
+    const v = cardPct(c.p.expDlr, c.yoyBase && c.yoyBase.expDlr);
+    return v != null ? `<div class="delta ${v >= 0 ? 'up' : 'down'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(v).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>';
+  };
+  let second;
+  if(gran === 'year'){
+    let j = i - 1;
+    while(j >= 0 && agg[j].partial) j--;
+    const prevY = j >= 0 ? periodCardCompare(agg, j, gran) : null;
+    second = prevY
+      ? `<div class="stat-card"><div class="lbl">${periodCardLabel(prevY.p, gran)} 수출액</div><div class="val">${exportAmountDisplay(prevY.p.expDlr)}</div>${yoyHtml(prevY)}</div>`
+      : '';
+  }else{
+    const word = gran === 'quarter' ? ['전분기 대비', 'QoQ'] : ['전월 대비', 'MoM'];
+    const pop = cardPct(cur.p.expDlr, cur.popBase && cur.popBase.expDlr);
+    second = `<div class="stat-card"><div class="lbl">${word[0]}</div><div class="val">${pop != null ? (pop >= 0 ? '+' : '') + pop.toFixed(1) + '%' : 'N/A'}</div><div class="delta">${cur.p.partial ? `진행 중 분기 — 완결 후 ${word[1]}` : word[1]}</div></div>`;
+  }
   wrap.innerHTML = `
-    <div class="stat-card"><div class="lbl">${last.ym} 수출액</div><div class="val">${exportAmountDisplay(last.expDlr)}</div>${yoyPct != null ? `<div class="delta ${yoyPct >= 0 ? 'up' : 'down'}">${yoyPct >= 0 ? '▲' : '▼'} ${Math.abs(yoyPct).toFixed(1)}% YoY</div>` : '<div class="delta">YoY 비교 불가</div>'}</div>
-    <div class="stat-card"><div class="lbl">전월 대비</div><div class="val">${momPct != null ? (momPct >= 0 ? '+' : '') + momPct.toFixed(1) + '%' : 'N/A'}</div><div class="delta">MoM</div></div>
-  `;
+    <div class="stat-card"><div class="lbl">${periodCardLabel(cur.p, gran)} 수출액</div><div class="val">${exportAmountDisplay(cur.p.expDlr)}</div>${yoyHtml(cur)}</div>
+    ${second}
+  ` + periodCardPartialNote([cur.p]);
+}
+
+// ---- 상단 요약 카드 공통(2026-10-19) — 수출/의료관광 카드가 월/분기/연 단위로 숫자를 보여주게 ----
+// agg = aggregateMonthlyRows() 결과. i번째 구간의 YoY 기준(yoyBase)과 직전 구간 기준(popBase, MoM/QoQ)을
+// 값 객체로 돌려준다. 진행 중 구간(partial)은 표와 같이 YoY를 전년 같은 달끼리 비교하고, MoM/QoQ는
+// 덜 찬 구간을 꽉 찬 구간과 비교하게 되므로 생략한다. 연 단위는 YoY가 곧 직전 구간 대비라 popBase 없음.
+function periodCardCompare(agg, i, gran){
+  const p = agg[i];
+  const keys = Object.keys(p).filter(k => !['label', 'months', 'partial'].includes(k));
+  let yoyBase = null;
+  if(p.partial){
+    yoyBase = {};
+    for(const k of keys){
+      const s = samePrevMonthsSum(agg, p.months, k);
+      if(s == null){ yoyBase = null; break; }
+      yoyBase[k] = s;
+    }
+  }else{
+    const prevLabel = prevYearLabel(p.label, gran);
+    yoyBase = agg.find(a => a.label === prevLabel) || null;
+  }
+  const popBase = gran !== 'year' && !p.partial && i > 0 && !agg[i - 1].partial ? agg[i - 1] : null;
+  return { p, yoyBase, popBase };
+}
+function cardPct(cur, base){ return cur != null && base ? (cur - base) / base * 100 : null; }
+// 카드 라벨용 기간 — 월 "2026-09", 분기 "3Q26", 진행 중이면 "3Q26, 7~8월"
+function periodCardLabel(p, gran){
+  const base = fmtPeriodLabel(p.label);
+  if(gran === 'month' || !p.partial) return base;
+  const ms = p.months.map(m => +m.slice(5));
+  return `${base}, ${ms.length > 1 ? `${ms[0]}~${ms[ms.length - 1]}월` : `${ms[0]}월`}`;
+}
+// 카드 아래 안내 — 진행 중 구간이 하나라도 있으면(.cards 그리드 한 줄 전체를 차지)
+function periodCardPartialNote(periods){
+  return periods.some(p => p && p.partial)
+    ? `<div class="note" style="grid-column:1/-1; font-size:10.5px; margin:-2px 0 8px">진행 중인 구간은 발표된 달까지만 합산 — YoY는 전년 같은 달끼리 비교한 값입니다.</div>` : '';
 }
 
 // "YYYY-MM" 문자열에 개월수를 더한(음수면 뺀) "YYYY-MM"을 반환.
@@ -6046,6 +6108,7 @@ document.querySelectorAll('#export-period-toggle button').forEach(b => {
     document.querySelectorAll('#export-period-toggle button').forEach(x => x.classList.remove('active'));
     b.classList.add('active');
     EXPORT_STATE.gran = b.dataset.gran;
+    renderExportStatCards(); // 위 요약 카드도 같은 단위로(2026-10-19)
     renderExportChart();
     EXPORT_TABLE.onGranChange(); // 아래 데이터 표도 같은 단위로(2026-10-16)
   });
@@ -6092,7 +6155,7 @@ async function loadExportData(){
 let MEDICAL_TOUR_DATA = { tabs: [] };
 // section: 'all'(의료소비 전체) / 'derma'(피부과) — 피부과는 국가 탭을 별도로
 // 유지한다(2026-08-31, 피부과 전용 탭 신설 요청).
-const MEDTOUR_STATE = { tab: 'all', section: 'all', dermaTab: 'all', trendGran: 'month', dermaTrendGran: 'month' };
+const MEDTOUR_STATE = { tab: 'all', section: 'all', dermaTab: 'all', trendGran: 'month', dermaTrendGran: 'month', overviewGran: 'month' };
 let medTourAmtChartInstance = null;
 let medTourCntChartInstance = null;
 let medTourAspChartInstance = null;
@@ -6236,20 +6299,6 @@ function renderMedtourDermaTabs(){
 // 2026-09-02). 카드는 사용자가 선택한 국가 탭(MEDTOUR_STATE.tab)과 무관하게 항상
 // "전체"(natCd 000) 기준 스냅샷을 보여준다 — 페이지 최상단 요약이라 탭 전환에 따라
 // 흔들리면 안 되기 때문.
-function medtourMoM(rows, key){
-  if(!rows.length) return null;
-  const last = rows[rows.length - 1];
-  const prev = rows.length > 1 ? rows[rows.length - 2] : null;
-  if(!prev || !prev[key] || last[key] == null) return null;
-  return (last[key] - prev[key]) / prev[key] * 100;
-}
-function medtourYoY(rows, key){
-  if(!rows.length) return null;
-  const last = rows[rows.length - 1];
-  const yoy = rows.find(r => r.ym === ymMinusYear(last.ym));
-  if(!yoy || !yoy[key] || last[key] == null) return null;
-  return (last[key] - yoy[key]) / yoy[key] * 100;
-}
 function medtourDeltaHtml(pct, suffix){
   if(pct == null) return '';
   return `<div class="delta ${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(1)}${suffix}</div>`;
@@ -6262,14 +6311,31 @@ function renderMedtourOverviewCards(){
   const dermaRatioCard = document.getElementById('medtour-derma-ratio-card');
   if(!visitorsCard || !dermaCntCard || !dermaAmtCard || !dermaRatioCard) return;
 
+  // 월/분기/연 토글(medtour-overview-period-toggle, 2026-10-19) — 분기·연이면 그 구간 합계와
+  // 전년 동기 대비(YoY), 분기는 직전 분기 대비(QoQ)까지. 진행 중 구간은 periodCardCompare() 참고.
+  const gran = MEDTOUR_STATE.overviewGran;
+  const popWord = gran === 'quarter' ? 'QoQ' : 'MoM';
+  const shown = []; // 진행 중 구간 안내용
+  const deltas = (c, key) => {
+    const yoy = cardPct(c.p[key], c.yoyBase && c.yoyBase[key]);
+    const pop = cardPct(c.p[key], c.popBase && c.popBase[key]);
+    return medtourDeltaHtml(yoy, '% YoY') + medtourDeltaHtml(pop, `% ${popWord}`);
+  };
+  const latest = (monthly, keys) => {
+    const agg = aggregateMonthlyRows(monthly, gran, keys);
+    if(!agg.length) return null;
+    const c = periodCardCompare(agg, agg.length - 1, gran);
+    shown.push(c.p);
+    return c;
+  };
+
   const vm = VISITOR_STATS_DATA.monthly || [];
-  if(vm.length){
-    const last = vm[vm.length - 1];
+  const vc = vm.length ? latest(vm, ['visitors']) : null;
+  if(vc){
     visitorsCard.innerHTML = `
-      <div class="lbl">방한객(${last.ym})</div>
-      <div class="val">${fmtManmyeong(last.visitors)}</div>
-      ${medtourDeltaHtml(medtourYoY(vm, 'visitors'), '% YoY')}
-      ${medtourDeltaHtml(medtourMoM(vm, 'visitors'), '% MoM')}
+      <div class="lbl">방한객(${periodCardLabel(vc.p, gran)})</div>
+      <div class="val">${fmtManmyeong(vc.p.visitors)}</div>
+      ${deltas(vc, 'visitors')}
     `;
   }else{
     visitorsCard.innerHTML = `<div class="lbl">방한객</div><div class="val">-</div>`;
@@ -6277,48 +6343,62 @@ function renderMedtourOverviewCards(){
 
   const allTab = (MEDICAL_TOUR_DATA.tabs || []).find(t => t.key === 'all');
   const dermaRows = buildMedtourDermaRows(allTab); // {ym, amt(원 단위), cnt}[]
-  if(dermaRows.length){
-    const lastRow = dermaRows[dermaRows.length - 1];
+  const dc = dermaRows.length ? latest(dermaRows, ['amt', 'cnt']) : null;
+  if(dc){
+    const lbl = periodCardLabel(dc.p, gran);
     dermaCntCard.innerHTML = `
-      <div class="lbl">피부과 소비건수(${lastRow.ym})</div>
-      <div class="val">${fmtCnt(lastRow.cnt)}</div>
-      ${medtourDeltaHtml(medtourYoY(dermaRows, 'cnt'), '% YoY')}
-      ${medtourDeltaHtml(medtourMoM(dermaRows, 'cnt'), '% MoM')}
+      <div class="lbl">피부과 소비건수(${lbl})</div>
+      <div class="val">${dc.p.cnt == null ? '-' : fmtCnt(dc.p.cnt)}</div>
+      ${deltas(dc, 'cnt')}
     `;
     dermaAmtCard.innerHTML = `
-      <div class="lbl">피부과 소비액(${lastRow.ym})</div>
-      <div class="val">${lastRow.amt == null ? '-' : fmtMillionWonRounded(lastRow.amt / 1000)}</div>
-      ${medtourDeltaHtml(medtourYoY(dermaRows, 'amt'), '% YoY')}
-      ${medtourDeltaHtml(medtourMoM(dermaRows, 'amt'), '% MoM')}
+      <div class="lbl">피부과 소비액(${lbl})</div>
+      <div class="val">${dc.p.amt == null ? '-' : fmtMillionWonRounded(dc.p.amt / 1000)}</div>
+      ${deltas(dc, 'amt')}
     `;
   }else{
     dermaCntCard.innerHTML = `<div class="lbl">피부과 소비건수</div><div class="val">-</div>`;
     dermaAmtCard.innerHTML = `<div class="lbl">피부과 소비액</div><div class="val">-</div>`;
   }
 
-  // 피부과 소비액 비중(= 전체 의료소비액 중 피부과 비중) — deptAmt의 ratio 필드(이미 %로
-  // 계산돼 내려옴)를 그대로 쓴다.
-  // 이미 %인 값의 증감이라 YoY/MoM은 상대변화율(%)이 아니라 %p(퍼센트포인트) 차이로 표시.
-  const ratioRows = ((allTab && allTab.deptAmt) || [])
-    .filter(r => r.dept === '피부과')
-    .map(r => ({ ym: r.ym, ratio: r.ratio }))
-    .sort((a, b) => a.ym.localeCompare(b.ym));
-  if(ratioRows.length){
-    const last = ratioRows[ratioRows.length - 1];
-    const prevMoM = ratioRows.length > 1 ? ratioRows[ratioRows.length - 2] : null;
-    const prevYoY = ratioRows.find(r => r.ym === ymMinusYear(last.ym));
-    const momPp = prevMoM && prevMoM.ratio != null && last.ratio != null ? last.ratio - prevMoM.ratio : null;
-    const yoyPp = prevYoY && prevYoY.ratio != null && last.ratio != null ? last.ratio - prevYoY.ratio : null;
+  // 피부과 소비액 비중(= 전체 의료소비액 중 피부과 비중). 월이면 deptAmt의 ratio와 같은 값이고,
+  // 분기·연은 비율을 평균내지 않고 "구간 피부과 소비액 합 ÷ 구간 전체 진료과목 소비액 합"으로 다시 계산.
+  // 이미 %인 값의 증감이라 YoY/MoM·QoQ는 상대변화율(%)이 아니라 %p(퍼센트포인트) 차이로 표시.
+  const deptByYm = new Map();
+  ((allTab && allTab.deptAmt) || []).forEach(r => {
+    const acc = deptByYm.get(r.ym) || { ym: r.ym, derma: 0, total: 0 };
+    if(r.dept === '피부과') acc.derma += r.amt || 0;
+    acc.total += r.amt || 0;
+    deptByYm.set(r.ym, acc);
+  });
+  const ratioRows = [...deptByYm.values()].sort((a, b) => a.ym.localeCompare(b.ym));
+  const rc = ratioRows.length ? latest(ratioRows, ['derma', 'total']) : null;
+  if(rc){
+    const ratioOf = v => v && v.total ? v.derma / v.total * 100 : null;
+    const cur = ratioOf(rc.p);
+    const pp = base => { const b = ratioOf(base); return cur != null && b != null ? cur - b : null; };
+    rc.p.ratio = cur;
     dermaRatioCard.innerHTML = `
-      <div class="lbl">피부과 소비액 비중(${last.ym})</div>
-      <div class="val">${last.ratio == null ? '-' : last.ratio.toFixed(1) + '%'}</div>
-      ${medtourDeltaHtml(yoyPp, '%p YoY')}
-      ${medtourDeltaHtml(momPp, '%p MoM')}
+      <div class="lbl">피부과 소비액 비중(${periodCardLabel(rc.p, gran)})</div>
+      <div class="val">${cur == null ? '-' : cur.toFixed(1) + '%'}</div>
+      ${medtourDeltaHtml(pp(rc.yoyBase), '%p YoY')}
+      ${medtourDeltaHtml(pp(rc.popBase), `%p ${popWord}`)}
     `;
   }else{
     dermaRatioCard.innerHTML = `<div class="lbl">피부과 소비액 비중</div><div class="val">-</div>`;
   }
+
+  const noteEl = document.getElementById('medtour-overview-partial-note');
+  if(noteEl) noteEl.innerHTML = periodCardPartialNote(shown);
 }
+document.querySelectorAll('#medtour-overview-period-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#medtour-overview-period-toggle button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    MEDTOUR_STATE.overviewGran = b.dataset.gran;
+    renderMedtourOverviewCards();
+  });
+});
 
 function renderMedtourTrendChart(){
   if(medTourAmtChartInstance){ medTourAmtChartInstance.destroy(); medTourAmtChartInstance = null; }
