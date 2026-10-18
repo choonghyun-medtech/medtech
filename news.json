@@ -1,45 +1,45 @@
 {
  "updated": "2026-10-18T22:30:37Z",
- "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료)",
+ "source": "네이버 뉴스검색 API(국내, 자동) + medtech/헬스케어/로보틱스 매체 RSS(해외, 자동) · 뉴스클리핑 가이드라인 카테고리 기준 + Google 뉴스 검색(site: 검색 기반, md 가이드라인 방식, 무료) · 요약: Gemini 자동 생성",
  "domestic": [
   {
    "cat": "디지털헬스",
    "items": [
     {
      "co": "씨어스, 메쥬",
-     "ctx": "뉴스",
+     "ctx": "투자유치",
      "t": "[기획] 스타트업 기술에 제약사 영업망…디지털헬스 상용화 공식",
      "src": "medipana.com",
      "date": "2026-10-19",
      "url": "https://www.medipana.com/news/articleView.html?idxno=419474",
-     "desc": "씨어스, 자산 웃도는 CB 조달 추진…해외 투자 본격화 16일 금융감독원 전자공시시스템에 따르면 웨어러블 의료기기 기업 씨어스는 지난 13일 1100억원 규모 사모 전환사채(CB) 발행을 결정했다. 2024년 코스닥 상장 이후 첫..."
+     "summary": "씨어스가 해외 투자를 본격화하기 위해 1100억 원 규모의 사모 전환사채 발행을 결정했음."
     },
     {
      "co": "카카오헬스케어",
-     "ctx": "뉴스",
+     "ctx": "임상",
      "t": "카카오헬스케어 \"진료데이터로 임상시험 '외부대조군' 구축 완료…신약...",
      "src": "yakup.com",
      "date": "2026-10-19",
      "url": "https://www.yakup.com/news/index.html?mode=view&cat=12&nid=333886",
-     "desc": "카카오헬스케어가 병원 진료데이터에서 임상시험 환자와 기저 특성이 유사한 비교군을 구성하는 외부대조군 활용 방안을 제시했다. 연구 조건에 맞는 환자 자료를 추출하고, 기저 특성을 매칭해 분석 가능한 형태로..."
+     "summary": "카카오헬스케어가 병원 진료데이터를 활용해 임상시험 외부대조군을 구축하는 방안을 제시했음."
     },
     {
      "co": "GC메디아이",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "GC메디아이, KIMES 부산서 AI 진료 솔루션 선보여",
      "src": "vegannews.co.kr",
      "date": "2026-10-18",
      "url": "https://www.vegannews.co.kr/news/article.html?no=394086",
-     "desc": "의사랑 AI와 병의원 운영 서비스 전시 GC메디아이가 오는 23일부터 25일까지 부산 벡스코에서 열리는 ‘KIMES Busan 2026’에 참가해 AI 진료 솔루션 ‘의사랑 AI’와 의료기관 전용 플랫폼 ‘미소몰닷컴’ 등을..."
+     "summary": "GC메디아이가 KIMES 부산에 참가해 AI 진료 솔루션과 의료기관 플랫폼을 선보일 예정임."
     },
     {
      "co": "에어스메디컬",
-     "ctx": "뉴스",
+     "ctx": "인터뷰",
      "t": "[대표님은 휴학 중] [위시스트] \"핑크색 광고 찾아줘\"...노벨상 꿈꾸던...",
      "src": "dealsite.co.kr",
      "date": "2026-10-18",
      "url": "https://dealsite.co.kr/articles/170842",
-     "desc": "대학원 졸업을 앞둔 무렵 같은 연구실 출신 동료가 설립한 의료AI기업 에어스메디컬(AIRS Medical)의 성장을 지켜보며 창업 가능성을 봤다.결국2022년 말 연구실 동료들과 위시스트를 설립하며 창업의 길로 들어섰다. 현재..."
+     "summary": "위시스트 대표가 에어스메디컬의 성장을 보고 창업에 나선 계기를 밝혔음."
     }
    ]
   },
@@ -48,57 +48,57 @@
    "items": [
     {
      "co": "휴젤, 파마리서치, 엘앤씨바이오, 메디톡스",
-     "ctx": "뉴스",
+     "ctx": "리포트",
      "t": "상장 제약·바이오사 상반기 평균 총차입금 코스피 3112억원, 코스닥 62...",
      "src": "yakup.com",
      "date": "2026-10-19",
      "url": "https://www.yakup.com/news/index.html?mode=view&cat=12&nid=333883",
-     "desc": "5위 아이큐어(-217억원), 6위 이수앱지스(-212억원), 7위 한국유니온제약(-180억원), 8위 GC녹십자엠에스(-164억원), 9위 바이오솔루션(-118억원), 10위 휴젤(-110억원) 순으로 안정적인 자본 건전성을 입증했다."
+     "summary": "휴젤이 총차입금을 축소하며 안정적인 자본 건전성을 입증했음."
     },
     {
      "co": "휴젤",
-     "ctx": "뉴스",
+     "ctx": "해외진출",
      "t": "글로벌 영토확장 나선 K-톡신…'규제'가 발목잡나",
      "src": "newsis.com",
      "date": "2026-10-19",
      "url": "https://www.newsis.com/view/NISX20261016_0003829468",
-     "desc": "19일 제약바이오업계에 따르면 휴젤, 휴온스바이오파마, 제테마, 대웅제약, 종근당바이오 등 국내 기업들은... 국산 보툴리눔 톡신 중 휴젤의 '레티보'와 휴온스바이오파마의 '휴톡스'가 중국에서 품목허가를 받은..."
+     "summary": "휴젤의 레티보가 국산 보툴리눔 톡신 중 중국 품목허가를 받아 글로벌 진출을 추진 중임."
     },
     {
      "co": "파마리서치, 한스바이오메드",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "국민연금 주식 100일 새 182조 증발…삼전닉스 131조 물렸다",
      "src": "한국경제",
      "date": "2026-10-19",
      "url": "https://www.hankyung.com/article/2026101993047",
-     "desc": "이 기간 5% 이상 신규 편입 종목은 자이에스앤디(9.31%)를 비롯해 파마리서치(7.94%), DN오토모티브(7.085), 한화솔루션(6.41%), 고려아연(5.48%) 등 17개에 달했다. 반면 LG디스플레이와 글로벌텍스프리, 한스바이오메드..."
+     "summary": "국민연금이 파마리서치 지분을 5% 이상 신규 편입한 반면 한스바이오메드 지분은 감소했음."
     },
     {
      "co": "파마리서치",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "국민연금 국내 주식 182조 감소…삼성전자·SK하이닉스에 직격탄",
      "src": "hansbiz.co.kr",
      "date": "2026-10-19",
      "url": "http://www.hansbiz.co.kr/news/articleView.html?idxno=873988",
-     "desc": "신규 편입 종목에는 자이에스앤디(9.31%), 파마리서치(7.94%), DN오토모티브(7.085%), 한화솔루션(6.41%), 고려아연(5.48%) 등이 포함됐다. 기존 보유 종목 가운데서는 GS건설과 현대해상, 빙그레의 지분 확대가..."
+     "summary": "국민연금의 신규 편입 종목에 파마리서치가 포함되었음."
     },
     {
      "co": "한스바이오메드",
-     "ctx": "뉴스",
+     "ctx": "해외진출",
      "t": "30년간 베트남 얼굴기형 아동돕기… K성형 열풍으로 돌아왔다",
      "src": "weekly.chosun.com",
      "date": "2026-10-19",
      "url": "http://weekly.chosun.com/news/articleView.html?idxno=56287",
-     "desc": "이번 행사에서도 '민트' 브랜드 리프팅실로 유명한 코스닥 상장사 '한스바이오메드'를 비롯, 유방확대 수술 후 착용하는 압박브라 등을 선보인 '닥터브레스트', 권총 형태의 보톡스, 필러 인젝터(주사기)를 선보인..."
+     "summary": "한스바이오메드가 베트남 아동 봉사 행사에서 리프팅실 브랜드를 선보였음."
     },
     {
      "co": "한스바이오메드",
-     "ctx": "뉴스",
+     "ctx": "공시",
      "t": "국민연금 주식 평가액 182조원 증발…삼성전자·SK하이닉스 직격탄",
      "src": "kjdaily.com",
      "date": "2026-10-19",
      "url": "http://www.kjdaily.com/article.php?aid=1792335918689388276",
-     "desc": "반면 LG디스플레이와 글로벌텍스프리, 한스바이오메드 등 13개 종목은 지분율이 5% 아래로 떨어졌다. 기존 보유 종목 가운데 GS건설 지분율은 7.82%에서 12.88%로, 현대해상은 9.42%에서 12.37%, 빙그레는 6.47%에서 9...."
+     "summary": "한스바이오메드에 대한 국민연금 지분율이 5% 아래로 떨어졌음."
     }
    ]
   },
@@ -107,30 +107,30 @@
    "items": [
     {
      "co": "리브스메드",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "리브스메드, 올해 수술기구·로봇 사업 진전…美 진출 승부수",
      "src": "medipana.com",
      "date": "2026-10-19",
      "url": "https://www.medipana.com/news/articleView.html?idxno=419481",
-     "desc": "리브스메드가 혈관봉합기·수술용 스테이플러 등으로 제품군을 확대하면서, 자체 개발한 수술로봇 '스타크(STARK)' 상용화에도 속도를 내고 있다. 기존 다관절 복강경 수술기구에서 확보한 기술력을 바탕으로 사업 영역을..."
+     "summary": "리브스메드가 제품군을 확대하고 자체 개발 수술로봇 상용화에 속도를 내고 있음."
     },
     {
      "co": "리브스메드",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "\"90도 꺾이는 손끝\"…리브스메드, 다빈치 독주에 도전장",
      "src": "dailypharm.com",
      "date": "2026-10-19",
      "url": "https://www.dailypharm.com/user/news/343517?REFERER=NP",
-     "desc": "리브스메드가 90도 다관절 수술기구에서 쌓은 기술을 수술로봇으로 확장하며 인튜이티브서지컬의 다빈치가 주도하는 시장에 도전장을 냈다. 기구와 카메라를 직접 개발해 성능과 가격 경쟁력을 함께 확보하는 전략으로..."
+     "summary": "리브스메드가 다관절 기술을 수술로봇으로 확장해 글로벌 수술로봇 시장에 도전함."
     },
     {
      "co": "리브스메드",
-     "ctx": "뉴스",
+     "ctx": "인터뷰",
      "t": "\"90도 다관절 원천 기술로 다빈치 넘을 것…'디지털 서저리' 새 기준 세...",
      "src": "bosa.co.kr",
      "date": "2026-10-19",
      "url": "https://www.bosa.co.kr/news/articleView.html?idxno=3014168",
-     "desc": "서울대 의용생체공학 박사 출신 이정주 대표가 2011년 6월 창업해 지난해 12월 코스닥에 상장한 리브스메드(LivsMed)가 그 주인공이다. 지난 16일 경기도 성남시 분당구 본사에서 열린 의료기기산업 전문기자단 간담회에서..."
+     "summary": "리브스메드 대표가 간담회에서 다관절 원천 기술을 바탕으로 한 사업 목표를 발표했음."
     }
    ]
   },
@@ -139,39 +139,30 @@
    "items": [
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
-     "t": "솔리다임 상장하면 SK하이닉스 손해?…해외선 \"상장 이점 더 커\"",
-     "src": "biz.sbs.co.kr",
-     "date": "2026-10-18",
-     "url": "https://biz.sbs.co.kr/article_hub/20000340602?division=NAVER",
-     "desc": "그러면서 \"이런 방식이 한번 허용되면 앞으로 현대차그룹도 보스턴다이내믹스 등 성장성이 높은 자회사를 같은 방식으로 상장할 수 있다\"고 우려했습니다. SK하이닉스는 지난 1일 입장문에서 자체 자금으로 모든..."
-    },
-    {
-     "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "학회발표",
      "t": "글로벌 로봇기업들 ‘머리 맞댄다’…피지컬 AI 상용화 전략",
      "src": "newstomato.com",
      "date": "2026-10-18",
      "url": "http://www.newstomato.com/ReadNews.aspx?no=1317054&inflow=N",
-     "desc": "현대차그룹 계열사 보스턴다이내믹스도 참여합니다. 브렌던 슐먼 정책·대관 담당 부사장은 구글과 베크나 로보틱스, 미국 캘리포니아대 샌디에이고 연구진 등과 함께 ‘로봇을 활용한 미국 제조업 생산시설 복귀 방안’..."
+     "summary": "보스턴 다이내믹스가 글로벌 행사에서 피지컬 AI 상용화 및 제조업 적용 전략을 논의함."
     },
     {
      "co": "현대차그룹",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "[로봇 온사이트] '4개냐 5개냐' 로봇 손가락, 글로벌 표준 어디로?",
      "src": "theguru.co.kr",
      "date": "2026-10-18",
      "url": "https://www.theguru.co.kr/news/article.html?no=108384",
-     "desc": "보스턴다이내믹스, 원가·내구성 고려해 신형 아틀라스 손가락 4개로 재편 테슬라, '5손가락 체제' 고수…3차원 촉각 센서 특허 공개하며 정밀도 승부 모니터 속 텍스트와 스마트폰 액정을 벗어난 인공지능(AI)이 마침내..."
+     "summary": "보스턴 다이내믹스가 원가와 내구성을 고려해 신형 로봇 손가락 구조를 재편했음."
     },
     {
      "co": "레인보우로보틱스",
-     "ctx": "뉴스",
+     "ctx": "M&A",
      "t": "삼성·LG 불붙은 로봇전쟁… 핵심부품 내재화 '속도전'",
      "src": "it.chosun.com",
      "date": "2026-10-18",
      "url": "https://it.chosun.com/news/articleView.html?idxno=2023092172197",
-     "desc": "삼성전자는 레인보우로보틱스를 중심으로 로봇 기술을 확보하고 있다. 삼성전자는 지난해 레인보우로보틱스 지분을 추가로 확보해 최대주주에 올랐다. 삼성전자는 레인보우로보틱스를 연결 자회사로 편입한 데 이어..."
+     "summary": "삼성전자가 레인보우로보틱스 지분을 추가 확보하여 연결 자회사로 편입했음."
     }
    ]
   },
@@ -180,12 +171,12 @@
    "items": [
     {
      "co": "두산로보틱스",
-     "ctx": "뉴스",
+     "ctx": "IR행사",
      "t": "“AI, 기술을 넘어 일상이 되다”…역대 최대 규모 'FIX 2026' 대구서 개...",
      "src": "전자신문",
      "date": "2026-10-18",
      "url": "https://www.etnews.com/20261016000013",
-     "desc": "HD현대로보틱스와 두산로보틱스 등 국내 대표 로봇앵커기업 및 피지컬 AI 선도기업들이 대거 참가한다. 한국로봇산업진흥원과 대구기계부품연구원, 계명대 산학협력단 등이 공동관을 꾸려 다양한 연구성과를 전시할..."
+     "summary": "두산로보틱스가 대구에서 열리는 FIX 2026 행사에 참가해 연구 성과를 전시함."
     }
    ]
   },
@@ -194,12 +185,12 @@
    "items": [
     {
      "co": "로보티즈",
-     "ctx": "뉴스",
+     "ctx": "신제품",
      "t": "물류는 공동 개발, 생활은 렌털…피지컬AI·로봇 기술 진입로 넓힌다",
      "src": "news1.kr",
      "date": "2026-10-19",
      "url": "https://www.news1.kr/industry/sb-founded/6322872",
-     "desc": "로보티즈, 개방형 플랫폼…여러 AI 적용·비교하는 개발 환경 구축 로보티즈(108490)는 특정 AI 모델 하나에 한정하지 않고 여러 모델을 적용·비교할 수 있는 개발 환경을 구축하고 있다. 로보티즈는 지난달 22일 서울..."
+     "summary": "로보티즈가 여러 AI 모델을 비교·적용할 수 있는 개방형 개발 환경을 구축하고 있음."
     }
    ]
   },
@@ -217,17 +208,7 @@
   },
   {
    "cat": "치과",
-   "items": [
-    {
-     "co": "디오",
-     "ctx": "뉴스",
-     "t": "최혜진 124번째 대회에서도 첫우승 실패… 뷰익 LPGA 상하이 1타차 역전...",
-     "src": "smartbizn.com",
-     "date": "2026-10-18",
-     "url": "https://www.smartbizn.com/news/articleView.html?idxno=156760",
-     "desc": "인뤄닝은 지난 8월 FM 챔피언십에서 김효주를 2타 차로 제치고 우승한 데 이어 시즌 2승을 거뒀고, 2023년 디오 임플란트 LA 오픈 이후 통산 7승째를 수확했다. 중국선수 역대 최다승인 펑산산(10승)에 3승차로..."
-    }
-   ]
+   "items": []
   }
  ],
  "global": [
@@ -236,57 +217,57 @@
    "items": [
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "Driver released from custody, no charges filed after deadly incident at Stryker Sports Complex",
      "src": "KWCH",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQN0FiVml5X2ZEREgzMlZ5MVY3YUczWEJ0aWtTdUpxRDM0SjQ2VHZ1VVVJRW9VcklzV25qNlNpd0Y1RjYtUHJXb3lMTFQ1SHg2M2pYUUlyb0hVVzVGeWo5clRKTGpGWHNoblluVEJ4RFVaTDFTbzRRRUtwVnA2V2hTaWstNUpCem5YZ3BmSlJ6dlRkZ3hRWjJCRFJqaW1xZGVzbFRDeFREOXhJNmxLT0RxYVhMTEVCRE9RblE?oc=5",
-     "desc": "Driver released from custody, no charges filed after deadly incident at Stryker Sports Complex  KWCH"
+     "summary": "스트라이커 스포츠 컴플렉스에서 발생한 치명적 사고의 운전자가 석방되었음.\n경찰은 해당 운전자에 대해 별도의 혐의를 적용하지 않고 사건을 처리함."
     },
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "No charges filed against driver who killed 2, injured 11 at Stryker Sports Complex, police say",
      "src": "KAKE",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxNTnNGMUZxaHZNSklrdHU3cDBNR2FYYl9idFJYTl85ZTlTbDZ5V090ajVHS01JTDdrVmRQV0FNOVR3OHNhVkV4QW9XdGFNdzZfSllyN1YxaFdHMFVmeWpRSURJN2tNYko4cGxIRHZIRUM1eF9Ed1NVR21lZkNhSnpZaV9KRmpKMnFfcV90VVloa2pKNjI4WmhxMThoNFl1WG1xNE9CWjY4Mzhjb0pRSWhsQjdtQU0zSkpSeS01UXpMNWZoU09TOXF4eTlmUVZBV2JMc2pBVmhuVkZobmxpV3RObmtYdEhtNUtMN3ZwZXdIbENaWjR2UXQ4?oc=5",
-     "desc": "No charges filed against driver who killed 2, injured 11 at Stryker Sports Complex, police say  KAKE"
+     "summary": "스트라이커 스포츠 컴플렉스 사상 사고 운전자가 기소 없이 석방됨.\n경찰은 사망 2명 및 부상 11명을 낸 운전자에 대한 불기소 방침을 밝힘."
     },
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "Young boy, 35-year-old McPherson man killed at Stryker Sports Complex have been identified",
      "src": "KWCH",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOOHVWUkhoUW1VVWpPSHMwWXVDb1Fyc053QzRuWEdPTXFRUVNwNFI4ZnlXdkE0Z3NRa0dWc1llQnB0ODBreXhqVGhKOExyV2JwVFBUMTZNOUV2SXZpVmxIcUtRSEZnMmVJMmllTDNGQVh3b212U2lhb2FlbEJqNXU3NndId0lrbmJaaTZwMkhBY2Vkd3JCcmc2LS1LbUYtVlh3bWg2MUJhcHg5Rk1mREV5XzJqYXFWMEl6Qzhv?oc=5",
-     "desc": "Young boy, 35-year-old McPherson man killed at Stryker Sports Complex have been identified  KWCH"
+     "summary": "스트라이커 스포츠 컴플렉스 사고 사망자 신원이 확인됨.\n사망자는 어린 소년과 35세 남성인 것으로 공식 파악되었음."
     },
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "Woman who was arrested at Stryker released from custody without charges",
      "src": "Wichita Eagle",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9DUnFSdmxWbzBvRDU4ZF9wbXlfV2hQeWRSX0JiS3N2ZmQ5TncxWk9RRWctQW9kVHJQOGZSTVliTEFac3luS3B0YnUwd1pnUWt0WjJfWnROaG9pVV92d3FZMlJNM1JpUdIBZkFVX3lxTE9wQVlqeVZCSkpQUnY3Rkh3WnQybTRLQnlfS1REY1daLVBqRHEzc3d5UmRPMExDMXg1eHZhZGdnRjJjdVBsTlBPNnZUanBNVW5idjk5c094V0pvNmdaa21Cd194a2J4Zw?oc=5",
-     "desc": "Woman who was arrested at Stryker released from custody without charges  Wichita Eagle"
+     "summary": "스트라이커 체육 시설에서 체포된 여성 운전자가 석방됨.\n해당 여성은 별도의 형사 고발이나 혐의 없이 석방 조치되었음."
     },
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "“This whole town is grieving with you:” Counselors will be at McPherson Public Schools Monday following tragedy at Stryker",
      "src": "KWCH",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPQVlyX3dKejNlU3RmUXprS3l6SEZKQUFyT01EVEFPaXFOYnVVUkRyN1JJVDc5YUpOQTdLWVJfU0pObG4zVDRUTGFKa3Z5bW1qV3pqOVg5dEpqaHRjU1M1UmUxV09vWklnQmVjSGRCMlVYQWpGYXJFM1dNZU9ab2V1YnpmYnFTU0lTeGJPY0p3MUMzQ0VxRkY4czZvNEhoS1dGVks0TEY4Z2RHYUQxR01EaC01VW1USkxmVTNnOFhqTUNGWnFsMDBJdlJKdW9abDFkNjdVY29jYnFFM1QwelRV?oc=5",
-     "desc": "“This whole town is grieving with you:” Counselors will be at McPherson Public Schools Monday following tragedy at Stryker  KWCH"
+     "summary": "스트라이커 체육관 참사 이후 맥퍼슨 공립학교에 상담사가 배치됨.\n지역 사회 전체가 추모하는 가운데 학생 및 임직원 심리 지원에 나섰음."
     },
     {
      "co": "Stryker",
-     "ctx": "News",
+     "ctx": "사건사고",
      "t": "McPherson mourns child, 6, and man, 35, killed in Stryker Sports Complex crash in Wichita",
      "src": "KWCH",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxONEdocS1iN0VkMF9FME1xZFdhZDdaSklvcVlYVXF0a1FXM1RIVjBHVnhsLWFQZXhOWDVlYUtSRFJVRl9hendRR29KVG5Pd09PMHJZNFBuYV9aRG9yN1NTWTBPcWNuZTF6czg0ZS1EWUZqSW04clc2SnZCVGV1MF96UkJMUk9tNUZhZkhyS3AtZ29Qd0tjNEgtNUU5RGNNNW9Bc0pzXzJWZWNPZUlZ?oc=5",
-     "desc": "McPherson mourns child, 6, and man, 35, killed in Stryker Sports Complex crash in Wichita  KWCH"
+     "summary": "위치타 스트라이커 시설 충돌 사고 사망자를 위한 애도가 이어짐.\n숨진 6세 아동과 35세 남성을 향한 맥퍼슨 지역 사회의 추모가 진행됨."
     }
    ]
   },
@@ -327,12 +308,12 @@
    "items": [
     {
      "co": "Thermo Fisher",
-     "ctx": "News",
+     "ctx": "실적",
      "t": "Thermo Fisher sets results date: what it means for Thermo Fisher Scientific stock",
      "src": "ad-hoc-news.de",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNWXlwUThwQXQxdGJHbGMwdTZnVXpuTGY2eFhDS1JGbUFrdUwyVS1VSEdlS2d5RVctS2dfSlpjQVFDWVd2d2hjSjlOLUZPQXloRjJyVjhvN2tuOGhaRUw5b0xkVFBRTWUyMjJrZko2MFBoOWpsR2ZnN0dVUHNmcmw5c2NxWHlRM2pmQ1BBMVRFMm15WGkyWk1VY1RGS0pfYzBHLWdhc044VUtXZy1JSzQ5dUJ2S1V3MnJ5TDBqaVJ3VDdnSkRIQXdqNVdXZElTR29DUEdQN05qNWFkWXc?oc=5",
-     "desc": "Thermo Fisher sets results date: what it means for Thermo Fisher Scientific stock  ad-hoc-news.de"
+     "summary": "써모 피셔 사이언티픽이 향후 실적 발표 일정을 확정함."
     },
     {
      "co": "Abbott",
@@ -386,12 +367,12 @@
    "items": [
     {
      "co": "Natera",
-     "ctx": "News",
+     "ctx": "학회발표",
      "t": "ESMO 2026 Presentations Deepen the Evidence Base for Natera’s Oncology Portfolio and Leadership in Ultrasensitive MRD Technology",
      "src": "Business Wire",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMikgJBVV95cUxQLVhLZmREXzF0UzZRSUt0bGc4dnlxU0NRUm9IZ0dTbW1mWkQ4TGV2a3V5d28yakIwRVhaT3BjVmZlRW93MnBkSTBLdTBvOGIzdG9OeUg3cE9reFo4SExrNUc2VGcwNVZveU1vSExfQ1lxOHBXXzhlcnJfUzZFbFl4UjlwTXZGSFFLYVBqR2JVYy1tUGRubENQSmo3SzlTQ1J4SDE3VjVSLW1IYllDTXZRWjVhcG9nTWNuMGhiWnZXa3B0Q0o5eXBGUXBTWG56X3R6c3EtUmtpbGxrYkxpckROY2J0QlRyV3ZpcjN1QVg3SDctNlRmeHhseU5GazZZME9nOTZycm1VMDRXV2ZoUDNILWpB?oc=5",
-     "desc": "ESMO 2026 Presentations Deepen the Evidence Base for Natera’s Oncology Portfolio and Leadership in Ultrasensitive MRD Technology  Business Wire"
+     "summary": "나테라가 ESMO 2026에서 종양학 포트폴리오 연구 결과를 발표함.\n초고감도 MRD 기술력과 임상적 유용성을 입증하는 데이터 근거를 강화했음."
     },
     {
      "co": "Natera",
@@ -436,39 +417,30 @@
    "items": [
     {
      "co": "Hims & Hers",
-     "ctx": "News",
-     "t": "Hims & Hers Health - Backpack Securities Price, HIMS Price, Live Charts, and Marketcap",
-     "src": "Coinbase",
-     "date": "2026-10-18",
-     "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxORlNJS3QxRFhQRWVtWXFVd3d6NEVfNXhqRFlXbzhURkdobEtTbWhlaThaSmtBUVgxMTE5U3VnVG16ZUJIY1AtUUktOGFuSXJwZFRGYVFTSUVKbFhtcXh4RkpzRXFHNFA0RVExaWRCWl9oZTRkTzFDclA4NzZzMktBMGY4UUwzZkxhNGtJM2dfdXdGMEFOVTdaVldoVloycDJCUTZsZG5zNllUOWNvTzRuY2ZvRTVWV2NycExYVWxLcF9SZVJNR1pZ?oc=5",
-     "desc": "Hims & Hers Health - Backpack Securities Price, HIMS Price, Live Charts, and Marketcap  Coinbase"
-    },
-    {
-     "co": "Hims & Hers",
-     "ctx": "News",
+     "ctx": "소송",
      "t": "novo nordisk sued hims & hers over compounded weight-loss drugs",
      "src": "Meteo.gr",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQa0pzWHZIQUVmWnA1NnNFYUVzb0dYemhqanhKTW56cDNsNVpFbWV1T3hQTkpPRmlyX2xaRWtDcHBfcHZfaF9pRjVDdGt6SDVCeDFXZ2NUS0pzbDJ2VDZ2RTNGZG9QQkRsbzFwVEh1bmxwTHdSelltVmpCME1ZYUl2dWdvMTY2bnhWVlRZQ21ocC1JSE9iQVFHeGl0Z09PUVJSQ2h3VHh0aw?oc=5",
-     "desc": "novo nordisk sued hims & hers over compounded weight-loss drugs  Meteo.gr"
+     "summary": "노보 노디스크가 힘스 앤드 허스 헬스를 상대로 소송을 제기함.\n복합 비만치료제 판매 및 유통 관련 분쟁으로 법적 대응에 나섰음."
     },
     {
      "co": "Teladoc",
-     "ctx": "News",
+     "ctx": "신제품",
      "t": "Is Teladoc Health (TDOC) Cheap Following Its New AI Tools?",
      "src": "Simply Wall Street",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQdGRoMTFCV2VTaFNzVUEtb04yTDBOTFY4NjFhbmIyWDFxYUpEd2pYRUhIcjlObUdyRjBWV0l3YWdHQV9GQjI2WU1vSzE2aEptMHdRUWxtbm1fR19KdFptSjJMZzJyZ2dUNmxmaWhmRVM4SFNqNkpZa2dfT0N6bGJWbXJONjRzSlVQbWh2cVk5aHM2NGxhUFJGNXhwbmo5Q3BQNlJWdG5ERGRVMHpVLWxVa3AtY2tJemNWVkh1Z3pGd01jLWdGMGZGVElScVPSAcwBQVVfeXFMUHRkaDExQldlU2hTc1VBLW9OMkwwTkxWODYxYW5iMlgxcWFKRHdqWEVISHI5Tm1HckYwVldJd2FnR0FfRkIyNllNb0sxNmhKbTB3UVFsbW5tX0dfSnRabUoyTGcycmdnVDZsZmloZkVTOEhTajZKWWtnX09DemxiVm1yTjY0c0pVUG1odnFZOWhzNjRsYVBSRjV4cG5qOUNwUDZSVnRuRERkVTB6VS1sVWtwLWNrSXpjVlZIdWd6RndNYy1nRjBmRlRJUnFT?oc=5",
-     "desc": "Is Teladoc Health (TDOC) Cheap Following Its New AI Tools?  Simply Wall Street"
+     "summary": "텔라닥 헬스가 신규 AI 도구 도입 후 주가 저평가 여부로 주목받음."
     },
     {
      "co": "Teladoc",
-     "ctx": "News",
+     "ctx": "실적",
      "t": "Teladoc Health scheduled next results. USD 606.93 million tests Teladoc Health stock",
      "src": "ad-hoc-news.de",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQVGVrdzA4aEZwaHdNbkVzeldTeTFOVlVCeEY1U2N3T0VYM1UzcWpwbUl6SkNxNXZnOWRIdE1TZG5wZ05XT2hUM29KUlhSRVJlc053MVNQQWMwQXRJNlF3ek9mOFZRS2tLeXZTeWRNSTgtT21FZ1pTOEczb3JsUGplWWl5bUtoQTZsak9BTnhPajdjVWwyMWxEZkpsTGxlSUhyZjZCcDNuWTdza3pVWnlvcGtNNVk5ZEpqMDJtY3JJUmxrTUVOMVNLcFBqS0FEbzV2b1dBVHNWMVdCUQ?oc=5",
-     "desc": "Teladoc Health scheduled next results. USD 606.93 million tests Teladoc Health stock  ad-hoc-news.de"
+     "summary": "텔라닥 헬스가 차기 실적 발표 일정을 확정하고 공개함."
     },
     {
      "co": "iRhythm",
@@ -495,21 +467,21 @@
    "items": [
     {
      "co": "UnitedHealth",
-     "ctx": "News",
+     "ctx": "실적",
      "t": "UnitedHealth Group (UNH) Raises 2026 Earnings Guidance, Boosting Dividend Appeal",
      "src": "GuruFocus",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPM2JnWTFZckR0UXJ1ektZLU5ENkhiUXc0Y3g1ZTJJOFFPbHBpelNtejRLV3RGQy1CWHFibVZfOWdLa2pHR05iRTVvUGY4SzVZY2NtZjliMEE4UE1tVEpqQUVLbFhXak52QUxINm1MTTBicDZmM21OWnNvdkc3ZWVRb3VfWFVUQU5VSm4wX2FHVHNEYzRJdkNKeVJQMWw1VGhhS3RVZUR0bldPVnE0R2VrR0xiMnNWTEE?oc=5",
-     "desc": "UnitedHealth Group (UNH) Raises 2026 Earnings Guidance, Boosting Dividend Appeal  GuruFocus"
+     "summary": "유나이티드헬스 그룹이 2026년 실적 가이던스를 상향 조정함.\n배당 매력도가 높아지며 실적 전망치 상향에 따른 수혜가 기대됨."
     },
     {
      "co": "UnitedHealth",
-     "ctx": "News",
+     "ctx": "실적",
      "t": "UnitedHealth Group reports results: what it means for UnitedHealth Group stock",
      "src": "ad-hoc-news.de",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPMExhZUNQX0hOVWQ1LXRuT1lvM3dfdF9hQ1RsTk1GT1gwWTNMSm5FNGVaT3BrZXU4NnA4NXg3OFpoRkxyeFBEa1gyZTJ0MllSNHRqQk9GWHA2TkFNNm03WDhjSW5qa0dfSzd4WlJRbGxZTGg1OEMxWTdhLU13VVRhMUtnVDZKSkRwaGlVdklMQlBjU213NVFhaTQ1ckx5RDFPc1hpN1RnNjRfVF9VR0NoUXh6M2EwanF2ODgtSnRPMk4xZ2RGLTN0eFBxbHJTQU0tRFR6SzJnOA?oc=5",
-     "desc": "UnitedHealth Group reports results: what it means for UnitedHealth Group stock  ad-hoc-news.de"
+     "summary": "유나이티드헬스 그룹이 경영 실적 보고서를 공식 발표함."
     },
     {
      "co": "UnitedHealth",
@@ -554,30 +526,30 @@
    "items": [
     {
      "co": "Align Technology",
-     "ctx": "News",
+     "ctx": "소송",
      "t": "Align Technology says European court finds Angelalign infringed patent (ALGN:NASDAQ)",
      "src": "Seeking Alpha",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNX0VuUXA4V1BCX3hhM28yZW8yV0IzSFNwRkNmamd3MUhNaWNsc0poZ1oxejhjbTZNSEJ4aUEwSG4tLUw3cHplV1pCM284SW03NkVTXzl2OENZbWFaWUhzVllRVExMLU1HUUMwSm5HUEM0N1c5Y3RWM2JJWEg5NjFoTWlibEVnN2JwQ19mRUEwOFE3R0JuNURFVDBaVGpLam9FMnJoRUtKTF9MVndv?oc=5",
-     "desc": "Align Technology says European court finds Angelalign infringed patent (ALGN:NASDAQ)  Seeking Alpha"
+     "summary": "얼라인 테크놀로지가 엔젤알라인과의 특허 침해 소송에서 승소함.\n유럽 법원은 엔젤알라인이 얼라인의 자사 특허를 침해했다고 판결했음."
     },
     {
      "co": "Align Technology",
-     "ctx": "News",
+     "ctx": "소송",
      "t": "Align Technology (ALGN) Wins European Patent Ruling Against Ange",
      "src": "GuruFocus",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQcW9UbjIzdDB2RlAxaG50YWlsbHNsQWJ2RnllWXpIaVBBS3ppZ0xBLU9zYzVjT2g5aUlkMk9LLTRGYUF2UEZkRHBsRU90b2NRaHMtWmRLcUxBVlZjQTA4a2g4eWpyYmF6ejhFYkVDVXI4Z0dqODl3Uk5CRmZyN1RweUlLekFHdEtXVEw2Z20tUFUwS3c2d3pRaHFfTDNFd181UGV4aHAyZ0NyaUE?oc=5",
-     "desc": "Align Technology (ALGN) Wins European Patent Ruling Against Ange  GuruFocus"
+     "summary": "얼라인 테크놀로지가 유럽 특허 소송 판결에서 승리함."
     },
     {
      "co": "Straumann",
-     "ctx": "News",
+     "ctx": "리포트",
      "t": "Goldman sets CHF 125 target for Straumann stock",
      "src": "ad-hoc-news.de",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPVHRFaWc3N3VRU2laMkxTeGVaeEJzTHFuRFZ4OE44ZXpaSmpvMk8zTHZBQVhjSUlIdVpfYkZyaTNSaURFSjdON1ZDYldkay0tUWFhQ19uVHQzbHpJTHNqS0J2Znhway1yNWNUMWl2ajl0WUVuUHJsZUd2OXd4ZU02dlNrNkdwRmMybWt3ZVJLUVd4UzYwWXRTRzR4bGNCMjhDY1VoN1JWNE5Idw?oc=5",
-     "desc": "Goldman sets CHF 125 target for Straumann stock  ad-hoc-news.de"
+     "summary": "골드만삭스가 슈트라우만 홀딩의 목표 주가를 125스위스프랑으로 제시함."
     },
     {
      "co": "Align Technology",
@@ -627,48 +599,48 @@
    "items": [
     {
      "co": "Tesla",
-     "ctx": "News",
+     "ctx": "신제품",
      "t": "Tesla’s Robotaxi Just Put Starlink Inside Its Roof",
      "src": "Motor1.com",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFAweFNaTF9zYW5oTVhmWDU2cUx2SHdOU1BOYWhNRzhtQ1RDQWU5ZG9VbnNXSXRjYzJJWC0yYUtaTmRpZ2xQdFB0SWM1TWxMZ0IycnNpRnJSWXhTaXJ4TXg3UEN3RktiNXphWllQSzFQSkRkUHhOMlNVOW9yNA?oc=5",
-     "desc": "Tesla’s Robotaxi Just Put Starlink Inside Its Roof  Motor1.com"
+     "summary": "테슬라가 로보택시 루프 내부에 스타링크 안테나를 탑재함."
     },
     {
      "co": "Tesla",
-     "ctx": "News",
+     "ctx": "파트너십",
      "t": "Elon Musk Says Optimus Is Tesla's Most Important Product. These 3 Suppliers Get Paid Before Tesla Does.",
      "src": "Yahoo Finance",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTWJtakdwQWVZcldWQVpud295ZGlnSXZjYnFuNmY3TndBR2JmOGNBa1FfQ0o5R1UxQUh2bFEzby01Rk9ZVzlLSUpqTDI1TXd4WkRYX3NfN0NSRnJONi1UUkJsOXZid09KTGlrUGQ0Smw0bUpVaTVnQ2FDV0JBY0ZQejU2eU1iTmM2SkRHcERTV1hqWUItcElCbg?oc=5",
-     "desc": "Elon Musk Says Optimus Is Tesla's Most Important Product. These 3 Suppliers Get Paid Before Tesla Does.  Yahoo Finance"
+     "summary": "일론 마스크가 휴머노이드 로봇 옵티머스의 중요성을 재차 강조함.\n테슬라 양산 전 수익을 얻게 될 핵심 공급업체 3곳이 주목받고 있음."
     },
     {
      "co": "Tesla",
-     "ctx": "News",
+     "ctx": "신제품",
      "t": "Elon Musk’s Flying Tesla, Robotaxi Surge, GM’s Earnings Test and More: This Week in Mobility",
      "src": "Benzinga",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQZ1AzLTU5TW5ZaTMwWEIzaGZiSmhMOUMwNVpnVnhzb3kxR3ViR1duaXVSSHdnV3ZQRFJOcWZtLWJ4OHkta3lQY09HYzlsbHFVRFhDbzdYQ200aEhFb2VUQzZTd20xTFg5ZmVuNTVVcGxVaHFwTkFiaDdnczZjbFdmdHZ0ZUNMR2djdjBaTzI1Z1JHYW9wYUxaeTliQWN1a2lRLUFoem1GbU1MQlZ4eVJkLWdzUTdzbnowVEQwcnhfOHc1ck5mOWJTSVhNUnRxRmN2ZUVNVldLbw?oc=5",
-     "desc": "Elon Musk’s Flying Tesla, Robotaxi Surge, GM’s Earnings Test and More: This Week in Mobility  Benzinga"
+     "summary": "테슬라의 플라잉카 구상과 로보택시 기대감이 시장에서 주목받음."
     },
     {
      "co": "Tesla",
-     "ctx": "News",
+     "ctx": "인터뷰",
      "t": "Elon Musk Says Optimus, Cybercab Will Be ‘the Vast Majority’ of Tesla’s Value",
      "src": "Benzinga",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOaG83NFVZZ0lhZHlmREZFaHBpcENpYkNxMEVoRWxLalc0QjVmblEtcUJMb0NYbG1WLXhaalhDNjNxMWRySTEwcUdjSWg5N0x1cnFqbWN5bUY4eldFeldvT29WalRTYlJSUHZ3NnhUTktPQ2hnNG9fU3hESkpvWHJMTWYzc0V0WnhNVXppZEFNdHh6VGMxNjhURVJLa09Fb1ZlbC1aYVNlODY1QTI4U2RXMnVfUXFzY0wwVjNuZ0FfR1hvUFBw?oc=5",
-     "desc": "Elon Musk Says Optimus, Cybercab Will Be ‘the Vast Majority’ of Tesla’s Value  Benzinga"
+     "summary": "일론 마스크가 옵티머스와 사이버캡이 테슬라 가치의 대부분을 차지할 것이라 밝힘."
     },
     {
      "co": "Tesla",
-     "ctx": "News",
+     "ctx": "리포트",
      "t": "What Robotics Experts Think of Tesla’s Optimus Robot",
      "src": "IEEE Spectrum",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBwY0R6VDhqUUFGZ04wSWtmRkhlZXlSY0pBTG1iSnZkUWJFdmdyZ2lwcG50bG5KMDNJM2FRWUpuNnNlbmsyTGhZRXlsOTRLVDNNSE5odVhhYUhnOHA3bXJfQVQwdktFOUVxY092eU9VcExWOEhFaktmckRjeEo?oc=5",
-     "desc": "What Robotics Experts Think of Tesla’s Optimus Robot  IEEE Spectrum"
+     "summary": "로봇 공학 전문가들이 테슬라 옵티머스 로봇의 기술력을 평가함."
     },
     {
      "co": "Agility Robotics",
@@ -686,21 +658,21 @@
    "items": [
     {
      "co": "Universal Robots",
-     "ctx": "News",
+     "ctx": "IR행사",
      "t": "Live from the Booth: Teradyne-Robotics",
      "src": "Packaging World",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQYl9LWlNYbE5lY1A0TlZ6aHVfaHNQOV81U2xPRExyUDFWZlFva2QzVVFrTWw4M2VsVlh3d3FKVmQ1WHphOTJKZXlpZ2pWbERXbUtiaXJvZzN5UDJsVnR0VlJBUlY5V0pEVks5akNESlA1SGc2Z1VuQ0JyVjhXNmlDRHFCd2tQSmpwZDllNnhXMU11LVc4WjhyR1dtTUctVkJDMjRJNVB4ZklZczFiNnBiajB1c3BITXRVZGhaWGwwQTJDT0U?oc=5",
-     "desc": "Live from the Booth: Teradyne-Robotics  Packaging World"
+     "summary": "테러다인 로보틱스가 전시장 부스에서 현장 생중계를 진행함."
     },
     {
      "co": "Universal Robots",
-     "ctx": "News",
+     "ctx": "신제품",
      "t": "Teradyne launches edge artificial intelligence tester: what it means for Teradyne stock",
      "src": "ad-hoc-news.de",
      "date": "2026-10-18",
      "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQZ1NDcVNydnVxa3NnUWlKdl9wRExfT0E5dXRKNkRvMWhTYTdRdEJYbERRUHR5S2NheUhTei1Kb1RkVTNwMTB4YmlFMmV0ZHF3a0Z0SFB6X0o3eDVVUzlkUjhnNkxialhyaWNGclowbjBlTEFpam5hdmpTbWdKZDNSdGdKdW5DZy1xR0xPeGlyUEpWTlVGZk85MjQ2cnk4UEtma3ZtQkJLSjdQLTQ3Q3dxTTNIdEY1UHFFc3hXeWktR0ZtZDVtUlJIMi1uVHdTVjgwWEFXMG1ZN081THZ0cGk5eWJUSQ?oc=5",
-     "desc": "Teradyne launches edge artificial intelligence tester: what it means for Teradyne stock  ad-hoc-news.de"
+     "summary": "유니버설 로봇의 모회사 테러다인이 엣지 AI 테스터를 신규 출시함."
     },
     {
      "co": "FANUC",
