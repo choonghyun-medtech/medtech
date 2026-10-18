@@ -1689,6 +1689,14 @@ function applyNewsFilters(){
   if(typeof renderMonthlyBriefing === 'function') renderMonthlyBriefing();
 }
 
+// 브라우저 현지 시각 기준 "YYYY-MM-DD"(2026-10-19). 예전엔 d.toISOString().slice(0,10)을 써서 UTC 날짜가
+// 나왔다 — 한국은 UTC+9라 오전 9시 전엔 하루 전 날짜가 되어, 캘린더 "오늘" 칸이 어제로 표시되고 뉴스 아카이브
+// 기간 끝이 어제로 잡혀 그날 아침 기사가 빠졌다. "지금 시각으로 오늘 날짜"가 필요한 곳은 이 함수를 쓴다.
+function localYmd(d){
+  d = d || new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 // 뉴스 플로우 전용 기간 필터(오늘/7일/30일) — 오늘의 클리핑에는 더 이상 적용되지 않는다.
 // skipRender=true는 페이지 최초 로드 시 기본값(최근 7일)만 세팅하고 렌더는 건너뛴다 — 이 시점엔
 // 아직 NEWS_HISTORY/NEWS_TREND(파일 뒤쪽에서 let으로 선언됨)가 초기화 전이라, 여기서 바로
@@ -1699,8 +1707,8 @@ function setNewsPeriod(days, skipRender){
   const fromInput = document.getElementById('news-date-from');
   const toInput = document.getElementById('news-date-to');
   const from = new Date(today); from.setDate(from.getDate() - days);
-  NEWS_STATE.from = from.toISOString().slice(0,10);
-  NEWS_STATE.to = today.toISOString().slice(0,10);
+  NEWS_STATE.from = localYmd(from);
+  NEWS_STATE.to = localYmd(today);
   if(fromInput) fromInput.value = NEWS_STATE.from;
   if(toInput) toInput.value = NEWS_STATE.to;
   const periodToggle = document.getElementById('news-period-toggle');
@@ -1957,7 +1965,7 @@ function calGridHtml(weeks, rangeFirst, rangeLast, events, pending, opts={}){
   pending.forEach(p=>{
     (p.dates||[]).forEach(d=> (byDate[d] = byDate[d] || []).push(Object.assign({}, p, {date:d, cand:true})));
   });
-  const todayStr = today0.toISOString().slice(0,10);
+  const todayStr = localYmd(today0);
 
   // 미정 일정은 이 기간과 겹치는 부분의 첫날이 들어있는 주에 넣는다(두 달에 걸치면 두 달 모두 표시).
   const pendByWeek = weeks.map(()=>[]);
@@ -2021,7 +2029,7 @@ function renderCalNextUp(events, pending=[]){
   const grid = document.getElementById('cal-next-grid');
   const note = document.getElementById('cal-next-note');
   if(!grid) return;
-  const todayStr = today0.toISOString().slice(0,10);
+  const todayStr = localYmd(today0);
   const upcoming = events.filter(ev => ev.date >= todayStr).map(ev=> ({sort:ev.date, ev}))
     .concat(pending.filter(p => p.to >= todayStr).map(p=> ({sort:p.from, p})))
     .sort((a,b)=> a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : 0)
@@ -2291,7 +2299,7 @@ async function captureCalendar(btn){
     const weeks = [];
     for(let d = start; d <= end; d = calAddDays(d, 7)) weeks.push([0,1,2,3,4,5,6].map(i=> calAddDays(d, i)));
     const quarter = calSeasonQuarter(season.mid);
-    const todayStr = today0.toISOString().slice(0,10);
+    const todayStr = localYmd(today0);
     const span = `${calYmdShort(start)} ~ ${calYmdShort(end)}`;
     const sub = `${span} · ${todayStr} 기준 · 해외: 기업 IR 공시 · 국내: IR 담당자 회신` + (season.pending.length ? ' (점선 = 날짜 미정·후보일)' : '');
     // 이 시즌에 날짜 미정 일정이 없으면 빈 칸만 차지하므로 "날짜 미정" 열을 뺀다
@@ -3903,7 +3911,7 @@ async function capturePerfTables(period, btn){
         windowWidth: Math.max(window.innerWidth, stage.scrollWidth + 40), // 창보다 넓은 표도 잘리지 않게
       });
       const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
-      const fileName = `${asOf || new Date().toISOString().slice(0,10)}_${PERF_CAPTURE_FILE_PERIOD[period]}_${set.key}_Top10_Bottom10.png`;
+      const fileName = `${asOf || localYmd()}_${PERF_CAPTURE_FILE_PERIOD[period]}_${set.key}_Top10_Bottom10.png`;
       await perfSaveBlob(dir, fileName, blob);
       saved.push(fileName);
     }
@@ -9586,7 +9594,7 @@ function supUpcomingDate(ticker, s, season){
   if(ev) return { date:ev.date, src:'IR', confirmed:!ev.estimated, yahoo:(s.next||{}).date || null };
   const n = s.next || {};
   // Yahoo 예정일이 며칠 전으로 지났는데 실적이 없으면 갱신 안 된 낡은 일정 — 미정으로 취급
-  const stale = new Date(Date.now() - 3*86400000).toISOString().slice(0, 10);
+  const stale = localYmd(new Date(Date.now() - 3*86400000));
   return n.date && n.date >= stale ? { date:n.date, src:'Yahoo', confirmed:!!n.date_confirmed } : null;
 }
 
@@ -9754,7 +9762,7 @@ function renderSupResults(rule, rows, noCons, negEst, pendingCount){
 
 function renderSupPending(rule, rows, doneCount){
   const season = SUP_STATE.season;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localYmd();
   const isKR = SUP_STATE.region === 'KR';
   rows.sort((a,b)=>((a.when||{}).date||'9999').localeCompare((b.when||{}).date||'9999') || a.meta.name.localeCompare(b.meta.name, 'ko'));
   document.getElementById('sup-preview-title').textContent = `${supSeasonLabel(season)} 발표 예정 (${rows.length}개사)`;
