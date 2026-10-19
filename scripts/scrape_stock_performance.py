@@ -396,7 +396,10 @@ def fetch_one(item):
             recent_dates = [str(d.date()) for d in recent.index]
             result["price_history"] = {
                 "dates": recent_dates,
-                "close": [round(float(v), 2) for v in recent.values],
+                # 10 미만 저가주는 소수 넷째 자리까지(2026-10-19) — 둘째 자리 반올림이면 0.16달러짜리는 0.01 차이가
+                # 6%라, 이 이력으로 계산하는 글로벌 Watch List 반전 판정·52주 위치가 틀어졌다. 10 이상은 둘째 자리
+                # 오차가 0.05% 이하라 그대로 둔다(주가 차트 툴팁이 250.123처럼 길어지지 않게).
+                "close": [round(float(v), 2 if abs(float(v)) >= 10 else 4) for v in recent.values],
             }
             if foreign_ratio_map:
                 fr_values = [foreign_ratio_map.get(d) for d in recent_dates]
