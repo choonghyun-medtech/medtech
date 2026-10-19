@@ -4965,7 +4965,8 @@ function gwRevTags(n){
 // ---- 섹터 안 역할 (2026-10-19, 2차) — 같은 섹터에서 누가 이미 이끌고, 누가 새로 붙고, 누가 돌아서는지 ----
 // 섹터 대비 초과수익(종목 − 소속 섹터 중앙값 — 화면의 시총가중/동일가중 선택과 무관, gwRender의 retMed 참고)으로 나눈다.
 //  주도주    : 3개월 섹터 대비 +5%p 이상 & 3개월 플러스 (최근 5일이 마이너스이면서 섹터보다도 약하면 "주도주 둔화")
-//  후발 가속 : 주도주는 아니지만 1개월 섹터 대비 +5%p 이상 & 1개월 플러스 & 5일도 섹터보다 강함
+//  후발 가속 : 주도주는 아니지만(3개월 섹터 대비 +5%p 미만 — 아래쪽 한계 없음, 뒤처졌다가 따라잡는 종목도 포함)
+//              1개월 섹터 대비 +5%p 이상 & 1개월 플러스 & 5일도 섹터보다 강함
 //  반전 확인 : 위 반전 후보 중 초기 반전·회복 진행에 해당 — 역할 판정에서 가장 먼저 본다
 const GW_ROLE_LEAD = 5;
 const GW_ROLE_LATE = 5;
@@ -4980,7 +4981,7 @@ function gwRole(rt, secRet, rev){
 const GW_ROLE_BADGE = {
   lead:     `<span class="gw-badge role-lead" title="3개월 수익률이 섹터보다 +${GW_ROLE_LEAD}%p 이상 — 이미 섹터를 이끄는 종목">주도주</span>`,
   leadSlow: `<span class="gw-badge role-slow" title="주도주(3개월 섹터 대비 +${GW_ROLE_LEAD}%p 이상)인데 최근 5일 마이너스 + 섹터보다 약함">주도주 둔화</span>`,
-  late:     `<span class="gw-badge role-late" title="3개월은 섹터 수준인데 1개월이 섹터보다 +${GW_ROLE_LATE}%p 이상, 5일도 섹터보다 강함 — 새로 강해지는 종목">후발 가속</span>`,
+  late:     `<span class="gw-badge role-late" title="3개월 동안은 섹터를 앞서지 못했는데(섹터 대비 +${GW_ROLE_LEAD}%p 미만) 최근 1개월 섹터보다 +${GW_ROLE_LATE}%p 이상, 5일도 섹터보다 강함 — 새로 강해지는 종목">후발 가속</span>`,
   rev:      '<span class="gw-badge rv-a" title="아래 반전 후보 표에서 반전 확인(초기 반전·회복 진행) 단계 — 깊게 빠졌다가 돌아서는 중">반전 확인</span>',
 };
 
@@ -5245,7 +5246,7 @@ function gwRender(){
             </tr>`; }).join('') : `<tr><td colspan="${8 + GW_PERIODS.length}" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
         </table></div>
         ${gwMoreBtn('stocks', stocks.length, GW_STOCK_LIMIT, GW_STATE.moreStocks)}
-        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>섹터 대비</b> 종목 수익률 − 섹터 중앙값(섹터 안 보통 종목 — 대장주 쏠림·이상치에 덜 흔들리게) · <b>섹터 안 역할</b>: <span class="gw-badge role-lead">주도주</span> 3개월 섹터 대비 +${GW_ROLE_LEAD}%p 이상 · <span class="gw-badge role-slow">주도주 둔화</span> 그중 최근 5일 마이너스 + 섹터보다 약함 · <span class="gw-badge role-late">후발 가속</span> 3개월은 섹터 수준인데 1개월 섹터 대비 +${GW_ROLE_LATE}%p 이상 + 5일도 섹터보다 강함 · <span class="gw-badge rv-a">반전 확인</span> 아래 반전 후보 표의 초기 반전·회복 진행 · 섹터는 기준 기간 상위 ${GW_TOP_N}위이면서 섹터 수익률이 플러스인 곳, 종목은 그 섹터의 전 종목 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
+        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>섹터 대비</b> 종목 수익률 − 섹터 중앙값(섹터 안 보통 종목 — 대장주 쏠림·이상치에 덜 흔들리게) · <b>섹터 안 역할</b>: <span class="gw-badge role-lead">주도주</span> 3개월 섹터 대비 +${GW_ROLE_LEAD}%p 이상 · <span class="gw-badge role-slow">주도주 둔화</span> 그중 최근 5일 마이너스 + 섹터보다 약함 · <span class="gw-badge role-late">후발 가속</span> 3개월 동안은 섹터를 앞서지 못했는데(뒤처졌던 종목 포함) 최근 1개월 섹터 대비 +${GW_ROLE_LATE}%p 이상 + 5일도 섹터보다 강함 · <span class="gw-badge rv-a">반전 확인</span> 아래 반전 후보 표의 초기 반전·회복 진행 · 섹터는 기준 기간 상위 ${GW_TOP_N}위이면서 섹터 수익률이 플러스인 곳, 종목은 그 섹터의 전 종목 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
       </div>
       <div>
         <h3>반전 후보 — ${GW_STATE.sector ? escapeHtml(GW_STATE.sector) : '전체 종목'}
