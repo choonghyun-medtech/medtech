@@ -581,11 +581,10 @@ tr:last-child td{border-bottom:none}
 /* 글로벌 Watch List(2026-10-07 초안) — 세부섹터 모멘텀 + 눈여겨볼 종목 스크리닝 */
 .gw-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px}
 .gw-seg{display:flex; gap:4px; flex-wrap:wrap}
-/* 섹터 정렬(2026-10-19) — 화면 전체를 바꾸는 필터(기간·국가·수익률 계산)와 달리 섹터 표 순서만 바꿔서
-   선택 상태를 연한 톤 + 점선 구분으로 살짝 다르게 */
-.gw-sort-group{padding-left:14px; border-left:1px dashed var(--border)}
-.gw-seg.alt .gd-tab-btn{background:var(--bg2)}
-.gw-seg.alt .gd-tab-btn.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600}
+/* 열 제목 클릭 정렬(2026-10-19) — .gd-sortable(글로벌 대시보드 표)과 같은 ▲▼ 표시를 쓴다. 증감 열은 좁게 */
+.gw-table th.gw-chg-h{padding-left:2px; padding-right:6px}
+.gw-table .gd-sort-arrow, .gw-table .gd-sort-hint{margin-left:2px; font-size:8px}
+.gw-table th.gd-sortable{padding-left:5px; padding-right:5px}
 /* minmax(0,1fr)+min-width:0 — 그리드 칸은 기본적으로 내용물(넓은 표)보다 좁아지지 않아서, 표가 페이지 폭(1080px)
    밖으로 튀어나가고 .gd-table-scroll의 가로 스크롤이 안 생겼다(2026-10-16). 칸을 페이지 폭에 맞추고 표는 스크롤. */
 .gw-grid{display:grid; grid-template-columns:minmax(0,1fr); gap:18px}
@@ -4827,7 +4826,9 @@ const GW_TOP_N = 5;
 const GW_MIN_SECTOR_N = 3;
 const GW_STOCK_LIMIT = 20;
 // moreStocks/moreRev: 두 종목 표의 "더 보기"(20개 제한 해제) — 필터를 바꾸면 다시 접힌다(2026-10-16)
-const GW_STATE = { country:'ALL', weight:'cap', period:'5D', sector:null, moreStocks:false, moreRev:false, secSort:'ret' };
+// sort: 세 표(sec 세부섹터 · stk 눈여겨볼 종목 · rev 반전 후보)의 열 제목 클릭 정렬 — key가 null이면 기본 정렬
+const GW_STATE = { country:'ALL', weight:'cap', period:'5D', sector:null, moreStocks:false, moreRev:false,
+  sort: { sec: { key: null, dir: 0 }, stk: { key: null, dir: 0 }, rev: { key: null, dir: 0 } } };
 
 function gwHeatStyle(v, scale){
   if(v == null || isNaN(v)) return '';
@@ -4989,7 +4990,37 @@ const GW_ROLE_BADGE = {
 // 반전 확인 = 위 엔진에서 초기 반전·회복 진행으로 판정된 종목 수/섹터 종목 수, 상승 종목 비중 = 1개월 플러스 종목 비중. 둘 다 5거래일 전 대비 변화 표시.
 // 종목 수가 적은 섹터는 한 종목만 바뀌어도 비중이 크게 흔들려서, 비율 정렬 때는 GW_BREADTH_MIN_N개 미만 섹터를 뒤로 보낸다.
 const GW_BREADTH_MIN_N = 5;
-const GW_SEC_SORTS = [['ret', '기준 기간 수익률'], ['rev', '반전 확인 비중'], ['revChg', '반전 확인 증가'], ['br', '상승 종목 비중'], ['brChg', '상승 종목 비중 증가']];
+
+// ---- 열 제목 클릭 정렬 (2026-10-19) — 글로벌 대시보드 표와 같은 ▲▼ 방식. 예전 "섹터 정렬" 버튼 묶음을 대신한다 ----
+// 숫자 열은 처음 누르면 내림차순 → 다시 누르면 오름차순 → 한 번 더 누르면 기본 정렬로. 글자 열(종목·섹터·국가)은 오름차순부터.
+// 빈 값은 방향과 상관없이 맨 뒤. 정렬은 "더보기" 자르기 전에 적용(상위 20개도 그 열 기준).
+const GW_TEXT_SORT_KEYS = new Set(['name', 'sector', 'country']);
+function gwSortClick(tbl, key){
+  const st = GW_STATE.sort[tbl];
+  const first = GW_TEXT_SORT_KEYS.has(key) ? 1 : -1;
+  if(st.key !== key){ st.key = key; st.dir = first; }
+  else if(st.dir === first) st.dir = -first;
+  else { st.key = null; st.dir = 0; }
+}
+function gwSortTh(tbl, key, label, cls = '', title = '', attrs = ''){
+  const st = GW_STATE.sort[tbl];
+  const arrow = st.key === key ? `<span class="gd-sort-arrow">${st.dir === 1 ? '▲' : '▼'}</span>` : '<span class="gd-sort-hint">▲▼</span>';
+  return `<th class="${cls} gd-sortable" data-gw-sort="${tbl}:${key}" ${attrs} title="${title ? title + ' · ' : ''}클릭해서 정렬(세 번째 클릭 시 기본 정렬)">${label}${arrow}</th>`;
+}
+// list(기본 정렬된 상태)를 tbl의 현재 열 정렬로 다시 정렬 — 정렬이 안정적이라 같은 값끼리는 기본 순서 유지.
+// pin(a, b): 정렬과 무관하게 지킬 순서(예: 종목 수가 너무 적은 섹터는 맨 뒤)
+function gwApplySort(list, tbl, getters, pin){
+  const st = GW_STATE.sort[tbl], get = st.key && getters[st.key];
+  if(!get) return list;
+  const isNull = v => v == null || (typeof v === 'number' && !isFinite(v));
+  return list.slice().sort((a, b) => {
+    const p = pin ? pin(a, b, st.key) : 0;
+    if(p) return p;
+    const va = get(a), vb = get(b);
+    if(isNull(va) || isNull(vb)) return isNull(va) - isNull(vb);
+    return (typeof va === 'string' ? va.localeCompare(vb, 'ko') : va - vb) * st.dir;
+  });
+}
 // 섹터 표 아래 "읽는 법" — 지금 데이터에서 실제 예시를 골라 수익률과 상승 종목 비중을 같이 읽는 법을 보여준다.
 //  좁은 상승: 1개월 섹터 수익률 +3% 이상인데 오른 종목이 절반 미만(일부 대형주가 끌어올림)
 //  넓은 상승: 1개월 플러스 종목이 70% 이상(섹터 전반이 같이 오름)
@@ -5135,13 +5166,18 @@ function gwRender(){
     s.brOk = s.hn >= GW_BREADTH_MIN_N;
   });
   const per = GW_STATE.period;
-  const secKey = {
-    ret: s => s.ret[per], rev: s => s.hn ? s.revNow / s.hn : null, revChg: s => s.revNow - s.revPrev,
+  // 기본 정렬: 기준 기간 섹터 수익률 내림차순(종목 수 부족 섹터는 맨 뒤). 열 제목을 누르면 그 열로 다시 정렬.
+  sectors.sort((a,b) => (b.eligible - a.eligible) || ((b.ret[per] ?? -1e9) - (a.ret[per] ?? -1e9)) || (b.revNow - a.revNow));
+  const secGetters = {
+    name: s => s.name, n: s => s.n, trend: s => s.persist,
+    rev: s => s.hn ? s.revNow / s.hn : null, revChg: s => s.revNow - s.revPrev,
     br: s => s.brNow, brChg: s => s.brNow == null || s.brPrev == null ? null : s.brNow - s.brPrev,
-  }[GW_STATE.secSort] || (s => s.ret[per]);
-  const ratioSort = GW_STATE.secSort !== 'ret';
-  sectors.sort((a,b) => (b.eligible - a.eligible) || (ratioSort ? (b.brOk - a.brOk) : 0) ||
-    ((secKey(b) ?? -1e9) - (secKey(a) ?? -1e9)) || (b.revNow - a.revNow) || ((b.ret[per] ?? -1e9) - (a.ret[per] ?? -1e9)));
+  };
+  GW_PERIODS.forEach(p => secGetters['p' + p.key] = s => s.ret[p.key]);
+  // 종목 수 부족(순위 제외) 섹터는 항상 맨 뒤, 비율 열(반전 확인·상승 종목 비중)로 정렬할 땐 판정 가능 종목이 적은 섹터도 뒤로
+  const secCustom = !!GW_STATE.sort.sec.key;
+  const sortedSectors = gwApplySort(sectors, 'sec', secGetters,
+    (a, b, key) => (b.eligible - a.eligible) || (['rev', 'revChg', 'br', 'brChg'].includes(key) ? b.brOk - a.brOk : 0));
   if(GW_STATE.sector && !sectorMap[GW_STATE.sector]) GW_STATE.sector = null;
   const secByName = Object.fromEntries(sectors.map(s => [s.name, s]));
 
@@ -5164,7 +5200,15 @@ function gwRender(){
       ex1: ex('m1', '1M'), ex3: ex('m3', '3M'), role: gwRole(s.returns, secRet, ev && ev.now) });
   }));
   stocks.sort((a,b) => (b.level - a.level) || ((b.s.returns[perRk] ?? -1e9) - (a.s.returns[perRk] ?? -1e9)));
-  const shownStocks = GW_STATE.moreStocks ? stocks : stocks.slice(0, GW_STOCK_LIMIT);
+  // 추세 / 역할 열 정렬: 추세 등급 먼저, 같은 등급 안에서 주도주 > 후발 가속 > 반전 확인 > 주도주 둔화
+  const ROLE_RANK = { lead: 4, late: 3, rev: 2, leadSlow: 1 };
+  const stkGetters = {
+    name: x => x.r.name, trend: x => x.level * 10 + (ROLE_RANK[x.role] || 0), sector: x => x.secs[0] || '',
+    country: x => x.r.country, cap: x => x.r.mktcap, ex1: x => x.ex1, ex3: x => x.ex3,
+  };
+  GW_PERIODS.forEach(p => stkGetters['p' + p.key] = x => x.s.returns[p.rk]);
+  const stocksSorted = gwApplySort(stocks, 'stk', stkGetters);
+  const shownStocks = GW_STATE.moreStocks ? stocksSorted : stocksSorted.slice(0, GW_STOCK_LIMIT);
   const strongCnt = stocks.filter(x => x.level === 3).length;
   const roleCnt = k => stocks.filter(x => x.role === k).length;
 
@@ -5177,9 +5221,17 @@ function gwRender(){
   // 예전엔 NEW·강화를 위로 올렸는데, 간이 점검에서 막 잡힌 NEW의 이후 성과가 가장 약하고 단계적 개선이 가장 좋아서 바꿨다.
   revAll.sort((a, b) => (a.x.now.fade - b.x.now.fade) || (b.x.now.tier - a.x.now.tier) ||
     (b.x.now.strong - a.x.now.strong) || (b.x.now.steady - a.x.now.steady) || ((b.x.now.rel ?? -1e9) - (a.x.now.rel ?? -1e9)));
-  const revShown = GW_STATE.moreRev ? revAll : revAll.slice(0, GW_REV_LIMIT);
   // 반전 후보 표는 1일 수익률을 뺀다 — 반전 판정과 무관하고, 단계 열을 앞으로 당기면서 표가 화면 폭을 넘지 않게
   const revPeriods = GW_PERIODS.filter(p => p.key !== '1D');
+  // 단계 열 정렬: 회복 진행 > 초기 반전 > 반전 시도 · 52주 위치 열: 저점~고점 사이 현재 위치(0=저점, 1=고점)
+  const revGetters = {
+    name: o => o.r.name, stage: o => GW_STAGE_ORDER[o.x.now.stage], sector: o => (o.r.sectors || [])[0] || '',
+    country: o => o.r.country, cap: o => o.r.mktcap, rel: o => o.x.now.rel, mdd: o => o.x.now.mdd,
+    w52: o => { const w = gw52w(o.s); return w ? w.pos : null; },
+  };
+  revPeriods.forEach(p => revGetters['p' + p.key] = o => o.s.returns[p.rk]);
+  const revSorted = gwApplySort(revAll, 'rev', revGetters);
+  const revShown = GW_STATE.moreRev ? revSorted : revSorted.slice(0, GW_REV_LIMIT);
   const revCnt = f => revAll.filter(f).length;
   // 5거래일 전엔 반전 확인이었는데 지금은 신호가 없어진 종목(표에는 안 나오므로 개수만)
   const revGone = revPool.filter(r => { const x = eng.map[r.name]; return x && x.prev && x.prev.tier === 2 && !x.now; }).length;
@@ -5195,34 +5247,37 @@ function gwRender(){
       <div class="gd-filter-group"><span class="gd-filter-label">기준 기간 (정렬·스크리닝)</span>${seg(GW_PERIODS.map(p=>[p.key,p.label]), per, 'data-gw-period')}</div>
       <div class="gd-filter-group"><span class="gd-filter-label">국가</span>${seg(countries.map(c=>[c, c==='ALL'?'전체':c]), GW_STATE.country, 'data-gw-country')}</div>
       <div class="gd-filter-group"><span class="gd-filter-label">섹터 수익률 계산</span>${seg([['cap','시총가중'],['eq','동일가중']], GW_STATE.weight, 'data-gw-weight')}</div>
-      <div class="gd-filter-group gw-sort-group"><span class="gd-filter-label">섹터 정렬 <span style="font-weight:400">(섹터 표 순서만)</span></span>${seg(GW_SEC_SORTS, GW_STATE.secSort, 'data-gw-secsort', 'alt')}</div>
     </div>
     <div class="gw-grid">
       <div>
-        <h3>세부섹터 모멘텀 <span class="note" style="font-weight:400">· 행을 클릭하면 아래 종목 목록이 그 섹터로 바뀜(다시 클릭하면 해제) · 정렬: ${escapeHtml(GW_SEC_SORTS.find(x => x[0] === GW_STATE.secSort)[1])}</span></h3>
+        <h3>세부섹터 모멘텀 <span class="note" style="font-weight:400">· 행을 클릭하면 아래 종목 목록이 그 섹터로 바뀜(다시 클릭하면 해제) · 열 제목을 누르면 그 열로 정렬</span></h3>
         <div class="gd-table-scroll"><table class="gw-table">
           <thead>
-            <tr><th class="l" rowspan="2">#</th><th class="l" rowspan="2">세부섹터</th><th rowspan="2">종목</th>
+            <tr><th class="l" rowspan="2">#</th>${gwSortTh('sec', 'name', '세부섹터', 'l', '', 'rowspan="2"')}${gwSortTh('sec', 'n', '종목', '', '', 'rowspan="2"')}
               <th class="grp" colspan="${GW_PERIODS.length}" title="섹터 전체가 얼마나 올랐나">섹터 수익률</th>
-              <th class="grp gw-radar-h" colspan="2" title="섹터 안에서 몇 종목이 같이 움직였나 · ▲▼ = ${GW_HIST_LAG}거래일 전 대비">종목 확산 <span class="grp-sub">▲▼ ${GW_HIST_LAG}일 전 대비</span></th>
-              <th class="l" rowspan="2">추세</th></tr>
-            <tr>${GW_PERIODS.map(p => `<th class="${p.key===per && GW_STATE.secSort==='ret'?'sel':''}">${p.label}</th>`).join('')}
-              <th class="gw-radar-h ${['rev','revChg'].includes(GW_STATE.secSort)?'sel':''}" title="반전 확인(초기 반전·회복 진행) 종목 수 / 판정 가능한 종목 수 · ▲▼ = ${GW_HIST_LAG}거래일 전 대비 개수 변화">반전 확인 종목</th>
-              <th class="${['br','brChg'].includes(GW_STATE.secSort)?'sel':''}" title="1개월 수익률이 플러스인 종목 수 / 판정 가능한 종목 수 · ▲▼ = ${GW_HIST_LAG}거래일 전 대비 %p 변화">상승 종목 비중<span class="grp-sub" style="display:block">1개월 플러스</span></th></tr>
+              <th class="grp gw-radar-h" colspan="4" title="섹터 안에서 몇 종목이 같이 움직였나 · 증감 = ${GW_HIST_LAG}거래일 전 대비">종목 확산 <span class="grp-sub">증감 = ${GW_HIST_LAG}일 전 대비</span></th>
+              ${gwSortTh('sec', 'trend', '추세', 'l', '', 'rowspan="2"')}</tr>
+            <tr>${GW_PERIODS.map(p => gwSortTh('sec', 'p' + p.key, p.label, p.key === per ? 'sel' : '')).join('')}
+              ${gwSortTh('sec', 'rev', '반전 확인', 'gw-radar-h', `반전 확인(초기 반전·회복 진행) 종목 수 / 판정 가능한 종목 수 — 정렬은 비중 기준`)}
+              ${gwSortTh('sec', 'revChg', '증감', 'gw-chg-h', `반전 확인 종목 수의 ${GW_HIST_LAG}거래일 전 대비 변화`)}
+              ${gwSortTh('sec', 'br', '상승 종목 비중', '', '1개월 수익률이 플러스인 종목 수 / 판정 가능한 종목 수')}
+              ${gwSortTh('sec', 'brChg', '증감', 'gw-chg-h', `상승 종목 비중의 ${GW_HIST_LAG}거래일 전 대비 변화(%p)`)}</tr>
           </thead>
-          <tbody>${sectors.map((s, i) => `
+          <tbody>${sortedSectors.map((s, i) => `
             <tr class="gw-sector-row ${s.eligible?'':'dim'} ${GW_STATE.sector===s.name?'picked':''}" data-gw-sector="${escapeHtml(s.name)}"
                 title="${s.eligible ? '' : `종목 ${GW_MIN_SECTOR_N}개 미만 — 순위 제외 · `}시총 1위 ${escapeHtml(s.leader)} 비중 ${(s.leaderShare * 100).toFixed(0)}%">
-              <td class="l">${s.eligible ? (GW_STATE.secSort === 'ret' ? (rank[per][s.name] ?? '-') : i + 1) : '-'}</td>
+              <td class="l">${s.eligible ? (secCustom ? i + 1 : (rank[per][s.name] ?? '-')) : '-'}</td>
               <td class="l">${escapeHtml(s.name)}</td><td>${s.n}</td>
               ${GW_PERIODS.map(p => `<td class="heat ${s.eligible && isTop(s,p.key)?'top':''}" style="${gwHeatStyle(s.ret[p.key], GW_HEAT_SCALE[p.key])}">${gwFmtPct(s.ret[p.key])}</td>`).join('')}
-              <td class="gw-radar ${s.brOk ? '' : 'thin'}" title="${escapeHtml(s.name)} ${s.hn}개 중 ${s.revNow}개가 반전 확인 (${GW_HIST_LAG}거래일 전 ${s.revPrev}개)${s.brOk ? '' : ` · 판정 가능 종목 ${GW_BREADTH_MIN_N}개 미만이라 한 종목만 바뀌어도 크게 흔들림`}">${s.revNow ? `<b>${s.revNow}</b>` : '0'}<span class="gw-den">/${s.hn}개</span> ${gwChgHtml(s.revNow - s.revPrev, '')}</td>
-              <td class="${s.brOk ? '' : 'thin'}" title="${escapeHtml(s.name)} ${s.brN}개 중 ${s.brUp}개가 최근 1개월 플러스 (${GW_HIST_LAG}거래일 전 ${s.brPrev == null ? '-' : s.brPrev.toFixed(0) + '%'})">${s.brNow == null ? '-' : `${s.brNow.toFixed(0)}%<span class="gw-den"> (${s.brUp}/${s.brN})</span>`} ${s.brNow == null || s.brPrev == null ? '' : gwChgHtml(s.brNow - s.brPrev, '%p')}</td>
+              <td class="gw-radar ${s.brOk ? '' : 'thin'}" title="${escapeHtml(s.name)} ${s.hn}개 중 ${s.revNow}개가 반전 확인 (${GW_HIST_LAG}거래일 전 ${s.revPrev}개)${s.brOk ? '' : ` · 판정 가능 종목 ${GW_BREADTH_MIN_N}개 미만이라 한 종목만 바뀌어도 크게 흔들림`}">${s.revNow ? `<b>${s.revNow}</b>` : '0'}<span class="gw-den">/${s.hn}개</span></td>
+              <td class="${s.brOk ? '' : 'thin'}">${gwChgHtml(s.revNow - s.revPrev, '')}</td>
+              <td class="${s.brOk ? '' : 'thin'}" title="${escapeHtml(s.name)} ${s.brN}개 중 ${s.brUp}개가 최근 1개월 플러스 (${GW_HIST_LAG}거래일 전 ${s.brPrev == null ? '-' : s.brPrev.toFixed(0) + '%'})">${s.brNow == null ? '-' : `${s.brNow.toFixed(0)}%<span class="gw-den"> (${s.brUp}/${s.brN})</span>`}</td>
+              <td class="${s.brOk ? '' : 'thin'}">${s.brNow == null || s.brPrev == null ? '' : gwChgHtml(s.brNow - s.brPrev, '%p')}</td>
               <td class="l">${s.eligible ? persistBadge(s.persist) : ''}</td>
             </tr>`).join('')}</tbody>
         </table></div>
         ${gwBreadthGuide(sectors)}
-        <div class="gw-legend">굵은 글씨 = 그 기간 상위 ${GW_TOP_N}위이면서 플러스 · <span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 모두 플러스 · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>반전 확인 종목</b> 아래 반전 후보 표에서 초기 반전·회복 진행 단계인 종목 수 · <b>상승 종목 비중</b> 최근 1개월 주가가 오른 종목 수 ÷ 섹터 종목 수 · 흐린 숫자 = 판정 가능 종목 ${GW_BREADTH_MIN_N}개 미만(한 종목만 바뀌어도 크게 흔들려 비율 정렬 시 뒤로) · 섹터 수익률 ${GW_STATE.weight==='cap'?'시총가중(섹터 바구니 수익률)':'동일가중(단순 평균)'} · 한 기업이 여러 세부섹터에 속하면 각 섹터에 모두 포함</div>
+        <div class="gw-legend">굵은 글씨 = 그 기간 상위 ${GW_TOP_N}위이면서 플러스 · <span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 모두 플러스 · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>반전 확인 종목</b> 아래 반전 후보 표에서 초기 반전·회복 진행 단계인 종목 수 · <b>상승 종목 비중</b> 최근 1개월 주가가 오른 종목 수 ÷ 섹터 종목 수 · 흐린 숫자 = 판정 가능 종목 ${GW_BREADTH_MIN_N}개 미만(한 종목만 바뀌어도 크게 흔들려 종목 확산 열로 정렬 시 뒤로) · 열 제목 클릭: 내림차순 → 오름차순 → 기본 정렬(기준 기간 수익률) · 섹터 수익률 ${GW_STATE.weight==='cap'?'시총가중(섹터 바구니 수익률)':'동일가중(단순 평균)'} · 한 기업이 여러 세부섹터에 속하면 각 섹터에 모두 포함</div>
         ${gwConcentrationNote(sectors)}
       </div>
       <div>
@@ -5230,9 +5285,10 @@ function gwRender(){
             : `${GW_PERIODS.find(p=>p.key===per).label} 수익률이 플러스인 섹터 없음 <span class="note" style="font-weight:400">· 위 섹터 행을 클릭해 개별로 보거나 아래 반전 후보 참고</span>`}
           <span class="note" style="font-weight:400">· ${stocks.length}개 중 ${shownStocks.length}개 표시 · 5D→3M 지속 ${strongCnt}개 · 주도주 ${roleCnt('lead') + roleCnt('leadSlow')}(둔화 ${roleCnt('leadSlow')}) · 후발 가속 ${roleCnt('late')} · 반전 확인 ${roleCnt('rev')}</span></h3>
         <div class="gd-table-scroll"><table class="gw-table">
-          <thead><tr><th class="l">종목</th><th class="l">추세 / 역할</th><th class="l">세부섹터</th><th class="l">국가</th><th>시총(십억원)</th>
-            ${GW_PERIODS.map(p => `<th class="${p.key===per?'sel':''}">${p.label}</th>`).join('')}
-            <th title="종목 수익률 − 소속 섹터 중앙값(섹터 안 보통 종목, %p) · 여러 상위 섹터에 걸치면 첫 번째 섹터 기준">섹터 대비 1M</th><th>섹터 대비 3M</th></tr></thead>
+          <thead><tr>${gwSortTh('stk', 'name', '종목', 'l')}${gwSortTh('stk', 'trend', '추세 / 역할', 'l', '추세 등급 → 역할(주도주 > 후발 가속 > 반전 확인 > 주도주 둔화) 순')}
+            ${gwSortTh('stk', 'sector', '세부섹터', 'l')}${gwSortTh('stk', 'country', '국가', 'l')}${gwSortTh('stk', 'cap', '시총<br>(십억원)')}
+            ${GW_PERIODS.map(p => gwSortTh('stk', 'p' + p.key, p.label, p.key === per ? 'sel' : '')).join('')}
+            ${gwSortTh('stk', 'ex1', '섹터 대비<br>1M', '', '종목 수익률 − 소속 섹터 중앙값(섹터 안 보통 종목, %p) · 여러 상위 섹터에 걸치면 첫 번째 섹터 기준')}${gwSortTh('stk', 'ex3', '섹터 대비<br>3M')}</tr></thead>
           <tbody>${shownStocks.length ? shownStocks.map(x => { const earn = gwEarningsBadge(x.s.ticker); return `
             <tr class="gw-stock-row l${x.level}" title="종가 기준일 ${x.s.as_of || '-'}${x.relSec ? ` · 섹터 대비는 ${escapeHtml(x.relSec)} 기준` : ''}">
               <td class="l">${companyNameLinkHtml(x.s.ticker, x.r.name)}${earn ? `<span class="gw-sub">${earn}</span>` : ''}</td>
@@ -5246,18 +5302,19 @@ function gwRender(){
             </tr>`; }).join('') : `<tr><td colspan="${8 + GW_PERIODS.length}" class="note" style="padding:14px">해당 조건의 종목이 없습니다</td></tr>`}</tbody>
         </table></div>
         ${gwMoreBtn('stocks', stocks.length, GW_STOCK_LIMIT, GW_STATE.moreStocks)}
-        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>섹터 대비</b> 종목 수익률 − 섹터 중앙값(섹터 안 보통 종목 — 대장주 쏠림·이상치에 덜 흔들리게) · <b>섹터 안 역할</b>: <span class="gw-badge role-lead">주도주</span> 3개월 섹터 대비 +${GW_ROLE_LEAD}%p 이상 · <span class="gw-badge role-slow">주도주 둔화</span> 그중 최근 5일 마이너스 + 섹터보다 약함 · <span class="gw-badge role-late">후발 가속</span> 3개월 동안은 섹터를 앞서지 못했는데(뒤처졌던 종목 포함) 최근 1개월 섹터 대비 +${GW_ROLE_LATE}%p 이상 + 5일도 섹터보다 강함 · <span class="gw-badge rv-a">반전 확인</span> 아래 반전 후보 표의 초기 반전·회복 진행 · 섹터는 기준 기간 상위 ${GW_TOP_N}위이면서 섹터 수익률이 플러스인 곳, 종목은 그 섹터의 전 종목 · 정렬: 추세 등급 → 기준 기간 수익률 · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
+        <div class="gw-legend"><span class="gw-badge l3">5D→3M 지속</span> 5일·1개월·3개월 수익률 모두 플러스(빨간 하이라이트) · <span class="gw-badge l2">5D→1M 지속</span> 5일·1개월 플러스 · <b>섹터 대비</b> 종목 수익률 − 섹터 중앙값(섹터 안 보통 종목 — 대장주 쏠림·이상치에 덜 흔들리게) · <b>섹터 안 역할</b>: <span class="gw-badge role-lead">주도주</span> 3개월 섹터 대비 +${GW_ROLE_LEAD}%p 이상 · <span class="gw-badge role-slow">주도주 둔화</span> 그중 최근 5일 마이너스 + 섹터보다 약함 · <span class="gw-badge role-late">후발 가속</span> 3개월 동안은 섹터를 앞서지 못했는데(뒤처졌던 종목 포함) 최근 1개월 섹터 대비 +${GW_ROLE_LATE}%p 이상 + 5일도 섹터보다 강함 · <span class="gw-badge rv-a">반전 확인</span> 아래 반전 후보 표의 초기 반전·회복 진행 · 섹터는 기준 기간 상위 ${GW_TOP_N}위이면서 섹터 수익률이 플러스인 곳, 종목은 그 섹터의 전 종목 · 기본 정렬: 추세 등급 → 기준 기간 수익률(열 제목을 누르면 그 열로) · 수익률은 현지통화 주가 기준 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
       </div>
       <div>
         <h3>반전 후보 — ${GW_STATE.sector ? escapeHtml(GW_STATE.sector) : '전체 종목'}
           <span class="note" style="font-weight:400">· 깊게 빠졌다가 최근 돌아서는 종목 · ${revAll.length}개 중 ${revShown.length}개 표시 · 초기 반전 ${revCnt(o => o.x.now.stage === 'early')} · 회복 진행 ${revCnt(o => o.x.now.stage === 'recov')} · 반전 시도 ${revCnt(o => o.x.now.stage === 'try')} · 신규 ${revCnt(o => o.st === 'new')} · 되밀림 ${revCnt(o => o.x.now.fade)}(맨 뒤) · ${GW_HIST_LAG}거래일 전 대비 이탈 ${revGone}</span></h3>
         <div class="gd-table-scroll"><table class="gw-table">
-          <thead><tr><th class="l">종목 <span class="grp-sub">특징 · 실적</span></th><th class="l" title="위: 단계 · 아래: ${GW_HIST_LAG}거래일 전 같은 기준 판정과 비교">단계 / ${GW_HIST_LAG}일 전 대비</th>
-            <th class="l">세부섹터</th><th class="l">국가</th><th>시총(십억원)</th>
-            ${revPeriods.map(p => `<th>${p.label}</th>`).join('')}
-            <th title="1개월 수익률 − 커버리지 전체 1개월 수익률 중앙값(오늘 ${gwFmtPct(eng.mktNow)})">시장 대비 1M</th>
-            <th title="최근 6개월 고점 → 그 이후 저점 낙폭 (전제 조건: ${GW_REV_DEPTH}% 이하)">6M 고점→저점</th>
-            <th class="l" title="1년 종가 기준 — 막대는 52주 저점(왼쪽)~고점(오른쪽) 사이 현재 위치">52주 위치</th></tr></thead>
+          <thead><tr>${gwSortTh('rev', 'name', '종목 <span class="grp-sub">특징 · 실적</span>', 'l')}
+            ${gwSortTh('rev', 'stage', `단계 /<br>${GW_HIST_LAG}일 전 대비`, 'l', `위: 단계 · 아래: ${GW_HIST_LAG}거래일 전 같은 기준 판정과 비교 — 정렬은 단계(회복 진행 > 초기 반전 > 반전 시도)`)}
+            ${gwSortTh('rev', 'sector', '세부섹터', 'l')}${gwSortTh('rev', 'country', '국가', 'l')}${gwSortTh('rev', 'cap', '시총<br>(십억원)')}
+            ${revPeriods.map(p => gwSortTh('rev', 'p' + p.key, p.label)).join('')}
+            ${gwSortTh('rev', 'rel', '시장 대비<br>1M', '', `1개월 수익률 − 커버리지 전체 1개월 수익률 중앙값(오늘 ${gwFmtPct(eng.mktNow)})`)}
+            ${gwSortTh('rev', 'mdd', '6M 고점<br>→저점', '', `최근 6개월 고점 → 그 이후 저점 낙폭 (전제 조건: ${GW_REV_DEPTH}% 이하)`)}
+            ${gwSortTh('rev', 'w52', '52주 위치', 'l', '1년 종가 기준 — 막대는 52주 저점(왼쪽)~고점(오른쪽) 사이 현재 위치 · 정렬은 저점~고점 사이 위치')}</tr></thead>
           <tbody>${revShown.length ? revShown.map(o => { const n = o.x.now, earn = gwEarningsBadge(o.s.ticker), tags = gwRevTags(n); return `
             <tr class="gw-stock-row ${n.tier === 2 && !n.fade ? 'rv' : ''}" title="종가 기준일 ${o.s.as_of || '-'} · 6개월 저점 대비 ${gwFmtPct(n.fromLo)}">
               <td class="l">${companyNameLinkHtml(o.s.ticker, o.r.name)}${tags || earn ? `<span class="gw-sub gw-tags">${tags}${earn}</span>` : ''}</td>
@@ -5276,7 +5333,7 @@ function gwRender(){
           <b>단계</b> <span class="gw-badge rv-c">반전 시도</span> 1개월은 아직 시장 이하인데 5일 +${GW_REV_TRY_D5}% 이상(일시 반등일 수 있음) → <span class="gw-badge rv-a">초기 반전</span> 1개월 플러스 + 시장(커버리지 전체 1개월 중앙값 ${gwFmtPct(eng.mktNow)}) 상회, 3개월은 아직 마이너스 → <span class="gw-badge rv-b">회복 진행</span> 같은 조건에 3개월도 플러스 (초기 반전·회복 진행 = <b>반전 확인</b>, 반전 시도 = 아직 확인 전) ·
           <b>특징</b> <span class="gw-tag strong">강한 반전</span> 1개월이 시장보다 +${GW_REV_STRONG}%p 이상 · <span class="gw-tag steady">단계적 개선</span> 6개월~3개월 → 3개월~1개월 → 최근 1개월 구간 일평균 수익률이 갈수록 높아짐 · <span class="gw-tag fade">⚠ 되밀림</span> 최근 ${GW_OFF.d5}거래일에 저점 이후 오른 폭의 ${GW_FADE_GIVEBACK * 100}% 이상 반납(맨 뒤로) ·
           <b>${GW_HIST_LAG}일 전 대비</b> 같은 기준으로 ${GW_HIST_LAG}거래일 전에 판정한 단계와 비교: <span class="gw-st new">● 신규</span> 그땐 어떤 단계도 아님(새로 볼 종목, 더 좋은 신호라는 뜻은 아님) · <span class="gw-st up">▲ 강화</span> 단계가 올라감 · <span class="gw-st keep">지속</span> 같은 단계 · <span class="gw-st down">▼ 약화</span> 단계가 내려감 ·
-          정렬: 되밀림은 맨 뒤 → 반전 확인 → 반전 시도 → 강한 반전 → 단계적 개선 → 시장 대비 1개월 · 판정은 일별 종가(거래일 5/21/66/132일) 기준 · 위 섹터 표의 행을 클릭하면 그 섹터 안에서만 찾음 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
+          기본 정렬: 되밀림은 맨 뒤 → 반전 확인 → 반전 시도 → 강한 반전 → 단계적 개선 → 시장 대비 1개월(열 제목을 누르면 그 열로) · 판정은 일별 종가(거래일 5/21/66/132일) 기준 · 위 섹터 표의 행을 클릭하면 그 섹터 안에서만 찾음 · 종목명 클릭 시 기업 스냅샷으로 이동</div>
       </div>
     </div>`;
 
@@ -5288,7 +5345,10 @@ function gwRender(){
   wrap.querySelectorAll('[data-gw-period]').forEach(b => b.onclick = () => { GW_STATE.period = b.dataset.gwPeriod; collapse(); gwRender(); });
   wrap.querySelectorAll('[data-gw-country]').forEach(b => b.onclick = () => { GW_STATE.country = b.dataset.gwCountry; GW_STATE.sector = null; collapse(); gwRender(); });
   wrap.querySelectorAll('[data-gw-weight]').forEach(b => b.onclick = () => { GW_STATE.weight = b.dataset.gwWeight; gwRender(); });
-  wrap.querySelectorAll('[data-gw-secsort]').forEach(b => b.onclick = () => { GW_STATE.secSort = b.dataset.gwSecsort; gwRender(); });
+  wrap.querySelectorAll('[data-gw-sort]').forEach(th => th.onclick = () => {
+    const [tbl, key] = th.dataset.gwSort.split(':');
+    gwSortClick(tbl, key); gwRender();
+  });
   wrap.querySelectorAll('[data-gw-sector]').forEach(tr => tr.onclick = () => {
     const sec = tr.dataset.gwSector;
     GW_STATE.sector = GW_STATE.sector === sec ? null : sec; collapse(); gwRender();
