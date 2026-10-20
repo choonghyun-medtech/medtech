@@ -1,0 +1,157 @@
+{
+ "ticker": "ISRG",
+ "company": "Intuitive Surgical, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-20",
+ "file": "ISRG_2026Q3.json",
+ "source_hash": "9d188b8c7cd7",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-20T23:20:00.243833+00:00",
+ "headline": [
+  "인튜이티브 서지컬의 2026년 3분기 총 매출은 전년 동기 대비 22% 증가한 30억 달러를 기록함.",
+  "3분기 총 수술 건수는 다빈치 및 아이온 플랫폼의 채택 확대로 15% 증가함.",
+  "고수요 양성 수술의 접근성 확대 및 비용 절감을 위해 엔도우리스트 기구 사용 횟수 확대 프로그램 및 중국 가격 인하를 추진함.",
+  "다빈치 5 및 SP 플랫폼의 강력한 수요에 힘입어 다빈치 시스템 순 설치 대수가 40% 증가함."
+ ],
+ "changes": [
+  "2026년 전체 다빈치 수술 건수 성장률 가이던스를 기존 13.5%~15.5%에서 14%~15%로 좁힘.",
+  "비가프(non-GAAP) 매출총이익률 가이던스를 기존 68%~69%에서 68.7%~69.3%로 상향 조정함.",
+  "미국 고객들과의 제3자 재제조 기구 및 서비스 관련 집단소송에 대해 합의에 도달함."
+ ],
+ "prepared": {
+  "summary": [
+   "인튜이티브 서지컬은 다빈치, SP, 아이온 플랫폼 전반의 견고한 채택에 힘입어 3분기 총 매출 30억 달러를 달성함.",
+   "경영진은 고수요 양성 수술의 비용 장벽을 낮추기 위해 2027년 상반기부터 엔도우리스트 기구 수명 연장을 포함한 가격 정책을 시행할 계획임.",
+   "다빈치 5는 출시 이후 전 세계적으로 2,000대 이상 설치되었으며, 수술 건수와 시스템 설치 모두에서 강력한 성장세를 유지하고 있음."
+  ],
+  "sections": [
+   {
+    "title": "실적 및 사업 하이라이트",
+    "points": [
+     "3분기 총 매출은 전년 동기 대비 22% 증가한 30억 달러, 반복 매출은 84%를 차지함.",
+     "전 세계 총 수술 건수는 15% 증가했으며, 다빈치 5와 SP가 글로벌 시스템 설치의 65%를 차지함."
+    ]
+   },
+   {
+    "title": "지역별 및 플랫폼별 동향",
+    "points": [
+     "미국 다빈치 수술 건수는 10% 증가했으며, 해외(OUS) 다빈치 수술 건수는 20% 증가함.",
+     "말레이시아 페낭에 새로운 INA 제조 시설을 발표하여 2028년 가동을 목표로 함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 da Vinci procedure growth",
+   "value": "14% to 15%",
+   "prev": "13.5% to 15.5%",
+   "change": "상향",
+   "quote": "We are narrowing our forecast to be within a range of 14% to 15%, with an expectation to be closer to the midpoint."
+  },
+  {
+   "item": "FY26 non-GAAP gross profit margin",
+   "value": "68.7% to 69.3%",
+   "prev": "68% to 69%",
+   "change": "상향",
+   "quote": "We are updating our estimate to be within a range of 68.7% and 69.3% of revenue, including an estimated 90 basis points impact from tariffs as well as related refunds."
+  },
+  {
+   "item": "FY26 non-GAAP operating expense growth",
+   "value": "11% to 13%",
+   "prev": "11% to 13%",
+   "change": "유지",
+   "quote": "As a reminder, in Q4 2025, we made a $70 million multiyear contribution to the Intuitive Foundation. We do not expect to make a contribution to the foundation in 2026. Throughout the year and in Q3, in particular, we grew R&D at a rate above SG&A. We expect that trend to continue over the remainder of the year. We now estimate noncash stock compensation expense between $860 million and $870 million."
+  },
+  {
+   "item": "FY26 non-GAAP income tax rate",
+   "value": "",
+   "prev": "22% to 23%",
+   "change": "언급 없음",
+   "quote": ""
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Extended use program for EndoWrist instruments",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 상반기부터 핵심 엔도우리스트 기구의 사용 횟수 확대 프로그램 및 가격 정책을 시행할 예정임.",
+   "quote": "Beginning in the first half of 2027, we will extend the useful lives of a subset of core endorse instruments on our fourth and fifth generation platforms and introduce volume-based pricing, both lower our customers' cost per procedure"
+  },
+  {
+   "item": "FDA 510(k) clearance for foundational noncommercial, next-generation flexible robotic endoscope system for GI tract",
+   "target": "",
+   "status": "달성",
+   "note": "8월에 위장관용 차세대 유연 로봇 내시경 시스템에 대한 FDA 510(k) 승인을 획득함.",
+   "quote": "In August, we received FDA 510(k) clearance for our foundational noncommercial next-generation flexible robotic endoscope system for use in the gastrointestinal tract."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "미국 수술 성장 및 혁신 동력",
+   "analysts": [
+    "Lawrence Biegelsen (Wells Fargo)"
+   ],
+   "question": "미국 다빈치 수술 성장세가 둔화된 이유와 향후 혁신 및 가격 정책이 내년부터 성장을 가속화할 수 있는지 문의함.",
+   "answer": "경영진은 양성 일반외과에서의 데이터 가시성 향상, 시스템 용량 확충, ASC(외과수술센터) 진출 및 향후 적응증 확대 등을 통해 장기적인 성장을 확신한다고 답변함."
+  },
+  {
+   "theme": "엔도우리스트 기구 수명 연장(EUP) 및 가격 인하 영향",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "EUP 및 중국 가격 인하로 인한 3%~5% 역풍의 타임라인과 총마진 및 볼륨 탄력성에 미치는 영향을 문의함.",
+   "answer": "경영진은 영향이 2027년에 걸쳐 점진적으로 반영될 것이며, 비용 절감으로 상쇄 가능하고 비용 장벽을 낮춰 장기적인 수요 탄력성을 이끌어낼 것으로 기대한다고 답변함."
+  },
+  {
+   "theme": "파이프라인 및 수익 다각화",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "수술당 매출을 높일 수 있는 아이온 및 다빈치 관련 AI, 비전 등 주요 파이프라인의 진행 상황을 문의함.",
+   "answer": "경영진은 아이온의 Rose 시스템 및 EBUS 통합, 다빈치 5의 첨단 시각화 및 AI 기능 등이 수술당 매출 성장에 기여할 것이라고 답변함."
+  },
+  {
+   "theme": "ASC(외과수술센터) 전략 및 경쟁사 동향",
+   "analysts": [
+    "Rick Wise (Stifel)"
+   ],
+   "question": "ASC 시장에서의 진행 상황과 최근 모듈식 시스템 경쟁사 등장에 따른 인튜이티브의 전략적 포지션을 문의함.",
+   "answer": "경영진은 ASC 고객이 원하는 것은 아키텍처보다 신뢰성과 반복 가능한 효율성이라며, 현재의 카트 기반 포트폴리오와 XiR 시스템이 가장 적합하다고 답변함."
+  },
+  {
+   "theme": "포스 피드백(Force Feedback) 채택 및 오프셋 요인",
+   "analysts": [
+    "Adam Maeder (Piper Sandler)"
+   ],
+   "question": "포스 피드백 기구의 채택률 현황과 가격 인하 역풍을 상쇄할 수 있는 요인들에 대해 문의함.",
+   "answer": "경영진은 3분기 다빈치 5 케이스의 약 8%에 포스 피드백이 적용되었으며, SP의 높은 성장과 통합 기밀 유지 장치 등이 상쇄 요인으로 작용한다고 답변함."
+  },
+  {
+   "theme": "EUP 프로그램 구현 일정",
+   "analysts": [
+    "Jayson Bedford (Raymond James & Associates)"
+   ],
+   "question": "EUP 프로그램의 완전한 구현 시기와 2027년 예상 영향에 대해 문의함.",
+   "answer": "경영진은 미국을 시작으로 Q1 후반에 출시될 예정이며 유럽은 하반기에 진행되어 2027년 연말에 이르러야 온전한 영향이 나타날 것이라고 답변함."
+  },
+  {
+   "theme": "고객 소송 합의 내용",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "최근 발표된 제3자 재제조 및 서비스 관련 소송 합의가 고객들에게 실질적으로 어떤 의미인지 문의함.",
+   "answer": "경영진은 이번 합의가 명확한 프레임워크를 제공하여 제품의 안전성과 품질 향상에 집중할 수 있게 하며 고객 관계를 강화한다고 답변함."
+  },
+  {
+   "theme": "마진 전망 및 투자 계획",
+   "analysts": [
+    "Chris Pasquale (Barclays)"
+   ],
+   "question": "향후 수익성 및 마진 확대 여력에 대한 추가 고려 사항을 문의함.",
+   "answer": "경영진은 영업이익률 목표를 35%~40%로 유지하고 있으며, 혁신과 성장을 위한 투자를 최우선으로 고려하겠다고 답변함."
+  }
+ ]
+}
