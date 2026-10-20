@@ -47,15 +47,36 @@ MONTHS = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
 
 
+def style_names(zf):
+    """styles.xml의 스타일 ID -> 정규화한 스타일 이름("heading 3" -> "Heading3").
+    문단에 저장되는 건 스타일 ID인데, 한국어 워드는 같은 "제목 3"을 ID "3"으로 저장하기도 한다
+    (2026-10-21 실측 — 예전 파일은 "Heading3"이라 ID로만 비교하다 컨콜을 하나도 못 찾았다).
+    그래서 ID 대신 스타일의 실제 이름(w:name, 언어와 무관하게 "heading 3")으로 판단한다."""
+    try:
+        xml = zf.read("word/styles.xml").decode("utf-8")
+    except KeyError:
+        return {}
+    out = {}
+    for sid, body in re.findall(r'<w:style [^>]*w:styleId="([^"]+)"[^>]*>(.*?)</w:style>', xml, re.S):
+        m = re.search(r'<w:name w:val="([^"]+)"', body)
+        if m:
+            out[sid] = m.group(1).title().replace(" ", "")  # "heading 3" -> "Heading3"
+    return out
+
+
 def read_paragraphs(path):
-    """(style, bold, text) 목록. python-docx 없이 document.xml을 직접 읽는다."""
-    xml = zipfile.ZipFile(path).read("word/document.xml").decode("utf-8")
+    """(style, bold, text) 목록. python-docx 없이 document.xml을 직접 읽는다.
+    style은 스타일 이름 기준("Heading3" 등)으로 정규화해서 돌려준다(style_names 참고)."""
+    zf = zipfile.ZipFile(path)
+    names = style_names(zf)
+    xml = zf.read("word/document.xml").decode("utf-8")
     out = []
     for p in re.findall(r"<w:p(?: [^>]*)?>.*?</w:p>", xml, re.S):
         st = re.search(r'<w:pStyle w:val="([^"]+)"', p)
+        sid = st.group(1) if st else ""
         text = html.unescape("".join(re.findall(r"<w:t(?: [^>]*)?>(.*?)</w:t>", p, re.S))).strip()
         bold = bool(re.search(r'<w:b(?: w:val="(?:1|true)")?/>', p))
-        out.append((st.group(1) if st else "", bold, text))
+        out.append((names.get(sid, sid), bold, text))
     return out
 
 
