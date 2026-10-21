@@ -633,6 +633,9 @@ def main():
         print(f"[WARN] {args.out} 읽기 실패, 요약 생성을 건너뜁니다 ({e})", file=sys.stderr)
         sys.exit(0)
 
+    # 같은 사안 묶기(group_news.py)가 돌지 못한 채 넘어온 경우에도 후보 목록(pool)은 화면·아카이브에 안 쓰므로 지운다
+    for g in data.get("domestic", []) + data.get("global", []):
+        g.pop("pool", None)
     domestic_items = [it for g in data.get("domestic", []) for it in g.get("items", [])]
     global_items = [it for g in data.get("global", []) for it in g.get("items", [])]
 

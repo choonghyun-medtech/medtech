@@ -106,7 +106,8 @@ FEEDS = [
     "https://spectrum.ieee.org/feeds/topic/robotics.rss",
 ]
 
-MAX_ITEMS_PER_CATEGORY = 6
+MAX_ITEMS_PER_CATEGORY = 6  # 최종 표시 상한 — 실제 선택은 news_select.py(CATEGORY_SHOW와 같은 값)
+from news_select import COMPANY_POOL, CATEGORY_POOL, build_pool, fallback_show
 REQUEST_TIMEOUT = 20
 
 HEADERS = {
@@ -304,14 +305,31 @@ STOCK_FILLER_TITLE_PATTERNS_GLOBAL = [
                r"|\bmarket,? \d{4}\s*-\s*\d{4}\b", re.IGNORECASE),
 ]
 
+# --- 낚시성 투자 권유 기사 필터 (2026-10-21 추가) -------------------------------------------
+# "How To Earn $500 A Month From Abbott Stock Ahead Of Q3 Earnings"(Benzinga 반복 시리즈)처럼 회사 이벤트가
+# 아니라 "얼마 벌 수 있다"는 수익 약속·매수 권유 틀의 글. 국내 필터의 "무조건 사"·주식추천·급등주와 같은 유형.
+# 과거 해외 아카이브 1,230건에 돌려 오탐 0건 확인(2026-10-21).
+CLICKBAIT_TITLE_PATTERNS_GLOBAL = [
+    re.compile(r"\bhow to (earn|make|generate|collect|get)\b.*\$\s?[\d,.]+", re.IGNORECASE),
+    re.compile(r"\$\s?[\d,.]+[kKmM]?\s+(a|per|each|every)\s+(month|year|week|day)\b", re.IGNORECASE),
+    re.compile(r"\bpassive income\b|\bdividend (income|paycheck)\b|\bmonthly (income|paycheck)\b", re.IGNORECASE),
+    re.compile(r"\bmillionaire\b|\bget rich\b|\bmake you rich\b|\bretire (early|rich)\b|\bturn \$[\d,]+ into\b",
+               re.IGNORECASE),
+    re.compile(r"\bbuy (and hold )?forever\b|\bno[- ]brainer\b|\bscreaming buy\b|\bmust[- ]own\b"
+               r"|\bbefore (it|they) (soar|skyrocket|explode)", re.IGNORECASE),
+]
+
 # 회사명이 흔한 성(姓)/단어/다른 브랜드와 겹쳐 오탐이 반복 확인된 경우의 제외 키워드
 # (haystack 소문자 substring). 이 키워드가 있으면 "그 회사" 매칭만 무효 처리한다.
 COMPANY_NEGATIVE_KEYWORDS = {
     # "Optimus" 별칭이 트랜스포머 옵티머스 프라임/샌디스크 SSD 기사에 걸림
     "Tesla": ["optimus prime", "transformers", "hasbro", "peter cullen", "sandisk"],
     # 인물(Tad/Susan Stryker), 학교, 미 육군 스트라이커 장갑차(General Dynamics)
+    # + 캔자스 위치타 "Stryker Sports Complex" 차량 돌진 사고(2026-10-18~) — 지역 방송 기사가 연일 들어와
+    #   의료기기 카테고리를 채웠다(사용자 지적, 2026-10-21). 경기장·지명·사고 키워드로 막는다.
     "Stryker": ["tad stryker", "susan stryker", "mary anne stryker", "stryker berglund",
-                "stryker schools", "general dynamics", "dvha", "stryker brigade"],
+                "stryker schools", "general dynamics", "dvha", "stryker brigade",
+                "sports complex", "stryker soccer", "soccer tournament", "wichita", "mcpherson", "sedgwick county"],
     # 호주 통신사(ASX:ABB), 아제르바이잔 은행, 볼리비아 축구팀, 블록딜(ABB=accelerated bookbuild)
     "ABB": ["aussie broadband", "asx:abb", "abb bank", "davr bank", "real oruro",
             "bookrunner", "bookbuild", "han:abb"],
@@ -341,6 +359,8 @@ def is_excluded_article_type_global(title: str, desc: str) -> bool:
     if any(p.search(title) for p in NON_BUSINESS_TITLE_PATTERNS_GLOBAL):
         return True
     if any(p.search(title) for p in STOCK_FILLER_TITLE_PATTERNS_GLOBAL):
+        return True
+    if any(p.search(title) for p in CLICKBAIT_TITLE_PATTERNS_GLOBAL):
         return True
     return False
 
@@ -437,6 +457,71 @@ def is_duplicate_title(a: str, b: str) -> bool:
     return overlap >= 0.6
 
 
+# --- 매체 우선순위 (2026-10-21) — 국내(scrape_news.py TRUSTED_SOURCE_DOMAINS)와 같은 규칙 ---------
+# "동일 내용 기사는 가장 신뢰도 높은 매체 1개만". 예전 해외는 제목이 겹치면 먼저 수집된 기사를 남겨서
+# Yahoo Finance·Benzinga 같은 재가공 매체가 남고 Reuters·Barron's 원 기사가 버려지기도 했다.
+# 해외 가이드라인엔 매체 목록이 따로 없어 아래처럼 정했다(숫자가 작을수록 우선, 목록에 없는 매체는 4):
+#  1 주요 경제·통신·헬스케어 전문지(직접 취재)  2 업계 전문지·공식 보도자료 배포처(원문 출처)
+#  3 금융 포털·투자 블로그·자동 생성 기사(다른 기사를 재가공)
+# src 값은 사이트 RSS면 도메인("medtechdive.com"), 구글 뉴스면 표시 이름("Barron's")이라 둘 다 적는다.
+SOURCE_TIERS = {
+    1: ["reuters", "bloomberg", "wsj", "wall street journal", "financial times", "=ft.com", "barron",
+        "cnbc", "associated press", "apnews", "ap news", "statnews", "stat news", "endpoints",
+        "new york times", "nytimes", "=fortune", "fortune.com", "axios"],
+    2: ["medtech dive", "medtechdive", "massdevice", "fierce", "biopharma dive", "biopharmadive",
+        "healthcare dive", "healthcaredive", "modern healthcare", "modernhealthcare", "medical device network",
+        "medicaldevice-network", "mobihealthnews", "therobotreport", "robot report", "clinical lab products",
+        "business wire", "businesswire", "pr newswire", "prnewswire", "globenewswire", "globe newswire",
+        "dermatology times", "aesthetic", "dental tribune", "dentistry today", "ophthalmology times"],
+    3: ["yahoo", "investing.com", "seeking alpha", "seekingalpha", "marketwatch", "motley fool", "fool.com",
+        "zacks", "benzinga", "tipranks", "tradingview", "simply wall", "alphastreet", "trefis", "marketbeat",
+        "nasdaq", "insider monkey", "gurufocus", "ad-hoc-news", "pluang", "tradingkey", "stocks down under",
+        "investment reports", "stocktitan", "msn", "investorplace", "247wallst", "24/7 wall"],
+}
+
+
+def source_tier(src: str) -> int:
+    """키워드가 매체 이름/도메인에 들어 있으면 그 등급. "="로 시작하는 키는 정확히 같을 때만 —
+    "ft.com"이 microsoft.com에, "fortune"이 시장조사 스팸 "Fortune Business Insights"에 걸리지 않게."""
+    s = (src or "").lower().strip()
+    if s.startswith("www."):
+        s = s[4:]
+    for tier, keys in SOURCE_TIERS.items():
+        if any(s == k[1:] if k.startswith("=") else k in s for k in keys):
+            return tier
+    return 4
+
+
+def add_or_replace_duplicate(bucket: list, item: dict) -> None:
+    """bucket(같은 카테고리)에 item을 넣는다. 제목이 유사한 기사가 이미 있으면 하나만 남기는데,
+    item의 매체 등급이 더 높을 때만(숫자가 작을 때만) 교체한다 — 등급이 같으면 먼저 들어온 기사 유지."""
+    dup_idx = next((i for i, k in enumerate(bucket) if is_duplicate_title(item["t"], k.get("t", ""))), None)
+    if dup_idx is None:
+        bucket.append(item)
+    elif source_tier(item.get("src", "")) < source_tier(bucket[dup_idx].get("src", "")):
+        bucket[dup_idx] = item
+
+
+def dedup_by_source_priority(items: list) -> list:
+    kept = []
+    for it in items:
+        add_or_replace_duplicate(kept, it)
+    return kept
+
+
+def build_global_section(by_category: dict) -> list:
+    """카테고리별 {cat, items(기본 목록), pool(묶기 후보)} — scrape_news_global.py·gsearch 공통."""
+    section, cut = [], 0
+    for cat in CATEGORY_ORDER:
+        pool, dropped = build_pool(by_category.get(cat, []))
+        cut += dropped
+        section.append({"cat": cat, "items": fallback_show(pool), "pool": pool})
+    if cut:
+        print(f"[INFO] 후보 상한(회사 {COMPANY_POOL}건 · 카테고리 {CATEGORY_POOL}건) 때문에 빠진 기사 {cut}건",
+              file=sys.stderr)
+    return section
+
+
 def fetch_feed(url: str, debug=False):
     resp = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
     resp.raise_for_status()
@@ -503,19 +588,16 @@ def main():
                 "src": feed_url.split("/")[2].replace("www.", ""),
                 "date": date_str,
                 "url": link,
+                "tier": source_tier(feed_url.split("/")[2]),  # 고르는 순서(news_select.order)용 매체 등급
+                "ts": dt.isoformat(),
                 "desc": summary,  # summarize_news.py가 2줄 한글 요약을 생성할 때 참고용.
                                   # 최종 화면에는 노출하지 않는 내부 필드.
             })
             seen_links.add(link)
 
-    # 카테고리별로 동일 내용(신디케이션 등) 기사 중복 제거
+    # 카테고리별로 동일 내용(신디케이션 등) 기사 중복 제거 — 매체 등급이 높은 기사를 남긴다(SOURCE_TIERS)
     for cat in list(by_category.keys()):
-        kept = []
-        for c in by_category[cat]:
-            dup_idx = next((i for i, k in enumerate(kept) if is_duplicate_title(c["t"], k["t"])), None)
-            if dup_idx is None:
-                kept.append(c)
-        by_category[cat] = kept
+        by_category[cat] = dedup_by_source_priority(by_category[cat])
 
     ok_categories = sum(1 for items in by_category.values() if items)
     if ok_categories == 0:
@@ -532,10 +614,10 @@ def main():
               f"확인). 기존 news.json의 해외 섹션을 그대로 보존하고 종료합니다.", file=sys.stderr)
         sys.exit(0)
 
-    global_section = []
-    for cat in CATEGORY_ORDER:
-        items = sorted(by_category.get(cat, []), key=lambda x: x["date"], reverse=True)[:MAX_ITEMS_PER_CATEGORY]
-        global_section.append({"cat": cat, "items": items})
+    # 국내와 같은 규칙(news_select.py) — pool: 같은 사안 묶기 후보(회사 5 · 카테고리 12),
+    # items: 묶기 전/실패 시 기본 목록(회사 3 · 카테고리 6). 2026-10-21 전엔 해외만 회사당 상한이 없어
+    # 실적 발표일 같은 날 한 회사가 카테고리 6칸을 다 채웠다(애보트 6/6, 인튜이티브 서지컬 6/6 등).
+    global_section = build_global_section(by_category)
 
     payload = {
         "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),

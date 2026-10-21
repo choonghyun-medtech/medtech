@@ -66,8 +66,9 @@ from urllib.parse import urlparse
 import requests
 
 NAVER_NEWS_URL = "https://openapi.naver.com/v1/search/news.json"
-MAX_ITEMS_PER_COMPANY = 3  # 회사 하나당 최대 채택 기사 수
-MAX_ITEMS_PER_CATEGORY = 6 # 카테고리 하나당 최종 표시 기사 수 상한
+# 회사·카테고리 상한은 news_select.py로 옮겼다(2026-10-21, 국내·해외 공통 — 같은 사안 묶기 전 후보는
+# 회사 5 · 카테고리 12, 최종 표시는 회사당 사안 3 · 카테고리 6).
+from news_select import COMPANY_POOL, CATEGORY_POOL, order, build_pool, fallback_show
 REQUEST_TIMEOUT = 15
 
 # 회사명 -> 뉴스 카테고리. 뉴스클리핑_가이드라인.md의 "분류 체계 및 트래킹 기업" 표를 그대로 반영
@@ -416,8 +417,8 @@ def fetch_news_for_company(client_id: str, client_secret: str, company: str, cut
             kept[dup_idx] = c
 
     out = []
-    for c in kept[:MAX_ITEMS_PER_COMPANY]:
-        src, _ = source_label(c["url"])
+    for c in kept:
+        src, trusted = source_label(c["url"])
         out.append({
             "co": company,
             "ctx": "뉴스",
@@ -427,8 +428,12 @@ def fetch_news_for_company(client_id: str, client_secret: str, company: str, cut
             "url": c["url"],
             "desc": c["desc"],  # summarize_news.py가 [맥락] ~했음. 요약을 생성할 때 참고용.
                                 # 최종 화면에는 노출하지 않는 내부 필드.
+            # 고르는 순서(news_select.order)용 — 신뢰 매체 1등급, 그 외 3등급(해외 SOURCE_TIERS와 같은 눈금) · 정확한 시각
+            "tier": 1 if trusted else 3,
+            "ts": c["dt"].isoformat(),
         })
-    return out
+    # 회사당 후보 상한 — 매체 등급 → 최신순으로 COMPANY_POOL건(2026-10-21: 최신순 3건 → 묶기 전 후보 5건)
+    return order(out)[:COMPANY_POOL]
 
 
 def merge_cross_company_duplicates(items):
@@ -516,10 +521,16 @@ def main():
     for it in all_items:
         by_category.setdefault(it.pop("cat"), []).append(it)
 
+    # pool = 같은 사안 묶기(group_news.py)용 후보(회사 5 · 카테고리 12), items = 묶기 전/실패 시 보여줄
+    # 기본 목록(회사 3 · 카테고리 6). 고르는 순서는 둘 다 매체 등급 → 최신순(news_select.py).
     domestic = []
+    cut = 0
     for cat in CATEGORY_ORDER:
-        items = sorted(by_category.get(cat, []), key=lambda x: x["date"], reverse=True)
-        domestic.append({"cat": cat, "items": items[:MAX_ITEMS_PER_CATEGORY]})
+        pool, dropped = build_pool(by_category.get(cat, []))
+        cut += dropped
+        domestic.append({"cat": cat, "items": fallback_show(pool), "pool": pool})
+    if cut:
+        print(f"[INFO] 카테고리 후보 상한({CATEGORY_POOL}건) 때문에 빠진 기사 {cut}건", file=sys.stderr)
 
     payload = {
         "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),

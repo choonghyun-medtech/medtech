@@ -58,6 +58,10 @@ from scrape_news_global import (
     parse_entry_date,
     match_company,
     is_duplicate_title,
+    add_or_replace_duplicate,
+    dedup_by_source_priority,
+    build_global_section,
+    source_tier,
     is_excluded_article_type_global,
     clean_text,
 )
@@ -156,7 +160,8 @@ def main():
     print(f"[INFO] Google 뉴스 검색 보강: 최근 {cutoff_hours}시간 이내(when:{when_days}d) 기사 대상",
           file=sys.stderr)
 
-    by_category = {g.get("cat"): list(g.get("items", [])) for g in existing_global}
+    # RSS 단계가 남긴 묶기 후보(pool)부터 이어 붙인다 — pool이 없으면(예전 형식) 기본 목록(items)
+    by_category = {g.get("cat"): list(g.get("pool") or g.get("items", [])) for g in existing_global}
     seen_links = {it.get("url") for items in by_category.values() for it in items}
 
     queries = build_query_list(when_days)
@@ -208,14 +213,14 @@ def main():
                 continue
             company, category = matched
 
-            bucket = by_category.setdefault(category, [])
-            if any(is_duplicate_title(title, it.get("t", "")) for it in bucket):
-                continue
-            bucket.append({
+            # 이미 있는 비슷한 제목 기사(사이트 RSS로 먼저 들어온 것 포함)보다 매체 등급이 높을 때만 교체
+            add_or_replace_duplicate(by_category.setdefault(category, []), {
                 "co": company,
                 "ctx": "News",
                 "t": title,
                 "src": src or "news.google.com",
+                "tier": source_tier(src),  # 고르는 순서(news_select.order)용 매체 등급
+                "ts": dt.isoformat(),
                 "date": date_str,
                 "url": link,
                 "desc": summary,  # summarize_news.py가 2줄 한국어 요약을 생성할 때 참고(무료 Gemini 우선).
@@ -231,14 +236,10 @@ def main():
         sys.exit(0)
 
     for cat in list(by_category.keys()):
-        kept = []
-        for c in by_category[cat]:
-            dup_idx = next((i for i, k in enumerate(kept) if is_duplicate_title(c["t"], k["t"])), None)
-            if dup_idx is None:
-                kept.append(c)
-        by_category[cat] = sorted(kept, key=lambda x: x.get("date", ""), reverse=True)[:MAX_ITEMS_PER_CATEGORY]
+        by_category[cat] = dedup_by_source_priority(by_category[cat])
 
-    global_section = [{"cat": cat, "items": by_category.get(cat, [])} for cat in CATEGORY_ORDER]
+    # pool(묶기 후보: 회사 5 · 카테고리 12) + items(기본 목록: 회사 3 · 카테고리 6) — news_select.py
+    global_section = build_global_section(by_category)
     total_items = sum(len(g["items"]) for g in global_section)
 
     source = existing.get("source", "") or ""

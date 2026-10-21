@@ -343,6 +343,17 @@ tr:last-child td{border-bottom:none}
 .day .ev.exright{background:rgba(13,148,136,.15); color:var(--teal)}
 .news-item{padding:11px 0; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:3px}
 .news-item:last-child{border-bottom:none}
+/* 같은 사안으로 접힌 다른 매체 기사(2026-10-21) */
+.news-dups{font-size:11.5px; margin-top:2px}
+.news-dups summary{cursor:pointer; color:var(--accent); font-weight:600; list-style:none; width:fit-content}
+.news-dups summary::-webkit-details-marker{display:none}
+.news-dups summary::before{content:'▸ '; font-size:10px}
+.news-dups[open] summary::before{content:'▾ '}
+.news-dups ul{margin:6px 0 2px; padding-left:16px; display:flex; flex-direction:column; gap:4px}
+.news-dups li{color:var(--sub); line-height:1.45}
+.news-dups li a{color:var(--text); text-decoration:none}
+.news-dups li a:hover{color:var(--accent); text-decoration:underline}
+.news-dups-meta{color:var(--dim); font-size:10.5px; white-space:nowrap}
 .news-item .t{font-size:13.5px; font-weight:600}
 .news-item .meta{font-size:11.5px; color:var(--dim); display:flex; gap:8px; align-items:center}
 .news-summary{font-size:12.5px; color:var(--dim); line-height:1.5}
@@ -1521,6 +1532,18 @@ function newsCtxTag(ctx){
   return `<span class="news-ctx">[${escapeHtml(c)}]</span> `;
 }
 
+// 같은 사안으로 묶여 접힌 다른 매체 기사(scripts/group_news.py, 2026-10-21) — 대표 기사 아래 "다른 매체 보도 N건"을
+// 누르면 제목·매체·날짜가 펼쳐진다. 대표는 매체 등급 → 최신순으로 골라져 있고, 접힌 목록도 같은 순서.
+function newsDupsHtml(it){
+  const ds = it.dups || [];
+  if(!ds.length) return '';
+  const row = d => {
+    const t = d.url ? `<a href="${d.url}" target="_blank" rel="noopener">${escapeHtml(d.t)}</a>` : escapeHtml(d.t);
+    return `<li>${t} <span class="news-dups-meta">${escapeHtml(d.src || '')}${d.date ? ' · ' + escapeHtml(d.date) : ''}</span></li>`;
+  };
+  return `<details class="news-dups"><summary>다른 매체 보도 ${ds.length}건</summary><ul>${ds.map(row).join('')}</ul></details>`;
+}
+
 function renderNewsSection(wrapId, groups){
   const wrap = document.getElementById(wrapId);
   let html = '';
@@ -1544,6 +1567,7 @@ function renderNewsSection(wrapId, groups){
         <div class="t"><span class="news-co">${it.co}</span>${newsCtxTag(it.ctx)}${titleHtml}</div>
         ${summaryHtml}
         <div class="meta"><span>${it.date||''}</span><span>${it.src}</span></div>
+        ${newsDupsHtml(it)}
       </div>`;
     });
     html += `</div>`;
@@ -1710,7 +1734,9 @@ function filterNewsGroups(groups){
     const items = g.items.filter(it=>{
       if(NEWS_STATE.company && !newsItemCompanies(it).includes(NEWS_STATE.company)) return false;
       if(q){
-        const hay = `${it.co} ${it.ctx} ${it.t} ${it.src} ${it.summary||''}`.toLowerCase();
+        // 접힌 같은 사안 기사의 제목·매체도 검색되게(대표 기사만 찾으면 "Barron's" 검색에 접힌 기사가 안 잡혀서)
+        const dupHay = (it.dups || []).map(d => `${d.t} ${d.src}`).join(' ');
+        const hay = `${it.co} ${it.ctx} ${it.t} ${it.src} ${it.summary||''} ${dupHay}`.toLowerCase();
         if(hay.indexOf(q) === -1) return false;
       }
       return true;

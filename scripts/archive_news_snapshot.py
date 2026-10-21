@@ -119,6 +119,9 @@ def main():
                     "url": url,
                     "ctx": item.get("ctx", ""),
                     "summary": summary,
+                    # 같은 사안으로 접힌 다른 매체 기사 수(group_news.py, 2026-10-21) — 대표 기사만 아카이브하므로
+                    # "얼마나 많이 보도됐나"를 나중에 다시 볼 수 있게 숫자만 남긴다
+                    "n_same": len(item.get("dups") or []),
                 })
                 by_url[url] = new_records[-1]
 

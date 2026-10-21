@@ -45,6 +45,16 @@ jobs:
       - name: Install dependencies
         run: pip install google-genai anthropic
 
+      # 2026-10-21: 제목은 다르지만 같은 사안인 기사를 묶어 대표 1건만 남기고 나머지는 접는다(국내·해외 각 Gemini 1회).
+      # 실패해도 수집 단계 기본 목록이 남아서 다음 요약 단계는 그대로 진행된다.
+      - name: Group same-issue news (같은 사안 묶기, Gemini 무료 티어 우선)
+        if: github.event.inputs.skip_summarize != 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_EARNINGS: ${{ secrets.GEMINI_API_KEY_EARNINGS }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/group_news.py --out news.json
+
       - name: Summarize news ([맥락] ~했음. / 2줄 요약, Gemini 무료 티어 우선)
         if: github.event.inputs.skip_summarize != 'true'  # 기사 요약이 이미 잘 된 상태에서 브리핑만 재시도할 때 건너뜀
         env:
