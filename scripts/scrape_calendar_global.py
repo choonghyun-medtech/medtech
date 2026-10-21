@@ -763,6 +763,12 @@ def main():
         if scraper_key and scraper_key in SCRAPERS:
             future_ev = SCRAPERS[scraper_key](src["scraper_url"], ticker, name, fallback_url, today)
 
+        # 스크래퍼는 오늘 날짜 일정도 남기는데(d < today만 거름), 미국 장 마감 후 발표는
+        # 워크플로(UTC 20:42)가 돌 때 이미 yfinance에 Reported EPS가 올라와 과거분에도 잡힌다 —
+        # 같은 날 실적이 두 건으로 보이므로(ISRG 2026-10-20) 상세 링크가 있는 스크래퍼분만 남긴다.
+        future_earn_dates = {e["date"] for e in future_ev if e["type"] == "earn"}
+        past_ev = [e for e in past_ev if e["date"] not in future_earn_dates]
+
         print(f"[INFO] {ticker}: 과거 {len(past_ev)}건 + 확정 미래 {len(future_ev)}건")
         all_events.extend(past_ev)
         all_events.extend(future_ev)
