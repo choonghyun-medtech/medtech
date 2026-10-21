@@ -1,0 +1,125 @@
+{
+ "ticker": "TMO",
+ "company": "Thermo Fisher Scientific Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-21",
+ "file": "TMO_2026Q3.json",
+ "source_hash": "88e431375e9d",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-21T23:07:33.505127+00:00",
+ "headline": [
+  "써모 피셔 사이언티픽은 2026년 3분기 매출액이 전년 동기 대비 9% 증가한 121.4억 달러, 조정 EPS는 15% 증가한 6.68달러를 기록함.",
+  "제약·바이오 등 전방 시장의 개선세가 지속되며 유기적 매출 성장률 6%를 달성함.",
+  "견조한 3분기 실적과 관세 환급금 환수 등의 요인을 반영하여 2026년 연간 매출액 가이던스는 477억~482억 달러, 조정 EPS 가이던스는 25.13~25.43달러로 상향 조정함.",
+  "클라리오(Clario) 인수 통합이 순항 중이며 미생물학 사업부 매각을 완료하는 등 포트폴리오 최적화와 AI 기술 도입을 적극 추진 중임."
+ ],
+ "changes": [
+  "2026년 2분기 가이던스(매출액 474억~481억 달러, 조정 EPS 24.93~25.33달러) 대비 3분기 실적 호조 및 관세 환급 효과를 반영하여 연간 가이던스를 상향 조정함.",
+  "연간 유기적 매출 성장률 가이던스를 기존 약 4%에서 4%로 유지하되, 하반기 전체 유기적 성장 전망을 5%로 상향함.",
+  "관세 환급금 승인 및 회수가 3분기에 집중되면서 조정 영업이익에 약 60백만 달러, 조정 EPS에 0.15달러의 순 영향이 일회성으로 반영됨."
+ ],
+ "prepared": {
+  "summary": [
+   "3분기 매출액은 121.4억 달러로 전년 동기 대비 9% 증가했으며, 유기적 매출 성장은 6%를 기록함.",
+   "조정 영업이익은 15% 증가한 29.7억 달러, 조정 영업이익률은 120bp 개선된 24.5%를 기록함.",
+   "제약·바이오, 분석 장비, 실험실 제품 및 제약 서비스 부문에서 우수한 실적을 거두며 시장 기대치를 상회함."
+  ],
+  "sections": [
+   {
+    "title": "전방 시장별 실적",
+    "points": [
+     "제약 및 바이오(Pharma & Biotech): 제약 서비스 및 연구·안전 시장 채널 주도로 고한자리수(high single-digit) 성장 기록.",
+     "학술 및 정부(Academic & Government): 크로마토그래피 및 질량분석 사업의 선전에 힘입어 매출 전년 동기 수준 유지(flat).",
+     "산업 및 응용(Industrial & Applied): 전자 현미경 사업 및 연구·안전 채널 주도로 고한자리수(high single-digit) 성장 기록.",
+     "진단 및 헬스케어(Diagnostics & Healthcare): 이식 진단 사업의 견조한 성장으로 저한자리수(low single-digit) 성장 기록."
+    ]
+   },
+   {
+    "title": "사업 부문별 실적",
+    "points": [
+     "생명과학 솔루션(Life Sciences Solutions): 보고 매출 5% 증가, 유기적 매출 1% 증가 (바이오프로덕션 주도).",
+     "분석 기기(Analytical Instruments): 보고 매출 및 유기적 매출 6% 증가 (전자현미경 및 질량분석 주도).",
+     "특수 진단(Specialty Diagnostics): 보고 매출 6% 감소(미생물학 매각 영향), 유기적 매출 보합 (이식 진단 주도).",
+     "실험실 제품 및 바이오제약 서비스(Laboratory Products and Biopharma Services): 보고 매출 15% 증가, 유기적 매출 10% 증가 (제약 서비스 및 연구·안전 채널 주도)."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 reported revenue growth",
+   "value": "$47.7 billion to $48.2 billion",
+   "prev": "$47.4 billion to $48.1 billion",
+   "change": "상향",
+   "quote": "We are raising our revenue guidance to a new range of $47.7 billion to $48.2 billion, representing 7% to 8% reported revenue growth over 2025."
+  },
+  {
+   "item": "FY26 organic revenue growth",
+   "value": "4%",
+   "prev": "about 4%",
+   "change": "유지",
+   "quote": "This reflects an increase to our full year organic revenue growth, which is now 4%."
+  },
+  {
+   "item": "FY26 adjusted EPS",
+   "value": "$25.13 to $25.43",
+   "prev": "$24.93 to $25.33",
+   "change": "상향",
+   "quote": "We're also raising our adjusted earnings per share guidance to be in the range of $25.13 to $25.43 per share, which now represents 10% to 11% growth over 2025."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "미생물학 사업부 매각 완료",
+   "target": "2026년 3분기",
+   "status": "달성",
+   "note": "2026년 3분기 중 미생물학 사업부 매각이 완료됨.",
+   "quote": "Finally, during the quarter, we completed the divestiture of our microbiology business."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "전방 시장 회복세 및 지역별 동향",
+   "analysts": [
+    "Tycho Peterson (Jefferies)"
+   ],
+   "question": "제약·바이오 등 전방 시장의 회복 상태와 중국을 포함한 지역별 펀더멘털 개선 상황은 어떠한가?",
+   "answer": "제약·바이오 시장은 2분기의 강세가 3분기에도 이어졌으며, 바이오텍의 심리와 펀더멘털이 점진적으로 강화되고 있음. 중국을 포함한 아시아태평양 지역도 저두자리수(low double-digit) 성장세를 기록하며 양호한 흐름을 보임."
+  },
+  {
+   "theme": "제약 서비스(Pharma Services) 성장 및 4분기 가이던스 페이징",
+   "analysts": [
+    "Jack Meehan (Operon Research)"
+   ],
+   "question": "3분기 유기적 성장률 6% 달성 이후 4분기 가이던스를 4%로 유지한 배경은 고객 활동의 타이밍 차이 때문인가, 아니면 보수적 접근인가?",
+   "answer": "제약 서비스 부문의 일부 고객 활동이 3분기에 집중되면서 3분기 실적이 예상보다 강했으나, 4분기에도 탄탄한 모멘텀이 이어질 것으로 보고 연간 가이던스에 부합하도록 기존 전망을 유지함."
+  },
+  {
+   "theme": "인공지능(AI) 도입 전략 및 장기 성장률(LRP) 영향",
+   "analysts": [
+    "Doug Schenkel (UBS)",
+    "Dan Brennan (TD Cowen)"
+   ],
+   "question": "AI 도입이 고객의 투자 수익률(ROI)을 높여 장기 유기적 성장률 알고리즘에 상향 요인으로 작용할 수 있는가?",
+   "answer": "AI는 신약 개발의 효율성을 높여 고객의 투자 확대(virtuous cycle)를 이끌어내는 중요한 촉매제이며, 중장기적으로 7%의 유기적 성장 목표를 뒷받침하는 긍정적 요소로 작용할 것임."
+  },
+  {
+   "theme": "바이오텍 및 생명과학 솔루션(LSS) 회복 시기",
+   "analysts": [
+    "Dan Arias (Stifel)",
+    "Matt Larew (William Blair)"
+   ],
+   "question": "채널과 임상 연구에서 나타난 회복세가 언제쯤 생명과학 연구 시약 및 고부가가치 제품군으로 확산될 것인가?",
+   "answer": "임상 연구와 채널 수요가 먼저 반등했으며, 생명과학 연구용 시약 및 유전학 제품군도 향후 몇 분기 동안 점진적으로 회복세를 보일 것으로 예상함."
+  },
+  {
+   "theme": "가속화된 신약 개발(Accelerator Drug Development) 및 클리닉컬 서비스 경쟁력",
+   "analysts": [
+    "Evie Koslosky (Goldman Sachs)"
+   ],
+   "question": "임상 및 상업화 서비스 부문에서 점유율 확대 요인과 AI 기반 임상 연구의 차별점은 무엇인가?",
+   "answer": "고객이 신약을 더 빠르고 비용 효율적으로 출시할 수 있도록 돕는 통합 역량과 AI 기반 임상 어시스턴트 등의 차별화된 솔루션이 시장에서 강력한 수주 경쟁력으로 작용하고 있음."
+  }
+ ]
+}

@@ -1,0 +1,175 @@
+{
+ "ticker": "ABT",
+ "company": "Abbott Laboratories",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-21",
+ "file": "ABT_2026Q3.json",
+ "source_hash": "794264512cc5",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-21T23:07:13.524717+00:00",
+ "headline": [
+  "애보트는 2026년 3분기 comparable 매출이 7% 증가하고 주당순이익(EPS)이 9% 늘어나며 상·하반기 모두 성장이 가속화됨.",
+  "영양식(Nutrition) 사업부를 독립된 상장사로 인적분할할 계획을 발표했으며, 2027년 말까지 분할 완료를 목표로 함.",
+  "3분기 실적과 하반기 전망을 반영하여 연간 comparable 매출 성장률 가이던스를 약 6%로 조정함.",
+  "전기생리학(EP)의 LAA 관련 역풍 및 당뇨 사업의 해외 가격 압력과 비인슐린형 2형 환자 침투 지연을 반영하여 4분기 매출 성장을 보수적으로 조정함.",
+  "Exact Sciences 인수 통합이 순조롭게 진행 중이며, 분자종양학 및 암 진단 분야에서 14%의 고성장을 기록함."
+ ],
+ "changes": [
+  "영양식 사업부 분할(Spin-off) 계획이 신규 발표됨.",
+  "연간 comparable 매출 성장률 가이던스가 직전 분기 6.5%~7.5%에서 약 6%로 조정됨.",
+  "전기생리학(EP)과 당뇨(CGM) 사업에서 단기적 역풍(LAA 시장 정체, 해외 가격 압력 등)이 새롭게 부각됨."
+ ],
+ "prepared": {
+  "summary": [
+   "애보트의 3분기 comparable 매출은 7% 증가, 조정 EPS는 $1.42로 전년 동기 대비 상·하반기 모두 가속화된 성장을 기록함.",
+   "영양식 사업부 인적분할을 발표하였으며, 분할 후 애보트는 마진과 성장성이 더 높은 포트폴리오로 재편되어 매출 성장률이 50~100bp 가속화될 것으로 기대됨.",
+   "의료기기와 진단 사업부가 고성장을 견인하였으며, 특히 전기생리학(EP), 연속당뇨측정(CGM), 암 진단 부문이 성장을 주도함.",
+   "미국 식품의약국(FDA)으로부터 TactiFlex Duo 카테터 승인을 조기 획득하고 Libre Duo에 대한 승인을 받는 등 혁신 파이프라인 성과가 이어짐."
+  ],
+  "sections": [
+   {
+    "title": "진단(Diagnostics)",
+    "points": [
+     "매출 6.5% 성장, 코어랩과 암 진단 사업이 성장을 주도함.",
+     "코어랩 매출은 미국, 일본, 유럽, 라틴아메리카의 강수요에 힘입어 5.5% 성장함.",
+     "암 진단 매출은 14% 증가했으며, 9월에 첫 혈액 기반 대장암 스크리닝 검사를 출시함."
+    ]
+   },
+   {
+    "title": "영양식(Nutrition)",
+    "points": [
+     "매출 5% 성장으로 U.S. 소아, 해외 소아, U.S. 성인, 해외 성인 등 4개 카테고리 모두 고르게 성장함.",
+     "소아 영양식 매출은 미국 WIC 계약 수주 효과에 힘입어 11% 증가하며 시장 지위를 회복함.",
+     "신규 생체모사 분유 제품인 Similac 전지분유 액상형을 미국 시장에 출시함."
+    ]
+   },
+   {
+    "title": "의약품(EPD)",
+    "points": [
+     "신흥 시장의 처방 및 일반의약품 수요 호조로 매출 8.5% 증가함.",
+     "아시아, 라틴아메리카, 중동 여러 국가에서 두 자리 수 성장을 기록함."
+    ]
+   },
+   {
+    "title": "의료기기(Medical Devices)",
+    "points": [
+     "전기생리학 및 리듬 관리 사업의 두 자리 수 성장에 힘입어 전체 의료기기 매출 8% 증가함.",
+     "전기생리학은 U.S. 전면 출시 이후 Volt PFA 카테터 채택이 가속화되며 고성장을 기록함.",
+     "연속당뇨측정(CGM) Libre 매출은 8% 성장하였고, 세계 최초 이중 포도당·케톤 웨어러블 센서인 Libre Duo의 FDA 승인을 획득함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 comparable sales growth",
+   "value": "around 6%",
+   "prev": "6.5% to 7.5%",
+   "change": "하향",
+   "quote": ""
+  },
+  {
+   "item": "FY26 adjusted EPS",
+   "value": "$5.45 to $5.60",
+   "prev": "$5.45 to $5.60",
+   "change": "유지",
+   "quote": ""
+  },
+  {
+   "item": "Q3 2026 adjusted EPS",
+   "value": "$1.38 to $1.46",
+   "prev": "$1.38 to $1.46",
+   "change": "언급 없음",
+   "quote": ""
+  },
+  {
+   "item": "Q4 2026 adjusted EPS",
+   "value": "$1.62 to $1.67",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the fourth quarter, we forecast adjusted earnings per share of $1.62 to $1.67."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "TECTONIC 관상동맥 IVL pivotal trial 환자 등록 완료",
+   "target": "",
+   "status": "언급 없음",
+   "note": "이번 분기 컨콜 원문에서 해당 마일스톤에 대한 직접적인 언급이 없음.",
+   "quote": ""
+  },
+  {
+   "item": "Amulet 360 좌심실 부속기(LAA) 기기 FDA 승인 신청 완료",
+   "target": "연내 승인 가능성 언급",
+   "status": "진행 중",
+   "note": "CE 마크를 획득하였으며 미국 승인을 대기 중임.",
+   "quote": "In the third quarter, we also received CE Mark for our new Amulet 360 left atrial appendage device designed to help reduce the risk of stroke in patients with AFib. We look forward to bringing this new technology to the U.S."
+  },
+  {
+   "item": "Libre Duo CE 마크 획득",
+   "target": "가을에 국제 출시 예정",
+   "status": "달성",
+   "note": "FDA 승인을 획득하였으며 12월 미국 출시를 앞두고 있음.",
+   "quote": "In August, we received FDA approval for Libre Duo, the world's first dual glucose ketone biowearable sensor... and we expect to launch this new sensor in the U.S. in December."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "영양식 사업부 인적분할 전략 및 배경",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "영양식 사업부를 매각하지 않고 인적분할(Spin-off)을 선택한 전략적 배경과 NEC 소송 부채의 귀속 여부에 대해 설명해달라.",
+   "answer": "건강한 영양식 시장의 성장 잠재력을 독립 법인 체제에서 더 빠르고 효율적으로 극대화하기 위해 분할을 결정했으며 매각은 세금 및 일정 문제로 고려하지 않음. 양사 모두 충분한 자본을 갖추게 될 것이며 소송이 분할의 선결 조건은 아님."
+  },
+  {
+   "theme": "연간 매출 가이던스 하향 조정 및 2027년 전망",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "연간 매출 성장률 가이던스를 하향 조정한 주된 원인과 2027년 실적에 미치는 영향은 무엇인가?",
+   "answer": "전기생리학(EP)의 LAA 관련 단기 역풍과 당뇨 사업의 해외 가격 압력 및 2형 환자 침투 지연이 원인임. 2027년에는 전반적인 성장 가속화를 예상하나 탑라인 가이던스는 보수적으로 접근할 계획임."
+  },
+  {
+   "theme": "혁신 파이프라인 및 중장기 성장 동력",
+   "analysts": [
+    "Patrick Andrew Wood (UBS)"
+   ],
+   "question": "현재 전반적인 파이프라인을 과거와 비교해 어떻게 평가하며, 시장에서 간과하고 있으나 주목하는 핵심 영역은 무엇인가?",
+   "answer": "R&D 투자를 크게 확대하며 Aveir CSP, Cephea, 혈액 기반 대장암 검사 및 바이오시밀러 등 다수의 혁신 파이프라인이 유기적 성장을 강력하게 견인할 것으로 기대함."
+  },
+  {
+   "theme": "암 진단(Exact Sciences) 통합 및 Cologuard 동향",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "암 진단 사업의 3분기 실적 동향과 Cologuard 매출 추이, 그리고 7월 사이버 보안 사고의 영향은 어떠했는가?",
+   "answer": "7월 사이버 보안 사고로 일시적인 차질이 있었으나 빠르게 회복함. Cologuard는 중견 수준의 성장을 이어가고 있으며 혈액 기반 대장암 검사 출시 등 포트폴리오를 다각화하고 있음."
+  },
+  {
+   "theme": "Cologuard 플러스 수가 및 2027년 EPS 성장",
+   "analysts": [
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "Cologuard Plus의 CMS 수가 인하 가능성이 있는지, 그리고 2027년 두 자리 수 EPS 성장이 유효한지 궁금하다.",
+   "answer": "Cologuard Plus 수가가 인하될 가능성은 매우 낮다고 봄. 2027년 구체적인 EPS 가이던스는 1월에 제시할 예정이나 수익성 확장과 주주환원은 지속될 것임."
+  },
+  {
+   "theme": "TCT 학회 주요 데이터 및 심혈관 기기 전망",
+   "analysts": [
+    "Travis Steed (BofA Securities)"
+   ],
+   "question": "TCT 학회에서 발표될 Amulet 360과 관상동맥 IVL pivotal 데이터에 대한 기대감과 출시 일정은 어떻게 되는가?",
+   "answer": "TCT에서 중요한 임상 데이터가 발표될 예정이며, 관상동맥 IVL은 상반기 승인을 기대하고 있음. 혈관 사업부의 성장을 가속화하는 중요한 촉매가 될 것임."
+  },
+  {
+   "theme": "비인슐린 2형 당뇨 CGM 수가 및 M&A 전략",
+   "analysts": [
+    "Joanne Wuensch (Citi)"
+   ],
+   "question": "비인슐린 2형 환자에 대한 CGM의 CMS 수가 적용 시기는 언제쯤으로 보며, 영양식 분할이 향후 M&A 전략에 영향을 주지 않는가?",
+   "answer": "수가 적용 시기를 정확히 예측하기는 어려우나 임상 데이터 등 기반은 마련되어 있음. 영양식 분할은 M&A 전략에 부정적 영향이 없으며 재무 건전성을 바탕으로 턱인 M&A 등을 지속 추진할 것임."
+  }
+ ]
+}
