@@ -5680,7 +5680,10 @@ const EXPORT_CATEGORY_CONFIG = [
     countries: ['러시아 연방', '중국', '미국'], regions: ['서울 강서구', '경기 수원시', '부산 해운대구'] },
   { key: 'filler', label: '필러', hsCodes: ['3304999000'], companies: '휴젤·파마리서치',
     countries: [], regions: ['강원 강릉시', '강원 춘천시'] },
-  { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '바텍',
+  // 2026-10-22: 레이 추가 — 추적 유니버스(228670.KQ) 종목이고 주력이 치과 CBCT(RAYSCAN), 본사가
+  // 이미 조회 중인 경기 성남시(판교)라 이 시계열에 실적이 잡힌다. 다만 매출 2/3는 3D 프린터·
+  // 구강스캐너 등 다른 HS코드 품목이라 바텍보다 회사 실적과의 연동은 느슨함.
+  { key: 'dental_imaging', label: '치과 CBCT 장비', hsCodes: ['902213'], companies: '바텍·레이',
     countries: ['중국', '미국', '유럽'], regions: ['경기 화성시', '경기 성남시'] },
   { key: 'hemostat', label: '지혈재', hsCodes: ['3006104000'], companies: '넥스트바이오메디컬',
     countries: ['미국', '유럽', '일본'], regions: ['인천 연수구'] },
