@@ -6338,15 +6338,27 @@ function setupPeriodTable(cfg){
     const list = rows();
     if(!list || !list.length) return;
     const gran = cfg.getGran();
-    const lines = [['기간', ...cfg.cols.map(headOf)].join('\t'), ...list.map(p => [
+    const table = [['기간', ...cfg.cols.map(headOf)], ...list.map(p => [
       gran === 'month' ? ymToLastDay(p.label) : periodTableLabel(p, gran),
       ...cfg.cols.map(c => {
         const v = c.calc ? c.calc(p.vals) : p.vals[c.key];
         return v == null ? '' : (c.copyFmt ? c.copyFmt(v) : v);
       }),
-    ].join('\t'))];
+    ])];
+    const text = table.map(r => r.join('\t')).join('\n');
+    // 탭 구분 텍스트만 넣으면 엑셀이 직전 "텍스트 나누기" 설정을 따라가 기간·값이 한 열에
+    // 몰려 들어갈 때가 있다 — HTML 표도 같이 넣으면 엑셀은 그쪽을 읽어 항상 칸별로 붙는다.
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const html = `<table>${table.map(r => `<tr>${r.map(v => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</table>`;
     try{
-      await navigator.clipboard.writeText(lines.join('\n'));
+      if(window.ClipboardItem && navigator.clipboard.write){
+        await navigator.clipboard.write([new ClipboardItem({
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+          'text/html': new Blob([html], { type: 'text/html' }),
+        })]);
+      }else{
+        await navigator.clipboard.writeText(text);
+      }
       if(copyBtn){ const orig = copyBtn.textContent; copyBtn.textContent = '복사됨 ✓'; setTimeout(() => { copyBtn.textContent = orig; }, 1500); }
     }catch(e){
       if(copyBtn){ const orig = copyBtn.textContent; copyBtn.textContent = '복사 실패'; setTimeout(() => { copyBtn.textContent = orig; }, 1500); }
