@@ -503,6 +503,25 @@ def aggregate_countries_as(by_country, country_names, agg_name):
     return {agg_name: sorted(({"ym": ym, "expDlr": v} for ym, v in monthly.items()), key=lambda r: r["ym"])}
 
 
+def pad_missing_months(series_by_name, start_yymm, end_yymm):
+    """국가·지역별 시계열에 빠진 달을 {"ym", "expDlr": None}으로 채워 [start, end] 모든 달이
+    한 행씩 있게 만든다(2026-10-22). 관세청 API는 그 달 수출 신고가 없으면 행 자체를 안
+    내려줘서(예: 지혈재 인천 연수구 2017-02·2017-09, 심전계 UAE 62개월) 화면 표·복사에서
+    그 달이 통째로 빠지고, 분기 합산 때 3개월이 안 차 "진행 중 분기"로 오인됐다. 값을 0으로
+    채우지 않는 건 "신고 없음"과 "조회 실패"를 응답만으로 구분할 수 없어서다 — 화면은 "-"로
+    표시하고, 합산·YoY·월간 분석(month_stats)은 None을 건너뛴다."""
+    yms = []
+    cur = start_yymm
+    while cur <= end_yymm:
+        yms.append(f"{cur[:4]}-{cur[4:]}")
+        cur = yymm_add_months(cur, 1)
+    out = {}
+    for name, rows in series_by_name.items():
+        have = {r["ym"]: r for r in rows}
+        out[name] = [have.get(ym) or {"ym": ym, "expDlr": None} for ym in yms]
+    return out
+
+
 def region_fetch_list(cat):
     """실제로 조회해야 하는 시군구 목록 = regions + regionStitch가 참조하는 원천 지역(중복 제거)."""
     out = list(cat.get("regions", []))
@@ -923,6 +942,12 @@ def main():
             if prev:
                 categories_out.append(prev)
             continue
+        # 빠진 달을 None으로 채운다(pad_missing_months 참고). 시작은 조회 창 시작월과 전국
+        # 시계열 시작월 중 늦은 쪽 — 체외진단처럼 HS코드가 2022-01부터만 있는 품목에 그 이전
+        # 수년치 빈 행이 생기지 않게.
+        first_yymm = monthly[0]["ym"].replace("-", "")
+        by_country = pad_missing_months(by_country, max(country_start_yymm, first_yymm), end_yymm)
+        by_region = pad_missing_months(by_region, max(sigungu_start_yymm, first_yymm), end_yymm)
         categories_out.append({
             "key": cat["key"],
             "label": cat["label"],

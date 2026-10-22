@@ -5751,6 +5751,7 @@ function currentExportCategoryConfig(){
 function exportIsRegionScope(){ return EXPORT_STATE.scope === 'region'; }
 function exportAmountUnitWord(){ return exportIsRegionScope() ? '천달러' : '달러'; }
 function exportAmountDisplay(v){
+  if(v == null) return '-';
   return exportIsRegionScope() ? `${(v || 0).toLocaleString('ko-KR')}천달러` : `$${fmtUsdShort(v)}`;
 }
 
@@ -5811,8 +5812,10 @@ function aggregateExportMonthly(monthly, gran){
     let key;
     if(gran === 'quarter') key = `${y}Q${Math.ceil(mo / 3)}`;
     else key = String(y); // 'year'
-    const acc = map.get(key) || { expDlr: 0, months: [] };
-    acc.expDlr += (m.expDlr || 0);
+    // 국가·지역별은 신고 없는 달이 expDlr null로 들어온다(2026-10-22, scrape_export_data.py
+    // pad_missing_months) — 합산에서 빼고, 구간 전체가 null이면 0이 아니라 null("-")로 둔다.
+    const acc = map.get(key) || { expDlr: null, months: [] };
+    if(m.expDlr != null) acc.expDlr = (acc.expDlr || 0) + m.expDlr;
     acc.months.push(m.ym);
     map.set(key, acc);
   });
@@ -5859,7 +5862,7 @@ function computeYoYSeries(agg, gran){
     const prevLabel = prevYearLabel(a.label, gran);
     const prevVal = a.partial ? samePrevMonthsSum(agg, a.months, 'expDlr')
       : prevLabel != null ? byLabel.get(prevLabel) : null;
-    if(prevVal == null || !prevVal) return null;
+    if(prevVal == null || !prevVal || a.expDlr == null) return null;
     return (a.expDlr - prevVal) / prevVal * 100;
   });
 }
@@ -6345,7 +6348,8 @@ function setupPeriodTable(cfg){
       gran === 'month' ? ymToLastDay(p.label) : periodTableLabel(p, gran),
       ...cfg.cols.map(c => {
         const v = c.calc ? c.calc(p.vals) : p.vals[c.key];
-        return v == null ? '' : (c.copyFmt ? c.copyFmt(v) : v);
+        // 값 없는 달도 행은 남기고 "-"로 — 엑셀에서 기간 열이 끊기지 않게(2026-10-22 요청)
+        return v == null ? '-' : (c.copyFmt ? c.copyFmt(v) : v);
       }),
     ])];
     const text = table.map(r => r.join('\t')).join('\n');
