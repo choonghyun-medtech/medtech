@@ -2545,7 +2545,9 @@ function filterNewsHistory(){
 // 캐시돼 있어 줄바꿈 없는 문단 형태로 남아있는 경우에도 깨지지 않도록, 줄이 하나뿐이면
 // 문단 그대로 보여준다.
 function briefingLines(text){
-  return String(text || '').split('\n').map(l=>l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+  // 2026-10-26: AI가 "  - 세부"처럼 들여쓴 하위 불릿을 섞어 주면 앞 공백 때문에 "-"가 안 지워져
+  // "• - 문장"으로 보였다 → 먼저 trim한 뒤 맨 앞 불릿 기호(겹친 경우 포함)를 모두 지운다.
+  return String(text || '').split('\n').map(l=>l.trim().replace(/^([-•*·–]\s*)+/, '').trim()).filter(Boolean);
 }
 // terms가 주어지면 해당 단어를 <mark>로 강조한다(브리핑 기업/키워드 검색용).
 function renderBriefingBullets(text, terms){
