@@ -568,6 +568,7 @@ tr:last-child td{border-bottom:none}
 .gd-table thead .gd-sticky-col{background:var(--bg2); z-index:3}
 .gd-avg-row{background:var(--accent-soft); font-weight:700}
 .gd-avg-row .gd-sticky-col{background:var(--accent-soft)}
+.gd-fwd-row td{border-top:1px dashed var(--border)}
 .gd-col-div{border-left:1px solid var(--border)}
 .gd-sector-tag{color:var(--dim); font-size:10.5px}
 .gd-country-badge{font-size:10px; color:var(--dim)}
@@ -4459,6 +4460,38 @@ function gdAvgRowHtml(rows, currency, label, showSectorCol){
   `;
 }
 
+// 12M Fwd 행(2026-10-26 요청) — 엑셀 Peer Valuation 탭 각 표 밑 "Mon/Fwd" 칸과 같은 공식:
+// 개월수 m = MONTH(TODAY())+1, Fwd = 평균1FY/12*(13-m) + 평균2FY/12*(m-1).
+// 평균 행 값(체크 제외 반영)으로 계산하고, 값은 2FY 칸에 표시한다.
+function gdFwdMonth(){
+  return new Date().getMonth() + 2; // getMonth()는 0부터라 +1(1~12) 후 엑셀처럼 +1
+}
+function gdFwdBlend(v1, v2, m){
+  if(v1 === null || v2 === null) return null;
+  return v1/12*(13-m) + v2/12*(m-1);
+}
+function gdFwdRowHtml(rows, showSectorCol){
+  const m = gdFwdMonth();
+  const fwd = (pick)=> gdFwdBlend(gdAvg(rows.map(r=>pick(r)[1])), gdAvg(rows.map(r=>pick(r)[2])), m);
+  const tip = `12개월 선행 = 1FY 평균 × ${13-m}/12 + 2FY 평균 × ${m-1}/12 (개월수 ${m} = 이번 달+1)`;
+  const cell = (v)=> `<td class="gd-col-div gd-center"></td><td class="gd-center" title="${tip}">${gdFmt1(v)}</td>`;
+  return `
+    <tr class="gd-avg-row gd-fwd-row">
+      <td class="gd-sticky-col gd-sticky-1"></td>
+      <td class="gd-sticky-col gd-sticky-2 gd-lh" title="${tip}">12M Fwd 지표</td>
+      <td></td>
+      <td class="gd-col-div gd-center"></td><td class="gd-center"></td>
+      ${cell(fwd(r=>r.per))}
+      ${cell(fwd(r=>r.ps))}
+      ${cell(fwd(r=>r.ev_ebitda))}
+      <td class="gd-col-div gd-center"></td><td class="gd-center"></td>
+      <td class="gd-col-div gd-center"></td><td class="gd-center"></td>
+      <td class="gd-lh"></td>
+      ${showSectorCol ? `<td class="gd-lh"></td>` : ''}
+    </tr>
+  `;
+}
+
 // 정렬 가능한 열의 키 -> 값 추출 함수. 2026-09-21 요청으로 사명 열 하나뿐이던 정렬을
 // 첫 번째 행(시총/OPM/PER/PS/EV-EBITDA/매출/매출성장률) 전체로 확장했다.
 const GD_SORT_GETTERS = {
@@ -4564,7 +4597,7 @@ function gdRender(){
         <table class="gd-table">
           ${gdTableHeadHtml(currency, showSectorCol)}
           <tbody>${filtered.map(r => gdRowHtml(r, currency, showSectorCol)).join('')}</tbody>
-          <tfoot>${included.length ? gdAvgRowHtml(included, currency, `평균 (${included.length}개사)`, showSectorCol) : ''}</tfoot>
+          <tfoot>${included.length ? gdAvgRowHtml(included, currency, `평균 (${included.length}개사)`, showSectorCol) + gdFwdRowHtml(included, showSectorCol) : ''}</tfoot>
         </table>
       </div>
     `;
