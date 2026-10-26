@@ -2356,12 +2356,24 @@ function calSeasonQuarter(dateStr){
 async function captureCalendar(btn){
   const season = calCoverSeason();
   if(!season){ alert('커버 기업 실적 일정이 아직 없습니다.'); return; }
-  let dir = null;
-  try{
-    dir = await perfGetCaptureDir(false);
-  }catch(e){
-    if(e && e.name==='AbortError') return; // 폴더 선택 취소
-    dir = null;
+  const quarter = calSeasonQuarter(season.mid);
+  const todayStr = localYmd(today0);
+  const fileName = `${todayStr}_커버기업_${quarter}_실적발표_일정.png`;
+  // 2026-10-26: 어느 PC에서든 바탕화면에 저장되도록, 주가 표 캡쳐와 공유하던 저장 폴더 대신
+  // 매번 바탕화면에서 열리는 "다른 이름으로 저장" 창을 띄운다. 바탕화면 자체는 Chrome/Edge가
+  // 폴더 지정(showDirectoryPicker)을 막아서 파일 단위 저장 창을 쓴다. id를 주면 마지막 위치를
+  // 기억해 바탕화면이 아닌 곳에서 열릴 수 있어 일부러 뺐다. 클릭 직후(사용자 제스처) 호출해야 함.
+  let fileHandle = null;
+  if(window.showSaveFilePicker){
+    try{
+      fileHandle = await window.showSaveFilePicker({
+        startIn:'desktop', suggestedName:fileName,
+        types:[{ description:'PNG 이미지', accept:{'image/png':['.png']} }],
+      });
+    }catch(e){
+      if(e && e.name==='AbortError') return; // 저장 취소
+      fileHandle = null;
+    }
   }
   btn.classList.add('busy');
   const stage = document.createElement('div');
@@ -2374,8 +2386,6 @@ async function captureCalendar(btn){
     const end = calAddDays(season.last, 6 - new Date(season.last+'T00:00:00').getDay());
     const weeks = [];
     for(let d = start; d <= end; d = calAddDays(d, 7)) weeks.push([0,1,2,3,4,5,6].map(i=> calAddDays(d, i)));
-    const quarter = calSeasonQuarter(season.mid);
-    const todayStr = localYmd(today0);
     const span = `${calYmdShort(start)} ~ ${calYmdShort(end)}`;
     const sub = `${span} · ${todayStr} 기준 · 해외: 기업 IR 공시 · 국내: IR 담당자 회신` + (season.pending.length ? ' (점선 = 날짜 미정·후보일)' : '');
     // 이 시즌에 날짜 미정 일정이 없으면 빈 칸만 차지하므로 "날짜 미정" 열을 뺀다
@@ -2399,9 +2409,14 @@ async function captureCalendar(btn){
       windowWidth: Math.max(window.innerWidth, stage.scrollWidth + 40),
     });
     const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
-    const fileName = `${todayStr}_커버기업_${quarter}_실적발표_일정.png`;
-    await perfSaveBlob(dir, fileName, blob);
-    alert(`저장 완료${dir ? ' ('+dir.name+' 폴더)' : ' (다운로드 폴더)'}\n\n${fileName}`);
+    if(fileHandle){
+      const w = await fileHandle.createWritable();
+      await w.write(blob);
+      await w.close();
+    }else{
+      await perfSaveBlob(null, fileName, blob);
+    }
+    alert(`저장 완료${fileHandle ? '' : ' (다운로드 폴더)'}\n\n${fileHandle ? fileHandle.name : fileName}`);
   }catch(e){
     alert('캘린더 저장 중 오류: ' + e.message);
   }finally{
