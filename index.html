@@ -1972,8 +1972,13 @@ function calPendRange(p){
   if(p.dates && p.dates.length) return p.dates.map(calYmdShort).join(' 또는 ');
   return `${calYmdShort(p.from)}~${calYmdShort(p.to)}`;
 }
+// 기간형("10월 말" 등)은 평일만 강조 — 실적발표는 주말에 안 하므로(2026-10-28 요청,
+// "n째주"처럼 후보일을 평일로 나열한 경우와 맞춤).
 function calPendCovers(p, dateStr){
-  return p.dates && p.dates.length ? p.dates.includes(dateStr) : (dateStr >= p.from && dateStr <= p.to);
+  if(p.dates && p.dates.length) return p.dates.includes(dateStr);
+  if(dateStr < p.from || dateStr > p.to) return false;
+  const dow = new Date(dateStr+'T00:00:00').getDay();
+  return dow !== 0 && dow !== 6;
 }
 function calHighlightPending(p){
   document.querySelectorAll('#cal-grid .day[data-date]').forEach(el=>{
