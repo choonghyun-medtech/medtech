@@ -730,6 +730,38 @@ SCRAPERS = {
 }
 
 
+def carry_over_past_events(old_events, new_events, tickers, today):
+    """[2026-10-29] 이전 파일에 있던 지난 일정 중 이번 수집에서 빠진 것을 그대로 유지한다.
+    스크래퍼는 날짜가 지난 일정을 버리고(d < today), 과거분은 yfinance에 Reported EPS가
+    올라와야 채워지는데 그 사이에 공백이 생겼다 — 장 마감 후 발표(ALGN/TDOC 10/28)는
+    워크플로가 몇 시간 뒤 돌 때 아직 EPS가 반영 전이라 캘린더에서 통째로 사라졌다(사용자
+    리포트). 실적 외 IR 컨퍼런스/주총 등도 날짜가 지나면 사라지던 것을 국내 캘린더처럼 남긴다.
+    - 오늘 이후 일정은 유지하지 않는다: 아직 안 지났는데 수집에서 빠졌다면 회사가 연기/취소한 것.
+    - 같은 기업 실적이 새 데이터에 ±3일 안에 있으면(yfinance는 미 동부 기준 날짜) 중복이라 버린다.
+    - DAYS_BACK 밖이거나 팔로업 목록에서 빠진 기업은 버린다."""
+    win_start = today - datetime.timedelta(days=DAYS_BACK)
+    new_keys = {(e["ticker"], e["date"], e["type"]) for e in new_events}
+    new_earn = {}
+    for e in new_events:
+        if e["type"] == "earn":
+            new_earn.setdefault(e["ticker"], []).append(datetime.date.fromisoformat(e["date"]))
+
+    carried = []
+    for e in old_events:
+        try:
+            d = datetime.date.fromisoformat(e["date"])
+        except (KeyError, ValueError):
+            continue
+        if d >= today or d < win_start or e.get("ticker") not in tickers:
+            continue
+        if (e["ticker"], e["date"], e["type"]) in new_keys:
+            continue
+        if e["type"] == "earn" and any(abs((d - nd).days) <= 3 for nd in new_earn.get(e["ticker"], [])):
+            continue
+        carried.append(e)
+    return carried
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ir-sources", default=IR_SOURCES_FILE)
@@ -774,13 +806,19 @@ def main():
         all_events.extend(future_ev)
         time.sleep(0.3)  # 대상 서버에 부담 주지 않기 위한 대기
 
-    all_events.sort(key=lambda e: e["date"])
-
     try:
         with open(args.out, encoding="utf-8") as f:
             existing = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         existing = {}
+
+    carried = carry_over_past_events(existing.get("global", []), all_events,
+                                      {s["ticker"] for s in sources}, today)
+    if carried:
+        print(f"[INFO] 이전 파일에서 지난 일정 {len(carried)}건 유지: "
+              + ", ".join(f"{e['ticker']} {e['date']}" for e in carried))
+    all_events.extend(carried)
+    all_events.sort(key=lambda e: e["date"])
 
     existing["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     existing["domestic"] = existing.get("domestic", [])
