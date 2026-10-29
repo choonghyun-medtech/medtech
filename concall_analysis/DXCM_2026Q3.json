@@ -1,0 +1,143 @@
+{
+ "ticker": "DXCM",
+ "company": "DexCom, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-29",
+ "file": "DXCM_2026Q3.json",
+ "source_hash": "12bd272ea181",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-29T23:56:41.763826+00:00",
+ "headline": [
+  "2026년 3분기 매출액은 전년 동기 대비 11% 증가(보고 및 오가닉 기준 모두 11%)한 13억 4,000만 달러를 기록함.",
+  "미국 매출은 전년 동기 대비 14% 증가한 9억 7,000만 달러를 기록하며 시장 점유율을 확대함.",
+  "연간 매출액 가이던스 범위를 $5.20 billion ~ $5.25 billion으로 수정하고, 연간 영업이익률 및 조정 EBITDA 마진 가이던스를 상향 조정함.",
+  "아일랜드 상업 생산 시설 가동을 시작하고, 유럽 직판망 확대를 위한 대형 유통 파트너 인수 계약을 체결함."
+ ],
+ "changes": [
+  "연간 매출액 가이던스 하단을 기존 $5.18 billion에서 $5.20 billion으로 상향 조정함.",
+  "연간 Non-GAAP 영업이익률 가이던스를 기존 23.5% ~ 24%에서 약 24%로, 조정 EBITDA 마진 가이던스를 약 32%로 상향함.",
+  "아일랜드 신규 생산 공장이 계획대로 상업 생산을 개시함.",
+  "유럽 내 직판 전환을 위해 대형 유통 파트너사 사업 인수 계약을 체결함."
+ ],
+ "prepared": {
+  "summary": [
+   "덱스컴의 2026년 3분기 매출액은 13억 4,000만 달러로 전년 동기 대비 11% 성장함.",
+   "미국 시장 매출은 14% 증가한 9억 7,000만 달러를 기록했으며, 특히 인슐린 미사용 제2형 당뇨 환자군을 중심하여 시장 점유율을 확대함.",
+   "경영진은 연간 매출 가이던스 범위를 축소/상향 조정하고 영업이익률 및 조정 EBITDA 마진 가이던스를 상향함.",
+   "아일랜드 생산 공장의 상업 생산 개시 및 유럽 직판 확대를 위한 유통사 인수 계약 등 글로벌 인프라 강화를 지속함."
+  ],
+  "sections": [
+   {
+    "title": "지역별 실적 및 글로벌 확장",
+    "points": [
+     "미국 매출액은 9억 7,000만 달러(YoY +14%)를 기록하며 견조한 신규 환자 유입과 점유율 확대를 보임.",
+     "해외 매출액은 3억 7,500만 달러(YoY +5%)를 기록함. 작년 하반기 환급 수혜 기저 효과에 따른 일시적 영향이며 내년 초 정상화 예상됨.",
+     "유럽 직판 확대를 위해 주요 유통 파트너사의 사업 인수 계약을 체결함(2027년 완료 예정)."
+    ]
+   },
+   {
+    "title": "임상 및 제품 포트폴리오 업데이트",
+    "points": [
+     "임상 연구 'Connect' 결과가 New England Journal of Medicine에 게재되어 인슐린 미사용 제2형 당뇨 환자 대상 CGM의 당화혈색소(A1c) 개선 효과(1.6% 개선)를 입증함.",
+     "새로운 Stelo 앱을 공식 출시하여 식사 기록 및 직관적인 글루코스 인사이트 기능을 강화함.",
+     "덱스컴 G7 15일 착용 시스템의 캐나다 11월 출시 확정 및 일본 FDA 승인 완료(2027년 초 출시 목표)."
+    ]
+   },
+   {
+    "title": "재무 성과 및 자본 배분",
+    "points": [
+     "3분기 Non-GAAP 매출총이익률은 65.1%(YoY +380bps), 영업이익률은 25.3%(YoY +270bps)를 기록함.",
+     "올해 목표했던 10억 달러 자사주 매입을 완수하였으며, 신규 10억 달러 자사주 매입 프로그램을 승인함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "연간 가이던스(매출액)",
+   "value": "$5.20 billion ~ $5.25 billion",
+   "prev": "$5.18 billion ~ $5.25 billion",
+   "change": "상향",
+   "quote": "Turning to guidance. We are updating our revenue guidance to be in the range of $5.20 billion to $5.25 billion, representing growth of 12% to 13% for the year."
+  },
+  {
+   "item": "연간 가이던스(영업이익률)",
+   "value": "약 24%",
+   "prev": "23.5% ~ 24%",
+   "change": "상향",
+   "quote": "We are increasing our non-GAAP operating profit margin guidance to approximately 24% and adjusted EBITDA margin guidance to approximately 32%."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "미국 CMS 인슐린 미사용 제2형 당뇨병 환자 CGM 보장 확대 결정",
+   "target": "2027년 중반 시행 예상 (결정은 연내 예상)",
+   "status": "진행 중",
+   "note": "연내 CMS의 보장 결정 발표를 여전히 기대하고 있으며, 2027년 중반 시행 예정을 유지함.",
+   "quote": "Along those lines, we continue to expect CMS to announce a type 2 non-insulin coverage decision this year as the case for reimbursement is strengthening."
+  },
+  {
+   "item": "덱스컴 G7 15일 시스템 연말까지 미국 고객 50% 전환",
+   "target": "2026년 말",
+   "status": "진행 중",
+   "note": "펌프 연동 확대로 고객 채택이 지속되어 연말까지 미국 고객의 거의 50%를 전환하는 목표를 순조롭게 달성 중임.",
+   "quote": "This leaves us on track to convert nearly 50% of our U.S. customer base, the G7 15-day by year-end."
+  },
+  {
+   "item": "덱스컴 G8 출시",
+   "target": "2027년 말 ~ 2028년 초",
+   "status": "진행 중",
+   "note": "임상 시험에서 긍정적인 정확도 및 성능 결과를 확인 중이며 2027년 말 또는 2028년 초 목표 일정을 유지함.",
+   "quote": "We're seeing amazing results in the clinical studies that we are running around the accuracy and performance of that platform... We're still targeting -- depending on regulatory review time lines, either launching at the end of next year or early '28"
+  }
+ ],
+ "qa": [
+  {
+   "theme": "CVS PBM 처방집 제외 영향 및 대응 방안",
+   "analysts": [
+    "Travis Steed (Bank of America)",
+    "Jeffrey Johnson (Baird)",
+    "Ravi Misra (Truist)"
+   ],
+   "question": "최근 CVS PBM과의 계약 변경(독점/선호 지위 제외)에 따른 실적 및 환자 영향은 어떠하며, 'Dexcom Direct' 프로그램이 이를 어떻게 보완하는가?",
+   "answer": "해당 PBM은 미국 매출의 4% 미만으로 재무적 영향은 미미할 것임. 환자의 연속 사용을 돕기 위해 의료 혜택(DME) 채널 변경 및 사전 승인 절차를 지원하는 'Dexcom Direct' 서비스를 내년 초 정식 개시하여 환자 이탈을 최소화할 계획임."
+  },
+  {
+   "theme": "해외 경쟁 환경 및 단가 가격 압박 여부",
+   "analysts": [
+    "Matthew Taylor (Jefferies)",
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "경쟁사의 해외 단가 인하 언급과 관련하여 덱스컴이 체감하는 글로벌 가격 환경과 카테고리 성장세는 어떠한가?",
+   "answer": "글로벌 전반에서 단가 하락 현상은 관찰되지 않으며 pricing은 매우 안정적임. 제품 포트폴리오(G7, Dexcom 1+, Stelo 등)를 환급 및 시장 상황에 맞춰 효과적으로 다변화하여 대응하고 있으며, 3분기 최고 수준의 매출총이익률을 달성함."
+  },
+  {
+   "theme": "유럽 유통 파트너사 인수 및 직판 전환",
+   "analysts": [
+    "Jayson Bedford (Raymond James)"
+   ],
+   "question": "발표된 해외 유통사 인수 계약의 세부 내용과 실적 반영 시점은 어떻게 되는가?",
+   "answer": "유럽 내 가장 큰 남아있던 유통 파트너사 사업을 인수하는 계약이며, 현재 계약 체결 단계로 2027년 중 최종 완료될 예정임. 올해 3, 4분기 실적 영향은 없으며 내년 이후 직판 성장의 동력이 될 것임."
+  },
+  {
+   "theme": "아일랜드 공장 가동과 2027년 마진 전망",
+   "analysts": [
+    "William Plovanic (Canaccord Genuity)",
+    "Marie Thibault (BTIG)"
+   ],
+   "question": "4분기 및 내년 아일랜드 생산 공장 초기 가동에 따른 마진 영향 및 비용 추이는 어떠한가?",
+   "answer": "아일랜드 시설 가동 초기에 따라 4분기 및 내년 상반기 일부 고정비 부담이 발생하여 매출총이익률에 짧은 영향이 있겠으나, G7 15일 제품 비중 확대와 제조 효율화로 장기 마진 개선 세는 지속될 것임."
+  },
+  {
+   "theme": "Connect 임상 데이터의 시장 영향력 및 PCP 확장",
+   "analysts": [
+    "Anna Runci (Piper Sandler)",
+    "Steven Lichtman (William Blair)",
+    "Kieran Ryan (Deutsche Bank)"
+   ],
+   "question": "NEJM에 게재된 Connect 임상이 1차 진료의(PCP) 처방 및 인슐린 미사용 당뇨 환자군 확장 및 CMS 보장 결정에 어떤 영향을 미치고 있는가?",
+   "answer": "Connect 데이터는 최상위 수준(Level A)의 임상 근거를 제공하여 ADA 치료 가이드라인 개정 및 CMS 보장 확대 결정에 강력한 근거가 될 것임. 1차 진료의 대상 마케팅 효율성을 대폭 올려 신규 환자 유입을 가속화하고 있음."
+  }
+ ]
+}

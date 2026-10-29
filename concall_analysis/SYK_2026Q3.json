@@ -1,0 +1,165 @@
+{
+ "ticker": "SYK",
+ "company": "Stryker Corporation",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-29",
+ "file": "SYK_2026Q3.json",
+ "source_hash": "6f8f63420a64",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-10-29T23:57:34.285784+00:00",
+ "headline": [
+  "스트라이커의 2026년 3분기 유기적 매출 성장률은 7.7%, 조정 EPS는 전년 동기 대비 10.3% 증가한 $3.52를 기록함.",
+  "고관절 및 무릎(hip and knee) 정형외과 시장의 시술 성장 둔화와 영업 집행 차질로 전사 실적이 회사 기대치에 미달함.",
+  "연간 유기적 매출 성장률 가이던스를 6.5%~7.0%로, 조정 EPS 가이던스를 $14.80~$14.90로 하향 조정함.",
+  "CMR 서지컬(CMR Surgical) 투자 및 Exclusive 대리점 계약, 자이바(Ziva) 인수를 통해 연조직 로봇수술 및 스포츠의학 포트폴리오를 강화함."
+ ],
+ "changes": [
+  "연간 유기적 매출 성장률 가이던스 하향 조정(기존 8.3%~9.3% → 6.5%~7.0%)",
+  "연간 조정 EPS 가이던스 하향 조정(기존 $14.95~$15.10 → $14.80~$14.90)",
+  "고관절 및 무릎(hip and knee) 시장의 절차적 성장 둔화 및 사전 승인 거부 증가 이슈가 전면에 등장함",
+  "CMR 서지컬 투자 및 자이바 인수 등 새로운 M&A/투자 성과 공개"
+ ],
+ "prepared": {
+  "summary": [
+   "스트라이커는 2026년 3분기 유기적 매출 성장률 7.7%, 조정 EPS $3.52를 달성하였으나, 고관절/무릎 정형외과 시장 둔화 및 영업 집행 문제로 기대치를 하회했습니다.",
+   "메드서그 및 신경기술은 9.1% 성장한 반면 정형외과는 5.9% 성장에 그쳤으며, 미주 무릎은 1.3% 성장, 미주 고관절은 0.6% 감소했습니다.",
+   "말초혈관 사업은 공급 차질 속에서도 중국 JV 일회성 수익 등으로 순증을 이루며 전분기 대비 개선 흐름을 보였습니다.",
+   "회사는 정형외과 시장의 둔화와 말초혈관 공급 제약 등을 반영하여 연간 유기적 매출 성장률 및 조정 EPS 가이던스를 하향 조정했습니다."
+  ],
+  "sections": [
+   {
+    "title": "3분기 총평 및 시장 환경",
+    "points": [
+     "유기적 매출 성장률 7.7%, 조정 EPS $3.52(전년 동기 대비 10.3% 증가) 기록함.",
+     "미국 내 높은 보험료/공제액에 따른 부담과 사전 승인 거부 증가로 고관절 및 무릎 시술 성장이 둔화됨.",
+     "1분기 사이버 이벤트와 7월 정형외과 SAP 도입 등으로 영업 집행에 일부 차질 및 시장 상황 파악 지연 발생함."
+    ]
+   },
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "메드서그 및 신경기술(MedSurg & Neurotechnology): 유기적 매출 성장률 9.1% 달성(미국 9.6%, 해외 7.2%). 내시경(Endoscopy) 미국 13%, 의료기기(Medical) 미국 10% 성장함.",
+     "정형외과(Orthopaedics): 유기적 매출 성장률 5.9% 달성(미국 6.4%, 해외 4.4%). 미국 무릎 1.3% 성장, 미국 고관절 -0.6% 역성장, 미국 오소텍(OrthoTec) 18% 성장함."
+    ]
+   },
+   {
+    "title": "M&A 및 신규 파트너십",
+    "points": [
+     "자이바(Ziva) 인수 완료하여 스포츠의학 및 관절성형술 지원 확장.",
+     "CMR 서지컬(CMR Surgical) 투자 및 Versius 플랫폼의 미국 독점 판매 대리점 계약 체결."
+    ]
+   },
+   {
+    "title": "수익성 및 재무 상태",
+    "points": [
+     "조정 영업이익률 26.2%(전년 동기 대비 60bp 상승), 조정 관세 혜택 및 운영 효율화로 조정 가동률 향상됨.",
+     "3분기 말 현금 및 현금성 자산 약 33억 달러 보유, 3분기 중 10억 달러 규모 자사주 매입 실시."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "유기적 매출 성장률",
+   "value": "6.5% ~ 7.0%",
+   "prev": "8.3% ~ 9.3%",
+   "change": "하향",
+   "quote": "We now expect full year organic net sales growth of 6.5% to 7% and adjusted net earnings per share of $14.80 to $14.90."
+  },
+  {
+   "item": "조정 EPS",
+   "value": "$14.80 ~ $14.90",
+   "prev": "$14.95 ~ $15.10",
+   "change": "하향",
+   "quote": "We now expect full year organic net sales growth of 6.5% to 7% and adjusted net earnings per share of $14.80 to $14.90."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "PEERLESS II study data readout",
+   "target": "2027년 중반",
+   "status": "진행 중",
+   "note": "2027년을 바라보며 PEERLESS II 연구의 주요 데이터를 기대하고 있다고 언급함.",
+   "quote": "Looking ahead to 2027, we expect to begin commercializing AVS' IDL platform and also look forward to important data from our PEARLESS II study of FlowTriever."
+  },
+  {
+   "item": "Pangea trauma plating System 유럽 전체 상용화",
+   "target": "2026년 4분기",
+   "status": "언급 없음",
+   "note": "이번 분기 컨퍼런스콜 원문에서 해당 항목에 대한 직접적인 언급이 없음.",
+   "quote": ""
+  },
+  {
+   "item": "Mako RPS 미국 전체 상용화",
+   "target": "2026년",
+   "status": "진행 중",
+   "note": "Mako RPS 신제품 판매가 초기 기대에는 미치지 못했으나 상용화 진행 중이며 영업력 강화를 추진 중임.",
+   "quote": "Although Mako sales have been strong again this year, we are behind our expectations on new product sales for Mako RBS and Triumph on gold."
+  },
+  {
+   "item": "AVS IDL 플랫폼 상용화",
+   "target": "2027년",
+   "status": "신규",
+   "note": "2027년 AVS의 IDL 플랫폼 상용화를 시작할 것으로 예상함.",
+   "quote": "Looking ahead to 2027, we expect to begin commercializing AVS' IDL platform and also look forward to important data from our PEARLESS II study of FlowTriever."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "정형외과 시장 둔화 원인 및 전망",
+   "analysts": [
+    "Robert Marcus (JPMorgan)",
+    "Joanne Wuensch (Citi)",
+    "Travis Steed (Bank of America)",
+    "Michael Matson (Needham & Company)"
+   ],
+   "question": "고관절 및 무릎 시장 둔화의 구체적인 원인은 무엇이며 시장 성장률은 어느 정도로 파악하고 있는가? 과거 시장 반등의 계기는 무엇이었는가?",
+   "answer": "올해 고관절/무릎 시장 성장률은 2.5% 수준으로 둔화된 것으로 추정됨. 높은 보험 공제액과 사전 승인 거부 증가 등 경제적 부담으로 환자들이 시술을 미루는 현상이 발생함. 경쟁사로의 대규모 고객 이탈은 없으며, 통증이 심해지는 퇴행성 질환 특성상 시장은 향후 회복될 것으로 봄."
+  },
+  {
+   "theme": "CMR 서지컬 투자 및 연조직 로봇 수술 전략",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)",
+    "Richard Newitter (Truist)",
+    "Unknown Analyst (TD Cowen)"
+   ],
+   "question": "CMR 서지컬에 투자하고 독점 판매 대리점 계약을 맺은 이유는 무엇인가? 직접 인수하지 않고 단계적 접근을 취한 이유는 무엇인가?",
+   "answer": "Versius 플랫폼은 모듈식 설계로 ASC 및 병원 모두에 적합하며 일반 외과 수술의 로봇 침투율을 높일 수 있는 최적의 자산임. 인수에 따른 개발 및 상용화 위험을 줄이면서 미국 시장 확대를 도모하기 위한 전략적 선택이며, 향후 최종 인수 계획을 가지고 있음."
+  },
+  {
+   "theme": "자본재 수요 및 Q4 실적 모멘텀",
+   "analysts": [
+    "Ryan Zimmerman (U.S. Bancorp BTIG)",
+    "Chris Pascal (Barclays)"
+   ],
+   "question": "4분기 유기적 성장률 전망의 주요 동력은 무엇이며, 자본재 수주 잔고 및 수요 상황은 어떠한가?",
+   "answer": "4분기에는 외상 및 사지(trauma & extremities), 의료기기(Medical), 기구(Instruments) 사업부가 강세를 보일 것으로 예상함. 자본재 주문 잔고는 여전히 높은 수준을 유지하고 있으며, 생산 확대와 공급을 맞추는 데 집중하고 있음."
+  },
+  {
+   "theme": "파이프라인 및 신제품 출시 일정",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)",
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "Sonopet clearance 외에 내년 성장을 이끌 주요 신제품 파이프라인은 무엇이 있는가?",
+   "answer": "내년 상반기 폐기물 관리 플랫폼 Neptune 차세대 버전, AVS 제품(올해 말 FDA 승인 기대), 파워 툴 System 10, 내시경 1888 등이 대기 중임. 또한 Mako RPS 및 Mako Shoulder, 동력 고관절 임팩터(power impactor) 출시 등이 정형외과 모멘텀을 지원할 것임."
+  },
+  {
+   "theme": "자본 배치 및 자사주 매입 전략",
+   "analysts": [
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "30억 달러 자사주 매입 승인의 배경과 M&A 우선순위 변화 여부는 어떠한가?",
+   "answer": "최우선 순위는 여전히 M&A임. 다만 올해 거래 시점 차이와 강력한 현금 창출 능력을 바탕으로 기회주의적인 자사주 매입을 진행하고 있으며, M&A를 위한 여력은 충분히 유지하고 있음."
+  },
+  {
+   "theme": "말초혈관 사업부 현황 및 회복 전망",
+   "analysts": [
+    "Matthew O'Brien (Piper Sandler)"
+   ],
+   "question": "말초혈관 사업의 공급 차질 극복 상황과 2027년 AVS/IVL 관련 계획은 어떠한가?",
+   "answer": "영업 조직은 매우 안정화되었으며, 제조 시설의 백오더 문제도 지난 분기 대비 개선됨. FDA 승인 후 AVS IVL 플랫폼이 출시되면 기존 말초혈관 제품군과의 시너지 효과로 강력한 성장을 이끌 것으로 기대함."
+  }
+ ]
+}
