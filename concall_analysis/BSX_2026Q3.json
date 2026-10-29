@@ -1,0 +1,205 @@
+{
+ "ticker": "BSX",
+ "company": "Boston Scientific Corporation",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-10-28",
+ "file": "BSX_2026Q3.json",
+ "source_hash": "52e826957f1c",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-10-29T00:37:50.952181+00:00",
+ "headline": [
+  "3분기 전사 유기적 매출 성장률 1.5%, 조정 EPS $0.73을 기록하며 사이버 보안 사고의 영향으로 가이던스를 하회함.",
+  "사이버 보안 사고로 인한 일시적 영업 중단과 재고 조정 여파가 4분기에도 200~300 bps의 매출 역풍으로 이어질 전망임.",
+  "중국 시장의 가격 경쟁 심화와 워치만 및 전기생리학(EP) 부문의 점유율 하락으로 2027년 전사 매출 및 조정 EPS 성장이 도전적일 것으로 예상됨.",
+  "2027년 저점을 통과하여 2028년부터 신제품 출시와 구조조정 효과로 다시 성장 모멘텀을 회복할 것으로 기대함."
+ ],
+ "changes": [
+  "FY26 유기적 매출 성장률 가이던스가 직전 분기 5~6%에서 약 4%로 하향 조정됨.",
+  "Q3 유기적 매출 성장률 및 조정 EPS가 사이버 보안 사고 여파로 직전 분기 가이던스(매출 3~5%, EPS $0.80~$0.82)를 하회함.",
+  "4분기 가이던스로 유기적 매출 역성장(-1% ~ -3%)과 조정 EPS $0.77~$0.79가 신규 제시됨.",
+  "펜룸브라 인수 완료 시기가 기존 2026년 하반기에서 2027년 초로 연기됨.",
+  "2027년 전사 매출 및 조정 EPS 성장이 어려울 수 있다는 보수적 시각이 새롭게 대두됨."
+ ],
+ "prepared": {
+  "summary": [
+   "3분기 전사 유기적 매출은 전년 동기 대비 1.5% 성장했으며, 조정 EPS는 $0.73을 기록해 사이버 보안 사고 여파로 당초 가이던스를 하회함.",
+   "사이버 보안 사고는 3분기 매출 성장률에 약 300 bps, EPS에 $0.07의 부정적 영향을 미쳤으나 9월 8일부로 모든 운영이 정상 복구됨.",
+   "4분기 역시 사이버 여파와 중국 가격 압박, EP 경쟁 심화로 유기적 매출 -1% ~ -3%, 조정 EPS $0.77~$0.79를 예상함.",
+   "2027년은 실적 저점이 될 것으로 보이며, 펜룸브라 인수를 제외하고는 매출 및 EPS 성장이 도전적일 것이나 구조조정 및 신제품을 통해 2028년 반등을 도모함."
+  ],
+  "sections": [
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "심혈관(Cardiovascular) 2% 성장, 그중 ICVT는 12% 고성장 기록.",
+     "신체조절(Neuromodulation) 13% 성장, 비뇨기과(Urology) 3% 역성장, 내시경(Endoscopy) 1% 역성장.",
+     "워치만(WATCHMAN) -6%, 전기생리학(EP) -5% 역성장 기록."
+    ]
+   },
+   {
+    "title": "재무 및 구조조정",
+    "points": [
+     "3분기 조정 영업이익률 26.5%, 조정 총이익률 68.0% 기록.",
+     "전사 구조조정 프로그램을 통해 향후 3년간 5억 달러 이상의 비용 절감을 추진 중이며 계획보다 빠르게 진행 중."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 유기적 매출 성장률",
+   "value": "approximately 4%",
+   "prev": "5% to 6%",
+   "change": "하향",
+   "quote": "This results in a full year '26 organic revenue growth guide of approximately 4% and EPS of $3.16 to $3.18."
+  },
+  {
+   "item": "FY26 조정 EPS",
+   "value": "$3.16 to $3.18",
+   "prev": "$3.28 to $3.32",
+   "change": "하향",
+   "quote": "This results in a full year '26 organic revenue growth guide of approximately 4% and EPS of $3.16 to $3.18."
+  },
+  {
+   "item": "Q3 유기적 매출 성장률",
+   "value": "",
+   "prev": "3% to 5%",
+   "change": "언급 없음",
+   "quote": ""
+  },
+  {
+   "item": "Q3 조정 EPS",
+   "value": "",
+   "prev": "$0.80 to $0.82",
+   "change": "언급 없음",
+   "quote": ""
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Penumbra 인수 완료",
+   "target": "early 2027",
+   "status": "진행 중",
+   "note": "규제 승인 절차를 거치며 2027년 초로 완료 시기가 조정됨.",
+   "quote": "We continue to work with the regulators and now expect to close in early '27, subject to the receipt of the remaining regulatory clearances."
+  },
+  {
+   "item": "SEISMIQ 4CE Coronary IVL Catheter 출시",
+   "target": "2027년 상반기",
+   "status": "언급 없음",
+   "note": "",
+   "quote": ""
+  },
+  {
+   "item": "TIVUS ultrasound system (신장신경차단술) 시장 출시",
+   "target": "2028년",
+   "status": "진행 중",
+   "note": "임상 등록 지연이 있었으나 플랫폼에 대한 확신을 유지하고 있음.",
+   "quote": "We continue to believe that the THRIVE platform has differentiated advantages over the 2 current approved devices for renal denervation for hypertension."
+  },
+  {
+   "item": "PRECEDENT 제세동기 플랫폼 출시",
+   "target": "2027년 하반기",
+   "status": "언급 없음",
+   "note": "",
+   "quote": ""
+  },
+  {
+   "item": "FARAWAVE Ultra 및 ICE 시장 진입 (EP 부문)",
+   "target": "2027년",
+   "status": "진행 중",
+   "note": "2D ICE는 2027년 하반기, FARAWAVE Ultra는 2028년 초로 일정이 언급됨.",
+   "quote": "until we launched FARAWAVE Ultra, now expected in early '28, we expect our EP performance to meaningfully improve in '28 as we expand our PFA ecosystem with 2D ICE in the second half of '27 and FARAWAVE Ultra in '28"
+  },
+  {
+   "item": "FARAFLEX 출시 및 FARADIGM 임상",
+   "target": "2028년",
+   "status": "진행 중",
+   "note": "원문에서 2029년 출시 목표로 언급됨.",
+   "quote": "FARAFLEX, our wide-area focal catheter in '29."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "사이버 보안 사고 영향 및 2027년 가이던스 배경",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "3분기 해킹 사고의 실제 영향 규모와 4분기로 이어지는 이유, 그리고 2027년 무성장 전망이 보수적인 관점인지 신규 정보 반영인지 문의함.",
+   "answer": "3분기 사이버 영향은 매출 300 bps, EPS $0.07 감소였으며 4분기에도 재고 소진 등으로 200~300 bps 역풍이 이어짐. 2027년은 워치만 및 EP 시장의 부진과 경쟁 요소를 반영해 보수적으로 프레이밍한 것임."
+  },
+  {
+   "theme": "2028년 성장 회복 동력",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "2028년 매출 및 EPS 성장 회복에 대한 자신감의 근거와 주요 성장 동력에 대해 문의함.",
+   "answer": "심혈관 및 펜룸브라의 고성장, CRM 부문의 데날리(Denali) 플랫폼 출시, 워치만 및 EP 부문의 신제품(Ultra, ICE 등) 출시와 구조조정 효과가 맞물려 2028년 반등을 이끌 것으로 확신함."
+  },
+  {
+   "theme": "내부 구조조정 및 펜룸브라 인수 지연",
+   "analysts": [
+    "Joanne Wuensch (Citi)"
+   ],
+   "question": "현재 진행 중인 내부 구조조정의 구체적 내용과 펜룸브라 인수 지연의 해소 단계에 대해 문의함.",
+   "answer": "조직 슬림화, 공급망 최적화 등을 통해 향후 3년간 5억 달러 이상 절감을 목표로 하며 이미 순조롭게 진행 중임. 펜룸브라는 규제 당국과 원만히 협의 중이며 2027년 초 마감을 예상함."
+  },
+  {
+   "theme": "메드서그(MedSurg) 사업부 전망",
+   "analysts": [
+    "Rick Wise (Stifel)"
+   ],
+   "question": "메드서그 사업부가 과거의 7~8% 성장률로 돌아가지 못하고 미드 싱글디짓 성장에 머무는 이유와 향후 반등 요건에 대해 문의함.",
+   "answer": "신경조절과 내시경은 양호하나 중국 가격 압박과 비뇨기과(특히 아소닉스 인수 후 영업력 정체 등)의 부진이 원인이며, 신제품 승인과 인력 재정비를 통해 점진적 개선을 도모하고 있음."
+  },
+  {
+   "theme": "파이프라인 지연 및 예측 프로세스 개선",
+   "analysts": [
+    "Travis Steed (Bank of America)"
+   ],
+   "question": "파이프라인 전반의 일정이 지연되는 이유와 경영진이 언급한 향후 예측 능력 개선 방안에 대해 문의함.",
+   "answer": "조직 확대에 따른 운영 효율성을 높이기 위해 사업부를 개편 중이며, 예측 정확도를 높이기 위해 시나리오 분석 및 외부 데이터 활용 등 강화된 프로세스를 도입함."
+  },
+  {
+   "theme": "WAMGR 및 EP 시장 전망",
+   "analysts": [
+    "Josh Jennings (TD Cowen)"
+   ],
+   "question": "가중평균시장성장률(WAMGR)의 지속 가능성 여부와 미국 EP 시장의 향후 전망에 대해 문의함.",
+   "answer": "전사 WAMGR은 약 7% 수준을 유지하고 있으며, 고성장 신시장 진입을 통해 이를 상회하는 성장을 추구하고자 함. EP 시장은 단기적으로 경쟁 압박이 있으나 신제품을 통해 2028년 반등할 것임."
+  },
+  {
+   "theme": "2027년 EPS 무성장 원인 (믹스 및 마진)",
+   "analysts": [
+    "Marie Thibault (U.S. Bank BTIG)"
+   ],
+   "question": "구조조정 비용 절감 효과가 있음에도 2027년 조정 EPS 성장이 어려운 주된 이유가 제품 믹스 때문인지 문의함.",
+   "answer": "워치만 및 EP의 부진에 따른 제품 믹스 악화와 중국 가격 인하 압박이 총이익률에 큰 부담을 주기 때문이며, 투자를 유지하면서 비용을 통제하더라도 2027년 EPS는 매출과 유사하게 도전적일 것임."
+  },
+  {
+   "theme": "VITALYST 전략 변경 및 THRIVE 임상 지연",
+   "analysts": [
+    "Pito Chickering (Deutsche Bank)"
+   ],
+   "question": "VITALYST가 고위험 PCI에서 심인성 쇼크(Cardiogenic Shock) 적응증으로 선회한 이유와 THRIVE 임상 지연 원인에 대해 문의함.",
+   "answer": "VITALYST는 뛰어난 위치 안정성 덕분에 미충족 수요가 큰 AMI 심인성 쇼크 치료에 매우 적합하다고 판단해 2027년 임상을 시작하기로 함. THRIVE는 소니비 인수 후 통합 과정에서 등록 속도가 다소 지연되었으나 기술력에 대한 확신은 유지함."
+  },
+  {
+   "theme": "주요 파이프라인(Ultra, Flex) 진척 상황",
+   "analysts": [
+    "Matthew O'Brien (Piper Sandler)"
+   ],
+   "question": "FARAWAVE Ultra 및 FARAFLEX 등의 파이프라인이 지연되는 구체적 원인이 무엇인지 문의함.",
+   "answer": "Ultra는 PMA 보충 품목으로 임상시험이 불필요하며 하드웨어/소프트웨어 디자인 검증 작업으로 인해 약 1분기 지연됨. FARAFLEX는 FDA IDE 협상 및 CMS 승인 지연 등의 요인이 있었으나 연말까지 공급망을 확충할 것임."
+  },
+  {
+   "theme": "펜룸브라 인수 후 성장 및 희석 효과 업데이트",
+   "analysts": [
+    "Matt Taylor (Jefferies)"
+   ],
+   "question": "펜룸브라 플랫폼의 예상 성장률과 금리 상승 등을 반영한 EPS 희석 효과 업데이트를 요구함.",
+   "answer": "펜룸브라는 매우 우수한 실적을 내고 있어 심혈관 포트폴리오에 큰 도움이 될 것임. 발표 당시 예상한 $0.06~$0.08 희석 효과는 이후 금리 상승에 따른 자금 조달 비용 증가로 다소 압박을 받을 수 있으나 거래 완료 후 상세히 안내하겠음."
+  }
+ ]
+}
