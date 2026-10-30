@@ -100,7 +100,7 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
   flex:1 1 0; min-width:max-content; text-align:center;
 }
 #main-tabs .tab:hover{color:var(--text)}
-#main-tabs .t-short{display:none} /* 폰에서만 짧은 이름(폰 블록 참고) */
+.t-short{display:none} /* 폰에서만 보이는 짧은 문구(상단 탭·필터 라벨) — 폰 블록에서 .t-full과 바꿔 보여준다 */
 #main-tabs .tab.active{background:transparent; color:var(--text); border-bottom-color:var(--brand)}
 /* 2026-10-30: 하위 탭(뉴스/주가/산업/기업 분석)도 스크롤 시 상단 헤더 바로 아래에 고정한다.
    --hdr-h는 헤더 실제 높이(JS가 ResizeObserver로 갱신) — 폰/PC, 줄바꿈 여부와 상관없이 딱 붙게.
@@ -594,6 +594,21 @@ tr:last-child td{border-bottom:none}
 .gd-msel-row:hover{background:var(--bg2)}
 .gd-msel-actions{display:flex; gap:10px; padding:4px 4px 8px; border-bottom:1px solid var(--border); margin-bottom:6px}
 .gd-msel-actions a{font-size:11px; color:var(--accent); cursor:pointer; text-decoration:underline}
+/* 하나만 고르는 드롭다운을 .gd-msel 패널 모양으로(2026-10-30, enhanceSingleSelects 참고) — 원래 select는 숨김 */
+.dd-native{display:none !important}
+.dd-single{display:inline-block; vertical-align:middle}
+.dd-single[hidden]{display:none}
+/* rep-company-select 등에서 옮겨온 overflow:hidden이 펼침 패널을 잘라먹지 않게 — 말줄임은 제목 글자에만 */
+.dd-single{overflow:visible !important; white-space:normal !important}
+.dd-single > summary{min-width:0}
+.dd-lbl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}
+.dd-single .gd-msel-panel{min-width:100%; padding:4px}
+.dd-opt{display:flex; align-items:center; gap:4px; width:100%; border:none; background:none; color:var(--text); font:inherit; font-size:12px; text-align:left; padding:6px 8px; border-radius:5px; cursor:pointer; white-space:nowrap}
+.dd-opt:hover{background:var(--bg2)}
+.dd-opt.on{color:var(--accent); font-weight:700}
+.dd-opt .ck{width:14px; flex:none}
+.dd-group{font-size:10.5px; font-weight:700; color:var(--dim); padding:8px 8px 2px}
+.dd-compact > summary{padding:3px 8px; font-size:12px; font-weight:400}
 .gd-reset-link{font-size:11.5px; color:var(--accent); text-decoration:underline; cursor:pointer; align-self:center}
 .gd-table-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius)}
 .gd-table{font-size:12px}
@@ -745,8 +760,8 @@ tr:last-child td{border-bottom:none}
   /* 상단 탭: 가로 스크롤 대신 짧은 이름(뉴스·주가·캘린더·산업·기업분석·스냅샷)으로 한 줄에 6칸 균등 */
   #main-tabs{flex-wrap:nowrap; gap:0}
   #main-tabs .tab{flex:1 1 0; min-width:0; padding:9px 2px 10px; font-size:13px; white-space:nowrap}
-  #main-tabs .t-full{display:none}
-  #main-tabs .t-short{display:inline}
+  .t-full{display:none}
+  .t-short{display:inline}
 
   /* ---- 공통: 제목 줄·카드·차트 ---- */
   /* 소제목 옆 회색 설명이 좁은 폭에서 제목을 찌그러뜨리므로 설명은 다음 줄로 */
@@ -789,8 +804,19 @@ tr:last-child td{border-bottom:none}
     width:100% !important; max-width:100% !important; flex:1 1 100% !important; min-width:0 !important;
   }
   div:has(> #snap-search-input){max-width:none !important} /* PC용 최대 폭 320px 해제 */
-  .view :not(.gd-filter-group) > .gd-msel{flex:1 1 100%; width:100%}
+  /* 드롭다운·검색창·날짜/월 입력칸 높이 통일(28·30·32px로 제각각이던 것) — 가장 높던 32px(국가·섹터 드롭다운)에 맞춤.
+     예외: 소제목 옆 작은 "2026년 9월" 선택(제목 줄 높이에 맞춘 것) */
+  .view :not(h2) > select.filter-select,
+  .view input.filter-select,
+  .view .gd-msel > summary,
+  #export-range-custom input, #medtour-range-custom input, #medtour-derma-range-custom input, #hira-range-custom input{
+    height:32px !important; box-sizing:border-box; padding-top:0 !important; padding-bottom:0 !important;
+  }
+  .view :not(.gd-filter-group) > .gd-msel{flex:1 1 100%; width:100% !important; max-width:100% !important}
   .view :not(.gd-filter-group) > .gd-msel summary{width:100%}
+  /* 예외: 소제목 옆 작은 월 선택은 제목 줄에 붙은 그대로 */
+  .view h2 > .gd-msel.dd-compact{flex:none; width:auto !important; margin-top:4px}
+  .view h2 > .gd-msel.dd-compact > summary{width:auto; height:24px !important}
 
   /* 기간·국가 버튼 묶음: 버튼 하나만 아랫줄로 떨어지지 않게 한 줄로(넘치면 옆으로 스크롤) */
   .gw-seg, #medtour-tabs, #medtour-derma-tabs{flex-wrap:nowrap !important; overflow-x:auto; scrollbar-width:none}
@@ -805,6 +831,8 @@ tr:last-child td{border-bottom:none}
 
   /* ---- 주가 데이터 ---- */
   .gd-filter-bar .gd-filter-group{flex:1 1 calc(50% - 8px); min-width:0}
+  /* 라벨이 두 줄인 칸(시가총액 구간)이 있어도 같은 줄 드롭다운끼리 아래 끝을 맞춘다 */
+  .gd-filter-bar{align-items:flex-end}
   .gd-msel summary{min-width:0}
   /* 펼침 패널이 오른쪽 칸에서 화면 밖으로 나가지 않게 — 오른쪽 열 필터는 오른쪽 끝에 맞춰 연다 */
   .gd-msel-panel{min-width:100%; max-width:calc(100vw - 40px)}
@@ -4568,7 +4596,7 @@ function gdRenderFilterBar(){
     </div>
     ${isAll ? `
     <div class="gd-filter-group">
-      <span class="gd-filter-label">섹터 (복수 선택, 비우면 전체)</span>
+      <span class="gd-filter-label"><span class="t-full">섹터 (복수 선택, 비우면 전체)</span><span class="t-short">섹터 (복수 선택)</span></span>
       <details class="gd-msel" id="gd-sector-msel">
         <summary id="gd-sector-summary">섹터 전체</summary>
         <div class="gd-msel-panel">
@@ -4586,7 +4614,7 @@ function gdRenderFilterBar(){
       </select>
     </div>
     <div class="gd-filter-group">
-      <span class="gd-filter-label">시가총액 구간 (복수 선택, 비우면 전체)</span>
+      <span class="gd-filter-label"><span class="t-full">시가총액 구간 (복수 선택, 비우면 전체)</span><span class="t-short">시총 구간 (복수 선택)</span></span>
       <details class="gd-msel" id="gd-cap-msel">
         <summary id="gd-cap-summary">전체 구간</summary>
         <div class="gd-msel-panel">
@@ -4646,6 +4674,78 @@ document.addEventListener('click', (e)=>{
     if(!d.contains(e.target)) d.removeAttribute('open');
   });
 });
+
+// ---- 하나만 고르는 드롭다운(<select class="filter-select">)도 여러 개 고르는 드롭다운(.gd-msel)과
+// 같은 "아래로 펼쳐지는 패널"로 보이게 한다(2026-10-30 요청 — 폰에서 열었을 때 하나는 폰 기본 선택 창,
+// 하나는 사이트 패널이라 모양이 달랐다). 원래 <select>는 숨겨서 그대로 두고 그 뒤에 패널을 붙이므로
+// 기존 코드(sel.value 읽기/쓰기, innerHTML로 옵션 다시 채우기, change 이벤트)는 손대지 않아도 된다.
+// 패널에서 고르면 select 값을 바꾸고 change 이벤트를 똑같이 발생시킨다.
+(function enhanceSingleSelects(){
+  const SEL = 'select.filter-select';
+  const textWidth = (() => {
+    const ctx = document.createElement('canvas').getContext('2d');
+    return (t) => { ctx.font = '12px ' + getComputedStyle(document.body).fontFamily; return ctx.measureText(t).width; };
+  })();
+  function build(sel){
+    if(sel._dd) return;
+    const dd = document.createElement('details');
+    // rep-cat-select처럼 폭을 정해 둔 클래스는 패널에도 그대로 옮긴다
+    const extra = [...sel.classList].filter(c => c !== 'filter-select');
+    dd.className = ['gd-msel', 'dd-single', ...extra].join(' ');
+    if(sel.closest('h2')) dd.classList.add('dd-compact');
+    const sum = document.createElement('summary');
+    const panel = document.createElement('div');
+    panel.className = 'gd-msel-panel';
+    dd.append(sum, panel);
+    sel.after(dd);
+    sel.classList.add('dd-native');
+    sel._dd = dd;
+    const fixedWidth = extra.length || sel.style.width || sel.style.maxWidth;
+    const optHtml = (o) => `<button type="button" class="dd-opt${o.selected ? ' on' : ''}" data-i="${o.index}"><span class="ck">${o.selected ? '✓' : ''}</span>${escapeHtml(o.text)}</button>`;
+    const render = () => {
+      const cur = sel.options[sel.selectedIndex];
+      sum.innerHTML = `<span class="dd-lbl">${escapeHtml(cur ? cur.text : '')}</span>`;
+      panel.innerHTML = [...sel.children].map(ch => ch.tagName === 'OPTGROUP'
+        ? `<div class="dd-group">${escapeHtml(ch.label)}</div>` + [...ch.children].map(optHtml).join('')
+        : optHtml(ch)).join('');
+      dd.hidden = sel.hidden || sel.style.display === 'none';
+      dd.style.marginLeft = sel.style.marginLeft;
+      dd.style.width = sel.style.width; dd.style.maxWidth = sel.style.maxWidth;
+      // 원래 select처럼 가장 긴 항목 길이에 맞춘 폭(고른 항목에 따라 폭이 들쭉날쭉하지 않게)
+      if(!fixedWidth){
+        const longest = Math.max(0, ...[...sel.options].map(o => textWidth(o.text)));
+        sum.style.minWidth = Math.min(Math.ceil(longest) + 44, 320) + 'px';
+      }
+    };
+    // 코드가 sel.value = ... / selectedIndex로 값을 바꿔도 패널 표시가 따라가게
+    const proto = HTMLSelectElement.prototype;
+    ['value', 'selectedIndex'].forEach(prop => {
+      const d = Object.getOwnPropertyDescriptor(proto, prop);
+      Object.defineProperty(sel, prop, { configurable: true, get(){ return d.get.call(this); }, set(v){ d.set.call(this, v); render(); } });
+    });
+    new MutationObserver(render).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'style', 'selected', 'label'] });
+    panel.addEventListener('click', (e) => {
+      const b = e.target.closest('.dd-opt');
+      if(!b) return;
+      dd.removeAttribute('open');
+      if(+b.dataset.i === sel.selectedIndex) return;
+      sel.selectedIndex = +b.dataset.i;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    // 열 때 고른 항목이 보이도록 스크롤
+    dd.addEventListener('toggle', () => {
+      if(dd.open){ const on = panel.querySelector('.dd-opt.on'); if(on) on.scrollIntoView({ block: 'nearest' }); }
+    });
+    render();
+  }
+  document.querySelectorAll(SEL).forEach(build);
+  // 글로벌 대시보드·리서치·스냅샷처럼 select를 나중에 innerHTML로 새로 그리는 곳도 잡는다
+  new MutationObserver(muts => muts.forEach(m => m.addedNodes.forEach(n => {
+    if(n.nodeType !== 1) return;
+    if(n.matches(SEL)) build(n);
+    n.querySelectorAll && n.querySelectorAll(SEL).forEach(build);
+  }))).observe(document.body, { childList: true, subtree: true });
+})();
 
 function gdBuildCountryOptions(ts){
   const wrap = document.getElementById('gd-country-options');
