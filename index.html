@@ -100,6 +100,7 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
   flex:1 1 0; min-width:max-content; text-align:center;
 }
 #main-tabs .tab:hover{color:var(--text)}
+#main-tabs .t-short{display:none} /* 폰에서만 짧은 이름(폰 블록 참고) */
 #main-tabs .tab.active{background:transparent; color:var(--text); border-bottom-color:var(--brand)}
 /* 2026-10-30: 하위 탭(뉴스/주가/산업/기업 분석)도 스크롤 시 상단 헤더 바로 아래에 고정한다.
    --hdr-h는 헤더 실제 높이(JS가 ResizeObserver로 갱신) — 폰/PC, 줄바꿈 여부와 상관없이 딱 붙게.
@@ -118,17 +119,6 @@ h1 .brand-en{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",san
 }
 .subtabs-bar .region-tab:hover{background:var(--bg2); color:var(--text)}
 .subtabs-bar .region-tab.active{background:var(--accent); color:#fff}
-@media (max-width:720px){
-  .site-header{padding-top:8px}
-  .subtitle{display:none}
-  .topbar{padding-bottom:6px}
-  .brand-logo{width:26px; height:26px}
-  h1{font-size:14.5px; word-break:keep-all}
-  h1 .brand-lead{display:block; font-size:11px; line-height:1.2}
-  #main-tabs{flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none}
-  #main-tabs::-webkit-scrollbar{display:none}
-  #main-tabs .tab{padding:9px 12px 10px; font-size:13.5px}
-}
 /* 뉴스 탭 내부의 국내/해외 서브탭 — 페이지 전역 .tab과 클릭 핸들러가 섞이지 않도록
    별도 클래스로 분리(같은 시각 스타일만 재사용). */
 .region-tab{
@@ -482,6 +472,8 @@ tr:last-child td{border-bottom:none}
 }
 .day .ev-more:hover, .day .ev-collapse:hover{text-decoration:underline}
 .dot{width:6px; height:6px; border-radius:50%}
+/* 폰 전용 달력 색 점·날짜별 일정 목록(2026-10-30) — PC에서는 숨김, 폰 블록에서 켠다 */
+.cal-dots, #cal-day-detail{display:none}
 .legend{display:flex; gap:8px; flex-wrap:wrap; font-size:11.5px; color:var(--sub); margin-top:10px}
 .legend span{display:flex; align-items:center; gap:5px}
 .legend .dot{width:8px; height:8px; border-radius:50%; display:inline-block}
@@ -528,7 +520,6 @@ tr:last-child td{border-bottom:none}
 .snap-sector-select{width:170px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 .snap-company-select{width:240px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
 .perf-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-@media (max-width:720px){.perf-grid{grid-template-columns:1fr}}
 .perf-table-title{font-size:13px; font-weight:700; padding:8px 10px; border-radius:8px 8px 0 0; color:#fff}
 .perf-table-title.top{background:#0F6E56}
 .perf-table-title.bottom{background:#A32D2D}
@@ -537,6 +528,9 @@ tr:last-child td{border-bottom:none}
 .perf-flat{color:var(--dim)}
 .market-badge{display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--bg2); color:var(--sub); margin-left:5px; vertical-align:middle}
 .perf-name-link{color:inherit; text-decoration:none; font-weight:600}
+/* 컨센서스 변화 상향/하향 Top 10 종목명 — PC는 두 표가 나란히라 7.5글자에서 말줄임(폰은 폰 블록에서 두 줄 전체 표시) */
+.rev-name-td{white-space:nowrap}
+.rev-name{font-weight:600; display:inline-block; max-width:7.5em; overflow:hidden; text-overflow:ellipsis; vertical-align:middle}
 .perf-name-link:hover{text-decoration:underline}
 /* 2026-10-08: 섹터 열(세부 섹터)이 생기면서 긴 해외 종목명과 겹쳐 오른쪽 표가 본문 밖으로 넘쳐서,
    화면 표에서만 두 표를 반반으로 고정하고 긴 종목명은 말줄임(마우스 올리면 전체). 이미지 캡쳐 표는 그대로. */
@@ -734,6 +728,164 @@ tr:last-child td{border-bottom:none}
 .gw-stock-row.rv td:first-child{box-shadow:inset 3px 0 0 #0086B8}
 #gd-analysis-cards .stat-card .sub{font-size:11px; color:var(--dim); margin-top:3px}
 #gd-analysis-cards .stat-card .gd-country-badge{margin-top:2px}
+
+/* =====================================================================
+   폰 전용(화면 폭 720px 이하) — 2026-10-30 반응형 1차 정리.
+   폰 화면 규칙은 전부 여기 한 곳에 모은다(PC 화면은 이 블록을 읽지 않아 영향 없음).
+   탭별로 나눠 두었으니 폰에서 이상하게 보이는 곳은 해당 탭 구역만 보면 된다.
+   ===================================================================== */
+@media (max-width:720px){
+  /* ---- 공통: 헤더 ---- */
+  .site-header{padding-top:8px}
+  .subtitle{display:none}
+  .topbar{padding-bottom:6px}
+  .brand-logo{width:26px; height:26px}
+  h1{font-size:14.5px; word-break:keep-all}
+  h1 .brand-lead{display:block; font-size:11px; line-height:1.2}
+  /* 상단 탭: 가로 스크롤 대신 짧은 이름(뉴스·주가·캘린더·산업·기업분석·스냅샷)으로 한 줄에 6칸 균등 */
+  #main-tabs{flex-wrap:nowrap; gap:0}
+  #main-tabs .tab{flex:1 1 0; min-width:0; padding:9px 2px 10px; font-size:13px; white-space:nowrap}
+  #main-tabs .t-full{display:none}
+  #main-tabs .t-short{display:inline}
+
+  /* ---- 공통: 제목 줄·카드·차트 ---- */
+  /* 소제목 옆 회색 설명이 좁은 폭에서 제목을 찌그러뜨리므로 설명은 다음 줄로 */
+  .sec-h{flex-wrap:wrap; gap:2px 8px}
+  .sec-h > .note{flex-basis:100%}
+  .cards, #medtour-overview-cards{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .stat-card .val{font-size:16px}
+  .chart-box{height:240px; padding:10px}
+  .chart-box.tall{height:300px}
+  .gd-trend-grid .chart-box{height:300px}
+  .perf-grid{grid-template-columns:1fr}
+  .perf-grid > div{min-width:0}
+
+  /* ---- 공통: 넓은 표는 화면 전체를 밀지 않고 표만 옆으로 스크롤 ---- */
+  .view div:has(> table), .perf-table-box{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  /* 산업 데이터 "월별 데이터": 조회 기간(왼쪽)과 표(오른쪽)를 위아래로 쌓고, 시작월·종료월은 한 줄에 나란히 */
+  div:has(> #export-table-wrap), div:has(> #medtour-table-wrap), div:has(> #medtour-derma-table-wrap), div:has(> #hira-table-wrap){flex-direction:column; align-items:stretch !important}
+  div:has(> #export-table-wrap) > div:first-child, div:has(> #medtour-table-wrap) > div:first-child, div:has(> #medtour-derma-table-wrap) > div:first-child, div:has(> #hira-table-wrap) > div:first-child{width:100% !important}
+  #export-range-custom, #medtour-range-custom, #medtour-derma-range-custom, #hira-range-custom{flex-direction:row !important}
+  #export-range-custom > label, #medtour-range-custom > label, #medtour-derma-range-custom > label, #hira-range-custom > label{flex:1; min-width:0}
+  #export-table-wrap, #medtour-table-wrap, #medtour-derma-table-wrap, #hira-table-wrap{min-width:0 !important; width:100%; flex:none !important}
+
+  /* ---- 공통: 여러 줄로 쌓이던 칩 버튼 → 한 줄 가로 스크롤 ---- */
+  .gd-tab-bar, #export-cat-chips{flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-bottom:6px}
+  .gd-tab-bar::-webkit-scrollbar, #export-cat-chips::-webkit-scrollbar{display:none}
+  .gd-tab-btn{flex:none; white-space:nowrap}
+  .export-chip{width:auto; flex:none; padding:6px 14px}
+
+  /* 페이지 번호 줄 — 맨 처음/맨 끝(«·») 버튼은 폰에서 빼서 한 줄에(‹ › 는 남김), 그래도 넘치면 줄바꿈 */
+  .rep-pager{flex-wrap:wrap; gap:3px}
+  .rep-pager button{min-width:24px}
+  .rep-pager button:first-child, .rep-pager button:last-child{display:none}
+
+  /* ---- 공통: PC 기준 고정 폭 드롭다운·검색창 → 화면 폭에 맞춤 ---- */
+  /* 탭 상단 필터의 드롭다운·검색창은 전부 화면 폭만큼(한 줄에 하나)으로 통일.
+     예외: 글로벌 대시보드 필터(라벨 붙은 2열 묶음), 소제목 옆 작은 월 선택, 날짜 입력칸 */
+  .filter-select{max-width:100%}
+  .view :not(.gd-filter-group):not(h2) > select.filter-select,
+  .view :not(.gd-filter-group) > input.filter-select:not([type=date]):not([type=checkbox]){
+    width:100% !important; max-width:100% !important; flex:1 1 100% !important; min-width:0 !important;
+  }
+  div:has(> #snap-search-input){max-width:none !important} /* PC용 최대 폭 320px 해제 */
+  .view :not(.gd-filter-group) > .gd-msel{flex:1 1 100%; width:100%}
+  .view :not(.gd-filter-group) > .gd-msel summary{width:100%}
+
+  /* 기간·국가 버튼 묶음: 버튼 하나만 아랫줄로 떨어지지 않게 한 줄로(넘치면 옆으로 스크롤) */
+  .gw-seg, #medtour-tabs, #medtour-derma-tabs{flex-wrap:nowrap !important; overflow-x:auto; scrollbar-width:none}
+  .gw-seg::-webkit-scrollbar, #medtour-tabs::-webkit-scrollbar, #medtour-derma-tabs::-webkit-scrollbar{display:none}
+  .gw-seg > *, #medtour-tabs > *, #medtour-derma-tabs > *{flex:1 0 auto; white-space:nowrap}
+  .gw-seg > *{padding-left:10px; padding-right:10px}
+  .gw-controls > *{min-width:0; max-width:100%} /* 한 줄로 만든 버튼 묶음이 화면 밖으로 밀지 않게 */
+
+  /* 일정 목록의 "출처↗"가 "출/처"로 쪼개지지 않게 — 자리가 모자라면 통째로 다음 줄로 */
+  .up-row a{white-space:nowrap}
+  .up-row .badge{min-width:52px; text-align:center} /* 배지 길이가 달라 본문 시작 위치가 들쭉날쭉하지 않게 */
+
+  /* ---- 주가 데이터 ---- */
+  .gd-filter-bar .gd-filter-group{flex:1 1 calc(50% - 8px); min-width:0}
+  .gd-msel summary{min-width:0}
+  /* 펼침 패널이 오른쪽 칸에서 화면 밖으로 나가지 않게 — 오른쪽 열 필터는 오른쪽 끝에 맞춰 연다 */
+  .gd-msel-panel{min-width:100%; max-width:calc(100vw - 40px)}
+  .gd-filter-group:nth-child(even) .gd-msel-panel{left:auto; right:0}
+  /* 수익률 Top/Bottom 10: 섹터 열을 빼고 #·종목·시총·변화율만 */
+  #perf-body table th:nth-child(3), #perf-body table td:nth-child(3){display:none}
+  /* 종목명: 말줄임 대신 두 줄까지 전체 표시, 시장 표시(KR/US)는 이름 아래로 — 컨센서스 변화 Top 10과 같은 방식 */
+  #perf-body table td:nth-child(2){white-space:normal !important; min-width:104px}
+  #perf-body .perf-name-link{display:block; max-width:none; overflow:visible; white-space:normal; word-break:keep-all; overflow-wrap:normal; line-height:1.3}
+  #perf-body table td:nth-child(2) .market-badge,
+  .rev-name-td .market-badge{margin:1px 0 0; font-size:8.5px; padding:0 4px; line-height:13px; border-radius:3px}
+  /* 이름+국가 두 줄이 되면서 행이 높아져 칸 위아래 여백을 조금 줄인다 */
+  #perf-body table td, #rev-table-wrap td{padding-top:7px; padding-bottom:7px}
+  /* Peer Table: 체크박스(평균 계산 제외) 칸은 폰에서 숨기고, 고정된 기업명 칸을 좁혀 숫자 칸이 더 보이게 */
+  .gd-table{font-size:11.5px}
+  .gd-table th, .gd-table td{padding:6px 7px}
+  .gd-table .gd-sticky-1{display:none}
+  /* 이름은 말줄임 대신 칸 안에서 줄바꿈해 전체 이름이 다 보이게(긴 이름은 2줄) */
+  .gd-table .gd-sticky-2{left:0; min-width:96px; width:96px; max-width:96px; white-space:normal; word-break:keep-all; overflow-wrap:anywhere; line-height:1.3}
+
+  /* ---- 기업 스냅샷: 실적 전망 / 다음 분기 실적 전망 표 ----
+     구분 열이 PC 기준 150px라 폰에서 여백이 커 보여 좁힌다(긴 라벨 "매출액(백만 USD)"은 2줄) */
+  .earn-fc-table{font-size:12px}
+  .earn-fc-table th:first-child, .earn-fc-table td:first-child{width:92px; padding-left:6px; padding-right:4px; word-break:keep-all; line-height:1.35}
+  .earn-fc-table th, .earn-fc-table td{padding-top:7px; padding-bottom:7px}
+
+  /* ---- 이벤트 캘린더: 가로 스크롤 없이 7칸을 화면 폭에 맞춤 ---- */
+  /* "날짜 미정" 칸은 폰에서 숨긴다 — 같은 일정이 "다가오는 일정"·"이번달 일정" 목록에 나온다 */
+  #view-calendar .cal-scroll-inner{min-width:0}
+  #view-calendar .cal-scroll .grid{grid-template-columns:repeat(7, minmax(0,1fr)); gap:3px}
+  #view-calendar .cal-scroll .dow.pend-h, #view-calendar .cal-scroll .cal-pend-cell{display:none}
+  .cal-next-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+
+  /* 폰 달력: 칸 안 일정 이름 대신 종류별 색 점, 날짜를 누르면 아래에 그날 일정 목록 */
+  #view-calendar .day{min-height:50px; padding:3px 3px 4px; cursor:pointer}
+  #view-calendar .day .evs{display:none}
+  #view-calendar .day.sel{outline:2px solid var(--accent); outline-offset:-2px}
+  .cal-dots{display:flex; flex-wrap:wrap; gap:3px; margin-top:5px; align-items:center}
+  .cal-dots i{width:6px; height:6px; border-radius:50%; background:var(--dim)}
+  .cal-dots i.ir{background:var(--blue)}
+  .cal-dots i.earn{background:var(--lime)}
+  .cal-dots i.disc{background:var(--purple)}
+  .cal-dots i.agm{background:var(--green)}
+  .cal-dots i.listing{background:var(--red)}
+  .cal-dots i.exright{background:var(--teal)}
+  .cal-dots i.cand{background:transparent; border:1px dashed var(--lime)}
+  .cal-dots b{font-size:9px; color:var(--dim); font-weight:700; line-height:1}
+  #cal-day-detail{display:block; margin-top:10px; padding:10px 12px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius)}
+  .cal-day-detail-h{font-size:13px; font-weight:700; margin-bottom:2px}
+
+  /* ---- 기업 분석: 리서치 보고서 표 → 한 건씩 카드형 ----
+     1줄: 작성일 · 투자의견 · PDF / 2줄: 종목 / 3줄: 제목·코멘트(가장 넓게) */
+  #rep-table-wrap table, #bio-table-wrap table, #rep-table-wrap tbody, #bio-table-wrap tbody{display:block}
+  #rep-table-wrap thead, #bio-table-wrap thead{display:none}
+  #rep-table-wrap tr, #bio-table-wrap tr{
+    display:grid; grid-template-columns:1fr auto auto; gap:4px 10px; align-items:center;
+    grid-template-areas:"date op pdf" "name name name" "title title title";
+    padding:12px 0; border-bottom:1px solid var(--border);
+  }
+  #rep-table-wrap tr:last-child, #bio-table-wrap tr:last-child{border-bottom:none}
+  #rep-table-wrap td, #bio-table-wrap td{display:block; width:auto !important; padding:0; border:none; white-space:normal}
+  #rep-table-wrap td:nth-child(1), #bio-table-wrap td:nth-child(1){grid-area:date; font-size:11.5px; color:var(--dim)}
+  #rep-table-wrap td:nth-child(2), #bio-table-wrap td:nth-child(2){grid-area:name}
+  #rep-table-wrap td:nth-child(3), #bio-table-wrap td:nth-child(3){grid-area:title}
+  #rep-table-wrap td:nth-child(4), #bio-table-wrap td:nth-child(4){grid-area:op}
+  #rep-table-wrap td:nth-child(5), #bio-table-wrap td:nth-child(5){grid-area:pdf}
+
+  /* ---- 기업 분석: 컨센서스 변화 Top 10 — 종목명을 말줄임 대신 두 줄까지 전체 표시, 시장 표시(KR/US)는 이름 아래로 ---- */
+  /* 줄바꿈은 띄어쓰기 자리에서만 — "삼성바이오로직/스"처럼 단어 중간에서 끊지 않는다(칸이 그만큼 넓어짐) */
+  .rev-name-td{white-space:normal; min-width:104px}
+  .rev-name{display:block; max-width:none; overflow:visible; word-break:keep-all; overflow-wrap:normal; line-height:1.3}
+
+  /* ---- 기업 분석: 해외기업 컨콜 — 수치 표 내용 줄바꿈 허용 ---- */
+  #earnings-ir-wrap td{white-space:normal; word-break:keep-all}
+
+  /* ---- 컨콜 스크립트 팝업 ---- */
+  .tr-modal{padding:12px 8px}
+  .tr-head{padding:12px 14px 8px}
+  .tr-toolbar{padding:8px 14px}
+  .tr-body{padding:6px 14px 24px}
+}
 </style>
 </head>
 <body>
@@ -770,12 +922,12 @@ tr:last-child td{border-bottom:none}
   </div>
 
   <div class="tabs" id="main-tabs">
-    <button class="tab active" data-view="news">산업·기업 뉴스</button>
-    <button class="tab" data-view="stock">주가 데이터</button>
-    <button class="tab" data-view="calendar">이벤트 캘린더</button>
-    <button class="tab" data-view="industry">산업 데이터</button>
-    <button class="tab" data-view="reports">기업 분석</button>
-    <button class="tab" data-view="snapshot">기업 스냅샷</button>
+    <button class="tab active" data-view="news"><span class="t-full">산업·기업 뉴스</span><span class="t-short">뉴스</span></button>
+    <button class="tab" data-view="stock"><span class="t-full">주가 데이터</span><span class="t-short">주가</span></button>
+    <button class="tab" data-view="calendar"><span class="t-full">이벤트 캘린더</span><span class="t-short">캘린더</span></button>
+    <button class="tab" data-view="industry"><span class="t-full">산업 데이터</span><span class="t-short">산업</span></button>
+    <button class="tab" data-view="reports"><span class="t-full">기업 분석</span><span class="t-short">기업분석</span></button>
+    <button class="tab" data-view="snapshot"><span class="t-full">기업 스냅샷</span><span class="t-short">스냅샷</span></button>
   </div>
   </div>
 
@@ -1024,6 +1176,7 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="grid" style="margin-top:5px" id="cal-grid"></div>
     </div></div>
+    <div id="cal-day-detail"></div>
     <!-- 범례를 클릭 가능한 토글 칩으로 사용 — 종류별로 켜고 꺼서 묶어 볼 수 있게(2026-09-03 사용자 요청).
          기본은 전체 켜짐. data-type은 CAL_TYPE_META 키와 일치해야 한다. -->
     <div class="legend" id="cal-legend">
@@ -1993,6 +2146,7 @@ const CAL_STATE = {
   year: today0.getFullYear(), month: today0.getMonth(), region: 'all',
   expandedDates: new Set(), q: '', types: new Set(Object.keys(CAL_TYPE_META)),
   pinned: null,
+  selDate: null, // 폰 전용(2026-10-30): 달력 칸을 눌러 고른 날짜 — 달력 아래에 그날 일정을 펼친다
 };
 const CAL_DAY_MAX = 5; // 하루 칸에 기본으로 보여줄 최대 일정 수(2026-08-28, 3->5 확대)
 const CAL_UP_PAGE_SIZE = 10; // "이번달 일정" 목록 페이지당 건수(리서치 보고서 탭과 동일, 2026-09-03)
@@ -2098,6 +2252,32 @@ function renderCalendar(){
 
   renderCalNextUp(events, pending);
   renderCalMonthList(events, pending);
+  renderCalDayDetail(events, pending);
+}
+
+// 폰 전용(2026-10-30): 달력에서 누른 날짜의 일정을 달력 바로 아래에 전체 이름으로 펼친다.
+// PC에서는 #cal-day-detail 자체를 CSS로 숨긴다(PC 달력은 칸 안에 이름이 다 보이므로).
+function renderCalDayDetail(events, pending){
+  const box = document.getElementById('cal-day-detail');
+  if(!box) return;
+  const sel = CAL_STATE.selDate;
+  const {year, month} = CAL_STATE;
+  const prefix = `${year}-${String(month+1).padStart(2,'0')}`;
+  if(!sel || !sel.startsWith(prefix)){
+    box.innerHTML = '<div class="note">날짜를 누르면 그날 일정이 여기에 보여요.</div>';
+    return;
+  }
+  const d = new Date(sel+'T00:00:00');
+  const dow = '일월화수목금토'[d.getDay()];
+  const dayEv = events.filter(ev => ev.date === sel);
+  const cand = pending.filter(p => (p.dates||[]).includes(sel));
+  const rows = dayEv.map(ev=>{
+    const meta = CAL_TYPE_META[ev.type] || {cls:'disc', label:ev.type};
+    const link = ev.source_url ? ` <a href="${ev.source_url}" target="_blank" rel="noopener" style="color:var(--dim); font-size:11px">출처↗</a>` : '';
+    return `<div class="up-row"><span class="badge ${meta.cls}">${meta.label}</span><span>${escapeHtml(ev.company || ev.ticker || '')} ${escapeHtml(ev.title||'')}${link}</span></div>`;
+  }).concat(cand.map(p=> `<div class="up-row pend"><span class="badge pend">후보일</span><span>${escapeHtml(p.company)} ${escapeHtml(p.quarter||'')} 실적발표 <span class="note">IR 회신: ${escapeHtml(p.text)}</span></span></div>`));
+  box.innerHTML = `<div class="cal-day-detail-h">${d.getMonth()+1}월 ${d.getDate()}일 (${dow}) · ${rows.length}건</div>`
+    + (rows.length ? `<div class="up-list">${rows.join('')}</div>` : '<div class="note">이 날은 일정이 없습니다.</div>');
 }
 
 // 주 단위 달력 칸 HTML — 화면(한 달)과 실적 시즌 이미지(여러 주, 2026-10-15)가 같이 쓴다.
@@ -2151,15 +2331,21 @@ function calGridHtml(weeks, rangeFirst, rangeLast, events, pending, opts={}){
           ? `<div class="ev-collapse" data-date="${dateStr}">접기</div>`
           : `<div class="ev-more" data-date="${dateStr}">+${dayEvents.length-CAL_DAY_MAX}건</div>`;
       }
+      // 폰 전용 색 점 — 칸이 좁아 일정 이름 대신 종류별 점만 보여주고(최대 6개), 눌러서 아래 목록으로 본다.
+      // PC에서는 CSS로 숨긴다.
+      const dots = interactive && dayEvents.length
+        ? `<div class="cal-dots">${dayEvents.slice(0, 6).map(ev=>`<i class="${(CAL_TYPE_META[ev.type]||{cls:'disc'}).cls}${ev.cand?' cand':''}"></i>`).join('')}${dayEvents.length > 6 ? `<b>+${dayEvents.length-6}</b>` : ''}</div>`
+        : '';
       const cls = ['day'];
       if(interactive && dateStr === todayStr) cls.push('today');
+      if(interactive && dateStr === CAL_STATE.selDate) cls.push('sel');
       if(pinned && calPendCovers(pinned, dateStr)) cls.push('cand-hl');
       const day = +dateStr.slice(8);
       const withMonth = !interactive && (firstCell || day === 1);
       if(withMonth) cls.push('mstart');
       const n = withMonth ? `${+dateStr.slice(5,7)}/${day}` : day;
       firstCell = false;
-      html += `<div class="${cls.join(' ')}" data-date="${dateStr}"><div class="n">${n}</div><div class="evs">${evHtml}${more}</div></div>`;
+      html += `<div class="${cls.join(' ')}" data-date="${dateStr}"><div class="n">${n}</div><div class="evs">${evHtml}${more}</div>${dots}</div>`;
     });
     if(opts.noPendCol) return;
     html += '<div class="cal-pend-cell">' + pendByWeek[wi].map(p=>{
@@ -2256,6 +2442,7 @@ function calChangeMonth(delta){
   if(m > 11){ m = 0; y += 1; }
   CAL_STATE.month = m; CAL_STATE.year = y;
   CAL_STATE.expandedDates.clear();
+  CAL_STATE.selDate = null;
   calUpPage = 1;
   renderCalendar();
 }
@@ -2298,6 +2485,15 @@ function updateCalLegendChips(){
         // 날짜 미정 일정 클릭 — 후보 기간 강조를 고정/해제(터치 화면에서도 볼 수 있게)
         CAL_STATE.pinned = CAL_STATE.pinned === pend.dataset.key ? null : pend.dataset.key;
         renderCalendar();
+      }
+      else if(window.matchMedia('(max-width:720px)').matches){
+        // 폰: 날짜 칸을 누르면 그날 일정을 달력 아래에 펼친다(다시 누르면 닫힘). PC는 기존 동작 그대로.
+        const day = e.target.closest('.day[data-date]');
+        if(day){
+          CAL_STATE.selDate = CAL_STATE.selDate === day.dataset.date ? null : day.dataset.date;
+          renderCalendar();
+          if(CAL_STATE.selDate) document.getElementById('cal-day-detail').scrollIntoView({behavior:'smooth', block:'nearest'});
+        }
       }
     });
     // 날짜 미정 일정에 마우스를 올리면 후보 기간 칸을 강조(고정해 둔 게 있으면 그대로 둠)
@@ -4064,6 +4260,10 @@ async function capturePerfTables(period, btn){
   stage.className = 'perf-capture-stage';
   document.body.appendChild(stage);
   const saved = [];
+  // 2026-10-30: 폰 브라우저는 한 번 누를 때 파일 하나만 내려받게 막아서 3장 중 1장만 저장됐다 —
+  // 폰(폴더 지정 불가 + 좁은 화면)에서는 3장을 다 만든 뒤 미리보기 창에서 장마다 "저장"을 누르게 한다.
+  const perImage = !dir && window.matchMedia('(max-width:720px)').matches;
+  const made = [];
   try{
     await perfLoadHtml2canvas();
     for(const set of PERF_CAPTURE_SETS){
@@ -4088,16 +4288,46 @@ async function capturePerfTables(period, btn){
       });
       const blob = await new Promise(res=> canvas.toBlob(res, 'image/png'));
       const fileName = `${asOf || localYmd()}_${PERF_CAPTURE_FILE_PERIOD[period]}_${set.key}_Top10_Bottom10.png`;
+      if(perImage){ made.push({fileName, blob, title:set.key}); continue; }
       await perfSaveBlob(dir, fileName, blob);
       saved.push(fileName);
     }
-    alert(`${saved.length}장 저장 완료${dir ? ' ('+dir.name+' 폴더)' : ' (다운로드 폴더)'}\n\n` + saved.join('\n'));
+    if(perImage) perfShowSaveSheet(made);
+    else alert(`${saved.length}장 저장 완료${dir ? ' ('+dir.name+' 폴더)' : ' (다운로드 폴더)'}\n\n` + saved.join('\n'));
   }catch(e){
     alert('캡쳐 저장 중 오류: ' + e.message + (saved.length ? `\n(저장된 파일: ${saved.join(', ')})` : ''));
   }finally{
     stage.remove();
     btn.classList.remove('busy');
   }
+}
+
+// 폰 전용 저장 창 — 만든 이미지들을 미리보기로 띄우고 장마다 저장 버튼(누를 때마다 1장씩 내려받기).
+function perfShowSaveSheet(items){
+  const urls = items.map(it => URL.createObjectURL(it.blob));
+  const modal = document.createElement('div');
+  modal.className = 'tr-modal';
+  modal.innerHTML = `<div class="tr-dialog" role="dialog" aria-modal="true" style="height:auto; max-height:88vh">
+    <div class="tr-head"><div class="tr-title">표 이미지 ${items.length}장 · 장마다 저장을 눌러주세요</div><button class="tr-close" aria-label="닫기">✕</button></div>
+    <div class="tr-body" style="padding-top:12px">${items.map((it, i) => `
+      <div style="margin-bottom:16px">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+          <b style="font-size:13px">${escapeHtml(it.title)}</b>
+          <button type="button" class="snap-jump-btn" data-i="${i}" style="font-size:12px; padding:5px 14px">⬇ 저장</button>
+        </div>
+        <img src="${urls[i]}" alt="" style="width:100%; border:1px solid var(--border); border-radius:6px; display:block">
+      </div>`).join('')}</div></div>`;
+  const close = () => { modal.remove(); urls.forEach(u => URL.revokeObjectURL(u)); };
+  modal.addEventListener('click', e => {
+    if(e.target === modal || e.target.closest('.tr-close')){ close(); return; }
+    const b = e.target.closest('button[data-i]');
+    if(!b) return;
+    const a = document.createElement('a');
+    a.href = urls[+b.dataset.i]; a.download = items[+b.dataset.i].fileName;
+    document.body.appendChild(a); a.click(); a.remove();
+    b.textContent = '저장됨 ✓';
+  });
+  document.body.appendChild(modal);
 }
 
 // 캡쳐 대상 기간은 1일/5일뿐이라 그 외 기간에서는 버튼을 숨긴다.
@@ -9777,7 +10007,7 @@ function renderRevTables(rows){
     const body = list.map((r,i)=>`
       <tr class="rev-row" data-ticker="${r.ticker}" style="cursor:pointer${REV_STATE.detail === r.ticker ? ';background:var(--accent-soft)' : ''}" title="${escapeHtml(r.sectors.join(', '))} · ${r.fy ? 'FY'+r.fy+' · ' : ''}${r.baseDate} → ${r.curDate}${r.currency ? ' · '+r.currency : ''}">
         <td>${i+1}</td>
-        <td style="white-space:nowrap"><span style="font-weight:600; display:inline-block; max-width:7.5em; overflow:hidden; text-overflow:ellipsis; vertical-align:middle">${escapeHtml(r.name)}</span><span class="market-badge">${r.market}</span></td>
+        <td class="rev-name-td"><span class="rev-name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span><span class="market-badge">${r.market}</span></td>
         <td style="white-space:nowrap">${revFmtVal(r.base, metric, r.market)} → ${revFmtVal(r.cur, metric, r.market)}</td>
         <td class="${pctClass(r.pct)}">${fmtPct(r.pct)}</td>
         <td>${revSparkSvg(r.spark, color)}</td>
