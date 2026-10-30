@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="dark">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -945,7 +945,7 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="topbar-right">
       <span class="subtitle">평일 자동 갱신</span>
-      <button class="theme-toggle" onclick="toggleTheme()" title="라이트 모드로 전환" aria-label="라이트 모드로 전환">☀️</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="다크 모드로 전환" aria-label="다크 모드로 전환">🌙</button>
     </div>
   </div>
 
@@ -1657,8 +1657,9 @@ function updatedLabel(iso){
   return `${parts.month}/${parts.day} 갱신`;
 }
 
-// ---- theme ---- 기본값은 다크 모드(html data-theme="dark"). 사용자가 라이트로 바꾸면
-// localStorage에 저장해 다음 방문 때도 유지한다(별도 저장이 없으면 항상 다크로 시작).
+// ---- theme ---- 기본값은 라이트 모드(html data-theme="light") — 2026-10-30 다크→라이트로 변경
+// (브랜드 네이비가 라이트에서 제대로 보임). 사용자가 다크로 바꾸면 localStorage에 저장해 다음 방문
+// 때도 유지한다(별도 저장이 없으면 항상 라이트로 시작).
 (function initTheme(){
   const saved = localStorage.getItem('theme');
   const el = document.documentElement;
