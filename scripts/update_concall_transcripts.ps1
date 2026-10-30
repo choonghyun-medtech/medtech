@@ -67,9 +67,18 @@ if ($LASTEXITCODE -ne 0) {
     Read-Host "종료하려면 Enter"
     exit 1
 }
+# [2026-10-30] GitHub Actions가 매일 자동 커밋을 올려 로컬이 뒤처져 있으면 푸시가 거절됐다 —
+# 푸시 전에 원격 커밋을 먼저 받아온다. --autostash는 커밋 안 한 다른 수정 파일이 있어도 막히지 않게 한다.
+git pull --rebase --autostash
+if ($LASTEXITCODE -ne 0) {
+    git rebase --abort 2>$null
+    Write-Host "[오류] 원격 변경사항을 받아오다 충돌이 나서 취소했습니다(커밋은 로컬에 남아 있음). VS Code 터미널에서 'git pull --rebase'로 충돌을 해결한 뒤 'git push'를 실행해주세요." -ForegroundColor Red
+    Read-Host "종료하려면 Enter"
+    exit 1
+}
 git push
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "[오류] 푸시에 실패했습니다 — 원격에 새 커밋이 있을 수 있습니다. 'git pull --rebase' 후 'git push'를 직접 실행해주세요." -ForegroundColor Red
+    Write-Host "[오류] 푸시에 실패했습니다(커밋은 로컬에 남아 있음). VS Code 터미널에서 'git pull --rebase' 후 'git push'를 직접 실행해주세요." -ForegroundColor Red
     Read-Host "종료하려면 Enter"
     exit 1
 }
