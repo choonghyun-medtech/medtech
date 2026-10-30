@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T00:37:36Z",
+ "updated": "2026-10-30T00:37:58Z",
  "count": 264,
  "ok_count": 263,
  "stocks": [
@@ -9,13 +9,13 @@
    "market": "CH",
    "source": "yfinance",
    "opinion": "buy",
-   "opinion_score": 2.2381,
-   "target_price": 387.0335,
-   "target_price_high": 447.98,
+   "opinion_score": 2.18182,
+   "target_price": 392.41287,
+   "target_price_high": 500.0,
    "target_price_low": 250.0,
-   "analyst_count": 20,
-   "per_fwd": 18.044243,
-   "eps_fwd": 22.10123,
+   "analyst_count": 21,
+   "per_fwd": 18.176012,
+   "eps_fwd": 22.10056,
    "earnings": {
     "annual": [
      {
@@ -48,7 +48,7 @@
       "revenue": 63265274190.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 20.56107
+      "eps": 20.5609
      },
      {
       "period": "차년도(+1Y)",
@@ -56,7 +56,7 @@
       "revenue": 66170360900.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 22.10123
+      "eps": 22.10136
      }
     ],
     "quarterly": [
@@ -78,7 +78,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -88,12 +88,12 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.44444,
-   "target_price": 750.92,
+   "target_price": 752.12,
    "target_price_high": 830.0,
-   "target_price_low": 560.0,
+   "target_price_low": 590.0,
    "analyst_count": 25,
-   "per_fwd": 25.380648,
-   "eps_fwd": 27.74358,
+   "per_fwd": 25.553816,
+   "eps_fwd": 27.75241,
    "earnings": {
     "annual": [
      {
@@ -123,18 +123,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 48002584480.0,
+      "revenue": 48002567360.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 25.26034
+      "eps": 25.27095
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 50530867050.0,
+      "revenue": 50530871720.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 27.74358
+      "eps": 27.75241
      }
     ],
     "quarterly": [
@@ -188,7 +188,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -202,8 +202,8 @@
    "target_price_high": 130.0,
    "target_price_low": 100.0,
    "analyst_count": 26,
-   "per_fwd": 17.2886,
-   "eps_fwd": 5.93686,
+   "per_fwd": 17.613361,
+   "eps_fwd": 5.93697,
    "earnings": {
     "annual": [
      {
@@ -233,18 +233,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 49963656020.0,
+      "revenue": 49963650280.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.51851
+      "eps": 5.51864
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 53527861620.0,
+      "revenue": 53527857170.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.93686
+      "eps": 5.93697
      }
     ],
     "quarterly": [
@@ -298,7 +298,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -312,8 +312,8 @@
    "target_price_high": 310.0,
    "target_price_low": 220.0,
    "analyst_count": 21,
-   "per_fwd": 25.122868,
-   "eps_fwd": 9.31701,
+   "per_fwd": 25.427284,
+   "eps_fwd": 9.31991,
    "earnings": {
     "annual": [
      {
@@ -343,18 +343,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 26261291390.0,
+      "revenue": 26261273230.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 8.58716
+      "eps": 8.58715
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 28282876140.0,
+      "revenue": 28282885340.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 9.31701
+      "eps": 9.31699
      }
     ],
     "quarterly": [
@@ -408,7 +408,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -422,8 +422,8 @@
    "target_price_high": 279.0,
    "target_price_low": 235.0,
    "analyst_count": 15,
-   "per_fwd": 20.50651,
-   "eps_fwd": 11.97766,
+   "per_fwd": 21.115623,
+   "eps_fwd": 11.97786,
    "earnings": {
     "annual": [
      {
@@ -453,18 +453,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 12083997990.0,
+      "revenue": 12084030660.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.31808
+      "eps": 11.31783
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 12621680490.0,
+      "revenue": 12621699230.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.97766
+      "eps": 11.97786
      }
     ],
     "quarterly": [
@@ -518,7 +518,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -527,13 +527,13 @@
    "market": "US",
    "source": "yfinance",
    "opinion": "buy",
-   "opinion_score": 1.58824,
-   "target_price": 354.5,
-   "target_price_high": 410.0,
-   "target_price_low": 293.0,
+   "opinion_score": 1.70588,
+   "target_price": 373.4375,
+   "target_price_high": 420.0,
+   "target_price_low": 309.0,
    "analyst_count": 16,
-   "per_fwd": 18.217216,
-   "eps_fwd": 19.77525,
+   "per_fwd": 18.675499,
+   "eps_fwd": 19.71353,
    "earnings": {
     "annual": [
      {
@@ -563,29 +563,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 14764596930.0,
+      "revenue": 14800726220.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 18.36996
+      "eps": 18.44417
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 15527599600.0,
+      "revenue": 15572385260.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 19.77525
+      "eps": 19.57446
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 3563500000.0,
-      "operating_income": 403200000.0,
-      "net_income": 261100000.0,
-      "eps": 3.12
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -611,24 +603,32 @@
       "eps": 3.64
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 3728918580.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": 4.4686
+      "eps": 3.22
+     },
+     {
+      "period": "이번분기(0Q)",
+      "is_estimate": true,
+      "revenue": 3748835740.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 4.50428
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 3716399800.0,
+      "revenue": 3729182570.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 4.5927
+      "eps": 4.526
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -642,7 +642,7 @@
    "target_price_high": 390.0,
    "target_price_low": 280.0,
    "analyst_count": 3,
-   "per_fwd": 39.51298,
+   "per_fwd": 39.43911,
    "eps_fwd": 9.74667,
    "earnings": {
     "annual": [
@@ -738,7 +738,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -746,13 +746,13 @@
    "name": "비오메리외",
    "market": "FR",
    "source": "yfinance",
-   "opinion": "hold",
-   "opinion_score": 2.64286,
+   "opinion": "buy",
+   "opinion_score": 2.5,
    "target_price": 82.61429,
    "target_price_high": 103.0,
    "target_price_low": 71.0,
    "analyst_count": 14,
-   "per_fwd": 19.478573,
+   "per_fwd": 19.29663,
    "eps_fwd": 4.6718,
    "earnings": {
     "annual": [
@@ -816,7 +816,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -830,7 +830,7 @@
    "target_price_high": 53.0,
    "target_price_low": 40.0,
    "analyst_count": 11,
-   "per_fwd": 19.259766,
+   "per_fwd": 19.26359,
    "eps_fwd": 2.61322,
    "earnings": {
     "annual": [
@@ -926,7 +926,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -940,7 +940,7 @@
    "target_price_high": 3300.0,
    "target_price_low": 1500.0,
    "analyst_count": 14,
-   "per_fwd": 17.91651,
+   "per_fwd": 18.289574,
    "eps_fwd": 105.88,
    "earnings": {
     "annual": [
@@ -1036,7 +1036,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1050,7 +1050,7 @@
    "target_price_high": 95.0,
    "target_price_low": 55.0,
    "analyst_count": 14,
-   "per_fwd": 18.871452,
+   "per_fwd": 18.603706,
    "eps_fwd": 4.33247,
    "earnings": {
     "annual": [
@@ -1146,7 +1146,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1160,7 +1160,7 @@
    "target_price_high": 8.5,
    "target_price_low": 2.25,
    "analyst_count": 5,
-   "per_fwd": -4.7184925,
+   "per_fwd": -4.834998,
    "eps_fwd": -0.34333,
    "earnings": {
     "annual": [
@@ -1256,7 +1256,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1390,7 +1390,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1398,13 +1398,13 @@
    "name": "Guangzhou Wondfo Biotech Co Ltd",
    "market": "CN",
    "source": "yfinance",
-   "opinion": "none",
-   "opinion_score": null,
-   "target_price": 24.68,
+   "opinion": "strong_buy",
+   "opinion_score": 1.25,
+   "target_price": 25.31,
    "target_price_high": 29.0,
-   "target_price_low": 20.36,
+   "target_price_low": 21.62,
    "analyst_count": 2,
-   "per_fwd": 14.069566,
+   "per_fwd": 13.982609,
    "eps_fwd": 1.15,
    "earnings": {
     "annual": [
@@ -1435,29 +1435,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2418750000.0,
+      "revenue": 2466500000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.71
+      "eps": 0.6775
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 2726250000.0,
+      "revenue": 2772750000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.8725
+      "eps": 0.8875
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-06-30",
-      "is_estimate": false,
-      "revenue": 445378584.54,
-      "operating_income": -16535121.54,
-      "net_income": 63525.39,
-      "eps": null
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -1483,6 +1475,14 @@
       "eps": null
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 530385724.2,
+      "operating_income": 72015111.87,
+      "net_income": 11356890.09,
+      "eps": null
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 0.0,
@@ -1500,7 +1500,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1508,13 +1508,13 @@
    "name": "퀴델오소",
    "market": "US",
    "source": "yfinance",
-   "opinion": "hold",
-   "opinion_score": 2.66667,
+   "opinion": "none",
+   "opinion_score": null,
    "target_price": 14.66667,
    "target_price_high": 20.0,
    "target_price_low": 12.0,
    "analyst_count": 3,
-   "per_fwd": 9.814223,
+   "per_fwd": 9.639094,
    "eps_fwd": 1.42752,
    "earnings": {
     "annual": [
@@ -1610,7 +1610,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1696,7 +1696,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1782,7 +1782,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1868,7 +1868,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -1954,7 +1954,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2040,7 +2040,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2126,7 +2126,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2136,11 +2136,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.34783,
-   "target_price": 411.38635,
+   "target_price": 416.38635,
    "target_price_high": 500.0,
    "target_price_low": 280.0,
    "analyst_count": 22,
-   "per_fwd": -2386.5273,
+   "per_fwd": -2451.642,
    "eps_fwd": -0.17784,
    "earnings": {
     "annual": [
@@ -2236,7 +2236,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2250,8 +2250,8 @@
    "target_price_high": 200.0,
    "target_price_low": 155.0,
    "analyst_count": 20,
-   "per_fwd": 26.97737,
-   "eps_fwd": 6.72712,
+   "per_fwd": 26.92087,
+   "eps_fwd": 6.72898,
    "earnings": {
     "annual": [
      {
@@ -2289,10 +2289,10 @@
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 7982612030.0,
+      "revenue": 7981342630.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 6.72712
+      "eps": 6.72898
      }
     ],
     "quarterly": [
@@ -2339,14 +2339,14 @@
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 1925089110.0,
+      "revenue": 1927350250.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.49587
+      "eps": 1.50146
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2360,7 +2360,7 @@
    "target_price_high": 365.0,
    "target_price_low": 113.0,
    "analyst_count": 20,
-   "per_fwd": 47.127228,
+   "per_fwd": 47.334476,
    "eps_fwd": 6.12788,
    "earnings": {
     "annual": [
@@ -2441,22 +2441,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 1152784110.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 1.35747
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 1215080310.0,
       "operating_income": null,
       "net_income": null,
       "eps": 1.53488
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 1157022360.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 1.31411
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2470,7 +2470,7 @@
    "target_price_high": 240.0,
    "target_price_low": 105.0,
    "analyst_count": 25,
-   "per_fwd": -481.5518,
+   "per_fwd": -488.72537,
    "eps_fwd": -0.37917,
    "earnings": {
     "annual": [
@@ -2501,7 +2501,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 1359419160.0,
+      "revenue": 1359187160.0,
       "operating_income": null,
       "net_income": null,
       "eps": -1.44697
@@ -2509,7 +2509,7 @@
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 1837385300.0,
+      "revenue": 1837381300.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.37917
@@ -2551,7 +2551,7 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 350728020.0,
+      "revenue": 350641660.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.31444
@@ -2559,14 +2559,14 @@
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 369288550.0,
+      "revenue": 369146240.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.27901
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2580,7 +2580,7 @@
    "target_price_high": 100.0,
    "target_price_low": 35.0,
    "analyst_count": 18,
-   "per_fwd": -1651.4335,
+   "per_fwd": -1677.9478,
    "eps_fwd": -0.04639,
    "earnings": {
     "annual": [
@@ -2676,7 +2676,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2690,7 +2690,7 @@
    "target_price_high": 73.0,
    "target_price_low": 50.0,
    "analyst_count": 10,
-   "per_fwd": 31.449425,
+   "per_fwd": 31.458076,
    "eps_fwd": 2.31133,
    "earnings": {
     "annual": [
@@ -2786,7 +2786,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2800,7 +2800,7 @@
    "target_price_high": 110.0,
    "target_price_low": 50.0,
    "analyst_count": 14,
-   "per_fwd": 1090.6483,
+   "per_fwd": 1063.6494,
    "eps_fwd": 0.07667,
    "earnings": {
     "annual": [
@@ -2896,7 +2896,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -2910,7 +2910,7 @@
    "target_price_high": 180.0,
    "target_price_low": 74.0,
    "analyst_count": 9,
-   "per_fwd": -19.13646,
+   "per_fwd": -19.262516,
    "eps_fwd": -8.25022,
    "earnings": {
     "annual": [
@@ -3006,7 +3006,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3020,7 +3020,7 @@
    "target_price_high": 35.0,
    "target_price_low": 21.0,
    "analyst_count": 7,
-   "per_fwd": -157.35759,
+   "per_fwd": -156.24828,
    "eps_fwd": -0.18029,
    "earnings": {
     "annual": [
@@ -3116,7 +3116,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3130,7 +3130,7 @@
    "target_price_high": 70.0,
    "target_price_low": 45.0,
    "analyst_count": 11,
-   "per_fwd": 25.890152,
+   "per_fwd": 26.847328,
    "eps_fwd": 1.94321,
    "earnings": {
     "annual": [
@@ -3226,7 +3226,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3240,7 +3240,7 @@
    "target_price_high": 103.0,
    "target_price_low": 83.0,
    "analyst_count": 8,
-   "per_fwd": 53.972652,
+   "per_fwd": 59.25394,
    "eps_fwd": 1.19857,
    "earnings": {
     "annual": [
@@ -3336,7 +3336,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3350,7 +3350,7 @@
    "target_price_high": 81.0,
    "target_price_low": 46.0,
    "analyst_count": 6,
-   "per_fwd": 55.91473,
+   "per_fwd": 55.44186,
    "eps_fwd": 1.29,
    "earnings": {
     "annual": [
@@ -3446,7 +3446,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3460,7 +3460,7 @@
    "target_price_high": 51.14,
    "target_price_low": 51.14,
    "analyst_count": 1,
-   "per_fwd": 250.50002,
+   "per_fwd": 239.9375,
    "eps_fwd": 0.16,
    "earnings": {
     "annual": [
@@ -3556,7 +3556,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3566,12 +3566,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.66667,
-   "target_price": 21.85,
+   "target_price": 22.3,
    "target_price_high": 35.0,
-   "target_price_low": 16.5,
+   "target_price_low": 19.0,
    "analyst_count": 10,
-   "per_fwd": 52.4903,
-   "eps_fwd": 0.34273,
+   "per_fwd": 52.735294,
+   "eps_fwd": 0.34,
    "earnings": {
     "annual": [
      {
@@ -3601,29 +3601,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 805200910.0,
+      "revenue": 807661040.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.18727
+      "eps": 0.2
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 885436740.0,
+      "revenue": 884680000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.34273
+      "eps": 0.33727
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 187797000.0,
-      "operating_income": -19928000.0,
-      "net_income": -27129000.0,
-      "eps": -0.21
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -3649,24 +3641,32 @@
       "eps": 0.02
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 209254000.0,
+      "operating_income": -7941000.0,
+      "net_income": -7546000.0,
+      "eps": -0.06
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 207331300.0,
+      "revenue": 210520540.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.05545
+      "eps": 0.06889
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 210178690.0,
+      "revenue": 207046000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.07
+      "eps": 0.055
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3680,7 +3680,7 @@
    "target_price_high": 300.0,
    "target_price_low": 135.0,
    "analyst_count": 11,
-   "per_fwd": -32.45408,
+   "per_fwd": -32.233116,
    "eps_fwd": -0.07241,
    "earnings": {
     "annual": [
@@ -3744,7 +3744,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3758,7 +3758,7 @@
    "target_price_high": 21.0,
    "target_price_low": 17.0,
    "analyst_count": 5,
-   "per_fwd": -5.5999994,
+   "per_fwd": -5.358333,
    "eps_fwd": -2.4,
    "earnings": {
     "annual": [
@@ -3814,7 +3814,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3828,7 +3828,7 @@
    "target_price_high": 57.0,
    "target_price_low": 35.0,
    "analyst_count": 9,
-   "per_fwd": -40.16073,
+   "per_fwd": -42.164383,
    "eps_fwd": -0.91333,
    "earnings": {
     "annual": [
@@ -3924,7 +3924,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -3938,7 +3938,7 @@
    "target_price_high": 3.05,
    "target_price_low": 1.25,
    "analyst_count": 7,
-   "per_fwd": -6.715709,
+   "per_fwd": -6.8818226,
    "eps_fwd": -0.4214,
    "earnings": {
     "annual": [
@@ -4034,7 +4034,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4048,7 +4048,7 @@
    "target_price_high": 8.0,
    "target_price_low": 2.5,
    "analyst_count": 8,
-   "per_fwd": -11.262868,
+   "per_fwd": -11.330819,
    "eps_fwd": -0.58866,
    "earnings": {
     "annual": [
@@ -4121,9 +4121,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 190700000.0,
-      "operating_income": -38900000.0,
-      "net_income": -43200000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": -0.46
      },
      {
@@ -4144,7 +4144,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4230,7 +4230,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4244,7 +4244,7 @@
    "target_price_high": 3.5,
    "target_price_low": 3.0,
    "analyst_count": 3,
-   "per_fwd": -2.2941175,
+   "per_fwd": -2.3125,
    "eps_fwd": -1.36,
    "earnings": {
     "annual": [
@@ -4340,7 +4340,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4426,7 +4426,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4512,7 +4512,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4522,12 +4522,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.95,
-   "target_price": 113.21053,
+   "target_price": 113.57895,
    "target_price_high": 136.0,
    "target_price_low": 88.0,
    "analyst_count": 19,
-   "per_fwd": 25.022211,
-   "eps_fwd": 3.86057,
+   "per_fwd": 24.972553,
+   "eps_fwd": 3.86184,
    "earnings": {
     "annual": [
      {
@@ -4557,18 +4557,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2771302730.0,
+      "revenue": 2777432900.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.30087
+      "eps": 3.31116
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 3056446890.0,
+      "revenue": 3057457620.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.86057
+      "eps": 3.86234
      }
     ],
     "quarterly": [
@@ -4583,14 +4583,14 @@
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 717733330.0,
+      "revenue": 727400000.0,
       "operating_income": null,
       "net_income": null,
       "eps": null
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4600,12 +4600,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.25,
-   "target_price": 188.85715,
-   "target_price_high": 215.0,
+   "target_price": 185.7857,
+   "target_price_high": 210.0,
    "target_price_low": 155.0,
    "analyst_count": 14,
-   "per_fwd": 12.403103,
-   "eps_fwd": 12.38561,
+   "per_fwd": 12.459047,
+   "eps_fwd": 12.33722,
    "earnings": {
     "annual": [
      {
@@ -4635,29 +4635,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 4147886050.0,
+      "revenue": 4125501930.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.22046
+      "eps": 11.07818
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 4291717180.0,
+      "revenue": 4260474670.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 12.38561
+      "eps": 12.34311
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 995692000.0,
-      "operating_income": 128125000.0,
-      "net_income": 56753000.0,
-      "eps": 0.78
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -4683,24 +4675,32 @@
       "eps": 1.51
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 1047246790.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.16484
+      "eps": 1.9
+     },
+     {
+      "period": "이번분기(0Q)",
+      "is_estimate": true,
+      "revenue": 1015270890.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 3.05222
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 1044344500.0,
+      "revenue": 1033752330.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.73238
+      "eps": 2.71878
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4714,7 +4714,7 @@
    "target_price_high": 110.0,
    "target_price_low": 64.0,
    "analyst_count": 15,
-   "per_fwd": 14.182976,
+   "per_fwd": 14.430043,
    "eps_fwd": 5.99028,
    "earnings": {
     "annual": [
@@ -4810,7 +4810,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4824,7 +4824,7 @@
    "target_price_high": 34.0,
    "target_price_low": 23.0,
    "analyst_count": 13,
-   "per_fwd": 14.433077,
+   "per_fwd": 14.83701,
    "eps_fwd": 1.65869,
    "earnings": {
     "annual": [
@@ -4920,7 +4920,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -4934,7 +4934,7 @@
    "target_price_high": 24.0,
    "target_price_low": 16.5,
    "analyst_count": 3,
-   "per_fwd": 15.711539,
+   "per_fwd": 15.980771,
    "eps_fwd": 1.04,
    "earnings": {
     "annual": [
@@ -5030,7 +5030,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5044,7 +5044,7 @@
    "target_price_high": 17.0,
    "target_price_low": 9.0,
    "analyst_count": 15,
-   "per_fwd": 6.3909874,
+   "per_fwd": 6.506079,
    "eps_fwd": 1.47708,
    "earnings": {
     "annual": [
@@ -5140,7 +5140,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5154,7 +5154,7 @@
    "target_price_high": 122.0,
    "target_price_low": 92.22,
    "analyst_count": 10,
-   "per_fwd": 21.973078,
+   "per_fwd": 21.686409,
    "eps_fwd": 3.48836,
    "earnings": {
     "annual": [
@@ -5218,7 +5218,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5232,7 +5232,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 10.984848,
+   "per_fwd": 10.787878,
    "eps_fwd": 0.66,
    "earnings": {
     "annual": [
@@ -5263,7 +5263,7 @@
     ],
     "quarterly": []
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5389,7 +5389,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5515,7 +5515,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5641,7 +5641,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5767,7 +5767,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5853,7 +5853,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5863,11 +5863,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.70588,
-   "target_price": 204.36375,
-   "target_price_high": 266.82324,
-   "target_price_low": 135.96692,
+   "target_price": 202.82123,
+   "target_price_high": 264.8093,
+   "target_price_low": 134.94066,
    "analyst_count": 17,
-   "per_fwd": 33.58404,
+   "per_fwd": 34.400066,
    "eps_fwd": 5.514524,
    "earnings": {
     "annual": [
@@ -5931,7 +5931,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -5984,26 +5984,26 @@
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 6945.6,
-      "operating_income_eok": 2641.7,
-      "net_income_eok": 2147.3,
-      "eps": 18567
+      "revenue_eok": 6895.1,
+      "operating_income_eok": 2591.7,
+      "net_income_eok": 2104.1,
+      "eps": 18193
      },
      {
       "period": "2027.12",
       "is_estimate": true,
-      "revenue_eok": 8425.4,
-      "operating_income_eok": 3249.2,
-      "net_income_eok": 2579.6,
-      "eps": 22304
+      "revenue_eok": 8335.6,
+      "operating_income_eok": 3154.4,
+      "net_income_eok": 2507.4,
+      "eps": 21681
      },
      {
       "period": "2028.12",
       "is_estimate": true,
-      "revenue_eok": 10127.3,
-      "operating_income_eok": 3960.0,
-      "net_income_eok": 3100.9,
-      "eps": 26812
+      "revenue_eok": 10011.6,
+      "operating_income_eok": 3832.9,
+      "net_income_eok": 3007.4,
+      "eps": 26003
      }
     ],
     "quarterly": [
@@ -6042,18 +6042,18 @@
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 1789.1,
-      "operating_income_eok": 692.3,
-      "net_income_eok": 527.8,
-      "eps": 4563
+      "revenue_eok": 1770.1,
+      "operating_income_eok": 663.5,
+      "net_income_eok": 497.1,
+      "eps": 4298
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 1907.1,
-      "operating_income_eok": 711.3,
-      "net_income_eok": 536.7,
-      "eps": 4641
+      "revenue_eok": 1898.4,
+      "operating_income_eok": 702.2,
+      "net_income_eok": 526.1,
+      "eps": 4549
      },
      {
       "period": "2027.03",
@@ -6065,7 +6065,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6079,7 +6079,7 @@
    "target_price_high": 105.0,
    "target_price_low": 85.0,
    "analyst_count": 10,
-   "per_fwd": 1149.5,
+   "per_fwd": 1140.1667,
    "eps_fwd": 0.06,
    "earnings": {
     "annual": [
@@ -6175,7 +6175,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6309,7 +6309,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6323,7 +6323,7 @@
    "target_price_high": 21.0,
    "target_price_low": 19.0,
    "analyst_count": 4,
-   "per_fwd": 18.677946,
+   "per_fwd": 19.002375,
    "eps_fwd": 0.86305,
    "earnings": {
     "annual": [
@@ -6419,7 +6419,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6472,26 +6472,26 @@
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 4247.5,
-      "operating_income_eok": 1824.9,
-      "net_income_eok": 1430.7,
-      "eps": 2192
+      "revenue_eok": 4244.2,
+      "operating_income_eok": 1815.1,
+      "net_income_eok": 1420.4,
+      "eps": 2176
      },
      {
       "period": "2027.12",
       "is_estimate": true,
-      "revenue_eok": 5284.6,
-      "operating_income_eok": 2376.5,
-      "net_income_eok": 1832.2,
-      "eps": 2809
+      "revenue_eok": 5274.4,
+      "operating_income_eok": 2362.0,
+      "net_income_eok": 1825.4,
+      "eps": 2798
      },
      {
       "period": "2028.12",
       "is_estimate": true,
-      "revenue_eok": 6494.7,
-      "operating_income_eok": 3017.8,
-      "net_income_eok": 2352.1,
-      "eps": 3606
+      "revenue_eok": 6477.2,
+      "operating_income_eok": 3008.7,
+      "net_income_eok": 2342.6,
+      "eps": 3591
      }
     ],
     "quarterly": [
@@ -6530,18 +6530,18 @@
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 1075.9,
-      "operating_income_eok": 459.8,
-      "net_income_eok": 365.1,
-      "eps": 560
+      "revenue_eok": 1074.3,
+      "operating_income_eok": 454.3,
+      "net_income_eok": 357.4,
+      "eps": 548
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 1245.8,
-      "operating_income_eok": 550.8,
-      "net_income_eok": 443.8,
-      "eps": 680
+      "revenue_eok": 1244.1,
+      "operating_income_eok": 546.8,
+      "net_income_eok": 437.3,
+      "eps": 670
      },
      {
       "period": "2027.03",
@@ -6553,7 +6553,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6679,7 +6679,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6693,7 +6693,7 @@
    "target_price_high": 17.0,
    "target_price_low": 15.0,
    "analyst_count": 3,
-   "per_fwd": 9.744898,
+   "per_fwd": 9.846939,
    "eps_fwd": 1.372,
    "earnings": {
     "annual": [
@@ -6789,7 +6789,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6915,7 +6915,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -6923,13 +6923,13 @@
    "name": "에볼루스",
    "market": "US",
    "source": "yfinance",
-   "opinion": "strong_buy",
-   "opinion_score": 1.5,
+   "opinion": "none",
+   "opinion_score": null,
    "target_price": 15.0,
    "target_price_high": 20.0,
    "target_price_low": 12.0,
    "analyst_count": 5,
-   "per_fwd": 26.102566,
+   "per_fwd": 25.709402,
    "eps_fwd": 0.2925,
    "earnings": {
     "annual": [
@@ -7025,7 +7025,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7103,7 +7103,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7229,7 +7229,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7355,7 +7355,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7473,7 +7473,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7487,7 +7487,7 @@
    "target_price_high": 6.0,
    "target_price_low": 3.0,
    "analyst_count": 2,
-   "per_fwd": -144.00002,
+   "per_fwd": -167.0,
    "eps_fwd": -0.01,
    "earnings": {
     "annual": [
@@ -7583,7 +7583,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7669,7 +7669,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7679,11 +7679,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.0,
-   "target_price": 4.404406,
-   "target_price_high": 4.5024557,
-   "target_price_low": 4.306356,
+   "target_price": 4.4053044,
+   "target_price_high": 4.5033746,
+   "target_price_low": 4.307235,
    "analyst_count": 2,
-   "per_fwd": 2.690421,
+   "per_fwd": 2.6755157,
    "eps_fwd": 0.6708987,
    "earnings": {
     "annual": [
@@ -7747,7 +7747,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7873,7 +7873,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7959,7 +7959,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -7973,7 +7973,7 @@
    "target_price_high": 30.0,
    "target_price_low": 10.0,
    "analyst_count": 6,
-   "per_fwd": 2.7460732,
+   "per_fwd": 2.657068,
    "eps_fwd": 3.82,
    "earnings": {
     "annual": [
@@ -8069,7 +8069,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8163,7 +8163,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8273,7 +8273,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8359,7 +8359,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8369,12 +8369,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.04167,
-   "target_price": 431.75,
+   "target_price": 433.0,
    "target_price_high": 500.0,
    "target_price_low": 360.0,
    "analyst_count": 24,
-   "per_fwd": 27.871729,
-   "eps_fwd": 15.19999,
+   "per_fwd": 27.891867,
+   "eps_fwd": 15.21949,
    "earnings": {
     "annual": [
      {
@@ -8407,7 +8407,7 @@
       "revenue": 47700413230.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 13.78073
+      "eps": 13.78645
      },
      {
       "period": "차년도(+1Y)",
@@ -8415,7 +8415,7 @@
       "revenue": 51115625640.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 15.19999
+      "eps": 15.21949
      }
     ],
     "quarterly": [
@@ -8437,7 +8437,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8451,8 +8451,8 @@
    "target_price_high": 127.0,
    "target_price_low": 70.0,
    "analyst_count": 28,
-   "per_fwd": 27.783,
-   "eps_fwd": 3.93442,
+   "per_fwd": 27.656057,
+   "eps_fwd": 3.9344,
    "earnings": {
     "annual": [
      {
@@ -8485,7 +8485,7 @@
       "revenue": 15733994490.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.32754
+      "eps": 3.32768
      },
      {
       "period": "차년도(+1Y)",
@@ -8493,7 +8493,7 @@
       "revenue": 16407344710.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.93442
+      "eps": 3.9344
      }
     ],
     "quarterly": [
@@ -8547,7 +8547,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8561,7 +8561,7 @@
    "target_price_high": 731.0,
    "target_price_low": 500.0,
    "analyst_count": 25,
-   "per_fwd": 19.293327,
+   "per_fwd": 20.198112,
    "eps_fwd": 32.09607,
    "earnings": {
     "annual": [
@@ -8657,7 +8657,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8791,7 +8791,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8925,7 +8925,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -8939,7 +8939,7 @@
    "target_price_high": 137.0,
    "target_price_low": 65.0,
    "analyst_count": 16,
-   "per_fwd": 29.432993,
+   "per_fwd": 28.805618,
    "eps_fwd": 3.92111,
    "earnings": {
     "annual": [
@@ -9035,7 +9035,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9169,7 +9169,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9303,7 +9303,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9437,7 +9437,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9563,7 +9563,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9577,7 +9577,7 @@
    "target_price_high": 988.72,
    "target_price_low": 988.72,
    "analyst_count": 1,
-   "per_fwd": 27.738317,
+   "per_fwd": 27.663551,
    "eps_fwd": 26.75,
    "earnings": {
     "annual": [
@@ -9673,7 +9673,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9687,7 +9687,7 @@
    "target_price_high": 12.77,
    "target_price_low": 12.77,
    "analyst_count": 1,
-   "per_fwd": 4.1034484,
+   "per_fwd": 4.0431037,
    "eps_fwd": 1.16,
    "earnings": {
     "annual": [
@@ -9783,7 +9783,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -9901,7 +9901,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10019,7 +10019,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10145,7 +10145,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10263,7 +10263,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10389,7 +10389,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10475,7 +10475,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10489,7 +10489,7 @@
    "target_price_high": 57.4,
    "target_price_low": 36.0,
    "analyst_count": 20,
-   "per_fwd": 17.917393,
+   "per_fwd": 18.043602,
    "eps_fwd": 2.37702,
    "earnings": {
     "annual": [
@@ -10585,7 +10585,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10599,7 +10599,7 @@
    "target_price_high": 5700.0,
    "target_price_low": 4300.0,
    "analyst_count": 11,
-   "per_fwd": 12.778284,
+   "per_fwd": 13.010015,
    "eps_fwd": 362.49,
    "earnings": {
     "annual": [
@@ -10695,7 +10695,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10705,12 +10705,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.81818,
-   "target_price": 83.45,
-   "target_price_high": 96.0,
-   "target_price_low": 70.0,
+   "target_price": 86.8,
+   "target_price_high": 100.0,
+   "target_price_low": 73.0,
    "analyst_count": 20,
-   "per_fwd": 14.007952,
-   "eps_fwd": 5.41264,
+   "per_fwd": 13.964367,
+   "eps_fwd": 5.4725,
    "earnings": {
     "annual": [
      {
@@ -10740,29 +10740,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 21849734830.0,
+      "revenue": 21862456930.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 4.97318
+      "eps": 5.013
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 22804357470.0,
+      "revenue": 22887561770.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.41264
+      "eps": 5.4644
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 5144000000.0,
-      "operating_income": 653000000.0,
-      "net_income": 446000000.0,
-      "eps": 0.98
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -10788,24 +10780,32 @@
       "eps": 1.24
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 5513000000.0,
+      "operating_income": 804000000.0,
+      "net_income": 614000000.0,
+      "eps": 1.36
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 5940650000.0,
+      "revenue": 5922253560.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.5952
+      "eps": 1.55483
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 5363300140.0,
+      "revenue": 5366770130.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.12115
+      "eps": 1.11392
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10819,7 +10819,7 @@
    "target_price_high": 300.0,
    "target_price_low": 195.0,
    "analyst_count": 16,
-   "per_fwd": 22.15188,
+   "per_fwd": 22.619432,
    "eps_fwd": 7.91355,
    "earnings": {
     "annual": [
@@ -10900,22 +10900,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 9606496620.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 1.99319
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 8195278940.0,
       "operating_income": null,
       "net_income": null,
       "eps": 0.79571
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 9039662560.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 2.39
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -10929,7 +10929,7 @@
    "target_price_high": 915.0,
    "target_price_low": 646.0,
    "analyst_count": 12,
-   "per_fwd": 24.068789,
+   "per_fwd": 24.49913,
    "eps_fwd": 27.65241,
    "earnings": {
     "annual": [
@@ -11025,7 +11025,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11039,7 +11039,7 @@
    "target_price_high": 5000.0,
    "target_price_low": 3200.0,
    "analyst_count": 13,
-   "per_fwd": 11.516075,
+   "per_fwd": 11.743785,
    "eps_fwd": 298.62604,
    "earnings": {
     "annual": [
@@ -11135,7 +11135,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11149,7 +11149,7 @@
    "target_price_high": 41.0,
    "target_price_low": 26.2,
    "analyst_count": 5,
-   "per_fwd": 14.274021,
+   "per_fwd": 14.321548,
    "eps_fwd": 1.89365,
    "earnings": {
     "annual": [
@@ -11245,7 +11245,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11255,11 +11255,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.3125,
-   "target_price": 153.78769,
+   "target_price": 153.30309,
    "target_price_high": 218.0,
    "target_price_low": 127.0,
    "analyst_count": 13,
-   "per_fwd": 32.24554,
+   "per_fwd": 32.976444,
    "eps_fwd": 3.5025,
    "earnings": {
     "annual": [
@@ -11290,7 +11290,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 16548948740.0,
+      "revenue": 16626257580.0,
       "operating_income": null,
       "net_income": null,
       "eps": 2.675
@@ -11298,21 +11298,13 @@
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 19815122060.0,
+      "revenue": 19774895460.0,
       "operating_income": null,
       "net_income": null,
       "eps": 3.5025
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": null,
-      "operating_income": null,
-      "net_income": null,
-      "eps": null
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -11338,12 +11330,20 @@
       "eps": null
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 3528647436.97,
+      "operating_income": 151903411.01,
+      "net_income": 138108688.57,
+      "eps": null
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 5958252950.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.04657
+      "eps": 1.1128
      },
      {
       "period": "차분기(+1Q)",
@@ -11351,11 +11351,11 @@
       "revenue": 4316730000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.635
+      "eps": 0.54
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11369,7 +11369,7 @@
    "target_price_high": 6500.0,
    "target_price_low": 4000.0,
    "analyst_count": 12,
-   "per_fwd": 20.6813,
+   "per_fwd": 20.858381,
    "eps_fwd": 214.59,
    "earnings": {
     "annual": [
@@ -11465,7 +11465,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11479,7 +11479,7 @@
    "target_price_high": 115.0,
    "target_price_low": 102.5,
    "analyst_count": 8,
-   "per_fwd": 15.696249,
+   "per_fwd": 15.730746,
    "eps_fwd": 6.37732,
    "earnings": {
     "annual": [
@@ -11575,7 +11575,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11589,7 +11589,7 @@
    "target_price_high": 105.0,
    "target_price_low": 79.0,
    "analyst_count": 8,
-   "per_fwd": 89.68293,
+   "per_fwd": 89.81708,
    "eps_fwd": 0.82,
    "earnings": {
     "annual": [
@@ -11685,7 +11685,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11699,7 +11699,7 @@
    "target_price_high": 15.0,
    "target_price_low": 10.0,
    "analyst_count": 6,
-   "per_fwd": -115.7037,
+   "per_fwd": -111.259254,
    "eps_fwd": -0.0675,
    "earnings": {
     "annual": [
@@ -11780,22 +11780,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 28342000.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": -0.03
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 34238170.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.02
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 30966670.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": -0.02333
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11809,7 +11809,7 @@
    "target_price_high": 800.0,
    "target_price_low": 550.0,
    "analyst_count": 8,
-   "per_fwd": 14.1237545,
+   "per_fwd": 14.142442,
    "eps_fwd": 48.16,
    "earnings": {
     "annual": [
@@ -11905,7 +11905,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -11919,7 +11919,7 @@
    "target_price_high": 18.9,
    "target_price_low": 18.9,
    "analyst_count": 2,
-   "per_fwd": 17.24299,
+   "per_fwd": 17.233644,
    "eps_fwd": 1.07,
    "earnings": {
     "annual": [
@@ -12015,7 +12015,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12141,7 +12141,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12251,7 +12251,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12265,7 +12265,7 @@
    "target_price_high": 5.0,
    "target_price_low": 3.0,
    "analyst_count": 3,
-   "per_fwd": -0.80325,
+   "per_fwd": -0.76449996,
    "eps_fwd": -0.4,
    "earnings": {
     "annual": [
@@ -12361,7 +12361,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12371,12 +12371,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.6129,
-   "target_price": 1333.7213,
+   "target_price": 1336.6083,
    "target_price_high": 1600.0,
    "target_price_low": 930.0,
-   "analyst_count": 30,
-   "per_fwd": 27.1864,
-   "eps_fwd": 47.38767,
+   "analyst_count": 29,
+   "per_fwd": 28.941866,
+   "eps_fwd": 47.46411,
    "earnings": {
     "annual": [
      {
@@ -12406,18 +12406,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 88735539230.0,
+      "revenue": 88618988770.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 34.45798
+      "eps": 33.15636
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 102333979040.0,
+      "revenue": 102334458160.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 47.38767
+      "eps": 47.46411
      }
     ],
     "quarterly": [
@@ -12456,22 +12456,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 22615615160.0,
+      "revenue": 23570178880.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 6.60588
+      "eps": 10.21085
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 23570178880.0,
+      "revenue": 22826280800.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 10.16876
+      "eps": 10.08667
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12481,11 +12481,11 @@
    "source": "yfinance",
    "opinion": "hold",
    "opinion_score": 2.71429,
-   "target_price": 44.876484,
-   "target_price_high": 61.48954,
-   "target_price_low": 39.554405,
+   "target_price": 45.068577,
+   "target_price_high": 61.75274,
+   "target_price_low": 39.723717,
    "analyst_count": 12,
-   "per_fwd": 11.132235,
+   "per_fwd": 11.379358,
    "eps_fwd": 3.4395611,
    "earnings": {
     "annual": [
@@ -12516,7 +12516,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 303466042990.0,
+      "revenue": 303466061140.0,
       "operating_income": null,
       "net_income": null,
       "eps": 22.38512
@@ -12524,7 +12524,7 @@
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 307693973050.0,
+      "revenue": 307693966260.0,
       "operating_income": null,
       "net_income": null,
       "eps": 22.88814
@@ -12581,7 +12581,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12595,8 +12595,8 @@
    "target_price_high": 115.0,
    "target_price_low": 79.0,
    "analyst_count": 26,
-   "per_fwd": 25.170965,
-   "eps_fwd": 3.12344,
+   "per_fwd": 25.575146,
+   "eps_fwd": 3.1253,
    "earnings": {
     "annual": [
      {
@@ -12629,7 +12629,7 @@
       "revenue": 5228062260.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.66305
+      "eps": 2.66531
      },
      {
       "period": "차년도(+1Y)",
@@ -12637,7 +12637,7 @@
       "revenue": 5793596670.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.12344
+      "eps": 3.1253
      }
     ],
     "quarterly": [
@@ -12679,7 +12679,7 @@
       "revenue": 1326733670.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.674
+      "eps": 0.67398
      },
      {
       "period": "차분기(+1Q)",
@@ -12687,11 +12687,11 @@
       "revenue": 1400904660.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.73562
+      "eps": 0.73633
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12705,7 +12705,7 @@
    "target_price_high": 215.0,
    "target_price_low": 143.0,
    "analyst_count": 23,
-   "per_fwd": 19.285753,
+   "per_fwd": 19.748055,
    "eps_fwd": 7.72228,
    "earnings": {
     "annual": [
@@ -12801,7 +12801,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12815,7 +12815,7 @@
    "target_price_high": 23.3,
    "target_price_low": 23.0,
    "analyst_count": 3,
-   "per_fwd": 20.983051,
+   "per_fwd": 20.485874,
    "eps_fwd": 0.885,
    "earnings": {
     "annual": [
@@ -12911,7 +12911,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -12925,7 +12925,7 @@
    "target_price_high": 50.0,
    "target_price_low": 18.0,
    "analyst_count": 21,
-   "per_fwd": 123.80473,
+   "per_fwd": 124.496735,
    "eps_fwd": 0.15896,
    "earnings": {
     "annual": [
@@ -13021,7 +13021,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13035,8 +13035,8 @@
    "target_price_high": 30.4,
    "target_price_low": 16.0,
    "analyst_count": 14,
-   "per_fwd": -8.263888,
-   "eps_fwd": -2.16,
+   "per_fwd": -8.302243,
+   "eps_fwd": -2.1175,
    "earnings": {
     "annual": [
      {
@@ -13082,14 +13082,6 @@
     ],
     "quarterly": [
      {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 27253000.0,
-      "operating_income": -17043000.0,
-      "net_income": -14209000.0,
-      "eps": -0.33
-     },
-     {
       "period": "2025-12-31",
       "is_estimate": false,
       "revenue": 32121000.0,
@@ -13114,6 +13106,14 @@
       "eps": -0.53
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 35505000.0,
+      "operating_income": -26609000.0,
+      "net_income": -24353000.0,
+      "eps": -0.52
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 30593320.0,
@@ -13131,7 +13131,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13145,7 +13145,7 @@
    "target_price_high": 18.0,
    "target_price_low": 9.0,
    "analyst_count": 6,
-   "per_fwd": -4.777836,
+   "per_fwd": -4.9875693,
    "eps_fwd": -1.95486,
    "earnings": {
     "annual": [
@@ -13241,7 +13241,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13319,7 +13319,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13329,11 +13329,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 10.578084,
-   "target_price_high": 12.297691,
-   "target_price_low": 8.858477,
+   "target_price": 10.585281,
+   "target_price_high": 12.306059,
+   "target_price_low": 8.864504,
    "analyst_count": 2,
-   "per_fwd": 19.007368,
+   "per_fwd": 19.021553,
    "eps_fwd": 0.35249487,
    "earnings": {
     "annual": [
@@ -13397,7 +13397,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13483,7 +13483,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13569,7 +13569,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13583,8 +13583,8 @@
    "target_price_high": 320.0,
    "target_price_low": 190.0,
    "analyst_count": 22,
-   "per_fwd": 23.32976,
-   "eps_fwd": 11.61778,
+   "per_fwd": 23.687668,
+   "eps_fwd": 11.61786,
    "earnings": {
     "annual": [
      {
@@ -13614,18 +13614,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 101222143870.0,
+      "revenue": 101222211600.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.11963
+      "eps": 11.11973
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 107748997950.0,
+      "revenue": 107749012240.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.61778
+      "eps": 11.61786
      }
     ],
     "quarterly": [
@@ -13664,7 +13664,7 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 26426524320.0,
+      "revenue": 26419759280.0,
       "operating_income": null,
       "net_income": null,
       "eps": 2.91505
@@ -13679,7 +13679,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13693,8 +13693,8 @@
    "target_price_high": 305.0,
    "target_price_low": 139.0,
    "analyst_count": 23,
-   "per_fwd": 22.416857,
-   "eps_fwd": 7.92707,
+   "per_fwd": 22.480188,
+   "eps_fwd": 7.92698,
    "earnings": {
     "annual": [
      {
@@ -13757,7 +13757,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13771,7 +13771,7 @@
    "target_price_high": 40000.0,
    "target_price_low": 23100.0,
    "analyst_count": 16,
-   "per_fwd": 38.33487,
+   "per_fwd": 38.54711,
    "eps_fwd": 683.19,
    "earnings": {
     "annual": [
@@ -13867,7 +13867,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13881,8 +13881,8 @@
    "target_price_high": 103.0,
    "target_price_low": 62.0,
    "analyst_count": 16,
-   "per_fwd": 17.657204,
-   "eps_fwd": 3.95476,
+   "per_fwd": 17.993927,
+   "eps_fwd": 3.953,
    "earnings": {
     "annual": [
      {
@@ -13915,7 +13915,7 @@
       "revenue": 11086111610.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.4965
+      "eps": 3.49574
      },
      {
       "period": "차년도(+1Y)",
@@ -13923,7 +13923,7 @@
       "revenue": 11755621390.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.95476
+      "eps": 3.953
      }
     ],
     "quarterly": [
@@ -13977,7 +13977,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -13985,13 +13985,13 @@
    "name": "쿠퍼",
    "market": "US",
    "source": "yfinance",
-   "opinion": "hold",
-   "opinion_score": 2.52941,
+   "opinion": "buy",
+   "opinion_score": 2.47059,
    "target_price": 65.8,
    "target_price_high": 75.0,
    "target_price_low": 58.0,
    "analyst_count": 15,
-   "per_fwd": 12.660602,
+   "per_fwd": 12.858789,
    "eps_fwd": 4.69251,
    "earnings": {
     "annual": [
@@ -14087,7 +14087,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14096,13 +14096,13 @@
    "market": "US",
    "source": "yfinance",
    "opinion": "strong_buy",
-   "opinion_score": 1.35714,
-   "target_price": 199.3077,
-   "target_price_high": 225.0,
+   "opinion_score": 1.38462,
+   "target_price": 223.16667,
+   "target_price_high": 255.0,
    "target_price_low": 172.0,
-   "analyst_count": 13,
-   "per_fwd": 347.0418,
-   "eps_fwd": 0.52279,
+   "analyst_count": 12,
+   "per_fwd": 243.90686,
+   "eps_fwd": 0.99415,
    "earnings": {
     "annual": [
      {
@@ -14132,29 +14132,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 691656230.0,
+      "revenue": 772395560.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.29749
+      "eps": 0.60451
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 852446010.0,
+      "revenue": 1004575980.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.52279
+      "eps": 0.75988
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 133537000.0,
-      "operating_income": -16365000.0,
-      "net_income": -16231000.0,
-      "eps": -0.28
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -14180,24 +14172,32 @@
       "eps": -0.31
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 211030000.0,
+      "operating_income": 828000.0,
+      "net_income": 2018000.0,
+      "eps": 0.03
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 168060450.0,
+      "revenue": 229087400.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.09061
+      "eps": 0.34547
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 187470020.0,
+      "revenue": 221672520.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.10733
+      "eps": 0.07205
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14211,7 +14211,7 @@
    "target_price_high": 35.0,
    "target_price_low": 18.1,
    "analyst_count": 15,
-   "per_fwd": 23.782778,
+   "per_fwd": 23.810175,
    "eps_fwd": 1.45988,
    "earnings": {
     "annual": [
@@ -14307,7 +14307,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14315,14 +14315,14 @@
    "name": "바슈 헬스 컴퍼니스",
    "market": "US",
    "source": "yfinance",
-   "opinion": "none",
-   "opinion_score": null,
+   "opinion": "hold",
+   "opinion_score": 3.0,
    "target_price": 7.5,
    "target_price_high": 9.0,
    "target_price_low": 6.5,
    "analyst_count": 5,
-   "per_fwd": 1.6120504,
-   "eps_fwd": 4.29267,
+   "per_fwd": 2.1248686,
+   "eps_fwd": 4.1932,
    "earnings": {
     "annual": [
      {
@@ -14352,29 +14352,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 10923560000.0,
+      "revenue": 10965250000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 4.5205
+      "eps": 4.32
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 10939000000.0,
+      "revenue": 10933600000.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 4.29267
+      "eps": 4.1932
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 2681000000.0,
-      "operating_income": 636000000.0,
-      "net_income": 179000000.0,
-      "eps": 0.48
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -14400,12 +14392,20 @@
       "eps": 0.68
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 2941000000.0,
+      "operating_income": 1004000000.0,
+      "net_income": 436000000.0,
+      "eps": 1.15
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 2793850000.0,
+      "revenue": 2788633330.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.29033
+      "eps": 1.17
      },
      {
       "period": "차분기(+1Q)",
@@ -14417,7 +14417,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14431,7 +14431,7 @@
    "target_price_high": 37.0,
    "target_price_low": 19.0,
    "analyst_count": 9,
-   "per_fwd": 22.142645,
+   "per_fwd": 22.70948,
    "eps_fwd": 1.11143,
    "earnings": {
     "annual": [
@@ -14527,7 +14527,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14541,7 +14541,7 @@
    "target_price_high": 14.0,
    "target_price_low": 8.0,
    "analyst_count": 6,
-   "per_fwd": -23.093073,
+   "per_fwd": -23.917824,
    "eps_fwd": -0.40012,
    "earnings": {
     "annual": [
@@ -14637,7 +14637,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14750,20 +14750,20 @@
       "is_estimate": true,
       "revenue_eok": 374.3,
       "operating_income_eok": 76.8,
-      "net_income_eok": 58.3,
-      "eps": 452
+      "net_income_eok": 60.0,
+      "eps": 465
      },
      {
       "period": "2026.12",
       "is_estimate": true,
       "revenue_eok": 396.3,
       "operating_income_eok": 81.8,
-      "net_income_eok": 65.7,
-      "eps": 509
+      "net_income_eok": 62.0,
+      "eps": 480
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14849,7 +14849,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14863,7 +14863,7 @@
    "target_price_high": 121.0,
    "target_price_low": 85.0,
    "analyst_count": 26,
-   "per_fwd": 14.7953415,
+   "per_fwd": 15.15906,
    "eps_fwd": 6.40607,
    "earnings": {
     "annual": [
@@ -14959,7 +14959,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -14968,13 +14968,13 @@
    "market": "US",
    "source": "yfinance",
    "opinion": "buy",
-   "opinion_score": 1.6,
-   "target_price": 57.33655,
+   "opinion_score": 1.77419,
+   "target_price": 52.74143,
    "target_price_high": 78.0,
    "target_price_low": 44.0,
-   "analyst_count": 29,
-   "per_fwd": 12.564741,
-   "eps_fwd": 3.37691,
+   "analyst_count": 28,
+   "per_fwd": 13.325051,
+   "eps_fwd": 3.20374,
    "earnings": {
     "annual": [
      {
@@ -15004,29 +15004,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 20966017460.0,
+      "revenue": 20963288590.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.20634
+      "eps": 3.18263
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 22051871170.0,
+      "revenue": 21147986930.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.37691
+      "eps": 3.20827
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 5065000000.0,
-      "operating_income": 1050000000.0,
-      "net_income": 755000000.0,
-      "eps": 0.51
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -15046,30 +15038,38 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 5442000000.0,
-      "operating_income": 1246000000.0,
-      "net_income": 907000000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.61
+     },
+     {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 0.4
      },
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 5348565380.0,
+      "revenue": 5179831190.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.82055
+      "eps": 0.77554
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 5319753100.0,
+      "revenue": 5083717630.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.79806
+      "eps": 0.74769
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15079,11 +15079,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.63333,
-   "target_price": 101.38556,
-   "target_price_high": 110.0,
+   "target_price": 101.86704,
+   "target_price_high": 117.0,
    "target_price_low": 84.0,
    "analyst_count": 27,
-   "per_fwd": 27.146938,
+   "per_fwd": 27.933722,
    "eps_fwd": 3.38086,
    "earnings": {
     "annual": [
@@ -15114,7 +15114,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 6761090560.0,
+      "revenue": 6761083420.0,
       "operating_income": null,
       "net_income": null,
       "eps": 2.9996
@@ -15156,9 +15156,9 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 1741000000.0,
-      "operating_income": 519500000.0,
-      "net_income": 241900000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.42
      },
      {
@@ -15179,7 +15179,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15193,7 +15193,7 @@
    "target_price_high": 225.0,
    "target_price_low": 165.0,
    "analyst_count": 14,
-   "per_fwd": 14.671898,
+   "per_fwd": 14.910966,
    "eps_fwd": 13.30162,
    "earnings": {
     "annual": [
@@ -15289,7 +15289,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15303,7 +15303,7 @@
    "target_price_high": 64.0,
    "target_price_low": 52.0,
    "analyst_count": 14,
-   "per_fwd": 11.757854,
+   "per_fwd": 11.926603,
    "eps_fwd": 3.94077,
    "earnings": {
     "annual": [
@@ -15399,7 +15399,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15413,7 +15413,7 @@
    "target_price_high": 3400.0,
    "target_price_low": 2600.0,
    "analyst_count": 13,
-   "per_fwd": 22.891092,
+   "per_fwd": 23.598154,
    "eps_fwd": 101.83,
    "earnings": {
     "annual": [
@@ -15509,7 +15509,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15523,7 +15523,7 @@
    "target_price_high": 113.0,
    "target_price_low": 71.0,
    "analyst_count": 13,
-   "per_fwd": 11.264872,
+   "per_fwd": 11.5002165,
    "eps_fwd": 7.26595,
    "earnings": {
     "annual": [
@@ -15554,15 +15554,15 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 8226426770.0,
+      "revenue": 8226438850.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 7.17627
+      "eps": 7.17948
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 8520050429.0,
+      "revenue": 8520051369.0,
       "operating_income": null,
       "net_income": null,
       "eps": 7.26595
@@ -15619,7 +15619,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15633,7 +15633,7 @@
    "target_price_high": 3300.0,
    "target_price_low": 1800.0,
    "analyst_count": 13,
-   "per_fwd": 13.781439,
+   "per_fwd": 14.119707,
    "eps_fwd": 125.64,
    "earnings": {
     "annual": [
@@ -15721,7 +15721,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15735,7 +15735,7 @@
    "target_price_high": 40.0,
    "target_price_low": 20.0,
    "analyst_count": 12,
-   "per_fwd": 12.482779,
+   "per_fwd": 11.5218115,
    "eps_fwd": 2.03961,
    "earnings": {
     "annual": [
@@ -15816,22 +15816,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 2908286170.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 0.51823
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 3046656270.0,
       "operating_income": null,
       "net_income": null,
       "eps": 0.61005
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 2764265600.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 0.43401
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15845,7 +15845,7 @@
    "target_price_high": 5400.0,
    "target_price_low": 2700.0,
    "analyst_count": 14,
-   "per_fwd": 43.915012,
+   "per_fwd": 46.178024,
    "eps_fwd": 79.54,
    "earnings": {
     "annual": [
@@ -15941,7 +15941,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -15955,7 +15955,7 @@
    "target_price_high": 170.0,
    "target_price_low": 138.0,
    "analyst_count": 11,
-   "per_fwd": 12.699485,
+   "per_fwd": 12.919703,
    "eps_fwd": 10.94375,
    "earnings": {
     "annual": [
@@ -16051,7 +16051,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16065,7 +16065,7 @@
    "target_price_high": 105.0,
    "target_price_low": 75.0,
    "analyst_count": 11,
-   "per_fwd": 17.222898,
+   "per_fwd": 17.348877,
    "eps_fwd": 4.6833,
    "earnings": {
     "annual": [
@@ -16161,7 +16161,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16175,7 +16175,7 @@
    "target_price_high": 127.0,
    "target_price_low": 127.0,
    "analyst_count": 4,
-   "per_fwd": 18.424076,
+   "per_fwd": 18.419706,
    "eps_fwd": 6.86873,
    "earnings": {
     "annual": [
@@ -16248,30 +16248,30 @@
      {
       "period": "2026-06-30",
       "is_estimate": false,
-      "revenue": 464110000.0,
-      "operating_income": 44613000.0,
-      "net_income": 23605000.0,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
       "eps": 0.69
      },
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 457152700.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 1.68352
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 465251280.0,
       "operating_income": null,
       "net_income": null,
       "eps": 1.78757
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 460171140.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 1.5458
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16285,7 +16285,7 @@
    "target_price_high": 73.0,
    "target_price_low": 55.0,
    "analyst_count": 6,
-   "per_fwd": -45.871796,
+   "per_fwd": -47.418804,
    "eps_fwd": -1.17,
    "earnings": {
     "annual": [
@@ -16381,7 +16381,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16395,7 +16395,7 @@
    "target_price_high": 24.0,
    "target_price_low": 11.9,
    "analyst_count": 4,
-   "per_fwd": 16.805555,
+   "per_fwd": 16.625,
    "eps_fwd": 0.72,
    "earnings": {
     "annual": [
@@ -16491,7 +16491,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16501,11 +16501,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.55556,
-   "target_price": 4.9631925,
-   "target_price_high": 7.257037,
-   "target_price_low": 3.891898,
+   "target_price": 4.9665694,
+   "target_price_high": 7.261975,
+   "target_price_low": 3.8945458,
    "analyst_count": 8,
-   "per_fwd": 7.9611764,
+   "per_fwd": 7.768761,
    "eps_fwd": 0.4157677,
    "earnings": {
     "annual": [
@@ -16569,7 +16569,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16583,7 +16583,7 @@
    "target_price_high": 2580.0,
    "target_price_low": 1600.0,
    "analyst_count": 5,
-   "per_fwd": 12.6501465,
+   "per_fwd": 12.853495,
    "eps_fwd": 105.73,
    "earnings": {
     "annual": [
@@ -16663,7 +16663,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16673,9 +16673,9 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.71429,
-   "target_price": 14.114909,
-   "target_price_high": 18.00221,
-   "target_price_low": 9.85219,
+   "target_price": 14.117608,
+   "target_price_high": 18.005653,
+   "target_price_low": 9.8540745,
    "analyst_count": 7,
    "per_fwd": 23.270334,
    "eps_fwd": 0.261062,
@@ -16741,7 +16741,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16755,7 +16755,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 19.070852,
+   "per_fwd": 18.842001,
    "eps_fwd": 1.5730813,
    "earnings": {
     "annual": [
@@ -16786,7 +16786,7 @@
     ],
     "quarterly": []
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16831,7 +16831,7 @@
     ],
     "quarterly": []
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16841,11 +16841,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 9.868195,
-   "target_price_high": 10.777383,
-   "target_price_low": 8.670349,
+   "target_price": 9.874909,
+   "target_price_high": 10.784716,
+   "target_price_low": 8.676249,
    "analyst_count": 4,
-   "per_fwd": 24.468441,
+   "per_fwd": 23.830133,
    "eps_fwd": 0.16449761,
    "earnings": {
     "annual": [
@@ -16909,7 +16909,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -16923,7 +16923,7 @@
    "target_price_high": 12.0,
    "target_price_low": 10.0,
    "analyst_count": 5,
-   "per_fwd": -9.829932,
+   "per_fwd": -9.965986,
    "eps_fwd": -0.588,
    "earnings": {
     "annual": [
@@ -17019,7 +17019,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17029,9 +17029,9 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 6.938984,
-   "target_price_high": 7.6074257,
-   "target_price_low": 6.2705417,
+   "target_price": 6.943705,
+   "target_price_high": 7.6126018,
+   "target_price_low": 6.274808,
    "analyst_count": 2,
    "per_fwd": 37.886024,
    "eps_fwd": 0.033785544,
@@ -17097,7 +17097,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17231,7 +17231,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17317,7 +17317,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17331,7 +17331,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": 13.210821,
+   "per_fwd": 13.077379,
    "eps_fwd": 0.074938565,
    "earnings": {
     "annual": [
@@ -17362,7 +17362,7 @@
     ],
     "quarterly": []
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17376,7 +17376,7 @@
    "target_price_high": 10.0,
    "target_price_low": 6.0,
    "analyst_count": 3,
-   "per_fwd": -1.8924447,
+   "per_fwd": -1.8270376,
    "eps_fwd": -2.29333,
    "earnings": {
     "annual": [
@@ -17472,7 +17472,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17486,7 +17486,7 @@
    "target_price_high": 465.0,
    "target_price_low": 298.0,
    "analyst_count": 26,
-   "per_fwd": 18.257051,
+   "per_fwd": 18.722486,
    "eps_fwd": 16.6511,
    "earnings": {
     "annual": [
@@ -17582,7 +17582,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17596,7 +17596,7 @@
    "target_price_high": 130.0,
    "target_price_low": 93.0,
    "analyst_count": 21,
-   "per_fwd": 10.646947,
+   "per_fwd": 10.76624,
    "eps_fwd": 9.0533,
    "earnings": {
     "annual": [
@@ -17692,7 +17692,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17706,7 +17706,7 @@
    "target_price_high": 125.0,
    "target_price_low": 84.0,
    "analyst_count": 13,
-   "per_fwd": 15.0750885,
+   "per_fwd": 15.381191,
    "eps_fwd": 5.39035,
    "earnings": {
     "annual": [
@@ -17802,7 +17802,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17816,7 +17816,7 @@
    "target_price_high": 38.0,
    "target_price_low": 29.0,
    "analyst_count": 5,
-   "per_fwd": 12.508722,
+   "per_fwd": 12.629158,
    "eps_fwd": 2.40792,
    "earnings": {
     "annual": [
@@ -17880,7 +17880,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -17894,7 +17894,7 @@
    "target_price_high": 23.0,
    "target_price_low": 13.0,
    "analyst_count": 9,
-   "per_fwd": 5.125714,
+   "per_fwd": 5.372787,
    "eps_fwd": 2.38796,
    "earnings": {
     "annual": [
@@ -17967,9 +17967,9 @@
      {
       "period": "2026-09-30",
       "is_estimate": false,
-      "revenue": null,
-      "operating_income": null,
-      "net_income": null,
+      "revenue": 411182000.0,
+      "operating_income": 18900000.0,
+      "net_income": 14852000.0,
       "eps": 0.189012
      },
      {
@@ -17990,7 +17990,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18000,11 +18000,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 7.858812,
-   "target_price_high": 8.482222,
-   "target_price_low": 7.0465693,
+   "target_price": 7.864159,
+   "target_price_high": 8.487992,
+   "target_price_low": 7.051364,
    "analyst_count": 5,
-   "per_fwd": 9.275202,
+   "per_fwd": 9.152891,
    "eps_fwd": 0.49055538,
    "earnings": {
     "annual": [
@@ -18068,7 +18068,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18082,7 +18082,7 @@
    "target_price_high": 14.0,
    "target_price_low": 12.0,
    "analyst_count": 4,
-   "per_fwd": 27.135134,
+   "per_fwd": 27.675674,
    "eps_fwd": 0.37,
    "earnings": {
     "annual": [
@@ -18178,7 +18178,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18192,8 +18192,8 @@
    "target_price_high": 685.0,
    "target_price_low": 324.0,
    "analyst_count": 30,
-   "per_fwd": 35.67155,
-   "eps_fwd": 12.45194,
+   "per_fwd": 36.038902,
+   "eps_fwd": 12.4521,
    "earnings": {
     "annual": [
      {
@@ -18223,18 +18223,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 11925514560.0,
+      "revenue": 11925504220.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.25455
+      "eps": 11.25466
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 13339286560.0,
+      "revenue": 13339297880.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 12.45194
+      "eps": 12.4521
      }
     ],
     "quarterly": [
@@ -18288,7 +18288,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18298,9 +18298,9 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.4,
-   "target_price": 36.479195,
-   "target_price_high": 42.49929,
-   "target_price_low": 24.757645,
+   "target_price": 36.504013,
+   "target_price_high": 42.528206,
+   "target_price_low": 24.774488,
    "analyst_count": 10,
    "per_fwd": 70.63953,
    "eps_fwd": 0.29983214,
@@ -18366,7 +18366,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18376,11 +18376,11 @@
    "source": "yfinance",
    "opinion": "none",
    "opinion_score": null,
-   "target_price": 57.032413,
-   "target_price_high": 60.4032,
-   "target_price_low": 51.729317,
+   "target_price": 57.071217,
+   "target_price_high": 60.444298,
+   "target_price_low": 51.764515,
    "analyst_count": 5,
-   "per_fwd": 51.28464,
+   "per_fwd": 50.056652,
    "eps_fwd": 0.61889875,
    "earnings": {
     "annual": [
@@ -18444,7 +18444,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18497,26 +18497,26 @@
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 3481.7,
-      "operating_income_eok": 573.2,
-      "net_income_eok": 613.7,
-      "eps": 898
+      "revenue_eok": 3509.3,
+      "operating_income_eok": 574.3,
+      "net_income_eok": 620.0,
+      "eps": 907
      },
      {
       "period": "2027.12",
       "is_estimate": true,
-      "revenue_eok": 4076.7,
-      "operating_income_eok": 741.1,
-      "net_income_eok": 681.9,
-      "eps": 1000
+      "revenue_eok": 4135.9,
+      "operating_income_eok": 746.4,
+      "net_income_eok": 690.2,
+      "eps": 1012
      },
      {
       "period": "2028.12",
       "is_estimate": true,
-      "revenue_eok": 4497.7,
-      "operating_income_eok": 862.2,
-      "net_income_eok": 791.8,
-      "eps": 1161
+      "revenue_eok": 4592.5,
+      "operating_income_eok": 914.0,
+      "net_income_eok": 818.0,
+      "eps": 1199
      }
     ],
     "quarterly": [
@@ -18555,16 +18555,16 @@
      {
       "period": "2026.09",
       "is_estimate": true,
-      "revenue_eok": 917.5,
-      "operating_income_eok": 164.2,
-      "net_income_eok": 141.8,
-      "eps": 208
+      "revenue_eok": 931.7,
+      "operating_income_eok": 168.8,
+      "net_income_eok": 142.6,
+      "eps": 209
      },
      {
       "period": "2026.12",
       "is_estimate": true,
-      "revenue_eok": 952.1,
-      "operating_income_eok": 168.0,
+      "revenue_eok": 974.9,
+      "operating_income_eok": 167.2,
       "net_income_eok": 151.0,
       "eps": 221
      },
@@ -18578,7 +18578,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18592,7 +18592,7 @@
    "target_price_high": 26.0,
    "target_price_low": 18.0,
    "analyst_count": 2,
-   "per_fwd": 1684.0,
+   "per_fwd": 1584.0,
    "eps_fwd": 0.01,
    "earnings": {
     "annual": [
@@ -18639,14 +18639,6 @@
     ],
     "quarterly": [
      {
-      "period": "2025-06-30",
-      "is_estimate": false,
-      "revenue": 66728629.54,
-      "operating_income": -46802290.6,
-      "net_income": -44343301.07,
-      "eps": null
-     },
-     {
       "period": "2025-12-31",
       "is_estimate": false,
       "revenue": 91341876.54,
@@ -18671,6 +18663,14 @@
       "eps": null
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 71265787.21,
+      "operating_income": -21577321.17,
+      "net_income": -25419585.23,
+      "eps": null
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 132852000.0,
@@ -18688,7 +18688,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18702,7 +18702,7 @@
    "target_price_high": 30.0,
    "target_price_low": 16.0,
    "analyst_count": 12,
-   "per_fwd": -17.23785,
+   "per_fwd": -17.323185,
    "eps_fwd": -1.17184,
    "earnings": {
     "annual": [
@@ -18798,7 +18798,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18932,7 +18932,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -18946,7 +18946,7 @@
    "target_price_high": 7.0,
    "target_price_low": 7.0,
    "analyst_count": 1,
-   "per_fwd": -40.666668,
+   "per_fwd": -39.666668,
    "eps_fwd": -0.06,
    "earnings": {
     "annual": [
@@ -19042,7 +19042,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19152,7 +19152,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19166,7 +19166,7 @@
    "target_price_high": 3.0,
    "target_price_low": 3.0,
    "analyst_count": 3,
-   "per_fwd": -6.26,
+   "per_fwd": -5.870968,
    "eps_fwd": -0.155,
    "earnings": {
     "annual": [
@@ -19262,7 +19262,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19372,7 +19372,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19458,7 +19458,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19472,7 +19472,7 @@
    "target_price_high": 320.0,
    "target_price_low": 175.0,
    "analyst_count": 17,
-   "per_fwd": 18.872635,
+   "per_fwd": 19.073305,
    "eps_fwd": 13.2557,
    "earnings": {
     "annual": [
@@ -19553,22 +19553,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 1392179370.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 2.67315
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 1451604340.0,
       "operating_income": null,
       "net_income": null,
       "eps": 3.02363
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 1459860710.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 3.1446
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19578,11 +19578,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.29412,
-   "target_price": 68.777016,
-   "target_price_high": 96.35916,
-   "target_price_low": 50.1173,
+   "target_price": 68.758446,
+   "target_price_high": 96.42473,
+   "target_price_low": 50.151398,
    "analyst_count": 16,
-   "per_fwd": 12.339002,
+   "per_fwd": 12.18324,
    "eps_fwd": 2.9532373,
    "earnings": {
     "annual": [
@@ -19654,7 +19654,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19671,7 +19671,7 @@
    "per_fwd": null,
    "eps_fwd": null,
    "earnings": null,
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": "no consensus data found"
   },
   {
@@ -19685,7 +19685,7 @@
    "target_price_high": 2850.0,
    "target_price_low": 1600.0,
    "analyst_count": 12,
-   "per_fwd": 25.589672,
+   "per_fwd": 26.161898,
    "eps_fwd": 71.65,
    "earnings": {
     "annual": [
@@ -19765,7 +19765,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19779,7 +19779,7 @@
    "target_price_high": 140.0,
    "target_price_low": 90.0,
    "analyst_count": 16,
-   "per_fwd": 37.70635,
+   "per_fwd": 38.236225,
    "eps_fwd": 3.05731,
    "earnings": {
     "annual": [
@@ -19875,7 +19875,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19889,7 +19889,7 @@
    "target_price_high": 42.0,
    "target_price_low": 23.0,
    "analyst_count": 13,
-   "per_fwd": 39.768875,
+   "per_fwd": 40.243607,
    "eps_fwd": 0.73726,
    "earnings": {
     "annual": [
@@ -19985,7 +19985,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -19999,8 +19999,8 @@
    "target_price_high": 30.0,
    "target_price_low": 15.0,
    "analyst_count": 15,
-   "per_fwd": 27.66656,
-   "eps_fwd": 0.69434,
+   "per_fwd": 27.71938,
+   "eps_fwd": 0.69446,
    "earnings": {
     "annual": [
      {
@@ -20033,7 +20033,7 @@
       "revenue": 3435666990.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.70045
+      "eps": 0.70007
      },
      {
       "period": "차년도(+1Y)",
@@ -20041,7 +20041,7 @@
       "revenue": 3727950030.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 0.69434
+      "eps": 0.69446
      }
     ],
     "quarterly": [
@@ -20095,7 +20095,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20105,11 +20105,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.06667,
-   "target_price": 4.437469,
-   "target_price_high": 8.0365925,
-   "target_price_low": 2.6079242,
+   "target_price": 4.4404883,
+   "target_price_high": 8.042061,
+   "target_price_low": 2.6096988,
    "analyst_count": 15,
-   "per_fwd": 15.116517,
+   "per_fwd": 14.926885,
    "eps_fwd": 0.18456632,
    "earnings": {
     "annual": [
@@ -20173,7 +20173,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20187,7 +20187,7 @@
    "target_price_high": 47.0,
    "target_price_low": 18.0,
    "analyst_count": 18,
-   "per_fwd": 21.980207,
+   "per_fwd": 21.58232,
    "eps_fwd": 1.55822,
    "earnings": {
     "annual": [
@@ -20283,7 +20283,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20297,7 +20297,7 @@
    "target_price_high": 64.0,
    "target_price_low": 39.0,
    "analyst_count": 8,
-   "per_fwd": -218.21806,
+   "per_fwd": -223.49812,
    "eps_fwd": -0.27083,
    "earnings": {
     "annual": [
@@ -20393,7 +20393,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20407,7 +20407,7 @@
    "target_price_high": 196.0,
    "target_price_low": 140.0,
    "analyst_count": 15,
-   "per_fwd": 99.539986,
+   "per_fwd": 102.59869,
    "eps_fwd": 1.24563,
    "earnings": {
     "annual": [
@@ -20503,7 +20503,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20517,7 +20517,7 @@
    "target_price_high": 97.0,
    "target_price_low": 40.0,
    "analyst_count": 16,
-   "per_fwd": 46.192398,
+   "per_fwd": 46.329082,
    "eps_fwd": 1.5364,
    "earnings": {
     "annual": [
@@ -20613,7 +20613,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20623,11 +20623,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.26667,
-   "target_price": 9.855309,
-   "target_price_high": 14.502316,
-   "target_price_low": 6.009514,
+   "target_price": 9.862014,
+   "target_price_high": 14.512184,
+   "target_price_low": 6.0136027,
    "analyst_count": 14,
-   "per_fwd": 23.3781,
+   "per_fwd": 23.007364,
    "eps_fwd": 0.22927442,
    "earnings": {
     "annual": [
@@ -20691,7 +20691,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20705,7 +20705,7 @@
    "target_price_high": 35.0,
    "target_price_low": 22.0,
    "analyst_count": 12,
-   "per_fwd": 34.48772,
+   "per_fwd": 35.33283,
    "eps_fwd": 0.55614,
    "earnings": {
     "annual": [
@@ -20801,7 +20801,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20815,7 +20815,7 @@
    "target_price_high": 5.0,
    "target_price_low": 2.65,
    "analyst_count": 12,
-   "per_fwd": 9.857114,
+   "per_fwd": 10.055961,
    "eps_fwd": 0.35203,
    "earnings": {
     "annual": [
@@ -20911,7 +20911,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -20921,12 +20921,12 @@
    "source": "yfinance",
    "opinion": "hold",
    "opinion_score": 2.52174,
-   "target_price": 7.47059,
+   "target_price": 7.58824,
    "target_price_high": 10.5,
    "target_price_low": 5.5,
    "analyst_count": 17,
-   "per_fwd": -9.511564,
-   "eps_fwd": -0.72333,
+   "per_fwd": -14.631203,
+   "eps_fwd": -0.59667,
    "earnings": {
     "annual": [
      {
@@ -20956,29 +20956,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2420266990.0,
+      "revenue": 2413604390.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.78667
+      "eps": -0.51
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 2397529560.0,
+      "revenue": 2369049990.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.72333
+      "eps": -0.59667
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 626439000.0,
-      "operating_income": -35456000.0,
-      "net_income": -49507000.0,
-      "eps": -0.28
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -21004,24 +20996,32 @@
       "eps": -0.21
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 590093940.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.18667
+      "eps": -0.15
+     },
+     {
+      "period": "이번분기(0Q)",
+      "is_estimate": true,
+      "revenue": 595837110.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": -0.19
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 599414850.0,
+      "revenue": 588571830.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.08667
+      "eps": -0.225
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21147,7 +21147,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21161,7 +21161,7 @@
    "target_price_high": 19.0,
    "target_price_low": 10.0,
    "analyst_count": 15,
-   "per_fwd": 7.7405868,
+   "per_fwd": 7.840708,
    "eps_fwd": 1.59807,
    "earnings": {
     "annual": [
@@ -21257,7 +21257,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21383,7 +21383,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21469,7 +21469,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21539,7 +21539,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21553,7 +21553,7 @@
    "target_price_high": 16.0,
    "target_price_low": 11.0,
    "analyst_count": 5,
-   "per_fwd": -8.936708,
+   "per_fwd": -9.481012,
    "eps_fwd": -1.58,
    "earnings": {
     "annual": [
@@ -21649,7 +21649,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21663,7 +21663,7 @@
    "target_price_high": 2.0,
    "target_price_low": 1.5,
    "analyst_count": 3,
-   "per_fwd": 240.0,
+   "per_fwd": 238.66667,
    "eps_fwd": 0.0075,
    "earnings": {
     "annual": [
@@ -21759,7 +21759,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21773,7 +21773,7 @@
    "target_price_high": 3.0,
    "target_price_low": 1.0,
    "analyst_count": 5,
-   "per_fwd": 6.1103067,
+   "per_fwd": 6.0031085,
    "eps_fwd": 0.18657,
    "earnings": {
     "annual": [
@@ -21869,7 +21869,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -21971,7 +21971,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22057,7 +22057,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22143,7 +22143,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22229,7 +22229,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22243,7 +22243,7 @@
    "target_price_high": 175.0,
    "target_price_low": 110.0,
    "analyst_count": 15,
-   "per_fwd": 28.048513,
+   "per_fwd": 28.124855,
    "eps_fwd": 5.89443,
    "earnings": {
     "annual": [
@@ -22339,7 +22339,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22425,7 +22425,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22543,7 +22543,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22629,7 +22629,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22739,7 +22739,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22749,11 +22749,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.18182,
-   "target_price": 237.75792,
-   "target_price_high": 277.35242,
-   "target_price_low": 212.3424,
+   "target_price": 238.59782,
+   "target_price_high": 277.5411,
+   "target_price_low": 215.14838,
    "analyst_count": 20,
-   "per_fwd": 16.473825,
+   "per_fwd": 16.517042,
    "eps_fwd": 11.569869,
    "earnings": {
     "annual": [
@@ -22849,7 +22849,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -22863,8 +22863,8 @@
    "target_price_high": 179.0,
    "target_price_low": 135.0,
    "analyst_count": 14,
-   "per_fwd": 16.248251,
-   "eps_fwd": 8.98866,
+   "per_fwd": 16.679243,
+   "eps_fwd": 9.0112,
    "earnings": {
     "annual": [
      {
@@ -22894,18 +22894,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 21521478940.0,
+      "revenue": 21545023530.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 8.48118
+      "eps": 8.51449
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 22720534130.0,
+      "revenue": 22743625200.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 8.98866
+      "eps": 9.0112
      }
     ],
     "quarterly": [
@@ -22944,22 +22944,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 5432718980.0,
+      "revenue": 5498322780.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.1516
+      "eps": 2.19865
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 5479072030.0,
+      "revenue": 5513478690.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.07814
+      "eps": 2.09009
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23093,7 +23093,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23107,8 +23107,8 @@
    "target_price_high": 887.0,
    "target_price_low": 550.0,
    "analyst_count": 23,
-   "per_fwd": 28.178339,
-   "eps_fwd": 22.3505,
+   "per_fwd": 28.670254,
+   "eps_fwd": 22.35069,
    "earnings": {
     "annual": [
      {
@@ -23138,18 +23138,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 7121547880.0,
+      "revenue": 7121525600.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 18.682
+      "eps": 18.68194
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 7934377560.0,
+      "revenue": 7934393850.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 22.3505
+      "eps": 22.35069
      }
     ],
     "quarterly": [
@@ -23171,7 +23171,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23180,13 +23180,13 @@
    "market": "US",
    "source": "yfinance",
    "opinion": "strong_buy",
-   "opinion_score": 1.33333,
-   "target_price": 308.64706,
+   "opinion_score": 1.3,
+   "target_price": 309.7647,
    "target_price_high": 346.0,
    "target_price_low": 268.0,
    "analyst_count": 17,
-   "per_fwd": 19.562138,
-   "eps_fwd": 14.26429,
+   "per_fwd": 19.306128,
+   "eps_fwd": 14.24729,
    "earnings": {
     "annual": [
      {
@@ -23216,18 +23216,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 17462197600.0,
+      "revenue": 17471079950.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 12.95896
+      "eps": 12.96246
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 18575225780.0,
+      "revenue": 18581990480.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 14.26429
+      "eps": 14.24729
      }
     ],
     "quarterly": [
@@ -23258,30 +23258,30 @@
      {
       "period": "2026-09-30",
       "is_estimate": false,
-      "revenue": null,
-      "operating_income": null,
-      "net_income": null,
+      "revenue": 4428000000.0,
+      "operating_income": 608000000.0,
+      "net_income": 350000000.0,
       "eps": 2.1
      },
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 4530128290.0,
+      "revenue": 4533342570.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.59305
+      "eps": 3.59105
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 4429737950.0,
+      "revenue": 4428837950.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 3.17783
+      "eps": 3.15783
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23291,11 +23291,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.48148,
-   "target_price": 60.271812,
-   "target_price_high": 79.68984,
-   "target_price_low": 39.415165,
+   "target_price": 60.312824,
+   "target_price_high": 79.744064,
+   "target_price_low": 39.441982,
    "analyst_count": 23,
-   "per_fwd": 21.211193,
+   "per_fwd": 20.634205,
    "eps_fwd": 2.1837528,
    "earnings": {
     "annual": [
@@ -23359,7 +23359,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23373,8 +23373,8 @@
    "target_price_high": 445.0,
    "target_price_low": 68.75,
    "analyst_count": 9,
-   "per_fwd": 35.54418,
-   "eps_fwd": 6.47082,
+   "per_fwd": 36.156677,
+   "eps_fwd": 6.51332,
    "earnings": {
     "annual": [
      {
@@ -23404,7 +23404,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 3732022830.0,
+      "revenue": 3732034700.0,
       "operating_income": null,
       "net_income": null,
       "eps": 5.38209
@@ -23469,7 +23469,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23479,12 +23479,12 @@
    "source": "yfinance",
    "opinion": "hold",
    "opinion_score": 2.92857,
-   "target_price": 644.7692,
+   "target_price": 651.3077,
    "target_price_high": 730.0,
    "target_price_low": 370.0,
    "analyst_count": 13,
-   "per_fwd": 34.887543,
-   "eps_fwd": 19.85465,
+   "per_fwd": 34.126095,
+   "eps_fwd": 19.8546,
    "earnings": {
     "annual": [
      {
@@ -23514,18 +23514,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2849599810.0,
+      "revenue": 2849578680.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 18.36038
+      "eps": 18.35999
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 3021291600.0,
+      "revenue": 3021303210.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 19.85465
+      "eps": 19.8546
      }
     ],
     "quarterly": [
@@ -23579,7 +23579,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23593,7 +23593,7 @@
    "target_price_high": 390.0,
    "target_price_low": 145.0,
    "analyst_count": 15,
-   "per_fwd": 29.340603,
+   "per_fwd": 29.506927,
    "eps_fwd": 12.74616,
    "earnings": {
     "annual": [
@@ -23689,7 +23689,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23699,12 +23699,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.0,
-   "target_price": 188.23529,
-   "target_price_high": 215.0,
+   "target_price": 219.35294,
+   "target_price_high": 268.0,
    "target_price_low": 155.0,
    "analyst_count": 17,
-   "per_fwd": 18.288706,
-   "eps_fwd": 11.70996,
+   "per_fwd": 18.597073,
+   "eps_fwd": 11.58677,
    "earnings": {
     "annual": [
      {
@@ -23734,29 +23734,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 8145217280.0,
+      "revenue": 8152452210.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 10.53966
+      "eps": 10.56572
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 8451837410.0,
+      "revenue": 8515182220.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 11.76803
+      "eps": 11.60138
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 2084415000.0,
-      "operating_income": 249385000.0,
-      "net_income": -284183000.0,
-      "eps": -3.67
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -23782,24 +23774,32 @@
       "eps": 0.94
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 2024757000.0,
+      "operating_income": 200560000.0,
+      "net_income": 122130000.0,
+      "eps": 1.58
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 2029377500.0,
+      "revenue": 2039554100.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.87672
+      "eps": 2.82838
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 2059004760.0,
+      "revenue": 2062576660.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.74379
+      "eps": 2.70486
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23809,11 +23809,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.28571,
-   "target_price": 32.93634,
-   "target_price_high": 42.62685,
-   "target_price_low": 15.91643,
+   "target_price": 32.941044,
+   "target_price_high": 42.63294,
+   "target_price_low": 15.918703,
    "analyst_count": 6,
-   "per_fwd": 93.541695,
+   "per_fwd": 96.090515,
    "eps_fwd": 0.39233842,
    "earnings": {
     "annual": [
@@ -23877,7 +23877,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -23887,11 +23887,11 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.66667,
-   "target_price": 51.635162,
-   "target_price_high": 73.65799,
-   "target_price_low": 29.133972,
+   "target_price": 51.670296,
+   "target_price_high": 73.70811,
+   "target_price_low": 29.153793,
    "analyst_count": 12,
-   "per_fwd": 29.309246,
+   "per_fwd": 28.83872,
    "eps_fwd": 1.3176728,
    "earnings": {
     "annual": [
@@ -23987,7 +23987,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24001,7 +24001,7 @@
    "target_price_high": 531.0,
    "target_price_low": 380.0,
    "analyst_count": 25,
-   "per_fwd": 17.482525,
+   "per_fwd": 17.646143,
    "eps_fwd": 23.28611,
    "earnings": {
     "annual": [
@@ -24048,14 +24048,6 @@
     ],
     "quarterly": [
      {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 113161000000.0,
-      "operating_income": 4315000000.0,
-      "net_income": 2348000000.0,
-      "eps": 2.59
-     },
-     {
       "period": "2025-12-31",
       "is_estimate": false,
       "revenue": 113215000000.0,
@@ -24080,6 +24072,14 @@
       "eps": 6.04
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 4.56
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 112467323970.0,
@@ -24097,7 +24097,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24111,7 +24111,7 @@
    "target_price_high": 145.0,
    "target_price_low": 103.0,
    "analyst_count": 25,
-   "per_fwd": 10.538723,
+   "per_fwd": 10.583245,
    "eps_fwd": 8.53519,
    "earnings": {
     "annual": [
@@ -24187,7 +24187,7 @@
       "revenue": 106096000000.0,
       "operating_income": 4703000000.0,
       "net_income": 2979000000.0,
-      "eps": 2.31
+      "eps": null
      },
      {
       "period": "이번분기(0Q)",
@@ -24207,7 +24207,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24221,7 +24221,7 @@
    "target_price_high": 523.0,
    "target_price_low": 406.0,
    "analyst_count": 21,
-   "per_fwd": 13.6772585,
+   "per_fwd": 13.92842,
    "eps_fwd": 30.2992,
    "earnings": {
     "annual": [
@@ -24317,7 +24317,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24331,7 +24331,7 @@
    "target_price_high": 400.0,
    "target_price_low": 288.0,
    "analyst_count": 24,
-   "per_fwd": 8.809029,
+   "per_fwd": 8.910855,
    "eps_fwd": 33.48837,
    "earnings": {
     "annual": [
@@ -24427,7 +24427,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24441,7 +24441,7 @@
    "target_price_high": 596.0,
    "target_price_low": 280.0,
    "analyst_count": 24,
-   "per_fwd": 24.102428,
+   "per_fwd": 24.435404,
    "eps_fwd": 17.08832,
    "earnings": {
     "annual": [
@@ -24537,7 +24537,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24547,12 +24547,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.38095,
-   "target_price": 73.5,
+   "target_price": 74.5,
    "target_price_high": 85.0,
    "target_price_low": 56.0,
    "analyst_count": 18,
-   "per_fwd": 12.448249,
-   "eps_fwd": 5.3863,
+   "per_fwd": 12.541649,
+   "eps_fwd": 5.47137,
    "earnings": {
     "annual": [
      {
@@ -24582,18 +24582,18 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 197750320800.0,
+      "revenue": 198758966010.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.05163
+      "eps": 5.26269
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 193562392460.0,
+      "revenue": 194170026640.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.3863
+      "eps": 5.41644
      }
     ],
     "quarterly": [
@@ -24632,10 +24632,10 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 45541738990.0,
+      "revenue": 45827912890.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -1.12328
+      "eps": -1.13845
      },
      {
       "period": "차분기(+1Q)",
@@ -24647,7 +24647,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24661,7 +24661,7 @@
    "target_price_high": 266.0,
    "target_price_low": 163.0,
    "analyst_count": 17,
-   "per_fwd": 20.773714,
+   "per_fwd": 20.862848,
    "eps_fwd": 9.53609,
    "earnings": {
     "annual": [
@@ -24757,7 +24757,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24771,7 +24771,7 @@
    "target_price_high": 142.0,
    "target_price_low": 108.0,
    "analyst_count": 15,
-   "per_fwd": 18.365448,
+   "per_fwd": 18.369074,
    "eps_fwd": 5.51797,
    "earnings": {
     "annual": [
@@ -24867,7 +24867,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24881,7 +24881,7 @@
    "target_price_high": 6.0,
    "target_price_low": 5.0,
    "analyst_count": 5,
-   "per_fwd": 31.933332,
+   "per_fwd": 30.53333,
    "eps_fwd": 0.15,
    "earnings": {
     "annual": [
@@ -24977,7 +24977,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -24991,7 +24991,7 @@
    "target_price_high": 40.0,
    "target_price_low": 30.0,
    "analyst_count": 12,
-   "per_fwd": 12.048765,
+   "per_fwd": 12.277895,
    "eps_fwd": 2.3131,
    "earnings": {
     "annual": [
@@ -25087,7 +25087,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25097,12 +25097,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 2.0,
-   "target_price": 471.22726,
-   "target_price_high": 579.0,
+   "target_price": 469.9091,
+   "target_price_high": 550.0,
    "target_price_low": 380.0,
    "analyst_count": 22,
-   "per_fwd": 14.768918,
-   "eps_fwd": 31.36452,
+   "per_fwd": 15.244061,
+   "eps_fwd": 31.36172,
    "earnings": {
     "annual": [
      {
@@ -25135,7 +25135,7 @@
       "revenue": 79071843350.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 30.11018
+      "eps": 30.10867
      },
      {
       "period": "차년도(+1Y)",
@@ -25143,18 +25143,10 @@
       "revenue": 81583437470.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 31.36452
+      "eps": 31.36172
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 19161000000.0,
-      "operating_income": 2965000000.0,
-      "net_income": 1643000000.0,
-      "eps": 6.96
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -25180,12 +25172,20 @@
       "eps": 7.62
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 7.27
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 20024469170.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 8.23262
+      "eps": 8.21664
      },
      {
       "period": "차분기(+1Q)",
@@ -25193,11 +25193,11 @@
       "revenue": 19892828220.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 7.60017
+      "eps": 7.55273
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25211,8 +25211,8 @@
    "target_price_high": 315.0,
    "target_price_low": 260.0,
    "analyst_count": 22,
-   "per_fwd": 12.733332,
-   "eps_fwd": 21.08639,
+   "per_fwd": 12.832675,
+   "eps_fwd": 21.08446,
    "earnings": {
     "annual": [
      {
@@ -25292,22 +25292,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 5510471140.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 4.67572
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 5765062110.0,
       "operating_income": null,
       "net_income": null,
       "eps": 5.67289
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 5439541070.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 4.92883
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25317,12 +25317,12 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.07692,
-   "target_price": 148.16667,
-   "target_price_high": 155.0,
+   "target_price": 149.5,
+   "target_price_high": 157.0,
    "target_price_low": 140.0,
    "analyst_count": 12,
-   "per_fwd": 18.281898,
-   "eps_fwd": 6.67819,
+   "per_fwd": 19.56059,
+   "eps_fwd": 6.72219,
    "earnings": {
     "annual": [
      {
@@ -25352,29 +25352,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 6460084230.0,
+      "revenue": 6465124620.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 6.1116
+      "eps": 6.17998
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 6993745070.0,
+      "revenue": 7002220170.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 6.67819
+      "eps": 6.72219
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 1477500000.0,
-      "operating_income": 243600000.0,
-      "net_income": 126500000.0,
-      "eps": 1.24
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -25400,24 +25392,32 @@
       "eps": 1.54
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 1601655260.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.35806
+      "eps": 1.5
+     },
+     {
+      "period": "이번분기(0Q)",
+      "is_estimate": true,
+      "revenue": 1676559210.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 1.61595
      },
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 1674600170.0,
+      "revenue": 1715696860.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 1.60704
+      "eps": 1.70925
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25425,14 +25425,14 @@
    "name": "유니버설 헬스 서비시스",
    "market": "US",
    "source": "yfinance",
-   "opinion": "hold",
-   "opinion_score": 2.52632,
-   "target_price": 189.9375,
-   "target_price_high": 212.0,
-   "target_price_low": 166.0,
-   "analyst_count": 16,
-   "per_fwd": 7.207896,
-   "eps_fwd": 23.88769,
+   "opinion": "buy",
+   "opinion_score": 2.45,
+   "target_price": 195.23529,
+   "target_price_high": 290.0,
+   "target_price_low": 156.0,
+   "analyst_count": 17,
+   "per_fwd": 7.3591366,
+   "eps_fwd": 23.99874,
    "earnings": {
     "annual": [
      {
@@ -25462,29 +25462,21 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 18598609610.0,
+      "revenue": 18609911070.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 22.51756
+      "eps": 22.49292
      },
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 19488916760.0,
+      "revenue": 19466704300.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 23.65536
+      "eps": 23.19128
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 4495245000.0,
-      "operating_income": 521688000.0,
-      "net_income": 372957000.0,
-      "eps": 5.86
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -25510,12 +25502,20 @@
       "eps": 5.98
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 4733925880.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.6185
+      "eps": 5.22
+     },
+     {
+      "period": "이번분기(0Q)",
+      "is_estimate": true,
+      "revenue": 4742790240.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 5.71012
      },
      {
       "period": "차분기(+1Q)",
@@ -25523,11 +25523,11 @@
       "revenue": 4730462260.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 5.8848
+      "eps": 5.64958
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25537,12 +25537,12 @@
    "source": "yfinance",
    "opinion": "buy",
    "opinion_score": 1.6,
-   "target_price": 220.0,
-   "target_price_high": 230.0,
-   "target_price_low": 207.0,
+   "target_price": 223.6,
+   "target_price_high": 240.0,
+   "target_price_low": 210.0,
    "analyst_count": 5,
-   "per_fwd": 21.241346,
-   "eps_fwd": 8.66753,
+   "per_fwd": 21.404013,
+   "eps_fwd": 8.70491,
    "earnings": {
     "annual": [
      {
@@ -25588,14 +25588,6 @@
     ],
     "quarterly": [
      {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 1296405000.0,
-      "operating_income": 96218000.0,
-      "net_income": 83844000.0,
-      "eps": 1.42
-     },
-     {
       "period": "2025-12-31",
       "is_estimate": false,
       "revenue": 1360626000.0,
@@ -25620,6 +25612,14 @@
       "eps": 1.68
      },
      {
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": 1484002000.0,
+      "operating_income": 137989000.0,
+      "net_income": 104262000.0,
+      "eps": 1.76
+     },
+     {
       "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 1580935330.0,
@@ -25630,14 +25630,14 @@
      {
       "period": "차분기(+1Q)",
       "is_estimate": true,
-      "revenue": 1588510330.0,
+      "revenue": 1609410330.0,
       "operating_income": null,
       "net_income": null,
-      "eps": 2.1
+      "eps": 2.12
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25651,7 +25651,7 @@
    "target_price_high": 18.0,
    "target_price_low": 12.0,
    "analyst_count": 10,
-   "per_fwd": 31.085316,
+   "per_fwd": 31.65409,
    "eps_fwd": 0.43075,
    "earnings": {
     "annual": [
@@ -25747,7 +25747,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25755,13 +25755,13 @@
    "name": "브룩데일 시니어 리빙",
    "market": "US",
    "source": "yfinance",
-   "opinion": "strong_buy",
-   "opinion_score": 1.33333,
+   "opinion": "none",
+   "opinion_score": null,
    "target_price": 19.08333,
    "target_price_high": 23.0,
    "target_price_low": 17.0,
    "analyst_count": 6,
-   "per_fwd": 83.166664,
+   "per_fwd": 85.583336,
    "eps_fwd": 0.12,
    "earnings": {
     "annual": [
@@ -25792,7 +25792,7 @@
      {
       "period": "이번연도(0Y)",
       "is_estimate": true,
-      "revenue": 2929385160.0,
+      "revenue": 2917797650.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.61737
@@ -25800,7 +25800,7 @@
      {
       "period": "차년도(+1Y)",
       "is_estimate": true,
-      "revenue": 3004101010.0,
+      "revenue": 2994234250.0,
       "operating_income": null,
       "net_income": null,
       "eps": 0.12
@@ -25842,7 +25842,7 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 720921790.0,
+      "revenue": 717002250.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.02
@@ -25857,7 +25857,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25871,7 +25871,7 @@
    "target_price_high": 41.0,
    "target_price_low": 17.0,
    "analyst_count": 14,
-   "per_fwd": 15.979337,
+   "per_fwd": 15.952262,
    "eps_fwd": 1.84676,
    "earnings": {
     "annual": [
@@ -25967,7 +25967,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -25981,7 +25981,7 @@
    "target_price_high": 40.0,
    "target_price_low": 24.0,
    "analyst_count": 17,
-   "per_fwd": 20.545626,
+   "per_fwd": 20.69144,
    "eps_fwd": 1.063,
    "earnings": {
     "annual": [
@@ -26077,7 +26077,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26091,7 +26091,7 @@
    "target_price_high": 28.0,
    "target_price_low": 21.0,
    "analyst_count": 6,
-   "per_fwd": 11.841954,
+   "per_fwd": 11.952551,
    "eps_fwd": 2.44132,
    "earnings": {
     "annual": [
@@ -26172,22 +26172,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 498183930.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": 0.6497
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 499137610.0,
       "operating_income": null,
       "net_income": null,
       "eps": 0.63046
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 489954980.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": 0.45594
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26201,7 +26201,7 @@
    "target_price_high": 23.5,
    "target_price_low": 19.0,
    "analyst_count": 5,
-   "per_fwd": 111.65025,
+   "per_fwd": 111.50612,
    "eps_fwd": 0.20815,
    "earnings": {
     "annual": [
@@ -26297,7 +26297,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26311,7 +26311,7 @@
    "target_price_high": 146.0,
    "target_price_low": 85.0,
    "analyst_count": 12,
-   "per_fwd": 38.535973,
+   "per_fwd": 36.393204,
    "eps_fwd": 2.36143,
    "earnings": {
     "annual": [
@@ -26407,7 +26407,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26421,7 +26421,7 @@
    "target_price_high": 4.0,
    "target_price_low": 2.0,
    "analyst_count": 8,
-   "per_fwd": -5.1374164,
+   "per_fwd": -4.654577,
    "eps_fwd": -0.51777,
    "earnings": {
     "annual": [
@@ -26455,7 +26455,7 @@
       "revenue": 11447564490.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -1.16624
+      "eps": -1.21059
      },
      {
       "period": "차년도(+1Y)",
@@ -26467,14 +26467,6 @@
      }
     ],
     "quarterly": [
-     {
-      "period": "2025-09-30",
-      "is_estimate": false,
-      "revenue": 3087000000.0,
-      "operating_income": 264000000.0,
-      "net_income": 130000000.0,
-      "eps": 0.96
-     },
      {
       "period": "2025-12-31",
       "is_estimate": false,
@@ -26500,24 +26492,32 @@
       "eps": 0.51
      },
      {
-      "period": "이번분기(0Q)",
-      "is_estimate": true,
-      "revenue": 2801191050.0,
+      "period": "2026-09-30",
+      "is_estimate": false,
+      "revenue": null,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.32426
+      "eps": -0.63
      },
      {
-      "period": "차분기(+1Q)",
+      "period": "이번분기(0Q)",
       "is_estimate": true,
       "revenue": 2860099560.0,
       "operating_income": null,
       "net_income": null,
-      "eps": -0.17202
+      "eps": -0.16605
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 2838475330.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": -0.18667
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26531,7 +26531,7 @@
    "target_price_high": 23.0,
    "target_price_low": 13.0,
    "analyst_count": 2,
-   "per_fwd": -19.190477,
+   "per_fwd": -20.0,
    "eps_fwd": -0.21,
    "earnings": {
     "annual": [
@@ -26627,7 +26627,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26641,7 +26641,7 @@
    "target_price_high": 30.0,
    "target_price_low": 9.0,
    "analyst_count": 11,
-   "per_fwd": -17.88829,
+   "per_fwd": -17.153873,
    "eps_fwd": -0.76251,
    "earnings": {
     "annual": [
@@ -26737,7 +26737,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26751,7 +26751,7 @@
    "target_price_high": 32.0,
    "target_price_low": 20.0,
    "analyst_count": 12,
-   "per_fwd": -12.062956,
+   "per_fwd": -11.928173,
    "eps_fwd": -1.63227,
    "earnings": {
     "annual": [
@@ -26847,7 +26847,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26861,7 +26861,7 @@
    "target_price_high": 32.0,
    "target_price_low": 17.0,
    "analyst_count": 7,
-   "per_fwd": -22.866667,
+   "per_fwd": -22.214815,
    "eps_fwd": -1.35,
    "earnings": {
     "annual": [
@@ -26957,7 +26957,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -26971,7 +26971,7 @@
    "target_price_high": 10.0,
    "target_price_low": 4.0,
    "analyst_count": 6,
-   "per_fwd": -4.997358,
+   "per_fwd": -4.8709874,
    "eps_fwd": -0.87046,
    "earnings": {
     "annual": [
@@ -27067,7 +27067,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27077,11 +27077,11 @@
    "source": "yfinance",
    "opinion": "strong_buy",
    "opinion_score": 1.3,
-   "target_price": 81.36771,
-   "target_price_high": 100.00915,
-   "target_price_low": 70.984604,
+   "target_price": 81.37932,
+   "target_price_high": 100.02342,
+   "target_price_low": 70.99474,
    "analyst_count": 8,
-   "per_fwd": 21.612633,
+   "per_fwd": 21.038134,
    "eps_fwd": 1.7406486,
    "earnings": {
     "annual": [
@@ -27145,7 +27145,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27159,7 +27159,7 @@
    "target_price_high": 16.0,
    "target_price_low": 9.0,
    "analyst_count": 4,
-   "per_fwd": -207.33333,
+   "per_fwd": -205.33333,
    "eps_fwd": -0.015,
    "earnings": {
     "annual": [
@@ -27255,7 +27255,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27269,7 +27269,7 @@
    "target_price_high": 90.0,
    "target_price_low": 41.0,
    "analyst_count": 15,
-   "per_fwd": 12.268042,
+   "per_fwd": 12.061856,
    "eps_fwd": 4.85,
    "earnings": {
     "annual": [
@@ -27365,7 +27365,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27379,7 +27379,7 @@
    "target_price_high": 52.0,
    "target_price_low": 17.0,
    "analyst_count": 7,
-   "per_fwd": -17.572578,
+   "per_fwd": -16.258045,
    "eps_fwd": -0.80637,
    "earnings": {
     "annual": [
@@ -27460,22 +27460,22 @@
      {
       "period": "이번분기(0Q)",
       "is_estimate": true,
-      "revenue": 182232290.0,
-      "operating_income": null,
-      "net_income": null,
-      "eps": -0.23487
-     },
-     {
-      "period": "차분기(+1Q)",
-      "is_estimate": true,
       "revenue": 185745330.0,
       "operating_income": null,
       "net_income": null,
       "eps": -0.24138
+     },
+     {
+      "period": "차분기(+1Q)",
+      "is_estimate": true,
+      "revenue": 188101000.0,
+      "operating_income": null,
+      "net_income": null,
+      "eps": -0.215
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27489,7 +27489,7 @@
    "target_price_high": 30.0,
    "target_price_low": 8.0,
    "analyst_count": 5,
-   "per_fwd": -24.972878,
+   "per_fwd": -24.7484,
    "eps_fwd": -0.53458,
    "earnings": {
     "annual": [
@@ -27585,7 +27585,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   },
   {
@@ -27599,7 +27599,7 @@
    "target_price_high": null,
    "target_price_low": null,
    "analyst_count": null,
-   "per_fwd": -0.54583335,
+   "per_fwd": -0.5833334,
    "eps_fwd": -0.24,
    "earnings": {
     "annual": [
@@ -27663,7 +27663,7 @@
      }
     ]
    },
-   "as_of": "2026-10-29",
+   "as_of": "2026-10-30",
    "error": null
   }
  ]
