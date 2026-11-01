@@ -804,6 +804,15 @@ tr:last-child td{border-bottom:none}
     width:100% !important; max-width:100% !important; flex:1 1 100% !important; min-width:0 !important;
   }
   div:has(> #snap-search-input){max-width:none !important} /* PC용 최대 폭 320px 해제 */
+  /* 리서치 보고서: 섹터·기업 드롭다운을 담은 묶음 상자가 내용 길이만큼만 넓어져 드롭다운이 짧았다 — 한 줄 꽉 차게 */
+  #rep-dropdown-wrap{flex:1 1 100%; width:100%}
+  /* 뉴스 아카이브 기간: 시작일·종료일 칸이 좁아 "일"이 아랫줄로 떨어졌다 — 남는 폭을 둘이 나눠 쓰게 */
+  div:has(> #news-date-from){flex:1 1 100%; width:100%}
+  #news-date-from, #news-date-to{flex:1 1 0 !important; width:auto !important; min-width:0 !important; padding:0 8px}
+  /* 산업 데이터 기간(시작월·종료월): 글자가 칸 위쪽에 붙어 보여 세로 가운데로 */
+  #export-range-custom input, #medtour-range-custom input, #medtour-derma-range-custom input, #hira-range-custom input{
+    line-height:30px; padding:0 8px !important; margin-top:4px !important; font-size:12.5px !important;
+  }
   /* 드롭다운·검색창·날짜/월 입력칸 높이 통일(28·30·32px로 제각각이던 것) — 가장 높던 32px(국가·섹터 드롭다운)에 맞춤.
      예외: 소제목 옆 작은 "2026년 9월" 선택(제목 줄 높이에 맞춘 것) */
   .view :not(h2) > select.filter-select,
