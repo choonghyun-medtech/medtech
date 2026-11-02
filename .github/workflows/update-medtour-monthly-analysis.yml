@@ -1,15 +1,12 @@
 name: Update medtour monthly analysis
 
 on:
-  schedule:
-    # medical_tour.json 수집 창(update-medical-tour.yml, 매월 12~15일)이 끝난 다음날인 매월
-    # 16일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다(사용자 지정, 2026-09-14).
-    # 방한외국인(visitor_stats.json) 분석은 갱신 시차가 더 길어(update-visitor-stats.yml의
-    # 수집 창 참고) 일부러 별도 스케줄(update-visitor-monthly-analysis.yml, 매월 3일)로
-    # 분리했다 — 같이 돌리면 방한외국인 데이터를 기다리느라 이 의료관광 소비 분석 자체가
-    # 매달 지연될 위험이 있기 때문(사용자 지적). 시간은 다른 update-*.yml과 겹치지 않는
-    # 애매한 분으로 KST 08:24 = 23:24 UTC(전날).
-    - cron: "24 23 15 * *"
+  # 2026-11-02: 매월 16일 고정 실행(schedule)을 없앴다 — 이제 수집 워크플로(update-medical-tour.yml,
+  # 매월 12~15일)가 실제로 새 달 수치를 받은 날 바로 이어서 이 워크플로를 실행한다
+  # (scripts/monthly_analysis_pending.py로 판단, 수치가 안 들어온 날은 건너뜀 — 사용자 요청).
+  # 방한외국인(visitor_stats.json) 분석은 갱신 시차가 더 길어 별도 워크플로
+  # (update-visitor-monthly-analysis.yml, update-visitor-stats.yml이 이어서 실행)로 분리돼 있다 —
+  # 같이 돌리면 방한외국인 데이터를 기다리느라 이 의료관광 소비 분석까지 지연되기 때문(사용자 지적).
   workflow_dispatch:  # Actions 탭에서 수동 실행 — 기간을 비우면 평소처럼 최신 달 1개만 분석
     inputs:
       months:

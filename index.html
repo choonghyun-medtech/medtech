@@ -1297,8 +1297,8 @@ tr:last-child td{border-bottom:none}
          여기도 위쪽 차트/표 묶음과 시각적으로 구분되도록 medtour-group-h를 준다
          (사용자 요청 — 두 탭의 월간 분석 섹션 형식을 통일). -->
     <div class="medtour-group-h">월간 분석</div>
-    <div class="sec-h"><h2 style="font-size:13px">수출 데이터 종합 <select id="export-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="export-monthly-analysis-note">매월 19일 자동 작성</span></div>
-    <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 19일 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">수출 데이터 종합 <select id="export-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="export-monthly-analysis-note">새 달 수치 반영 당일 자동 작성</span></div>
+    <div class="card" id="export-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 새 달 수치가 반영되는 날 자동 작성됩니다.</div>
     </div>
     <!-- /수출 데이터 -->
 
@@ -1441,8 +1441,8 @@ tr:last-child td{border-bottom:none}
          보였다(사용자 리포트) — 별도 medtour-group-h를 줘서 두 데이터를 종합하는
          독립 섹션임을 명확히 한다. -->
     <div class="medtour-group-h">월간 분석</div>
-    <div class="sec-h"><h2 style="font-size:13px">의료관광·방한 외국인 종합 <select id="medtour-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="medtour-monthly-analysis-note">매월 16일(의료관광)·3일(방한외국인) 자동 작성</span></div>
-    <div class="card" id="medtour-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 매월 16일(의료관광)·3일(방한외국인) 자동 작성됩니다.</div>
+    <div class="sec-h"><h2 style="font-size:13px">의료관광·방한 외국인 종합 <select id="medtour-monthly-analysis-month" class="filter-select" style="margin-left:6px;font-size:12px;padding:3px 8px" hidden></select></h2><span class="note" id="medtour-monthly-analysis-note">새 달 수치 반영 당일 자동 작성</span></div>
+    <div class="card" id="medtour-monthly-analysis-card" style="white-space:pre-wrap; line-height:1.6">아직 월간 분석이 없습니다 — 새 달 수치가 반영되는 날 자동 작성됩니다.</div>
 
     <div class="medtour-group-h">국가별 의료관광객 비중(침투율)</div>
     <div class="sec-h"><h2 style="font-size:13px">국가별 의료관광객 비중</h2><span class="note" id="medtour-penetration-note">연간 · 의료관광객 수 ÷ 방한 외래관광객 수 × 100</span></div>
@@ -3224,9 +3224,10 @@ async function loadNewsTrend(){
   loadCompanyBriefs(); // 기업 브리핑(2026-10-16)
 }
 
-// 산업데이터 "월간 분석" 카드 — export_monthly_analysis.json(scripts/analyze_export_monthly.py,
-// 매월 19일)과 medtour_monthly_analysis.json(scripts/analyze_medtour_monthly.py 매월 16일
-// "medtour" 섹션 + scripts/analyze_visitor_monthly.py 매월 3일 "visitor" 섹션이 같은 파일의
+// 산업데이터 "월간 분석" 카드 — export_monthly_analysis.json(scripts/analyze_export_monthly.py)과
+// medtour_monthly_analysis.json(scripts/analyze_medtour_monthly.py "medtour" 섹션 +
+// scripts/analyze_visitor_monthly.py "visitor" 섹션 — 셋 다 새 달 수치가 들어온 날 수집 워크플로가
+// 이어서 실행, 2026-11-02 이전엔 매월 19일·16일·3일 고정)이 같은 파일의
 // 같은 대상월 키에 합쳐짐 — 둘 다 유의미한 변동이 있는 항목만 LLM이 서술한 텍스트라 값이
 // 아예 없는 달도 있을 수 있다(그 경우 안내 문구 유지).
 // 2026-10-13: 최신 달만 보여주던 것을 "분석 월" 드롭다운으로 지난 분석도 고를 수 있게 했다(사수
@@ -3294,7 +3295,7 @@ async function loadExportMonthlyAnalysis(){
     const defs = [{ key: 'export', title: '수출 데이터' }];
     const show = ym => {
       renderMonthlyAnalysisCard(card, months, defs, ym);
-      if(note) note.textContent = `${ymLabel(ym)} 기준 · 매월 19일 자동 작성`;
+      if(note) note.textContent = `${ymLabel(ym)} 기준 · 새 달 수치 반영 당일 자동 작성`;
     };
     const valid = Object.fromEntries(keys.map(k => [k, months[k]]));
     setupMonthlyAnalysisSelect(document.getElementById('export-monthly-analysis-month'), valid, null, show);
@@ -3312,7 +3313,7 @@ async function loadMedtourMonthlyAnalysis(){
     const res = await fetch('medtour_monthly_analysis.json', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    // 의료관광(매월 16일)과 방한외국인(매월 3일, 데이터 발표가 더 늦음)은 갱신 시점이 달라
+    // 의료관광(매월 12~15일 중)과 방한외국인(월말~다음달 초, 데이터 발표가 더 늦음)은 갱신 시점이 달라
     // 같은 대상월 키에 둘이 동시에 있는 기간이 짧다 — 기본 "최신"은 섹션별로 각자 가장 최신
     // 분석을 보여주고, 특정 달을 고르면 그 달의 두 섹션을 보여준다.
     const months = data.months || {};
@@ -3322,7 +3323,7 @@ async function loadMedtourMonthlyAnalysis(){
       const shown = renderMonthlyAnalysisCard(card, months, defs, ym);
       if(note) note.textContent = (ym === 'latest'
         ? shown.map(s => `${s.title} ${ymLabel(s.sec.ym)}`).join(' · ')
-        : `${ymLabel(ym)} 기준`) + ' · 매월 16일(의료관광)·3일(방한외국인) 자동 작성';
+        : `${ymLabel(ym)} 기준`) + ' · 새 달 수치 반영 당일 자동 작성';
     };
     setupMonthlyAnalysisSelect(document.getElementById('medtour-monthly-analysis-month'), months, '최신', show);
     show('latest');

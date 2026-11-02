@@ -11,8 +11,9 @@ load_months_file/save_months_file 참고).
   들어옴") update-visitor-stats.yml의 수집 창(그 달 마지막 이틀 + 다음달 처음 이틀)이
   update-medical-tour.yml(매월 12~15일)보다 훨씬 늦게 끝난다. 같은 워크플로에서 같이
   분석했다면 방한외국인 데이터를 기다리느라 의료관광 소비 분석 자체가 매달 지연됐을 것 —
-  그래서 스케줄(매월 3일)과 스크립트를 완전히 분리해서, 의료관광 소비 분석(매월 16일)이
-  방한외국인 때문에 지연되지 않게 한다.
+  그래서 워크플로와 스크립트를 완전히 분리해서, 의료관광 소비 분석이 방한외국인 때문에
+  지연되지 않게 한다. (2026-11-02부터 두 분석 모두 고정 날짜(16일·3일) 대신 각 수집
+  워크플로가 새 달 수치를 받은 날 바로 이어서 실행 — scripts/monthly_analysis_pending.py)
 - target_month는 "고정된 달력 날짜"가 아니라 visitor_stats.json에 실제로 들어있는 가장
   최신 ym을 그대로 쓴다 — analyze_medtour_monthly.py가 같은 달에 먼저 써둔 "medtour"
   섹션이 있으면 그 옆에 "visitor" 섹션만 추가되고, 아직 없으면(아주 드물게 방한외국인

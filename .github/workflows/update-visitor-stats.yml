@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: write  # 수치가 새로 들어오면 AI 월간 분석 워크플로를 이어서 실행(아래 마지막 스텝)
 
 jobs:
   update-visitor-stats:
@@ -85,3 +86,19 @@ jobs:
             echo "5회 재시도에도 푸시 실패"
             exit 1
           fi
+
+      # 2026-11-02: AI 월간 분석을 3일 고정 실행에서 "실제 수치가 들어온 날 바로 이어서"로 변경
+      # (사용자 요청). 최신 달 분석이 아직 없을 때만 분석 워크플로를 실행하고, 수치가 안 들어온
+      # 날은 건너뛴다 — 판단 규칙은 scripts/monthly_analysis_pending.py 참고.
+      - name: Check monthly analysis pending
+        id: pending
+        if: steps.gate.outputs.run == 'true'
+        run: python scripts/monthly_analysis_pending.py visitor | tee -a "$GITHUB_OUTPUT"
+
+      - name: Trigger AI monthly analysis
+        if: steps.pending.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "${{ steps.pending.outputs.month }} 수치 반영 — 방한외국인 AI 월간 분석 실행"
+          gh workflow run update-visitor-monthly-analysis.yml --ref main

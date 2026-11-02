@@ -1,16 +1,13 @@
 name: Update visitor monthly analysis
 
 on:
-  schedule:
-    # visitor_stats.json 수집 창(update-visitor-stats.yml, 그 달 마지막 이틀+다음달 처음
-    # 이틀)이 끝난 다음날인 매월 3일에 실행 — 그 달 반영된 최신 데이터를 대상으로 분석한다
-    # (사용자 지정, 2026-09-14). medtour 월간 분석(update-medtour-monthly-analysis.yml,
-    # 매월 16일)과 일부러 분리했다 — 방한외국인 데이터는 갱신 시차가 더 길어서 같이 돌리면
-    # 의료관광 소비 분석까지 매달 지연시키기 때문(사용자 지적). 이 워크플로는 같은 파일
-    # (medtour_monthly_analysis.json)에 "visitor" 섹션만 그 달 키 밑에 추가한다 —
-    # analyze_visitor_monthly.py 상단 docstring 참고. 시간은 다른 update-*.yml과 겹치지
-    # 않는 애매한 분으로 KST 08:36 = 23:36 UTC(전날).
-    - cron: "36 23 2 * *"
+  # 2026-11-02: 매월 3일 고정 실행(schedule)을 없앴다 — 이제 수집 워크플로(update-visitor-stats.yml,
+  # 그 달 마지막 이틀+다음달 처음 이틀)가 실제로 새 달 수치를 받은 날 바로 이어서 이 워크플로를
+  # 실행한다(scripts/monthly_analysis_pending.py로 판단, 수치가 안 들어온 날은 건너뜀 — 사용자 요청).
+  # medtour 월간 분석(update-medtour-monthly-analysis.yml)과는 일부러 분리돼 있다 — 방한외국인
+  # 데이터는 갱신 시차가 더 길어서 같이 돌리면 의료관광 소비 분석까지 지연시키기 때문(사용자 지적).
+  # 이 워크플로는 같은 파일(medtour_monthly_analysis.json)에 "visitor" 섹션만 그 달 키 밑에
+  # 추가한다 — analyze_visitor_monthly.py 상단 docstring 참고.
   workflow_dispatch:  # Actions 탭에서 수동 실행 — 기간을 비우면 평소처럼 최신 달 1개만 분석
     inputs:
       months:
