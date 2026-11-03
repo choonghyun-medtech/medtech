@@ -1,0 +1,156 @@
+{
+ "ticker": "TEM",
+ "company": "Tempus AI, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-02",
+ "file": "TEM_2026Q3.json",
+ "source_hash": "a49a71eae4ff",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-03T22:48:12.612441+00:00",
+ "headline": [
+  "2026년 3분기 총매출은 전년 동기 대비 23% 증가한 4억 1,150만 달러를 기록함.",
+  "종양학 사업부의 32% 유닛 성장과 데이터 및 애플리케이션(Data & Apps) 사업부의 33% 매출 성장이 실적을 견인함.",
+  "브리스톨마이어스스큅(BMS), 페르소날리스 인수 등 대규모 전략적 협력 및 인수가 진행 중임.",
+  "매출총이익 성장세가 투자를 앞지르면서 2,560만 달러의 조정 EBITDA를 기록하며 흑자 전환에 성공함.",
+  "2026년 연간 매출 가이던스를 16억~16억 500만 달러로 상향 조정함."
+ ],
+ "changes": [
+  "2026년 3분기 총매출($411.5M)이 전분기 대비 가속화되었으며, 조정 EBITDA 흑자 전환을 달성함.",
+  "BMS 및 파토스(Pathos)와의 신규 데이터 협력(알츠하이머 포함) 계약을 통해 향후 5년간 1억 9,250만 달러의 추가 매출 확보 기회를 마련함.",
+  "페르소날리스 인수가 규제 심사를 통과하여 11월 30일 주주총회를 앞두고 있음."
+ ],
+ "prepared": {
+  "summary": [
+   "3분기 총매출은 4억 1,150만 달러로 전년 동기 대비 23% 증가하며 강력한 성장세를 지속함.",
+   "진단 사업부는 종양학 및 유전암 검사의 호조로 3억 350만 달러를 기록했고, 데이터 및 앱 사업부는 1억 810만 달러로 33% 성장함.",
+   "BMS, 모더나, 머크 등과의 대규모 전략적 제휴를 체결하며 생태계를 확장함.",
+   "조정 EBITDA 2,560만 달러를 기록하여 재무적 변곡점을 통과했으며, 연말 기준 현금 및 시장성 유가증권은 8억 5,440만 달러를 보유함."
+  ],
+  "sections": [
+   {
+    "title": "진단 사업부(Diagnostics)",
+    "points": [
+     "매출 3억 350만 달러 (전년 동기 대비 20% 증가)",
+     "종양학 매출 1억 7,260만 달러, 유전암 검사 매출 1억 1,130만 달러 기록",
+     "종양학 검사 볼륨은 32% 증가하며 수년 내 최고 수준의 성장세를 보임"
+    ]
+   },
+   {
+    "title": "데이터 및 애플리케이션 사업부(Data & Apps)",
+    "points": [
+     "매출 1억 810만 달러 (전년 동기 대비 33% 증가)",
+     "데이터 라이선싱 부문인 Insights가 29% 성장하며 실적을 주도함"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 매출",
+   "value": "$1.60 billion to $1.605 billion",
+   "prev": "$1.595 billion to $1.605 billion",
+   "change": "상향",
+   "quote": "As a result of our financial performance this quarter, we are increasing guidance to $1.60 billion to $1.605 billion in 2026."
+  },
+  {
+   "item": "FY26 조정 EBITDA",
+   "value": "approximately $65 million",
+   "prev": "approximately $65 million",
+   "change": "유지",
+   "quote": "We continue to expect 2026 adjusted EBITDA to be approximately $65 million."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "xT CDx 종양 단독(tumor-only) FDA 승인 및 ADLT 가격 체계 적용",
+   "target": "2027년",
+   "status": "진행 중",
+   "note": "2027년 1월부터 업데이트된 가격 체계가 적용되어 약 8,000만 달러의 ASP 상승 효과가 기대됨.",
+   "quote": "That updated pricing will kick in on January 1 and allow us to move the remaining xT volume over. That gives us about $80 million of uplift in oncology ASP in 2027."
+  },
+  {
+   "item": "xF 액체 생검 FDA 승인",
+   "target": "2027년 하반기",
+   "status": "진행 중",
+   "note": "FDA 승인 절차가 진행 중이며, 완료 시 추가적인 ASP 상승이 기대됨.",
+   "quote": "and we still have xF kind of going through the FDA process -- and once that kind of finalize that process and hopefully gets approved, then there'll be even a larger increase as we migrate xF to the FDA-approved version of the assay."
+  },
+  {
+   "item": "연말 기준 긍정적 잉여현금흐름(Free Cash Flow) 달성",
+   "target": "2026년 연말",
+   "status": "언급 없음",
+   "note": "이번 분기 실적발표 및 Q&A에서 해당 항목에 대한 직접적인 언급이 없어 판정 보류함.",
+   "quote": ""
+  }
+ ],
+ "qa": [
+  {
+   "theme": "유전암 및 종양학 ASP 전망",
+   "analysts": [
+    "Kyle Mikson (Canaccord Genuity)"
+   ],
+   "question": "유전암 검사의 2027년 성장 전망 및 PAMA 컷에 따른 마감 영향, 그리고 종양학 ASP 상승 요인에 대해 질문함.",
+   "answer": "유전암 사업은 과거 대형 경쟁사의 이슈로 인한 일시적 급증기를 지나 저십대 성장률로 안정화되고 있으며, PAMA에 의한 중대한 영향은 없을 것으로 예상함. 종양학은 xT의 FDA 승인 및 ADLT 가격 적용으로 2027년에 큰 폭의 ASP 상승이 기대됨."
+  },
+  {
+   "theme": "장기 성장률 및 진단/데이터 사업 동력",
+   "analysts": [
+    "Sarah James (Canantor Fitzgerald)"
+   ],
+   "question": "2027년 및 2028년 이후에도 25% 이상의 장기 매출 성장률(CAGR) 유지가 가능한지 질의함.",
+   "answer": "강력한 종양학 유닛 성장, ASP 상승, 그리고 데이터 사업의 견조한 33% 성장에 힘입어 25% 이상의 장기 성장은 충분히 달성 가능하다고 봄."
+  },
+  {
+   "theme": "페르소날리스 인수 후 MRD 상용화 전략",
+   "analysts": [
+    "Mark Massaro (BTIG)",
+    "Bradley Bowers (Mizuho)"
+   ],
+   "question": "페르소날리스 인수 완료 후 전체 영업사원으로 MRD 판매를 확대하는 시점과 경쟁력에 대해 질문함.",
+   "answer": "MRD 테스트가 개별 테스트 기준으로 매출총이익 흑자로 돌아서는 시점(2027년 중반 예상)이 본격적인 영업망 확대의 기점이 될 것이며, 동사의 플랫폼과 결합하여 경쟁 우위를 점할 것임."
+  },
+  {
+   "theme": "데이터 사업부 수주 파이프라인 및 AI 모델링",
+   "analysts": [
+    "Ryan MacDonald (Needham)",
+    "Evie Koslosky (Goldman Sachs)"
+   ],
+   "question": "데이터 사업부의 파이프라인 가시성과 AI 모델링(GPU 클러스터 연동 등)이 고객과의 관계 결속력에 미치는 영향에 대해 질의함.",
+   "answer": "장기 구독 계약 및 고객 전용 GPU 환경 구축을 통해 데이터 사업의 가시성과 고객 유지율(Stickiness)이 매우 높아졌으며, 2027년 이후에도 강력한 성장 기반이 마련됨."
+  },
+  {
+   "theme": "액체 생검(Liquid Biopsy) 시장 트렌드",
+   "analysts": [
+    "Subbu Nambi (Guggenheim)"
+   ],
+   "question": "xF 주문 증가를 이끄는 요인과 고형암 대비 액체 생검의 차별화 조짐에 대해 질문함.",
+   "answer": "전이성 환자 대상 병행 검사(concurrent testing)의 임상적 유용성이 부각되면서 액체 생검 볼륨이 고성장하고 있으며, 9월부터 고형암 대비 액체 생검의 우위 조짐이 나타나고 있음."
+  },
+  {
+   "theme": "EBITDA 마진 개선 및 재투자 전략",
+   "analysts": [
+    "Dan Brennan (TD Cowen) 단 브레난"
+   ],
+   "question": "향후 EBITDA 마진 개선 속도와 종양학 가격 상승분의 이익 단 낙수 효과에 대해 질의함.",
+   "answer": "단기적 최대 이익보다는 포트폴리오 확장을 위해 잉여 총이익의 약 2/3를 재투자하고 있으며, 장기적으로 레버리지 효과가 나타나면서 점진적으로 이익이 개선될 것임."
+  },
+  {
+   "theme": "임상시험 매칭(TIME) 사업 및 비종양 데이터 확장",
+   "analysts": [
+    "Dan Arias (Stifel)",
+    "Kendra Webster (Robinhood 리테일 투자자)"
+   ],
+   "question": "임상시험 매칭 사업의 방향성과 온콜로지 외 분야(알츠하이머 등)의 데이터 확장 기회에 대해 질문함.",
+   "answer": "TIME 네트워크는 대형 제약사 대상 엔터프라이즈 중심 모델로 재편되어 안정적으로 성장 중이며, BMS와의 알츠하이머 데이터 제휴를 필두로 종양학 외 영역으로 데이터 사업이 본격 확장되고 있음."
+  },
+  {
+   "theme": "데이터 지속 수급 및 유동성 안정성",
+   "analysts": [
+    "Kendra Webster (Robinhood 리테일 투자자)"
+   ],
+   "question": "환자 데이터를 직접 소유하지 않는 상황에서 데이터의 지속적인 유입을 보장하는 방법과 유동성 우려에 대해 질문함.",
+   "answer": "8,000개 이상의 의료 제공자 및 학술 의료 센터와의 다각화된 파트너십을 통해 안정적으로 데이터가 유입되고 있으며, 다변화된 사업 모델과 강력한 현금 창출력으로 유동성에는 문제가 없음."
+  }
+ ]
+}
