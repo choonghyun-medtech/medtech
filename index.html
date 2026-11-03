@@ -8269,7 +8269,7 @@ async function loadHiraProcedureData(){
     HIRA_DATA = await res.json();
     const srcNote = document.getElementById('hira-source-note');
     const when = updatedLabel(HIRA_DATA.updated);
-    if(srcNote && when) srcNote.textContent = `출처: 건강보험심사평가원 보건의료빅데이터 · 매월 3일 갱신(최근 ${when.replace(' 갱신', '')})`;
+    if(srcNote && when) srcNote.textContent = `출처: 건강보험심사평가원 보건의료빅데이터 · 매월 2일 갱신(최근 ${when.replace(' 갱신', '')})`;
   }catch(e){
     HIRA_DATA = { codes: [] };
   }
