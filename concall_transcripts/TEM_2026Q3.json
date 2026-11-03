@@ -1,0 +1,337 @@
+{
+ "ticker": "TEM",
+ "company": "Tempus AI, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-02",
+ "title": "Tempus AI, Inc., Q3 2026 Earnings Call, Nov 02, 2026",
+ "source": "TIKR 컨콜 스크립트(수동 복사)",
+ "qa_start": 3,
+ "segments": [
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Hello, everyone. Thank you for joining us, and welcome to Tempus Q3 2026 Financial Results Call. [Operator Instructions] I will now hand the conference over to Kendra Webster, VP of Investor Relations. Please go ahead."
+   ]
+  },
+  {
+   "speaker": "Kendra Webster",
+   "paras": [
+    "Thank you, Matt. Good morning, and welcome to Tempus' Third Quarter 2026 Conference Call. This morning, Tempus released results for the quarter ended September 30, 2026. The press release, overview of the quarter and our latest presentation are available on our IR website at investors.tempus.com. Joining me today are Eric Lefkofsky, Founder and CEO of Tempus; and Jim Rogers, CFO.",
+    "Before we begin, I would like to remind you that during this call, management will be making forward-looking statements that are subject to risks and uncertainties that could cause actual results to differ materially. For a discussion of these risks, please refer to our 10-K and other subsequent filings with the SEC. During the call, we will discuss non-GAAP financial measures, which are not prepared in accordance with generally accepted accounting principles.",
+    "Definitions of these non-GAAP financial measures, along with reconciliations to the most -- to the most directly comparable GAAP financial measures are included in our earnings release, which is available on our IR page. I will now turn the call over to Eric."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Q3 was an incredibly strong quarter for Tempus with broad-based growth across both our Diagnostics and Data & Applications businesses. Momentum from the first half of 2026 carried into the third quarter with total revenue of $411.5 million, increasing 23% year-over-year, led by accelerating unit growth of 32% in our oncology business and increasing momentum of 33% revenue growth in Data and Apps.",
+    "Our Diagnostics business delivered $303.5 million of revenue, an increase of 20% year-over-year, driven by oncology revenues, which grew 28% with volume growth of 32% as we continue to see some of the strongest unit volume growth we have seen in years. Oncology revenues were $172.6 million, and hereditary cancer testing revenues were $111.3 million. Data and Apps revenues were $108.1 million, increasing 33% year-over-year as that business continues to outperform, led by Insights, our data licensing segment, which grew 29%.",
+    "These results reinforce the durability of our model as our best-in-class diagnostic platform enhances our data and AI offerings, distinguishes our business from our many competitors and helps drive the performance we have delivered consistently quarter after quarter. There were also several notable highlights since our last quarterly call.",
+    "We entered into a strategic collaboration with Bristol Myers Squibb, or BMS, whereby we agreed to license BMS oncology data and models for up to $137.5 million over a 5-year term. Additionally, BMS, Pathos and Tempus have entered into a collaboration to build data sets and models for Alzheimer's disease. Through this collaboration, Pathos is paying Tempus $55 million over a 5-year term. As a result, over the next approximately 5 years, we expect to generate $192.5 million of additional data and applications revenue from these agreements alone.",
+    "This is one of our largest strategic collaborations to date, and it's nice to see BMS join the likes of AstraZeneca, Merck, GlaxoSmithKline and BioNTech. As I've said before, if we signed just one of these big collaborations, we would be content. We've signed 3 this year alone. We announced a multiyear strategic collaboration with Moderna and Merck to support the potential commercialization of their novel first-in-class individualized neoantigen therapy, or INT, being evaluated in combination with KEYTRUDA in patients with completed resected Stage IIB-IV melanoma and other cancer types.",
+    "Given the exceptional response of the clinical trial data so far and the potential for this drug to be transformational, we are excited by the future of this program and thrilled to be partnering with Moderna and Merck. We cleared regulatory review of our pending acquisition of Personalis and a Personalis shareholder meeting to approve the transaction is scheduled for November 30.",
+    "We are more convinced than ever of the synergies between our combined companies. We have been the exclusive distributor of Personalis' tumor-informed MRD assay, NeXT since 2023, which we believe is a best-in-class assay given its ultrasensitivity. MRD represents an estimated $20-plus billion market and is one of the fastest-growing segments in oncology diagnostics. It is transformative for cancer care, allowing clinicians to detect disease recurrence earlier than traditional imaging, enabling more informed treatment decisions when cancer recurs.",
+    "Bringing Personalis' testing portfolio under one roof will accelerate commercial adoption, round out our overall portfolio and strengthen the multimodal data flywheel that continues to differentiate our business. We generated $25.6 million in adjusted EBITDA and ended the quarter with $854.4 million in cash and marketable securities. We had long suspected that with gross profit dollar growth outpacing our investments, we would eventually turn the corner and be able to generate meaningful EBITDA.",
+    "This quarter, we made the turn. Despite our increasing investments in diagnostics, we have always been a tech company. Our entire business model was built around the idea of collecting vast amounts of real-time multimodal de-identified data to both improve clinical decisions and enhance research. A decade later, those efforts have allowed us to amass more than 600 petabytes of rich data, adding more than 50 petabytes last quarter alone, along with the technology infrastructure that is connected to approximately 8,000 providers, enabling us to use that data to train models and generate insights.",
+    "The scale of our business and the breadth of our portfolio has allowed us to build a significant data moat. By compounding a decade of investment in our AI capabilities, we deliver solutions that grow more powerful with every patient touch point, cementing our position as an indispensable engine for health care innovation. As the world gets hungrier for the benefits AI can deliver, namely allowing people to live longer and healthier lives, Tempus is uniquely positioned as we have strategically amassed the data needed to power these models and the distribution platform to deliver them to patients.",
+    "As a result of our financial performance this quarter, we are increasing guidance to $1.60 billion to $1.605 billion in 2026. We continue to expect 2026 adjusted EBITDA to be approximately $65 million. And with that, we will open it up to questions."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "[Operator Instructions]",
+    "Your first question comes from the line of Kyle Mikson with Canaccord Genuity."
+   ]
+  },
+  {
+   "speaker": "Kyle Mikson",
+   "paras": [
+    "Congrats on the quarter. So one question on hereditary. You're hoping that return to stable growth next year. But just given these proposed clinician lab fee schedule rates that factor in PAMA cuts, I'm just wondering how you're thinking about potential headwinds there given -- then obviously, ASP tailwinds on the oncology side. So maybe just talk about diagnostics outlook for '27."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes, I can start. So I think the overall hereditary business seems to be poised to do kind of much better as we move forward than it has over the last few quarters. In large part because it's both lapping excessive growth last year, which we've talked about relative to the -- some of the market dynamics where you had a big player in the market that was having some financial issues, a bunch of volume moved over.",
+    "And so instead of kind of nice even whatever, near 15% growth year after year, you had this like jump up to 30% growth that we're now lapping. We've seen some good sign of that in September and October where unit growth rates have returned to low double digits. So we feel overall like that business is moving in a better direction. And whatever macro headwind there is in terms of guidance is kind of small compared to the just massive unaddressed TAM relative to the fact that current guidelines and current reimbursement would cover about 70 million lives.",
+    "And in the U.S., we run something like 2 million tests a year. So I think we still have a very underpenetrated market. I suspect as more and more literature comes out finding clear links between germline variants and diseases that can be prevented or managed earlier, you'll see this category continue to be stable and grow. And Jim can cover ASPs on the oncology side."
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. So on ASPs for hereditary, just as a reminder, obviously, hereditary cancer makes up the majority of that revenue, but we do have a small but growing rare business. And so we don't anticipate material impacts from PAMA on the hereditary cancer rates. And then we've long said that the hereditary rates for us will actually probably increase slightly over time as rare becomes a bigger kind of piece of the overall pie. So that's the story on ASPs for hereditary.",
+    "And then on the oncology side, as we've talked about, given the expansion of our FDA approval to include kind of tumor-only for our xT test, that updated pricing will kick in on January 1 and allow us to move the remaining xT volume over. That gives us about $80 million of uplift in oncology ASP in 2027. And then we still have xF kind of going through the FDA process -- and once that kind of finalize that process and hopefully gets approved, then there'll be even a larger increase as we migrate xF to the FDA-approved version of the assay.",
+    "So lots of tailwind from ASP expected on the oncology side beginning early in '27, and we don't anticipate much impact on the hereditary ASP."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Sarah James with Cantor Fitzgerald."
+   ]
+  },
+  {
+   "speaker": "Sarah James",
+   "paras": [
+    "I was hoping you could talk a little bit about the headwinds and tailwinds in '27. So can we assume if CGP volume holds in the low 20s and D&A might be closer to 30% than 25%, and you've still got the incremental gross profit, 2/3 of it even after Personalis being reinvested. Can we get to the 25% long-term range? And thinking out further once we get the benefit of xT and xF uplift, could '28 be a year above that 25% CAGR?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. I mean I think -- so first of all, we feel like a business at our size growing at 25% a year over a long term is incredibly healthy. So we've always said we're more interested in long-term 25% growth than we are in kind of short-term 30% growth that then decelerates. So I mean when you talk about a business that's going to do a few billion dollars in revenue that's growing at 25%, that means, like, literally every year, you're adding $500 million or more of new revenue, and then that becomes $1 billion of new revenue and more and more.",
+    "So we're into the law of large numbers. We're fortunate that our 2 main businesses, our oncology sequencing business is experiencing strong unit growth, about 32% -- it's actually up from last quarter. It's got obviously rising ASPs, both because our solid tumor portfolio is about to be reimbursed at the ADLT rate and then you get into the later part of the year, you'll have FDA approval where you're going to get an even bigger step up.",
+    "So we've got really strong unit growth, rising ASPs and our data business is performing even better in the aggregate at about 33% growth. And obviously, we've announced a string of very big deals with Merck and BioNTech and now BMS. And so just really the core businesses are super strong. But we have other businesses like hereditary growing slower.",
+    "And so in the aggregate, we feel like this kind of 25-plus percent growth rate is achievable and achievable long term. Is it possible that you get into '27 or '28 and have moments where the business is growing significantly faster, either because of ASP lift or because the data business just is running really hot? Yes. But even if it is, even if we deliver a quarter where the aggregate growth is materially higher, I will say the same thing, which is it's great, I'm glad.",
+    "But at the end of the day, if you can sustain kind of 25% growth over a decade, over another decade, you will build a really large business. And we think we're building a really large business."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Mark Massaro with BTIG."
+   ]
+  },
+  {
+   "speaker": "Mark Massaro",
+   "paras": [
+    "Nice continued growth in MRD. You're tracking about up 3,000 units per quarter. Recognizing that only 15% of your sales force is selling today and the shareholder meeting is sort of around the corner after Thanksgiving. Can you just give us a sense for once Personalis is in your portfolio, to what extent you plan to ungate and let the remaining 85% of reps sell the test?",
+    "Is that something that we could expect in the first half of 2027? Or is that -- are there other criteria you need to see later in the year?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "I think it's going to be largely a function of -- it's more a function of reimbursement than it is a function of closing the deal. We have to be sensitive that at the present moment when Personalis runs these tests, they lose money. And once we acquire them, we'll be in the same boat. Granted, we are in this really nice place where given the 3 categories they've got reimbursement for in 2026, they're in this rising ASP landscape where they're getting much closer to being breakeven on an individual test basis.",
+    "And we think with some of the approvals coming, obviously, in categories like colorectal cancer, we think we will turn that corner where on a per test basis, they're generating basically positive gross profit. That's the big unlock to really ramp up. Now that said, we're still ramping now. We're adding sales members to our team in the aggregate across all of our different assay categories. And we will, in '27, dial up MRD in sales efforts.",
+    "But the big unlock, which I suspect will be I don't know, it could be midyear, it could be Q2, could be Q3, who knows. But somewhere, I suspect, midyear, you'll be in this boat where they will turn the corner and be kind of positive gross profit dollar contribution on a per test basis, and then we'll feel much better about really starting to put the pedal to the metal. And so I think over the latter half of '27 into '28, I would suspect growth will continue to be really strong."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Bradley Bowers with Mizuho."
+   ]
+  },
+  {
+   "speaker": "Bradley Bowers",
+   "paras": [
+    "Just wanted to maybe ask another one on MRD while we're here. I definitely understand the timing with respect to how much you're getting paid per test and colorectal is a big unlock. What do you think about the competitive landscape that you're launching into?",
+    "Obviously, Tempus has a lot of things that it offers to physicians that would allow the test to win kind of at the physician level. But maybe just wanted to hear about the MRD offering kind of as it's fully rolled into Tempus and how that compares to competition and how we can maybe think about market share expectations for the test?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. I'll jump in. So I mean the assay, first of all, is best-in-class. I mean it's -- in terms of its performance -- it performs as well as any assay out there. Obviously, we think better, but it's a super well-performing assay. So we were never meeting with oncologists, whether it's academic medical center or community practitioners who are saying, \"Guys, I wish you had a better test.\" They love the test. So the real unlock to volume is just that the Tempus sales machine is kind of unlocked to sell MRD at scale.",
+    "And that, again, is a function of do you have unit economics that support that. And we're getting very close. I think once that's in place, the same benefits that drive our CGP business, which is this kind of best-in-class technology stack, deep integration to thousands of hospitals, a broad compendium of tests that all are interconnected to clinical insights and algorithmic diagnostics, that all just literally feeds perfectly into MRD.",
+    "And our clients, our physicians are interested in us offering more and more, more broadly. And so I think there's really no competitive impediment to us getting to real scale. And I would suspect, I think I've said this before, that at the end of the day, what Tempus has done that's, I think, unique is no other company like ours is #1 or #2 in more than one category. We are #1 or #2 in solid. We are #1 or #2 in liquid. We are obviously #1 and #2 in hereditary cancer profiling, and we will be #1 or #2 in MRD, there's just no reason for me to believe that, that market won't evolve the same way.",
+    "When we entered solid tumor profiling, Foundation Medicine was every bit the kind of goliath that Natera is today, and the same thing in liquid. So I suspect we will do quite well in MRD because we wrap all this technology and all this AI and all this contextualization around these tests, and we just become a test of preference for our physicians."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next caller comes from the line of Ryan MacDonald with Needham."
+   ]
+  },
+  {
+   "speaker": "Ryan MacDonald",
+   "paras": [
+    "Congrats on a nice quarter. Eric and Jim, maybe to talk about the success you're seeing in the data business. Obviously, amazing year so far with the over $550 million of bookings throughout the year. I guess as you look at sort of maybe the state of the pipeline and maybe the seasonality of the business and sort of demand cycle, are you seeing any changes in terms of pull forward of demand?",
+    "And then as we think about sort of the components of the pipeline, what's the mix that you're seeing sort of within oncology, neuro, cardiology, some of these other areas? And Jim, how does this sort of make you feel about the level of visibility going into 2027 to sort of hit those 25% to 30% targets that you're looking for in the business?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Jim, do you want to take it?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. I mean I'd say that the pipeline -- we've been talking about this now for several quarters. I'd say, kind of towards the tail end of last year, we saw kind of an uptick in engagement with our biopharma partners. We started kind of commenting on it then, and I think you've kind of seen it play out in the deals that we've announced thus far this year.",
+    "And the beauty of these deals are as we kind of march our customers up from being kind of episodic purchasers to these large strategic collaborations, it obviously just enhances the level of visibility that we have for that business. So you're no longer trying to get deals signed, you have them in kind of under contract for kind of 5, 6 years, very long-term deals that give us that visibility. And so as we enter '27, we feel like we're in a really strong position to see that growth not only in '27, but '28 and '29 as well."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. And I'll just jump in. I mean I think the nice part about the data business that we've been able to build is we used to -- our business 4 or 5 years ago was much more lumpy and episodic in terms of the way we did these deals. But over the last half a decade, we've really migrated people to long-term subscriptions where people are basically connecting to our Lens platform. They have access to the totality of our data.",
+    "They're able to, based on the level of subscription they sign up for, pick a certain number of files that they can download annually and do work with. More and more, as we've mentioned, they're now connecting that data to kind of private GPU clusters that we set up for them where they can build models that they can keep in our environment to basically do a bunch of their AI modeling work. And so it just -- it becomes much smoother, long term, sticky. And so it's nice to kind of be going into -- we'll be going into 2027 in like the strongest position we've been in for a long time. We said that same thing going into '26."
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "And one more thing that I'd add is one of the exciting things about the BMS collaboration is the work that we're doing in Alzheimer's. We've long talked about kind of expanding beyond oncology, although oncology drove most of the revenue to date, but the data sets that we've invested in over the last 10 years expand well beyond oncology and other disease areas and seeing that demand pick up and expand beyond oncology is something we're really excited about."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Evie Koslosky with Goldman Sachs."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Koslosky",
+   "paras": [
+    "So given the strength, I think you mentioned in the AI modeling portion of the Insights business, how does this change the stickiness of the relationships with your customers? And then maybe touch on what percentage of the Insights data customers also utilize AI modeling and then how you expect this to evolve into next year?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. I think the stickiness is essentially a function of how we've designed the data business. So as I mentioned a second ago, if you go back, we started licensing data maybe, I don't know, roughly 6 or 7 years ago or something like that. And back then, you would be like, oh, I want 1,000 files of cancer patients that look like this, and we would de-identify that data and then you would download that data in your environment.",
+    "And so we didn't know what you were doing with the data. We didn't know how you were -- what kind of value you're getting from it. We didn't -- we would hope that you would call back 6 months later, a year later, want more data, but it was very transactional. Over time, we basically said, look, we built this very large environment. We have something like 700 software engineers that have been working here for almost a decade. So we built this very large multimodal technology environment to interrogate this kind of data.",
+    "And we started saying to our clients, why don't you do that work in our environment? It's just -- we've just invested way more in it than you have. And so people began doing more and more of their analytic work, generating insights from the data in our Lens platform. And then over time, we moved to this kind of concept of, okay, we'll actually put all the data in Lens. You can build cohorts of interest in Lens, pull down the data, just the exact data you want, the exact patients you want, which typically have criteria that would almost match a trial based on inclusion/exclusion criteria.",
+    "We're going like very deep characteristics of a cohort, pull that data into a workspace within our environment, build -- kind of either do your analytics or build models and then you're off and running. And obviously, that latter part of building models is new. You used to be able to just kind of do analytics and then kind of take the analytics out or download the files directly in your own environment.",
+    "But now we're connecting Lens to 8 GPUs, 16 GPUs, 32 GPUs, some kind of cluster like that, typically denominations of 8, where clients are signing up for like 3 years of 32 GPUs or 3 years of 64 GPUs. And they will build -- they're building models in our environment that either have to stay in our environment or you pay an egress fee to pull them out. And so it's gone from like not sticky to crazy sticky. And so we just -- in light of how people are using our data today, we just don't know how they would in mass get off unless somebody else builds the same set of products we've built, which we don't see."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Subbu Nambi with Guggenheim."
+   ]
+  },
+  {
+   "speaker": "Subhalaxmi Nambi",
+   "paras": [
+    "In your letter, you specifically called out strength in xF of order acquisitions being up 25% year-over-year. Could you give us any additional color on what is driving strength? Is there any specific indication or academic setting, community setting, EMR integration, any reason?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "I'm happy to start. So you have some kind of macro trends, which we've talked about a bit in the past that are just driving in the aggregate, some overall liquid volume. One of them is the benefits of concurrent testing, especially for metastatic patients is just high. So there's just been a ton of literature over the past few years about mutations, driver mutations you can find from solid tumor profiling or liquid profiling that you have to do both to find all of them.",
+    "And that -- and we published on this as well, but it can be 10% to 20% of mutations that would be therapeutically relevant that you won't find if you only do solid tumor profiling or you only do liquid biopsies. So you have this movement to kind of do both more often for later-stage patients that are at high risk of mortality. And then you also have the benefits of kind of earlier testing, serial testing for certainly in certain indications where more and more, it's becoming important to be changing therapies every 6 months or every year and getting another insight from a test.",
+    "And so liquid is just the beneficiary of that. We've seen it, I think, overall in the market. Guardant, who is a leader in that space, has posted really strong unit volume as well. And we just see this as a kind of a near-term trend of really robust growth in liquid. Up until now, our growth rates have been relatively consistent. Solid has been growing really strong as has liquid. And we've historically called out that it's not meaningful to talk about the difference between the 2 of them. That's still the case for Q3.",
+    "Our solid portfolio grew really quickly. But we did see a sign here in September, which we called out that we saw this kind of uptick of whatever, 300, 400 basis points. If that continues into Q4, you will start to see the first signs of really differentiation between liquid and solid where even with really strong growth rates in solid, liquid is outperforming. And with that plus MRD, it could be a propeller of growth rates over the next several quarters."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Dan Brennan with TD Cowen."
+   ]
+  },
+  {
+   "speaker": "Daniel Brennan",
+   "paras": [
+    "Maybe just on EBITDA, nice print. Consensus has margins expanding next year, I think, to 7% and then 11% in '28. And there's always this push and pull for diagnostic companies, how much you reinvest back in the business versus let it drop through. So I'm wondering, you've got that slide in the deck showing EBITDA like a line going up.",
+    "Like the 7% and 11%, is that like a reasonable ramp how you guys think about it? And connected to that, I know you have the $2,600 realized oncology price that you also pointed to in the next few years to be meaningfully above what we have today. So I'm just wondering how much of that increase in oncology pricing you guys will be inclined to drop through to the bottom line?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Me to start, Jim, you'll jump in?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes, more than happy to start and then you can jump in. So I think our view on EBITDA kind of remains the same. We're still relatively early days in a lot of the offerings. And so we've had this perspective of kind of reinvesting 2/3 or roughly 2/3 of any incremental gross profit dollars that we generate back in the business and then letting 1/3 drop down to the bottom line. So obviously, with Personalis coming on board, we are already going to invest a lot in MRD. We will utilize some of that reinvestment dollars to absorb the burn from Personalis.",
+    "But then after another couple of years, then that flips, right? Then you're generating meaningful gross profit dollars such that you really only need to invest 1/3 and you can let kind of 2/3 drop down to the bottom -- so we want to demonstrate that we continue to see leverage in the business, which you saw, obviously, a big step forward of that in the quarter. But we're not in a position where we want to maximize EBITDA in the short term because we think the opportunity set across our entire portfolio is so large that, that would be a poor choice -- given that where we're at in our life cycle."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. And I was just going to add, we have obviously kind of now you can start to see this really strong EBITDA trend line that is picking up. But Personalis who -- assuming that obviously closes here in the next -- whatever, later in Q4, they're burning money. And so you have to look at both businesses as one, we'll have to absorb some of their losses. But even absorbing their losses, we still expect improvements in EBITDA, and we're on a really nice trajectory where we've got to decide how to invest the strong gross profit dollar growth we're generating quarter after quarter."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your last analyst question comes from the line of Dan Arias with Stifel."
+   ]
+  },
+  {
+   "speaker": "Daniel Arias",
+   "paras": [
+    "Eric or Jim, within data, can you just maybe catch us up on where trials might land for the year on revenues or growth? And then what the outlook might be there in the context of where AI is helping the cause? I mean trial matching seems to be one of these areas where pharma folks are most encouraged about how things can get better with some of these newer capabilities. So curious whether you see an inflection there in the next year or 2."
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. So we took our real-time or just-in-time clinical trial matching business, which we call TIME. We tried to build a marketplace for a while to see if like small biotechs could load in their trials and with this marketplace evolve. We didn't see that growth. And so we pivoted the business really about a year ago, maybe 18 months ago to be more enterprise focused on our largest enterprise data clients.",
+    "So we're fortunate now that this network, which spans north of 1,000 oncologists across the country and has this really robust platform to be able to identify patients that are fit for a trial and get them on a trial produces what pharma needs badly, which is enrollments. We're a high generator of enrollments for pharma. And so it's a really nice asset. And -- but I don't think it's going to scale into a $1 billion business.",
+    "And so we had to essentially target it toward, hey, we're in these strategic partnerships with more and more large pharma clients, whether that's BMS or Merck or AstraZeneca or whatever. And these folks want and need help, and we're tightly integrated. And so our TIME network now is enterprise focused where you as a client have to come on, load on all or most of your oncology trials, and that's how the baskets are built. And we have a wait list of folks now that want into that network.",
+    "So the kind of market dynamics have allowed that to become a really premium product. And I suspect it will continue to grow nicely. It's just not going to be a huge business. On the other side of our clinical trial matching business, our CRO business, as we mentioned years ago, we've been kind of deemphasizing some of the just pure CRO work because there are other people that do that and do it well, and it is a business that is in significant flux relative to artificial intelligence and what that's going to mean for the administrative and logistic components of the CRO.",
+    "And you're obviously seeing a lot of these big frontier modeling companies do deals with big clin dev departments at big pharma trying to figure some of that out. We're fortunate that we don't play in that space. It's not important to us. And so we're kind of -- we'll let other people tackle that."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "I'll now pass the call back to Kendra for additional Q&A."
+   ]
+  },
+  {
+   "speaker": "Kendra Webster",
+   "paras": [
+    "Thank you, Matt. For the first time, we're pleased to answer questions submitted by retail investors through the Robinhood platform. Our first question, can you classify the opportunity for growth outside of oncology? Can you detail cardiology opportunities and other therapeutic areas of interest like nephrology, immunology and neurology?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. So I mean, obviously, as Jim mentioned a few minutes ago, one of the biggest benefits to the BMS deal is that it's our first really large deal outside oncology. So all of a sudden, we're building a very large Alzheimer's data set. It's a $55 million deal to generate a data set of like 0.5 million patients with Alzheimer's and late-stage dementia. And so it's really exciting.",
+    "We've done smaller projects historically in Data and Apps to enter these new businesses, but this is really the first time someone is building -- making a very large investment in real-world data with Tempus to build these kind of agentic platforms. And we're excited because we think it's the start of a whole new round of growth for our data business, and we suspect it's going to continue at scale.",
+    "On the diagnostics side, we obviously are big in oncology. We do a bit of neuropsych testing. We do a bit of some rare testing. It's more a function of where is there reimbursement for these tests. And we, like other companies, kind of have to follow where the reimbursement landscape goes before we can enter new categories. But we do have one of the broader portfolios today, pan-disease, because we're in rare, we're in neuro. We do some cardio testing, obviously, with a big cancer portfolio. So we touch a bunch of disease areas."
+   ]
+  },
+  {
+   "speaker": "Kendra Webster",
+   "paras": [
+    "Our next question, if investor appetite for AI-related companies weakens, how confident are you that operating cash flow and existing liquidity can fund your growth plans and the Personalis acquisition?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Super confident. Jim, do you want to jump in?"
+   ]
+  },
+  {
+   "speaker": "James Rogers",
+   "paras": [
+    "Yes. I mean I'd say the nice thing and part of the reason our business model is different is we're not overly reliant on one product line. And so we have a very strong diagnostics business. Obviously, growth rates have been really strong in oncology. We're entering this period of kind of increasing ASPs pretty dramatically, almost $750 over the next couple of years. And a lot of those dollars can be used to kind of fund investments elsewhere.",
+    "Similarly, on the data side, as we continue to sign up kind of these long-term agreements with biopharma, again, gives us that visibility over the next several years to kind of continued growth. And lastly, as we've mentioned on kind of previous calls, we're reinvesting heavily today. And certainly, those investments are meant to drive long-term growth. And so you can always scale that level of investment as necessary as well. But to Eric's point, we're very confident in being able to deliver."
+   ]
+  },
+  {
+   "speaker": "Kendra Webster",
+   "paras": [
+    "Our last retail question. Since data is the main input for diagnostics and using AI to interpret and generate an outcome based on the data, how can Tempus ensure that it has a growing inflow of patient data? And how can it ensure that it will have access to it in the future since it doesn't own the patient data?"
+   ]
+  },
+  {
+   "speaker": "Eric Lefkofsky",
+   "paras": [
+    "Yes. So first of all, our diagnostic business is important for the data business, no question. Obviously, we're fortunate that we are one of the largest sequencers of patients for next-generation sequencing in the world. And so we have a very broad portfolio from hereditary profiling to comprehensive genomic profiling of patients being treated to MRD and multiple diseases that we would suspect there's going to be a constant flow of new diagnostic data entering our platform.",
+    "That said, if you look at the 50 million patients or so within Tempus' data set today, more than 80% of those patients are outside oncology. And even the patients within oncology, I think more than 80%, we didn't sequence, right? They're basically patients where the data is coming in because we have many, many, many data partnerships with academic medical centers and community practitioners.",
+    "We have different products we offer where we get data as part of that -- as part of the product offering in terms of closing care gaps or matching patients to clinical trials. And so we have a constant stream of data coming in from more than 8,000 providers. And so we've kind of over the last decade, very intentionally tried to make sure that the pipes that bring data into our platform are highly diversified so that we never have to worry about is the data going to dry up. And just as we are -- have crossed this chasm where the business is generating really strong gross profit dollar growth and EBITDA and will generate tons of cash flow.",
+    "It's the same thing on the data side. We just have so much data flowing from so many directions that we've hedged that risk."
+   ]
+  },
+  {
+   "speaker": "Kendra Webster",
+   "paras": [
+    "Thanks, Eric, and thank you all for joining our call this morning. Have a great week."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "This concludes today's call. Thank you for attending. You may now disconnect."
+   ]
+  }
+ ]
+}
