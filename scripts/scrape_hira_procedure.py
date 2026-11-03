@@ -252,6 +252,18 @@ def main():
             if prev:
                 codes_out.append(prev)
             continue
+        # 사이트가 일시적으로 잘린 응답을 주는 경우가 있다(2026-11-03 자동 갱신 때 2023-01~09
+        # 9개월치만 저장돼 YoY 비교 가능한 구간이 사라지면서 화면이 텅 빔). 새 결과가 기존보다
+        # 개월 수가 적거나 최신 월이 뒤로 밀렸으면 비정상 응답으로 보고 기존 데이터를 유지한다.
+        prev = existing_codes.get(code_cfg["code"])
+        if prev and prev.get("monthly"):
+            prev_m, new_m = prev["monthly"], result["monthly"]
+            if len(new_m) < len(prev_m) or new_m[-1]["ym"] < prev_m[-1]["ym"]:
+                print(f"[WARN] {code_cfg['code']}: 새 응답이 기존보다 짧음"
+                      f"({len(new_m)}개월~{new_m[-1]['ym']} < {len(prev_m)}개월~{prev_m[-1]['ym']}) "
+                      f"— 이전 데이터를 유지합니다.", file=sys.stderr)
+                codes_out.append(prev)
+                continue
         codes_out.append(result)
         print(f"[INFO] {code_cfg['code']}: 월별 {len(result['monthly'])}개월치 확보", file=sys.stderr)
 
