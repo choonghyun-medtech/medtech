@@ -2209,8 +2209,9 @@ function calEventsForRegion(){
 // 이번달 일정 목록이 전부 이 결과를 공유한다.
 // 커버 기업 실적 = 해외(scripts/calendar_ir_sources.json 18개사, 전부 실적 일정) + 국내 수동 입력.
 // 국내 자동 수집분의 "실적"은 DART 정기보고서 제출(기재정정 포함)이라 여기서 뺀다.
+// 단, DART 잠정실적 공시(prelim)는 실제 실적발표라 IR 회신이 없는 기업이어도 커버 실적으로 친다(2026-11-04).
 function calIsCover(ev){
-  return ev.type === 'earn' && (ev.manual || ev.region === 'global');
+  return ev.type === 'earn' && (ev.manual || ev.prelim || ev.region === 'global');
 }
 
 function calFilterEvents(events){
@@ -2605,26 +2606,50 @@ function updateCalLegendChips(){
 })();
 
 // 국내 커버 기업 실적발표 일정(IR 회신 수동 입력, 2026-10-15). 파일이 없거나 깨져도 캘린더는 그대로 뜬다.
-// 하루로 확정된 회신은 일반 실적 일정으로, 기간·후보일인 회신은 "날짜 미정"으로 나눈다.
 async function loadDomesticManualEarnings(){
   try{
     const res = await fetch('calendar_domestic_manual.json', {cache:'no-store'});
-    if(!res.ok) return {confirmed:[], pending:[]};
+    if(!res.ok) return [];
     const data = await res.json();
-    const confirmed = [], pending = [];
-    (data.events || []).forEach(e=>{
-      if(!e.from || !e.to) return;
-      if(!(e.dates && e.dates.length) && e.from === e.to){
-        confirmed.push({date:e.from, region:'domestic', type:'earn', ticker:e.ticker||'', company:e.company,
-          title:`${e.quarter ? e.quarter+' ' : ''}실적발표 (IR 회신)`, source_name:'IR 담당자 회신', manual:true});
-      } else {
-        pending.push(e);
-      }
-    });
-    return {confirmed, pending};
+    return data.events || [];
   }catch(e){
-    return {confirmed:[], pending:[]};
+    return [];
   }
+}
+
+// IR 회신 일정을 확정 일정/"날짜 미정"으로 나눈다. 하루로 확정된 회신은 일반 실적 일정으로,
+// 기간·후보일인 회신은 "날짜 미정"으로.
+// [2026-11-04] DART 잠정실적 공시(scrape_calendar_domestic.py가 prelim:true로 표시)가 이미 올라온
+// 기업은 회신 내용과 상관없이 실제 공시일로 바꿔 보여준다 — 뷰웍스가 11/2에 잠정실적을 공시했는데도
+// 엑셀을 손으로 고치기 전까지 "10월 말~11월 초"로 남아 있던 문제. 같은 종목의 잠정실적 공시 중
+// 회신 기간 앞뒤 CAL_PRELIM_MATCH_DAYS일 안에 든 가장 이른 것(정정 공시가 아닌 원 공시)을 쓴다.
+// 직전 분기 잠정실적은 약 3개월 전이라 이 범위에 안 걸린다. 그 범위의 DART 잠정실적 원본
+// 이벤트(정정 공시 포함)는 중복으로 뜨지 않게 usedPrelims로 돌려줘 호출부에서 뺀다.
+const CAL_PRELIM_MATCH_DAYS = 30;
+function calSplitManualEarnings(manualEvents, dartDomestic){
+  const prelims = dartDomestic.filter(ev=> ev.prelim).sort((a, b)=> a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+  const usedPrelims = new Set();
+  const confirmed = [], pending = [];
+  manualEvents.forEach(e=>{
+    if(!e.from || !e.to) return;
+    const lo = calAddDays(e.from, -CAL_PRELIM_MATCH_DAYS), hi = calAddDays(e.to, CAL_PRELIM_MATCH_DAYS);
+    const hits = e.ticker ? prelims.filter(p=> p.ticker === e.ticker && p.date >= lo && p.date <= hi && !usedPrelims.has(p)) : [];
+    const hit = hits[0];
+    if(hit){
+      hits.forEach(p=> usedPrelims.add(p)); // 같은 기간의 정정 공시도 숨겨 실적발표가 하루로만 보이게
+      confirmed.push({date:hit.date, region:'domestic', type:'earn', ticker:e.ticker, company:e.company,
+        title:`${e.quarter ? e.quarter+' ' : ''}실적발표 (DART 잠정실적 공시)`, source_name:'DART 전자공시시스템',
+        source_url:hit.source_url, manual:true, prelim:true});
+      return;
+    }
+    if(!(e.dates && e.dates.length) && e.from === e.to){
+      confirmed.push({date:e.from, region:'domestic', type:'earn', ticker:e.ticker||'', company:e.company,
+        title:`${e.quarter ? e.quarter+' ' : ''}실적발표 (IR 회신)`, source_name:'IR 담당자 회신', manual:true});
+    } else {
+      pending.push(e);
+    }
+  });
+  return {confirmed, pending, usedPrelims};
 }
 
 // ---- 실적 시즌 이미지 저장(2026-10-15) ----
@@ -2744,13 +2769,15 @@ async function captureCalendar(btn){
 
 async function loadCalendar(){
   try{
-    const [res, manual] = await Promise.all([
+    const [res, manualRaw] = await Promise.all([
       fetch('calendar_events.json', {cache:'no-store'}),
       loadDomesticManualEarnings(),
     ]);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
-    CAL_DATA.domestic = (data.domestic || []).concat(manual.confirmed);
+    const dartDomestic = data.domestic || [];
+    const manual = calSplitManualEarnings(manualRaw, dartDomestic);
+    CAL_DATA.domestic = dartDomestic.filter(ev=> !manual.usedPrelims.has(ev)).concat(manual.confirmed);
     CAL_DATA.global = data.global || [];
     CAL_DATA.pending = manual.pending;
     const note = document.getElementById('cal-source-note');

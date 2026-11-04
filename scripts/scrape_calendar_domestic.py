@@ -41,14 +41,21 @@ DAYS_FORWARD = 120  # DART는 "이미 접수된" 공시만 조회되므로 미�
 # [2026-09-17] 스카이랩스의 증권신고서 제출이 캘린더에 안 잡힌다는 사용자 리포트로
 # "증권신고서"/"투자설명서"가 화이트리스트에 없던 걸 발견해 추가. "[기재정정]증권신고서
 # (지분증권)"처럼 접두사가 붙어도 부분일치(search)라 그대로 잡힌다.
+# [2026-11-04] 잠정실적 공시가 한 건도 안 잡히던 버그 수정: 실제 DART 보고서명은
+# "연결재무제표기준영업(잠정)실적(공정공시)" / "영업(잠정)실적(공정공시)"인데, 기존 규칙은
+# "매출액또는손익구조"(30%/15% 이상 변동 공시, 별개 보고서)만 찾고 있었다(뷰웍스 11/2 공시 누락).
+# 맨 앞에 둬서 다른 규칙보다 먼저 판정한다. PRELIM_LABEL은 화면(index.html)에서 IR 회신 일정을
+# 실제 공시일로 바꿔 끼우는 데 쓰이는 표시(prelim: true)를 붙이는 기준이기도 하다.
+PRELIM_LABEL = "잠정실적 공시"
 CATEGORY_RULES = [
+    (re.compile(r"\(잠정\)\s*실적|잠정\s*실적"), "earn", PRELIM_LABEL),
     (re.compile(r"기업설명회|IR\s*개최"), "ir", "IR·기업설명회"),
     (re.compile(r"주주총회소집|정기주주총회|임시주주총회"), "agm", "주주총회"),
     (re.compile(r"현금\W*배당결정|주식배당결정|액면분할"), "exright", "배당/액면분할 결정(권리락 관련)"),
     (re.compile(r"무상증자결정|유상증자결정|신주인수권부사채권발행결정|전환사채권발행결정|신주의\s*상장"), "listing", "증자/신주 발행 결정"),
     (re.compile(r"증권신고서|투자설명서"), "listing", "증권신고서/투자설명서 제출(공모·증자)"),
     (re.compile(r"사업보고서|반기보고서|분기보고서"), "earn", "정기보고서 제출(실적)"),
-    (re.compile(r"매출액또는손익구조"), "earn", "잠정실적 공시"),
+    (re.compile(r"매출액또는손익구조"), "earn", "손익구조 변동 공시"),
 ]
 
 
@@ -118,15 +125,18 @@ def dedup_same_day_events(events):
     공시가 또 올라오거나, "주주총회소집공고"/"주주총회소집결의"처럼 실제로는 다른 보고서인데
     CATEGORY_RULES에서 같은 라벨로 묶이는 게 원인으로 보인다. 사용자 입장에선 "이 회사가
     이 날 이 유형 이벤트를 공시했다"는 사실 하나면 충분하므로, (회사, 유형, 날짜)가 같으면
-    rcept_no(접수번호)가 가장 큰(=가장 나중에 접수된, 정정이 있으면 정정본) 것 하나만 남긴다."""
+    rcept_no(접수번호)가 가장 큰(=가장 나중에 접수된, 정정이 있으면 정정본) 것 하나만 남긴다.
+    [2026-11-04] 키에 라벨도 넣는다 — 잠정실적 공시와 분기보고서는 둘 다 type "earn"이라 같은 날
+    올라오면 하나가 지워졌다(잠정실적이 사라지면 화면의 IR 회신 일정 보정도 안 됨)."""
     latest = {}
     for ev in events:
-        key = (ev["ticker"], ev["type"], ev["date"])
+        key = (ev["ticker"], ev["type"], ev["_label"], ev["date"])
         if key not in latest or ev["_rcept_no"] > latest[key]["_rcept_no"]:
             latest[key] = ev
     out = list(latest.values())
     for ev in out:
         del ev["_rcept_no"]
+        del ev["_label"]
     return out
 
 
@@ -203,6 +213,7 @@ def main():
                     continue
                 date_iso = f"{rcept_dt[0:4]}-{rcept_dt[4:6]}-{rcept_dt[6:8]}"
                 rcept_no = row.get("rcept_no", "")
+                extra = {"prelim": True} if label == PRELIM_LABEL else {}
                 all_events.append({
                     "date": date_iso,
                     "region": "domestic",
@@ -213,7 +224,9 @@ def main():
                     "source_name": "DART 전자공시시스템",
                     "source_url": f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={rcept_no}",
                     "estimated": False,
+                    **extra,
                     "_rcept_no": rcept_no,  # 중복 제거용 — dedup_same_day_events()에서만 쓰고 출력 전 제거
+                    "_label": label,
                 })
                 count += 1
             print(f"[INFO] {t['name']}: {count}건")
