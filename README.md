@@ -11,7 +11,6 @@ GitHub Actions가 매일(평일) 또는 매월 자동으로 수집해 `*.json`�
 | 산업·기업 뉴스 | 오늘의 클리핑(국내/해외), 아카이브, AI 브리핑 | `news.json`, `news_history.jsonl`, `news_trend.json` | 네이버 뉴스검색 API, 해외 매체 RSS | 평일 |
 | 주가 데이터 › 주가 Performance | 수익률 Top/Bottom10, 외국인 지분율, 종목별 주가·지분율·수급 차트 | `stock_performance.json`, `investor_flow.json`, `fx_rate.json` | yfinance, Daum, 네이버증권, ECB | 평일 |
 | 주가 데이터 › 글로벌 대시보드 | Peer Table(밸류에이션·실적 추정) | `global_dashboard.json` | Bloomberg 컨센서스 | **수동** |
-| 주가 데이터 › 수급 판독기 | 국내 종목 수급 포지셔닝·전환점 | `investor_flow.json` | 네이버증권 | 평일 |
 | 이벤트 캘린더 | 실적·IR·공시·주총 일정 | `calendar_events.json` | DART, 해외 기업 IR 페이지 | 평일 |
 | 산업 데이터 › 수출 | HS코드별 수출 추이·월간 분석 | `export_data.json`, `export_monthly_analysis.json` | 관세청(공공데이터포털) | 매월 15~18일, 수치 반영 당일 분석 |
 | 산업 데이터 › 의료관광 | 외국인 의료소비·방한객·침투율 | `medical_tour.json`, `visitor_stats.json`, `medtour_penetration.json`, `medtour_monthly_analysis.json` | 한국관광 데이터랩 | 매월 |

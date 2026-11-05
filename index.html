@@ -282,15 +282,6 @@ th{color:var(--dim); font-weight:600; font-size:11.5px; text-transform:uppercase
 tr:last-child td{border-bottom:none}
 /* 리서치 보고서 표: 열별로 줄바꿈 여부/너비를 개별 지정 (전역 nowrap을 필요한 열만 풀어준다) */
 #rep-table-wrap td, #bio-table-wrap td{vertical-align:top}
-/* 외국인 지분율 Top10 표: 기본 table-layout:auto는 내용 길이에 따라 열 너비가 들쭉날쭉해져
-   "1개월 변화"/"외국인 순매수" 열은 붙어 보이고 오른쪽은 비어 보이는 문제가 있었다
-   (2026-08-31 지적) — 이 표만 고정 너비로 지정한다. */
-#foreign-rank-table-wrap table{table-layout:fixed}
-#foreign-rank-table-wrap th:nth-child(1), #foreign-rank-table-wrap td:nth-child(1){width:9%}
-#foreign-rank-table-wrap th:nth-child(2), #foreign-rank-table-wrap td:nth-child(2){width:25%}
-#foreign-rank-table-wrap th:nth-child(3), #foreign-rank-table-wrap td:nth-child(3){width:20%}
-#foreign-rank-table-wrap th:nth-child(4), #foreign-rank-table-wrap td:nth-child(4){width:20%}
-#foreign-rank-table-wrap th:nth-child(5), #foreign-rank-table-wrap td:nth-child(5){width:26%}
 /* 실적 전망/다음 분기 실적 전망 표: table-layout:auto로 두면 첫 열("매출액(백만 USD)"처럼
    통화 표기가 붙은 해외 종목 라벨이 국내 "매출액(억원)"보다 길다) 때문에 기업마다 첫 열
    너비가 들쭉날쭉해 보였다(2026-09-08 지적) — 첫 열은 고정폭, 나머지 기간 열은 균등폭으로 강제. */
@@ -301,10 +292,6 @@ tr:last-child td{border-bottom:none}
    (2026-09-08 요청) — 처음엔 2px solid --dim으로 넣었더니 너무 두꺼워 보인다는 피드백을
    받아, 가로 테두리와 동일한 1px --border로 얇고 연하게 조정. */
 .earn-fc-table .col-divider{border-left:1px solid var(--border); padding-left:14px}
-/* 2026-08-31 후속 조정: 지분율/변화/순매수 열 모두 다른 표와 통일해 볼드체 없이 일반
-   굵기로 표시(색상만 상승/하락 구분 유지) — perf-up/down은 다른 표에서 볼드를 쓰므로
-   전역이 아니라 이 표에서만 덮어쓴다. */
-#foreign-rank-table-wrap td.perf-up, #foreign-rank-table-wrap td.perf-down, #foreign-rank-table-wrap td.perf-flat{font-weight:400}
 #rep-table-wrap th:nth-child(1), #rep-table-wrap td:nth-child(1){width:100px; white-space:nowrap}
 #rep-table-wrap th:nth-child(2), #rep-table-wrap td:nth-child(2){width:120px; white-space:normal; word-break:keep-all; overflow-wrap:normal}
 #rep-table-wrap th:nth-child(3), #rep-table-wrap td:nth-child(3){white-space:normal}
@@ -354,7 +341,7 @@ tr:last-child td{border-bottom:none}
 .tg-comment-toggle:hover{color:var(--accent); background:var(--accent-soft); border-color:var(--accent)}
 .tg-comment-toggle.expanded{transform:rotate(180deg)}
 /* Chart.js 기본 툴팁(검은 반투명 배경 + 흰 글자)과 톤을 맞춘 순수 CSS 툴팁 —
-   canvas가 아닌 일반 DOM 요소(예: 수급 포지셔닝 구성비 막대)에 hover 툴팁이 필요할 때
+   canvas가 아닌 일반 DOM 요소(예: 컨센서스 변화 구성비 막대)에 hover 툴팁이 필요할 때
    title 속성 대신 이 클래스를 쓴다(2026-09-04). */
 .chip-tip{position:relative}
 .chip-tip[data-tip]:hover::after{
@@ -1059,13 +1046,11 @@ tr:last-child td{border-bottom:none}
   <section class="view" id="view-stock">
     <div class="subtabs-bar" id="stock-subtabs">
       <!-- 2026-10-13: "주가 Performance" 하위 탭 폐지 — 수익률 Top/Bottom은 글로벌 대시보드로,
-           외국인 지분율 Top10은 수급 판독기로, 추적 종목 차트(주가·외국인 지분율·수급)는 기업 스냅샷으로 이동. -->
+           외국인 지분율 Top10은 수급 판독기로, 추적 종목 차트(주가·외국인 지분율·수급)는 기업 스냅샷으로 이동.
+           2026-11-05: 수급 판독기 탭(외국인 지분율 Top10 포함)은 10-15 숨김 후 완전히 삭제 — 종목별 수급·외국인
+           지분율은 기업 스냅샷 차트로 본다(investor_flow.json 수집은 그 차트가 쓰므로 유지). -->
       <button class="region-tab active" data-sub="global">글로벌 대시보드</button>
       <button class="region-tab" data-sub="watch">글로벌 Watch List</button>
-      <!-- 2026-10-15: 수급 판독기 탭 숨김(사수 의견 — 종목별 수급·외국인 지분율은 기업 스냅샷에 있음).
-           코드·데이터 수집은 그대로 두었다. 다시 보이게 하려면 아래 hidden 속성만 지우면 된다.
-           완전히 삭제하더라도 investor_flow.json 수집은 기업 스냅샷 수급 차트가 쓰므로 남겨야 한다. -->
-      <button class="region-tab" data-sub="flowmap" hidden>수급 판독기</button>
     </div>
 
 
@@ -1127,70 +1112,6 @@ tr:last-child td{border-bottom:none}
       <div class="sec-h"><span class="note">세부섹터 모멘텀 → 강한 섹터 안 추세 지속 종목 스크리닝</span></div>
       <div id="gw-wrap"></div>
     </div>
-
-    <!-- ---- 수급 판독기 (구 수급 지도) ---- -->
-    <div id="stock-sub-flowmap" style="display:none">
-
-    <!-- 검색/구분/섹터로 보고싶은 종목만 골라볼 수 있는 필터 (2026-09-14 추가) — 산점도/막대/표/전환점
-         전 구역에 동일하게 적용된다. -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <input id="flowmap-search-input" class="filter-select" style="flex:0 1 220px;min-width:140px" placeholder="기업명·티커 검색" autocomplete="off" />
-      <select id="flowmap-quadrant-filter" class="filter-select">
-        <option value="all">구분 전체</option>
-        <option value="fill_buy">매집 강화</option>
-        <option value="fill_sell">차익 실현</option>
-        <option value="empty_buy">관심 유입</option>
-        <option value="empty_sell">수급 약화</option>
-      </select>
-      <!-- 2026-10-12: 섹터를 글로벌 대시보드 세부 섹터로, 체크박스 다중 선택(글로벌 대시보드와 같은 UI) -->
-      <details class="gd-msel" id="flowmap-sector-msel">
-        <summary id="flowmap-sector-summary">섹터 전체</summary>
-        <div class="gd-msel-panel">
-          <div class="gd-msel-actions"><a data-act="all">전체 선택</a><a data-act="none">전체 해제</a></div>
-          <div id="flowmap-sector-options"></div>
-        </div>
-      </details>
-      <a href="#" id="flowmap-reset-link" class="note" style="text-decoration:underline;align-self:center">초기화</a>
-    </div>
-
-    <!-- 수급 전환점 랭킹 — 최근 며칠 사이 사분면이 바뀐 종목만 모아서 정적 산점도보다
-         "지금 막 방향이 바뀐 곳"을 바로 보여준다. 2026-09 시험 도입 후 정식 기능으로 유지
-         (2026-10-12 결정). 관련 JS: computeFlowMapTransitions/renderFlowMapTransitions.
-         [2026-09-17] 원래는 아래 "수급 포지셔닝" 토글 바로 다음(=토글에 반응하는 산점도/
-         표 사이)에 있었는데, 이 섹션은 의도적으로 그 토글과 무관하게 항상 3개월 고정이라
-         (아래 FLOWMAP_TRANSITION_PERIOD_KEY 주석 참고 — "오늘 뭐가 바뀌었나"를 매일 같은
-         잣대로 봐야 함) 토글 대상처럼 보이는 게 어색하다는 사용자 리포트로 탭 맨 위(검색/
-         필터 바로 아래, 토글이 나오기 전)로 옮겼다 — "오늘의 요약을 먼저 보고, 그 아래
-         토글로 자유롭게 탐색"하는 순서가 되도록. -->
-    <div class="sec-h" style="margin:10px 0 6px"><h2 style="font-size:13px">수급 전환점 (3개월 기준) <span class="note" id="flowmap-transitions-note"></span></h2></div>
-    <div id="flowmap-transitions-wrap"></div>
-
-    <div class="sec-h" style="margin:16px 0 6px"><h2>수급 포지셔닝</h2>
-      <div class="toggle" id="flowmap-period-toggle">
-        <button data-months="1">1개월</button><button data-months="3" class="active">3개월</button><button data-months="6">6개월</button><button data-months="12">12개월</button>
-      </div>
-    </div>
-    <div class="note" id="flowmap-source-note" style="margin:-4px 0 8px">국내 의료기기·헬스케어 추적종목 · 기관+외국인 순매매대금 ÷ 시가총액 · 출처: 네이버증권</div>
-
-    <!-- 사분면별 종목 수를 카드 4개로 나열하던 걸 가로 구성비 막대 하나로 교체
-         (2026-09-04) — 카드 그리드는 흔한 대시보드 패턴이라 참고 사이트와 형태가
-         겹친다는 지적에 따라, "전체 수급 분위기가 사자/팔자 어느 쪽으로 쏠려있나"를
-         막대 하나로 즉시 읽히게 바꿨다. 정보량은 동일(사분면별 종목 수), 표현만 다름. -->
-    <div id="flowmap-breadth-wrap" style="margin-bottom:14px"></div>
-
-    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:12px; color:var(--dim); font-weight:600" id="flowmap-axis-label"></h2><span class="note" id="flowmap-note"></span></div>
-    <div class="chart-box" style="height:540px"><canvas id="flowMapChart"></canvas></div>
-    <div class="note" style="margin:-2px 0 8px; font-size:10.5px; color:var(--dim)">※ 버블 크기는 시가총액에 비례(대형주일수록 크게 표시). 원점 근처에 몰린 종목은 이름표가 겹쳐 생략 — 점에 올리면 뜨고, 아래 표에는 전부 포함됨.</div>
-
-    <div class="sec-h" style="margin:16px 0 6px"><h2 style="font-size:13px">종목별 수급 현황</h2></div>
-    <div id="flowmap-table-wrap"></div>
-
-    <!-- 외국인 지분율 Top10 (2026-10-13, 주가 Performance 탭에서 이동) — 국내 종목 전용 데이터라
-         국내 전용인 이 탭으로 옮기고, 위 검색·섹터 필터를 그대로 따르게 했다(구분=사분면 필터는 무관). -->
-    <div class="sec-h" style="margin:20px 0 6px"><h2 style="font-size:13px">외국인 지분율 Top 10</h2><span class="note" id="foreign-rank-note">국내 커버리지 종목</span></div>
-    <div id="foreign-rank-table-wrap"></div>
-    </div>
-    <!-- /수급 판독기 -->
   </section>
 
   <!-- ================= CALENDAR ================= -->
@@ -1729,7 +1650,7 @@ document.querySelectorAll('.tab').forEach(btn=>{
   btn.addEventListener('click', ()=> activateTab(btn.dataset.view));
 });
 
-// ---- 상위 탭 안의 하위 탭(주가 데이터 → 글로벌 대시보드/Watch List/수급 판독기,
+// ---- 상위 탭 안의 하위 탭(주가 데이터 → 글로벌 대시보드/Watch List,
 // 산업 데이터 → 수출 데이터/의료관광 데이터/진료행위 통계) — 뉴스 탭의 .region-tab 패턴을
 // 그대로 재사용해 클릭 시 data-sub 값과 짝지어지는 "#{prefix}-sub-{key}" 블록만 보여준다.
 function setupSubtabs(tabsId, prefix){
@@ -3516,453 +3437,11 @@ async function loadInvestorFlow(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     INVESTOR_FLOW = data.stocks || {};
-    const srcNote = document.getElementById('flowmap-source-note');
-    const when = updatedLabel(data.updated);
-    if(srcNote && when) srcNote.textContent += ' · ' + when;
   }catch(e){
     INVESTOR_FLOW = {};
   }
   if(selectedSnapshotTicker) renderFlowChart(selectedSnapshotTicker, selectedFlowMonths);
-  if(typeof renderFlowMap === 'function') renderFlowMap();
-  if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
 }
-
-// ==================================================================
-// 수급 포지셔닝 — investor_flow.json(일별 기관+외국인 순매매대금)과
-// stock_performance.json(시가총액)을 조합해 국내 종목별 "수급 강도"를 산점도로 보여준다.
-// newsbot-3uj.pages.dev/coverage/coverage의 "수급 지도" 탭 컨셉을 참고해 우리 데이터로
-// 자체 구성했으나(2026-08-31), 워딩/사분면 명칭이 원본과 겹친다는 지적에 따라
-// 2026-09-04에 "수급 포지셔닝"으로 리브랜딩 — 가로축=중기 수급 포지션(얼마나
-// 쌓였나), 세로축=최근 수급 모멘텀(지금 담는 중인지 비우는 중인지). investor_flow.json과
-// stock_performance.json은 각자 독립적으로 fetch되므로(loadInvestorFlow/
-// loadStockPerformance) 어느 쪽이 먼저 끝나든 이 함수를 다시 호출해 재계산한다 — 아직 한쪽이
-// 안 채워졌으면 rows가 비어(둘 다 있는 종목만 채택) 빈 상태로 그렸다가 나머지 도착 시 다시 채워진다.
-// 기간별(1/3/6/12개월) 가로축(중기 누적)·세로축(최근 단기) 거래일수 — MONTHS_TO_TRADING_DAYS와
-// 동일한 개월→거래일 환산을 가로축에 쓰고, 세로축은 2026-08-31 요청대로 1개월만 5거래일(약
-// 1주일), 나머지는 20거래일(약 1개월)로 고정한다.
-const FLOWMAP_PERIODS = {
-  1: { midDays: MONTHS_TO_TRADING_DAYS[1], shortDays: 5 },
-  3: { midDays: MONTHS_TO_TRADING_DAYS[3], shortDays: 20 },
-  6: { midDays: MONTHS_TO_TRADING_DAYS[6], shortDays: 20 },
-  12: { midDays: MONTHS_TO_TRADING_DAYS[12], shortDays: 20 },
-};
-let flowMapSelectedMonths = 3;
-// sectors: 체크한 세부 섹터(비어 있으면 전체) — 글로벌 대시보드 섹터 필터와 같은 규칙(2026-10-12).
-let flowMapFilters = { search: '', quadrant: 'all', sectors: new Set() };
-
-// 섹터 체크 목록 — 국내 종목 기준 개수, 많은 순.
-function populateFlowMapSectorFilter(){
-  const wrap = document.getElementById('flowmap-sector-options');
-  if(!wrap) return;
-  const counts = {};
-  STOCK_PERF.filter(s => s.market === 'KR').forEach(s => perfSectorsOf(s).forEach(sec => { counts[sec] = (counts[sec]||0) + 1; }));
-  const list = Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],'ko'));
-  flowMapFilters.sectors = new Set([...flowMapFilters.sectors].filter(sec => counts[sec]));
-  wrap.innerHTML = list.map(([sec, n]) => `
-    <label class="gd-msel-row"><input type="checkbox" data-sector="${escapeHtml(sec)}" ${flowMapFilters.sectors.has(sec)?'checked':''}> ${escapeHtml(sec)} <span class="note">(${n})</span></label>
-  `).join('');
-  wrap.querySelectorAll('input[data-sector]').forEach(cb => {
-    cb.onchange = () => {
-      if(cb.checked) flowMapFilters.sectors.add(cb.dataset.sector); else flowMapFilters.sectors.delete(cb.dataset.sector);
-      updateFlowMapSectorSummary(); renderFlowMap();
-    };
-  });
-  updateFlowMapSectorSummary();
-}
-function updateFlowMapSectorSummary(){
-  const el = document.getElementById('flowmap-sector-summary');
-  const sel = [...flowMapFilters.sectors];
-  el.textContent = sel.length === 0 ? '섹터 전체' : sel.length <= 2 ? sel.join(', ') : `${sel[0]} 외 ${sel.length-1}개`;
-}
-
-// 검색어(종목명/티커)·구분(사분면)·섹터 세 조건을 모두 만족하는 행만 남긴다.
-// quadrant 필드명이 다른 두 종류(rows의 quadrant, transitions의 qNow)를 함께
-// 다루기 위해 quadrantKey를 인자로 받는다. sectors는 종목의 세부 섹터 배열.
-function flowMapRowMatchesFilters(name, ticker, sectors, quadrantKey){
-  const f = flowMapFilters;
-  if(f.search){
-    const q = f.search.trim().toLowerCase();
-    if(q && !name.toLowerCase().includes(q) && !ticker.toLowerCase().includes(q)) return false;
-  }
-  if(f.quadrant !== 'all' && quadrantKey !== f.quadrant) return false;
-  if(f.sectors.size && !sectors.some(sec => f.sectors.has(sec))) return false;
-  return true;
-}
-function applyFlowMapFilters(rows){
-  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sectors, r.quadrant.key));
-}
-function applyFlowMapFiltersToTransitions(rows){
-  return rows.filter(r => flowMapRowMatchesFilters(r.name, r.ticker, r.sectors, r.qNow.key));
-}
-function hasActiveFlowMapFilters(){
-  const f = flowMapFilters;
-  return !!f.search.trim() || f.quadrant !== 'all' || f.sectors.size > 0;
-}
-
-// 사분면 4구분 — 가로축(중기 수급 포지션, 순매수 누적 부호) x 세로축(최근 수급 모멘텀,
-// 최근 단기 순매수 부호)의 조합. 점 색깔·표 색깔·범례 모두 이 4구분 기준으로 통일한다
-// (2026-08-31 요청 — 이전엔 섹터별 색상이었으나 수급 상태 색상으로 변경).
-// [2026-09-04] "찬집/빈집" 표현이 참고했던 원본 사이트(newsbot-3uj.pages.dev)와 워딩이
-// 거의 동일해 리서치 대시보드 톤에 맞는 용어로 교체 — key와 색상은 기존 그대로 유지해
-// 위 수급 전환점 섹션 등 다른 곳의 참조가 깨지지 않게 했다.
-const FLOWMAP_QUADRANTS = [
-  { key: 'fill_buy', label: '매집 강화', color: '#16a34a', test: (x, y) => x >= 0 && y >= 0 },
-  { key: 'fill_sell', label: '차익 실현', color: '#F58220', test: (x, y) => x >= 0 && y < 0 },
-  { key: 'empty_buy', label: '관심 유입', color: '#00A9CE', test: (x, y) => x < 0 && y >= 0 },
-  { key: 'empty_sell', label: '수급 약화', color: '#dc2626', test: (x, y) => x < 0 && y < 0 },
-];
-function classifyFlowMapQuadrant(x, y){
-  return FLOWMAP_QUADRANTS.find(q => q.test(x, y)) || FLOWMAP_QUADRANTS[3];
-}
-
-function computeFlowMapRows(months){
-  const period = FLOWMAP_PERIODS[months] || FLOWMAP_PERIODS[3];
-  const rows = [];
-  for(const s of STOCK_PERF){
-    if(s.market !== 'KR') continue;
-    const flow = INVESTOR_FLOW[s.ticker];
-    const cap = s.market_cap_krw_eok;
-    if(!flow || !flow.dates || !flow.dates.length || !cap) continue;
-    const net = flow.dates.map((_, i) => {
-      const a = flow.inst_eok[i], b = flow.foreign_eok[i];
-      return (a == null || b == null) ? null : a + b;
-    });
-    const sumLast = (n) => net.slice(-n).reduce((acc, v) => acc + (v == null ? 0 : v), 0);
-    const midSum = sumLast(period.midDays);
-    const shortSum = sumLast(period.shortDays);
-    const x = midSum / cap * 100, y = shortSum / cap * 100;
-    rows.push({
-      ticker: s.ticker, name: s.name, sectors: perfSectorsOf(s),
-      x, y, midSum, shortSum, cap, lastDate: flow.dates[flow.dates.length - 1],
-      quadrant: classifyFlowMapQuadrant(x, y),
-    });
-  }
-  return rows;
-}
-
-// 사분면 배경 음영 + 기준선(0) + 사분면 라벨 + 점 옆 종목명 라벨 — 별도 플러그인 등록 없이
-// Chart.js 생성자의 inline plugins 배열로 이번 차트에만 적용한다.
-const flowMapQuadrantPlugin = {
-  id: 'flowmapQuadrant',
-  beforeDraw(chart){
-    const { ctx, chartArea, scales } = chart;
-    if(!chartArea) return;
-    const xZero = scales.x.getPixelForValue(0);
-    const yZero = scales.y.getPixelForValue(0);
-    ctx.save();
-    ctx.fillStyle = 'rgba(0, 134, 184, 0.06)';
-    ctx.fillRect(xZero, chartArea.top, chartArea.right - xZero, yZero - chartArea.top);
-    ctx.fillStyle = 'rgba(220, 38, 38, 0.06)';
-    ctx.fillRect(chartArea.left, yZero, xZero - chartArea.left, chartArea.bottom - yZero);
-    ctx.strokeStyle = gridColor();
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(xZero, chartArea.top); ctx.lineTo(xZero, chartArea.bottom); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(chartArea.left, yZero); ctx.lineTo(chartArea.right, yZero); ctx.stroke();
-    ctx.font = '11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-    ctx.globalAlpha = 0.6;
-    ctx.fillStyle = textColor();
-    ctx.textAlign = 'right'; ctx.fillText('매집 강화', chartArea.right - 6, chartArea.top + 14);
-    ctx.textAlign = 'left';  ctx.fillText('관심 유입', chartArea.left + 6, chartArea.top + 14);
-    ctx.textAlign = 'left';  ctx.fillText('수급 약화', chartArea.left + 6, chartArea.bottom - 8);
-    ctx.textAlign = 'right'; ctx.fillText('차익 실현', chartArea.right - 6, chartArea.bottom - 8);
-    ctx.restore();
-  },
-  // 원점 근처에 종목이 몰리면 이름표가 서로 겹쳐 읽을 수 없게 되므로, 이미 그려진 이름표와
-  // 픽셀 박스가 겹치는 라벨은 생략한다(점 자체는 그대로 그려짐 — 겹친 종목은 hover 툴팁이나
-  // 아래 표에서 확인). 그려지는 순서(데이터셋 순서 = FLOWMAP_QUADRANTS 순서, 그 안에서는
-  // 원본 종목 순서)상 먼저 오는 쪽이 우선권을 갖는다(2026-08-31 요청).
-  afterDatasetsDraw(chart){
-    const { ctx } = chart;
-    ctx.save();
-    ctx.font = '9px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-    ctx.fillStyle = textColor();
-    ctx.globalAlpha = 0.75;
-    ctx.textAlign = 'left';
-    const placed = [];
-    chart.data.datasets.forEach((ds, dsIndex) => {
-      const meta = chart.getDatasetMeta(dsIndex);
-      meta.data.forEach((point, i) => {
-        const name = ds.data[i].name;
-        const w = ctx.measureText(name).width;
-        const rect = { x: point.x + 5, y: point.y - 7, w: w + 2, h: 11 };
-        const overlaps = placed.some(p =>
-          rect.x < p.x + p.w && p.x < rect.x + rect.w && rect.y < p.y + p.h && p.y < rect.y + rect.h
-        );
-        if(overlaps) return;
-        placed.push(rect);
-        ctx.fillText(name, point.x + 6, point.y + 3);
-      });
-    });
-    ctx.restore();
-  },
-};
-
-let flowMapChartInstance = null;
-function renderFlowMapChart(rows, period){
-  if(flowMapChartInstance){ flowMapChartInstance.destroy(); flowMapChartInstance = null; }
-  const note = document.getElementById('flowmap-note');
-  const axisLabel = document.getElementById('flowmap-axis-label');
-  if(axisLabel){
-    axisLabel.textContent = `가로축=중기 수급 포지션(최근 ${period.midDays}거래일) · 세로축=최근 수급 모멘텀(최근 ${period.shortDays}거래일)`;
-  }
-  if(!rows.length){
-    if(note) note.textContent = hasActiveFlowMapFilters() ? '필터 조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.';
-    return;
-  }
-  if(note) note.textContent = `${rows.length}종목 · 기준일 ${rows[0].lastDate} · 네이버금융/자체 시가총액 추정 기준`;
-
-  // 버블 크기 = 시가총액(같은 사분면이라도 대형주가 담기는지 소형주가 담기는지는
-  // 무게감이 다르므로 반영). 넓이가 시총에 비례하도록 sqrt 스케일로 반지름을 정하고,
-  // 점이 너무 작거나 화면을 덮지 않도록 4~16px로 클램프한다(2026-09-04 추가 — 원본
-  // 참고 사이트와 달리 모든 점이 같은 크기였던 부분을 차별화).
-  const caps = rows.map(r => r.cap).filter(c => c != null && c > 0);
-  const capMin = Math.min(...caps), capMax = Math.max(...caps);
-  const radiusFor = (cap) => {
-    if(cap == null || capMax === capMin) return 7;
-    const t = Math.sqrt((cap - capMin) / (capMax - capMin));
-    return 4 + t * 12;
-  };
-
-  // 종목 색은 섹터가 아니라 사분면(매집 강화/차익 실현/관심 유입/수급 약화) 4구분으로
-  // 고정한다 — 아래 종목별 수급 현황 표와 동일한 색·라벨을 쓴다(2026-08-31 요청).
-  // 데이터가 0개인 구분도 범례에 항상 표시되도록 FLOWMAP_QUADRANTS 순서 그대로
-  // 데이터셋을 만든다.
-  const datasets = FLOWMAP_QUADRANTS.map(q => ({
-    label: q.label,
-    data: rows.filter(r => r.quadrant.key === q.key).map(r => ({ x: r.x, y: r.y, name: r.name, ticker: r.ticker, cap: r.cap })),
-    backgroundColor: q.color,
-    borderColor: 'rgba(255,255,255,.7)', borderWidth: 1,
-    pointRadius: (ctx) => radiusFor(ctx.raw?.cap), pointHoverRadius: (ctx) => radiusFor(ctx.raw?.cap) + 2,
-  }));
-
-  flowMapChartInstance = new Chart(document.getElementById('flowMapChart'), {
-    type: 'scatter',
-    data: { datasets },
-    plugins: [flowMapQuadrantPlugin],
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, labels: { color: textColor() } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.raw.name}: 중기 ${ctx.raw.x.toFixed(1)}% · 단기 ${ctx.raw.y.toFixed(1)}%`,
-          },
-        },
-      },
-      scales: {
-        x: {
-          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v.toFixed(0) + '%' },
-          title: { display: true, text: `중기 수급 포지션(최근 ${period.midDays}거래일 순매수/시총, %)`, color: textColor() },
-        },
-        y: {
-          grid: { color: gridColor() }, ticks: { color: textColor(), callback: v => v.toFixed(0) + '%' },
-          title: { display: true, text: `최근 수급 모멘텀(최근 ${period.shortDays}거래일 순매수/시총, %)`, color: textColor() },
-        },
-      },
-    },
-  });
-}
-
-// 16진 색상 코드를 rgba로 바꿔 배지 배경(옅은 톤)을 만든다 — 기존 .badge 클래스가
-// 쓰는 것과 같은 "색 배경 알약 + 진한 글자" 시각 언어를 재사용한다.
-function hexToRgba(hex, alpha){
-  const h = hex.replace('#', '');
-  const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-// 사분면별 종목 수를 카드 그리드 대신 가로 구성비 막대 하나로 보여준다 — "지금
-// 전체적으로 사자 쪽이 우세한지 팔자 쪽이 우세한지"를 막대 색 비율로 한눈에
-// 읽게 하는 게 목적이라, 종목 수가 0인 구간은 막대에서 자연히 생략된다(2026-09-04).
-// 막대 아래 라벨은 옅은 텍스트로 나열하면 눈에 잘 안 띈다는 피드백에 따라, 기존
-// .badge 스타일과 같은 색 배경 알약(pill) 형태로 바꿔 존재감을 키웠다.
-function renderFlowMapStatCards(rows){
-  const wrap = document.getElementById('flowmap-breadth-wrap');
-  if(!wrap) return;
-  const total = rows.length;
-  if(!total){ wrap.innerHTML = ''; return; }
-  const counts = FLOWMAP_QUADRANTS.map(q => rows.filter(r => r.quadrant.key === q.key).length);
-  // 퍼센트 숫자는 막대 구간 안에 직접 표시한다 — 구간이 너무 좁으면(8% 미만) 글자가
-  // 옆 구간까지 삐져나오므로 그때만 생략(hover 시 .chip-tip 툴팁으로는 항상 확인 가능).
-  // 툴팁은 브라우저 기본 title(흰 박스) 대신 Chart.js 툴팁과 톤을 맞춘 .chip-tip 사용.
-  // 컨테이너에 overflow:hidden을 걸면 위로 뜨는 .chip-tip 툴팁까지 잘려버리므로,
-  // 컨테이너는 overflow를 안 걸고 대신 맨 앞/맨 뒤 구간에만 둥근 모서리를 준다.
-  const activeQuads = FLOWMAP_QUADRANTS.map((q, i) => ({ q, count: counts[i] })).filter(o => o.count > 0);
-  const segs = activeQuads.map((o, idx) => {
-    const pct = o.count / total * 100;
-    const pctText = pct >= 8 ? `${pct.toFixed(0)}%` : '';
-    let radius = '';
-    if(idx === 0) radius += 'border-top-left-radius:8px; border-bottom-left-radius:8px;';
-    if(idx === activeQuads.length - 1) radius += 'border-top-right-radius:8px; border-bottom-right-radius:8px;';
-    return `<div class="chip-tip" data-tip="${o.q.label} ${o.count}종목(${pct.toFixed(0)}%)" style="width:${pct}%; background:${hexToRgba(o.q.color, 0.4)}; display:flex; align-items:center; justify-content:center; color:${o.q.color}; font-size:11px; font-weight:700; ${radius}">${pctText}</div>`;
-  }).join('');
-  // 라벨은 배경 있는 배지(pill)였다가, 시각적으로 너무 강조된다는 피드백에 따라
-  // 배경 없이 색+굵은 글자만 남긴 텍스트 형태로 되돌렸다(2026-09-04).
-  const labels = FLOWMAP_QUADRANTS.map((q, i) => {
-    if(counts[i] <= 0) return '';
-    return `<span style="color:${q.color}; font-size:13px; font-weight:700">${q.label} ${counts[i]}종목</span>`;
-  }).filter(Boolean).join('<span style="color:var(--dim); font-size:12px"> · </span>');
-  wrap.innerHTML = `
-    <div style="display:flex; height:20px; border-radius:8px; background:var(--bg2)">${segs}</div>
-    <div style="margin-top:8px; display:flex; flex-wrap:wrap; align-items:center; gap:6px">${labels}</div>
-  `;
-}
-
-// 2026-10-13: 64종목이 전부 나열돼 아래 외국인 지분율 Top10이 너무 밀려나서, 상위
-// FLOWMAP_TABLE_PREVIEW개만 보이고 나머지는 "펼쳐보기"로 접는다. 펼침 상태는 필터·기간을
-// 바꿔 다시 그려도 유지한다.
-const FLOWMAP_TABLE_PREVIEW = 10;
-let flowMapTableExpanded = false;
-function renderFlowMapTable(rows){
-  const wrap = document.getElementById('flowmap-table-wrap');
-  if(!wrap) return;
-  if(!rows.length){
-    wrap.innerHTML = `<div class="na-msg">${hasActiveFlowMapFilters() ? '필터 조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.'}</div>`;
-    return;
-  }
-  const sorted = [...rows].sort((a, b) => (b.x + b.y) - (a.x + a.y));
-  const hidden = sorted.length - FLOWMAP_TABLE_PREVIEW;
-  const shown = flowMapTableExpanded || hidden <= 0 ? sorted : sorted.slice(0, FLOWMAP_TABLE_PREVIEW);
-  const body = shown.map(r => `
-    <tr>
-      <td>${escapeHtml(r.name)}</td>
-      <td class="gd-sector-tag">${escapeHtml(r.sectors.join(', '))}</td>
-      <td>${r.x.toFixed(1)}%</td>
-      <td>${r.y.toFixed(1)}%</td>
-      <td>
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${r.quadrant.color};margin-right:6px"></span>
-        <span style="color:${r.quadrant.color}">${r.quadrant.label}</span>
-      </td>
-    </tr>
-  `).join('');
-  const toggle = hidden <= 0 ? '' : `
-    <div style="text-align:center;margin-top:6px">
-      <a class="gd-reset-link" id="flowmap-table-toggle">${flowMapTableExpanded ? '접기 ▲' : `나머지 ${hidden}개 펼쳐보기 ▼ (전체 ${sorted.length}개)`}</a>
-    </div>`;
-  wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>중기(%)</th><th>단기(%)</th><th>구분</th></tr></thead><tbody>${body}</tbody></table>${toggle}`;
-  const btn = document.getElementById('flowmap-table-toggle');
-  if(btn) btn.onclick = () => {
-    flowMapTableExpanded = !flowMapTableExpanded;
-    renderFlowMapTable(rows);
-    // 접을 때는 표 머리로 돌아가 아래 외국인 지분율 Top10이 바로 이어 보이게 한다.
-    if(!flowMapTableExpanded) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-}
-
-// 수급 전환점 — 사분면(매집 강화/차익 실현/관심 유입/수급 약화)이 최근
-// FLOWMAP_TRANSITION_LOOKBACK거래일 사이에 바뀐 종목만 뽑는다. computeFlowMapRows와
-// 같은 x(중기)/y(단기) 계산을, "오늘 기준"과 "lookback거래일 전 기준"(net 배열에서
-// 최근 lookback일을 잘라낸 것을 "그 시점의 오늘"로 보고 동일한 로직 재적용) 두 번
-// 돌려서 사분면이 달라진 종목만 남긴다. 정렬은 전환 강도(현재 단기값 절대값)순.
-// 기간 기준은 아래 산점도/표의 1/3/6/12개월 토글과 무관하게 항상 3개월(중기 65거래일
-// · 단기 20거래일)로 고정한다 — "오늘 뭐가 바뀌었나"를 매일 같은 잣대로 추적하는
-// 스크리너 성격이라, 토글 조작마다 리스트가 통째로 바뀌면 어제와 비교가 안 되기
-// 때문(2026-09-04 논의 결론 — 산점도/표는 탐색용이라 토글에 계속 반응해도 되지만
-// 전환점 스크리너는 고정 기준이 실무에 더 맞다고 판단).
-const FLOWMAP_TRANSITION_LOOKBACK = 3;
-const FLOWMAP_TRANSITION_PERIOD_KEY = 3;
-
-function computeFlowMapTransitions(){
-  const period = FLOWMAP_PERIODS[FLOWMAP_TRANSITION_PERIOD_KEY];
-  const lookback = FLOWMAP_TRANSITION_LOOKBACK;
-  const needDays = Math.max(period.midDays, period.shortDays) + lookback;
-  const sumLastN = (arr, n) => arr.slice(-n).reduce((acc, v) => acc + (v == null ? 0 : v), 0);
-  const rows = [];
-  for(const s of STOCK_PERF){
-    if(s.market !== 'KR') continue;
-    const flow = INVESTOR_FLOW[s.ticker];
-    const cap = s.market_cap_krw_eok;
-    if(!flow || !flow.dates || !flow.dates.length || !cap) continue;
-    const net = flow.dates.map((_, i) => {
-      const a = flow.inst_eok[i], b = flow.foreign_eok[i];
-      return (a == null || b == null) ? null : a + b;
-    });
-    if(net.length < needDays) continue; // 전환 비교에 필요한 만큼 데이터가 없으면 제외
-
-    const xNow = sumLastN(net, period.midDays) / cap * 100;
-    const yNow = sumLastN(net, period.shortDays) / cap * 100;
-    const qNow = classifyFlowMapQuadrant(xNow, yNow);
-
-    const netPast = net.slice(0, net.length - lookback);
-    const xPast = sumLastN(netPast, period.midDays) / cap * 100;
-    const yPast = sumLastN(netPast, period.shortDays) / cap * 100;
-    const qPast = classifyFlowMapQuadrant(xPast, yPast);
-
-    if(qPast.key === qNow.key) continue;
-    rows.push({
-      ticker: s.ticker, name: s.name, sectors: perfSectorsOf(s),
-      xNow, yNow, qNow, qPast, lastDate: flow.dates[flow.dates.length - 1],
-    });
-  }
-  rows.sort((a, b) => Math.abs(b.yNow) - Math.abs(a.yNow));
-  return rows;
-}
-
-function renderFlowMapTransitions(rows){
-  const wrap = document.getElementById('flowmap-transitions-wrap');
-  const note = document.getElementById('flowmap-transitions-note');
-  if(!wrap) return;
-  if(note) note.textContent = `최근 ${FLOWMAP_TRANSITION_LOOKBACK}거래일 내 사분면이 바뀐 종목`;
-  if(!rows.length){
-    wrap.innerHTML = '<div class="na-msg">최근 전환된 종목이 없습니다.</div>';
-    return;
-  }
-  const body = rows.slice(0, 15).map(r => `
-    <tr>
-      <td>${escapeHtml(r.name)}</td>
-      <td class="gd-sector-tag">${escapeHtml(r.sectors.join(', '))}</td>
-      <td>
-        <span style="color:${r.qPast.color}">${r.qPast.label}</span>
-        <span style="color:var(--dim)"> → </span>
-        <span style="color:${r.qNow.color}; font-weight:600">${r.qNow.label}</span>
-      </td>
-      <td>${r.xNow.toFixed(1)}%</td>
-      <td>${r.yNow.toFixed(1)}%</td>
-    </tr>
-  `).join('');
-  wrap.innerHTML = `<table><thead><tr><th>종목</th><th>섹터</th><th>전환</th><th>중기(%)</th><th>단기(%)</th></tr></thead><tbody>${body}</tbody></table>`;
-}
-
-function renderFlowMap(){
-  const period = FLOWMAP_PERIODS[flowMapSelectedMonths] || FLOWMAP_PERIODS[3];
-  const rows = applyFlowMapFilters(computeFlowMapRows(flowMapSelectedMonths));
-  renderFlowMapStatCards(rows);
-  renderFlowMapTransitions(applyFlowMapFiltersToTransitions(computeFlowMapTransitions()));
-  renderFlowMapChart(rows, period);
-  renderFlowMapTable(rows);
-  renderForeignRatioTop10();
-}
-document.querySelectorAll('#flowmap-period-toggle button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('#flowmap-period-toggle button').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    flowMapSelectedMonths = parseInt(b.dataset.months, 10);
-    renderFlowMap();
-  });
-});
-document.getElementById('flowmap-search-input').addEventListener('input', e => {
-  flowMapFilters.search = e.target.value;
-  renderFlowMap();
-});
-document.getElementById('flowmap-quadrant-filter').addEventListener('change', e => {
-  flowMapFilters.quadrant = e.target.value;
-  renderFlowMap();
-});
-document.querySelectorAll('#flowmap-sector-msel .gd-msel-actions a').forEach(a => a.addEventListener('click', () => {
-  flowMapFilters.sectors = a.dataset.act === 'all'
-    ? new Set([...document.querySelectorAll('#flowmap-sector-options input[data-sector]')].map(cb => cb.dataset.sector))
-    : new Set();
-  populateFlowMapSectorFilter();
-  renderFlowMap();
-}));
-document.getElementById('flowmap-reset-link').addEventListener('click', e => {
-  e.preventDefault();
-  flowMapFilters = { search: '', quadrant: 'all', sectors: new Set() };
-  document.getElementById('flowmap-search-input').value = '';
-  document.getElementById('flowmap-quadrant-filter').value = 'all';
-  populateFlowMapSectorFilter();
-  renderFlowMap();
-});
 
 // ==================================================================
 // 수익률 Top10 / Bottom10 — 실데이터 (stock_performance.json fetch)
@@ -4007,72 +3486,13 @@ document.addEventListener('click', e=>{
 });
 function fmtPct(v){ if(v==null) return '-'; const sign = v>0?'+':''; return sign + v.toFixed(1); }
 function pctClass(v){ if(v==null || v===0) return 'perf-flat'; return v>0 ? 'perf-up' : 'perf-down'; }
-
-// 외국인 지분율 Top10 — "커버리지 기업 외국인 지분율 순위도 보여지면 좋겠다"는 피드백 반영
-// (2026-08-31). 외국인 지분율만 있으면 심심하다는 지적에 따라 1개월 지분율 변화(%p)와
-// 외국인 순매수 금액(1개월, investor_flow.json)을 함께 보여준다 — 순매수 금액은 지분율
-// 변화(%p)의 "원인"(실제 매수세 때문인지, 발행주식수 변동 등 다른 이유인지)을 바로 옆에서
-// 설명해주는 짝이라 우선 채택. 전일 종가/1개월 수익률은 바로 위 "수익률 Top10/Bottom10"
-// 표와 중복되고 외국인 수급이라는 주제와 관련이 적어 넣지 않기로 함(사용자 확인).
-// 외국인 지분율은 국내(KR) 종목에만 존재하는 데이터라(해외 종목은 stock_performance.json에
-// foreign_ratio 필드 자체가 없음) 자동으로 국내 커버리지 종목만 대상이 된다. 이 표는
-// STOCK_PERF와 INVESTOR_FLOW 둘 다 필요하므로 두 로드 함수(loadStockPerformance/
-// loadInvestorFlow) 완료 시 각각 다시 호출해 재계산한다(수급 지도와 동일한 패턴).
-// 2026-10-13: 수급 판독기로 옮기면서 그 탭의 검색어·섹터 필터를 따른다(구분=사분면 필터는 무관).
-function computeForeignRatioTop10(){
-  const f = flowMapFilters;
-  const q = f.search.trim().toLowerCase();
-  return STOCK_PERF
-    .filter(s => s.market === 'KR' && s.foreign_ratio != null)
-    .filter(s => !q || s.name.toLowerCase().includes(q) || s.ticker.toLowerCase().includes(q))
-    .filter(s => !f.sectors.size || perfSectorsOf(s).some(sec => f.sectors.has(sec)))
-    .map(s => {
-      const hist = s.foreign_ratio_history;
-      let changeM1 = null;
-      if(hist && hist.values && hist.values.length >= MONTHS_TO_TRADING_DAYS[1]){
-        const past = hist.values[hist.values.length - MONTHS_TO_TRADING_DAYS[1]];
-        if(past != null) changeM1 = s.foreign_ratio - past;
-      }
-      const flow = INVESTOR_FLOW[s.ticker];
-      let foreignNetBuyM1 = null;
-      if(flow && flow.foreign_eok && flow.foreign_eok.length){
-        foreignNetBuyM1 = flow.foreign_eok.slice(-MONTHS_TO_TRADING_DAYS[1])
-          .reduce((sum, v) => sum + (v == null ? 0 : v), 0);
-      }
-      return {
-        ticker: s.ticker, name: s.name, foreignRatio: s.foreign_ratio,
-        changeM1, foreignNetBuyM1,
-      };
-    })
-    .sort((a, b) => b.foreignRatio - a.foreignRatio)
-    .slice(0, 10);
-}
-
-function renderForeignRatioTop10(){
-  const wrap = document.getElementById('foreign-rank-table-wrap');
-  if(!wrap) return;
-  const note = document.getElementById('foreign-rank-note');
-  const krCount = STOCK_PERF.filter(s => s.market === 'KR').length;
-  const filtered = !!flowMapFilters.search.trim() || flowMapFilters.sectors.size > 0;
-  if(note) note.textContent = `국내 커버리지 종목(${krCount}종목)${filtered ? ' 중 위 검색·섹터 필터에 걸린 종목' : ''} 지분율 상위 10개 · 출처: 네이버증권`;
-  const rows = computeForeignRatioTop10();
-  if(!rows.length){
-    wrap.innerHTML = `<div class="na-msg">${filtered ? '조건에 맞는 종목이 없습니다.' : '아직 데이터가 없습니다.'}</div>`;
-    return;
-  }
-  const body = rows.map((r, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${companyNameLinkHtml(r.ticker, r.name)}</td>
-      <td>${r.foreignRatio.toFixed(2)}%</td>
-      <td class="${r.changeM1 == null ? '' : pctClass(r.changeM1)}">${r.changeM1 == null ? '-' : fmtPct(r.changeM1) + '%p'}</td>
-      <td class="${r.foreignNetBuyM1 == null ? '' : pctClass(r.foreignNetBuyM1)}">${r.foreignNetBuyM1 == null ? '-' : (r.foreignNetBuyM1 >= 0 ? '+' : '') + r.foreignNetBuyM1.toLocaleString(undefined, {maximumFractionDigits:1}) + '억원'}</td>
-    </tr>
-  `).join('');
-  wrap.innerHTML = `
-    <table><thead><tr><th>순위</th><th>종목</th><th>외국인 지분율</th><th>1개월 변화</th><th>외국인 순매수(1개월)</th></tr></thead><tbody>${body}</tbody></table>
-    <div class="note" style="margin-top:4px; font-size:10.5px; color:var(--dim)">종목명을 클릭하면 기업 스냅샷 탭에서 주가·외국인 지분율·수급 차트를 볼 수 있습니다.</div>
-  `;
+// 16진 색상 코드를 rgba로 바꿔 배지 배경(옅은 톤)을 만든다 — 기존 .badge 클래스가
+// 쓰는 것과 같은 "색 배경 알약 + 진한 글자" 시각 언어를 재사용한다.
+// (2026-11-05 수급 판독기 삭제 때 그 코드 안에 있던 것을 공용 헬퍼로 옮김 — 컨센서스 변화·실적 서프라이즈 등이 쓴다.)
+function hexToRgba(hex, alpha){
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 
@@ -4442,9 +3862,6 @@ async function loadStockPerformance(){
       note.textContent = `로컬 통화 기준 · 출처: KRX·Yahoo Finance · ${updatedLabel(data.updated)}`;
     }
     if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
-    if(typeof populateFlowMapSectorFilter === 'function') populateFlowMapSectorFilter();
-    if(typeof renderFlowMap === 'function') renderFlowMap();
-    if(typeof renderForeignRatioTop10 === 'function') renderForeignRatioTop10();
     if(typeof renderGlobalDashboard === 'function') renderGlobalDashboard();
     // 컨센서스 변화 탭은 종목명·섹터·주가를 여기서 가져오므로, 먼저 로드됐으면 다시 그린다.
     if(CONS_HIST){ populateRevFilters(); renderRevision(); }
@@ -5962,10 +5379,9 @@ async function loadTickerUniverse(){
   }catch(e){
     TICKER_UNIVERSE = [];
   }
-  // 수익률 표·수급 판독기 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
+  // 수익률 표 세부 섹터는 tickers.json에서 보충하므로(perfSectorsOf), 주가 데이터가 먼저 왔으면 다시 그린다.
   if(STOCK_PERF.length){
     renderPerfTables();
-    populateFlowMapSectorFilter(); if(typeof renderFlowMap === 'function') renderFlowMap();
   }
   if(typeof renderRepStockBox === 'function' && selectedRepCompany) renderRepStockBox(selectedRepCompany);
   // 리서치 보고서 섹터 드롭다운은 종목 목록으로 섹터를 찾으므로, 보고서가 먼저 와서 전부 "기타"로
@@ -10104,7 +9520,7 @@ function revSparkSvg(arr, color){
 function revDirection(pct){ return pct >= REV_FLAT_PCT ? 'up' : pct <= -REV_FLAT_PCT ? 'down' : 'flat'; }
 function revShortDate(d){ const p = d.split('-'); return `${parseInt(p[1],10)}/${parseInt(p[2],10)}`; }
 
-// 상향/변화없음/하향 구성비 막대 — 수급 판독기 구성비 막대와 같은 표현.
+// 상향/변화없음/하향 구성비 막대(색 구간 + .chip-tip 툴팁).
 function revBreadthBarHtml(up, flat, down, height){
   const total = up + flat + down;
   if(!total) return '';
