@@ -1,0 +1,186 @@
+{
+ "ticker": "EW",
+ "company": "Edwards Lifesciences Corporation",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-04",
+ "file": "EW_2026Q3.json",
+ "source_hash": "0be7946e6a47",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-11-05T00:59:08.648965+00:00",
+ "headline": [
+  "2026년 3분기 매출액은 전년 동기 대비 11.2% 증가한 17억 2,000만 달러로 시장 전망치를 상회함.",
+  "호실적과 임상·승인 성과를 반영해 연간 매출 성장률 가이던스를 기존 10%~11%에서 약 11.5%로, 조정 EPS를 $2.97~$3.05로 상향함.",
+  "TAVR 및 TMTT 사업부가 성장을 견인하였으며, TAVR 연간 성장률과 TMTT 연간 매출 가이던스도 함께 상향 조정됨.",
+  "향후 TAVR 성장은 점유율 확대보다는 전체 시술 건수(마켓) 증가에 의해 추진될 것으로 전망함."
+ ],
+ "changes": [
+  "연간 전체 매출 성장률 가이던스가 '10% to 11%'에서 'approximately 11.5%'로 상향 조정됨.",
+  "조정 EPS 가이던스 하단이 기존 $2.95에서 $2.97로 상향됨($2.97 to $3.05).",
+  "TAVR 매출 성장률 가이던스가 기존 '8% to 9%'에서 '9% to 9.5%'로 상향됨.",
+  "TMTT 매출 가이던스가 기존 '$760 million to $780 million'에서 '$780 million to $790 million'으로 상향됨.",
+  "향후 TAVR 성장의 동인이 점유율 확대(share gains)보다는 시술 건수 증가(procedure volume growth)로 전환될 것임을 강조함."
+ ],
+ "prepared": {
+  "summary": [
+   "에드워즈 라이프사이언스는 2026년 3분기 매출액 17억 2,000만 달러(전년 동기 대비 11.2% 증가)와 조정 EPS $0.80를 기록하며 호실적을 달성했습니다.",
+   "TAVR 사업부는 $12억 매출(8.8% 증가)을 기록했고, TMTT 사업부는 PASCAL, EVOQUE, SAPIEN M3 등의 호조로 $2.07억 매출(45.6% 증가)을 달성했습니다.",
+   "TCT 학회에서 발표된 PROGRESS 임상 결과와 미국 CMS의 NCD 개정안 최종 확정 등 주요 임상·규제 성과가 구조적 심장 질환 시장의 장기 성장을 뒷받침하고 있습니다.",
+   "경영진은 실적 호조를 바탕으로 연간 매출 성장률 가이던스를 약 11.5%로, 연간 조정 EPS 가이던스를 $2.97~$3.05로 상향 조정했습니다."
+  ],
+  "sections": [
+   {
+    "title": "전사 실적 및 가이던스 상향",
+    "points": [
+     "3분기 매출액 17억 2,000만 달러(전년 동기 대비 11.2% 증가), 조정 EPS $0.80 달성.",
+     "2026년 연간 매출 성장률 가이던스를 기존 10%~11%에서 약 11.5%로 상향.",
+     "2026년 연간 조정 EPS 가이던스를 기존 $2.95~$3.05에서 $2.97~$3.05로 상향(중간값 기준 전년 대비 18% 성장)."
+    ]
+   },
+   {
+    "title": "TAVR 사업부",
+    "points": [
+     "3분기 글로벌 매출 12억 달러로 전년 동기 대비 8.8% 성장하여 예상치 상회.",
+     "미국 내 SAPIEN M3 ULTRA RESILIA의 채택 호조 및 글로벌 평균판매가격(ASP) 안정세 유지.",
+     "연간 TAVR 매출 성장률 가이던스를 기존 8%~9%에서 9%~9.5%로 상향 조정."
+    ]
+   },
+   {
+    "title": "TMTT (경피적 승모판 및 삼첨판 치료제) 사업부",
+    "points": [
+     "3분기 글로벌 매출 2억 7,000만 달러로 전년 동기 대비 45.6% 급증.",
+     "미국 내 PASCAL 승모판/삼첨판 제품군 및 EVOQUE 삼첨판 치환술 장치의 승인 및 출시로 포트폴리오 완성.",
+     "연간 TMTT 매출 가이던스를 기존 7억 6,000만~7억 8,000만 달러에서 7억 8,000만~7억 9,000만 달러로 상향."
+    ]
+   },
+   {
+    "title": "Surgical (수술용 심장 판막) 사업부",
+    "points": [
+     "3분기 글로벌 매출 2억 6,400만 달러로 전년 동기 대비 3% 증가.",
+     "RESILIA 제품군의 지속적인 채택에 힘입어 연간 한 자릿수 중반 성장 목표 유지.",
+     "소아용 수술용 폐동맥 판막 Artis FDA 승인 및 수술용 좌심방이 폐색 기술 ECLIPTIS 출시 진행."
+    ]
+   },
+   {
+    "title": "재무 지표 및 비용 구조",
+    "points": [
+     "3분기 조정 매출총이익률 78.7%(전년 동기 77.9% 대비 환율 효과 50bp 포함 상승).",
+     "연간 조정 영업이익률은 기존 가이던스(28%~29%)의 상단을 기록하며 고정환율 기준 약 150bp 확장을 예상.",
+     "3분기 말 기준 현금 및 현금성 자산 31억 달러 보유, 3분기까지 약 7억 달러 규모의 자사주 매입 완료."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "연간 매출 성장률",
+   "value": "approximately 11.5%",
+   "prev": "10% to 11%",
+   "change": "상향",
+   "quote": "Based on our strong performance this quarter. We are raising our full year sales growth guidance to approximately 11.5% and our adjusted EPS guidance to $2.97 to $3.05, growing 18% at the midpoint versus prior year."
+  },
+  {
+   "item": "조정 EPS",
+   "value": "$2.97 to $3.05",
+   "prev": "$2.95 to $3.05",
+   "change": "상향",
+   "quote": "Based on our strong performance this quarter. We are raising our full year sales growth guidance to approximately 11.5% and our adjusted EPS guidance to $2.97 to $3.05, growing 18% at the midpoint versus prior year."
+  },
+  {
+   "item": "TAVR 매출 성장률",
+   "value": "9% to 9.5%",
+   "prev": "8% to 9%",
+   "change": "상향",
+   "quote": "Given our better-than-expected third quarter performance, we are raising our full year TAVR guidance to 9% to 9.5%."
+  },
+  {
+   "item": "TMTT 매출",
+   "value": "$780 million to $790 million",
+   "prev": "$760 million to $780 million",
+   "change": "상향",
+   "quote": "We now expect full year TMTT sales to be between $780 million and $790 million."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "U.S. TAVR NCD finalization",
+   "target": "2026년 9월",
+   "status": "달성",
+   "note": "CMS가 TAVR에 대한 최종 NCD 업데이트 개정안을 이번 분기 중 공식 발표함.",
+   "quote": "During the quarter, CMS released the final updated NCD for TAVR."
+  },
+  {
+   "item": "PROGRESS trial results presentation",
+   "target": "2026년 하반기 TCT",
+   "status": "달성",
+   "note": "TCT 학회에서 중등도 대동맥판막 협착증 환자 대상 PROGRESS 임상 결과가 발표 및 논문 게재됨.",
+   "quote": "At TCT results from the PROGRESS trial were presented and published in the New England General Medicine marking a turning point in the management of moderate AS, the remarkable performance and unparalleled safety of the SAPIEN platform, coupled with the superior trial results, validate TAVR as a treatment strategy for moderate AS patients with at risk features."
+  },
+  {
+   "item": "PASCAL tricuspid U.S. approval and launch",
+   "target": "2026년 4분기",
+   "status": "달성",
+   "note": "10월(3분기말/4분기초) PASCAL PRECISION 삼첨판 적응증이 미국 FDA 승인을 획득함.",
+   "quote": "In October, PASCAL PRECISION for tricuspid [ reorigination ] we see approval in the U.S. expanding the access to this important therapy for patients."
+  },
+  {
+   "item": "Next-generation PASCAL technology launch in U.S. and Europe",
+   "target": "2026년 4분기",
+   "status": "달성",
+   "note": "Capture Clarity 기술이 적용된 차세대 PASCAL ACE가 미국 승인을 받고 출시 진행 중임.",
+   "quote": "During the quarter, PASCAL [ ACE ] with Capture Clarity received U.S. approval for use in DMR tier procedures and a major rollout of a technology is underway."
+  },
+  {
+   "item": "ECLIPTIS surgical left atrial appendage technology U.S. introduction",
+   "target": "2026년 하반기",
+   "status": "진행 중",
+   "note": "미국 내 ECLIPTIS 수술용 좌심방이 폐색 기술의 본격적인 출시(rollout)가 진행 중임.",
+   "quote": "We are also advancing a major rollout of ECLIPTIS, our surgical [ latrial ] appendage technology in the U.S., prioritizing exceptional outcomes for patients through physician training and procedural excellence."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "TAVR 시술 성장 동인 및 점유율 추이",
+   "analysts": [
+    "Travis Steed (Bank of America)",
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "3분기 말 TAVR 시술 증가 신호와 점유율 변화 추이는 어떠하며, 향후 성장이 시장 시술 건수 확대 중심으로 이뤄진다는 의미는 무엇인가?",
+   "answer": "경영진은 그동안 점유율 확대를 이뤘으나 현재 일정한 안정을 이루었으며, 유럽 경쟁사 탈퇴 효과도 연례화되었다고 설명했습니다. 향후 성장 동인은 시장 점유율 뺏기보다는 적극적 질환 관리 데이터와 NCD 개정 등에 힘입은 전체 TAVR 시장 시술 건수의 순수한 증가에 의해 주도될 것이라고 밝혔습니다."
+  },
+  {
+   "theme": "NCD 개정 및 PROGRESS 임상의 2027년 성장 기여도",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "최종 확정된 NCD 및 PROGRESS 임상 결과가 2027년 실적에 구체적으로 얼마나 기여할 것으로 기대하는가?",
+   "answer": "NCD 개정과 중등도 적응증 확대는 일시적 피크가 아닌 다년에 걸쳐 점진적이고 지속적으로 시장에 영향을 미칠 촉매제입니다. 2027년 세부 가이던스는 12월 투자자 컨퍼런스에서 공개할 예정이나, 장기적으로 TAVR의 중고위 한 자릿수(mid-to-high single-digit) 성장에 대한 확신은 매우 높습니다."
+  },
+  {
+   "theme": "PROGRESS(중등도 AS) 승인 일정 및 시장 진입 전략",
+   "analysts": [
+    "Robert Marcus (JPMorgan)",
+    "Matthew Taylor (Jefferies)",
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "중등도 대동맥판막 협착증(Moderate AS) 적응증 승인 신청 타임라인과, 이것이 향후 TAVR 시장 전체 타깃 시장(TAM) 및 경쟁 우위에 미칠 영향은 어떠한가?",
+   "answer": "FDA와의 협의 일정은 12월 투자자 컨퍼런스에서 업데이트할 예정입니다. 중등도 환자군 시장은 중증 환자군보다 1~2배 더 큰 잠재력을 지니며, 신규 적응증 형성을 위한 시장 개발(의사 교육 및 조기 의뢰 체계 구축) 노력을 집중하여 독보적인 장기 성장을 이끌어낼 것입니다."
+  },
+  {
+   "theme": "가이던스 책정 철학 및 4분기 실적 전망",
+   "analysts": [
+    "Robert Marcus (JPMorgan)"
+   ],
+   "question": "3분기 호실적 대비 4분기 가이던스가 다소 보수적으로 느껴지는데, 새로운 CFO의 가이던스 제시 철학은 무엇인가?",
+   "answer": "CFO Doretta Mistras는 회사 기존의 신뢰성 있고 적절한 중앙값 제시 원칙을 유지하고 있다고 밝혔습니다. 4분기에는 시술 건수 중심 성장에 기반하여 제시된 가이던스를 충실히 달성할 자신감이 있으며, TMTT 사업의 경우 분기별 변동보다 연간(YoY) 기준 성장세가 사업 건전성을 더 잘 반영한다고 보충 설명했습니다."
+  },
+  {
+   "theme": "유럽 TAVR 성장률 및 PASCAL TR 미국 반응",
+   "analysts": [
+    "Pito Chickering (Deutsche Bank)"
+   ],
+   "question": "유럽 TAVR 상반기 대비 하반기 성장률 추이와 최근 승인된 PASCAL 삼첨판(TR) 제품에 대한 미국 임상의들의 초기 반응은 어떠한가?",
+   "answer": "유럽과 미국의 TAVR 성장률은 유사한 수준이며 계절성 영향이 반영된 것입니다. PASCAL 삼첨판 장치는 해부학적 구조가 복잡한 환자에게 뛰어난 이연(elongation) 기능을 제공하여 임상의들로부터 매우 긍정적인 평가를 받고 있으며 EVOQUE와 보완적인 역할을 할 것입니다."
+  }
+ ]
+}
