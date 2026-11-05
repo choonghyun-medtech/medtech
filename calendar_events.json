@@ -1,17 +1,6 @@
 {
-  "updated": "2026-11-04T06:39:06.383528+00:00",
+  "updated": "2026-11-05T01:05:06.302620+00:00",
   "domestic": [
-    {
-      "date": "2026-07-07",
-      "region": "domestic",
-      "type": "listing",
-      "ticker": "386380",
-      "company": "스카이랩스",
-      "title": "증권신고서/투자설명서 제출(공모·증자) — [첨부추가]증권신고서(지분증권)",
-      "source_name": "DART 전자공시시스템",
-      "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260707000316",
-      "estimated": false
-    },
     {
       "date": "2026-07-09",
       "region": "domestic",
@@ -2822,6 +2811,17 @@
     {
       "date": "2026-11-04",
       "region": "domestic",
+      "type": "ir",
+      "ticker": "145020",
+      "company": "휴젤",
+      "title": "IR·기업설명회 — 기업설명회(IR)개최              ",
+      "source_name": "DART 전자공시시스템",
+      "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261104900488",
+      "estimated": false
+    },
+    {
+      "date": "2026-11-04",
+      "region": "domestic",
       "type": "earn",
       "ticker": "145020",
       "company": "휴젤",
@@ -2842,6 +2842,17 @@
       "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261104900171",
       "estimated": false,
       "prelim": true
+    },
+    {
+      "date": "2026-11-04",
+      "region": "domestic",
+      "type": "listing",
+      "ticker": "328130",
+      "company": "루닛",
+      "title": "증자/신주 발행 결정 — 주요사항보고서(전환사채권발행결정)",
+      "source_name": "DART 전자공시시스템",
+      "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261104000318",
+      "estimated": false
     }
   ],
   "global": [
@@ -3239,6 +3250,17 @@
       "title": "InMode to Report Third Quarter 2026 Financial Results",
       "source_name": "InMode IR",
       "source_url": "https://inmodeinvestors.com/press-release/",
+      "estimated": false
+    },
+    {
+      "date": "2026-11-24",
+      "region": "global",
+      "type": "earn",
+      "ticker": "MDT",
+      "company": "Medtronic",
+      "title": "Q2 FY27 Medtronic plc Earnings Conference Call",
+      "source_name": "Medtronic IR",
+      "source_url": "https://investorrelations.medtronic.com/events-presentations?item=107",
       "estimated": false
     }
   ]
