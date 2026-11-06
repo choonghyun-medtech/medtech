@@ -1,0 +1,220 @@
+{
+ "ticker": "GH",
+ "company": "Guardant Health, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-05",
+ "file": "GH_2026Q3.json",
+ "source_hash": "0d806c953d87",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-06T04:54:29.931373+00:00",
+ "headline": [
+  "2026년 3분기 매출은 전년 동기 대비 36% 증가한 3억 6,100만 달러를 기록함.",
+  "종양학 사업부 매출은 25% 증가한 2억 3,100만 달러, 검사 건수는 58% 증가한 1만 1,700건을 달성함.",
+  "스크리닝 사업부의 쉴드는 매출이 180% 급증한 6,800만 달러를 기록하였으며, 검사 건수는 246% 증가한 8만 3,000건을 기록함.",
+  "가던트360 액체 CDx가 진행성 유방암 치료제(ETCAMAH)의 동반진단(CDx)으로 FDA 승인을 획득함.",
+  "강조된 실적 성장에 힘입어 2026년 연간 매출 가이던스를 기존 13억 4,000만~13억 6,000만 달러에서 13억 6,000만~13억 7,000만 달러로 상향 조정함."
+ ],
+ "changes": [
+  "2026년 연간 매출 가이던스를 상향 조정함(13억 4,000만~13억 6,000만 달러 → 13억 6,000만~13억 7,000만 달러).",
+  "2026년 연간 종양학 볼륨 성장률 전망을 기존 약 50%에서 50% 초과로 상향함.",
+  "2026년 연간 스크리닝 매출 가이던스를 기존 2억 1,800만~2억 3,000만 달러에서 2억 3,300만~2억 3,800만 달러로 상향 조정함.",
+  "2026년 연간 쉴드 검사 건수 가이던스를 기존 27만~28만 5,000건에서 28만 5,000~29만건으로 상향함.",
+  "CMS의 신규 빌링 코드 시스템 적용 지연 영향으로 연간 잉여현금흐름(FCF) 번 가이던스를 기존 1억 9,500만~2억 500만 달러에서 2억 500만~2억 2,000만 달러로 조정함."
+ ],
+ "prepared": {
+  "summary": [
+   "가던트 헬스는 스마트 플랫폼과 AI 기반의 혁신을 바탕으로 2026년 3분기 전 사업 부문에서 견조한 성장을 달성함.",
+   "가던트360 액체 CDx의 ESR1 변이 타겟 동반진단 FDA 승인 및 가던트360 조직 검사의 PMA 제출을 완료함.",
+   "쉴드는 유나이티드헬스코어, 캘론, 에비코어 등의 보험 급여 확대와 ACS 가이드라인 등재에 힘입어 빠른 채택 확대를 보이고 있음.",
+   "고처리량 쉴드 워크플로우 도입으로 검사당 원가(COGS)를 330달러로 낮추며 목표를 조기 달성함."
+  ],
+  "sections": [
+   {
+    "title": "종양학 및 규제 성과",
+    "points": [
+     "종양학 매출은 전년 동기 대비 25% 증가한 2억 3,100만 달러, 검사 건수는 58% 증가한 11만 7,000건을 기록함.",
+     "가던트360 CDx가 아스트라제네카의 ETCAMAH에 대한 동반진단으로 FDA 승인을 획득함.",
+     "가던트360 조직 검사의 PMA(시판 허가) 신청서를 FDA에 제출함."
+    ]
+   },
+   {
+    "title": "스크리닝 및 쉴드 성과",
+    "points": [
+     "스크리닝 매출은 전년 동기 대비 180% 증가한 6,800만 달러를 기록함.",
+     "쉴드 검사 건수는 246% 증가한 8만 3,000건을 달성함.",
+     "유나이티드헬스, 캘론, 에비코어 등의 보험 커버리지 확보로 약 3,000만 명이 추가되어 총 1억 명(미국 적격 인구의 80% 이상)이 쉴드 검사 혜택을 받게 됨."
+    ]
+   },
+   {
+    "title": "재무 및 원가 절감",
+    "points": [
+     "3분기 비일반회계기준(Non-GAAP) 매출총이익률은 67%를 기록함.",
+     "신규 고처리량 쉴드 워크플로우의 조기 정착으로 검사당 원가(COGS)를 2분기 410달러에서 3분기 330달러로 대폭 절감함.",
+     "현금 및 투자 자산은 11억 달러이며, 2027년 말 회사 전체 잉여현금흐름 손익분기점 달성 전망을 유지함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 매출",
+   "value": "$1.36 billion to $1.37 billion",
+   "prev": "$1.34 billion to $1.36 billion",
+   "change": "상향",
+   "quote": "Based on our strong third quarter performance and greater visibility into the remainder of the year, we are raising our full year 2026 revenue guidance to a range of $1.36 billion to $1.37 billion."
+  },
+  {
+   "item": "FY26 종양학 매출 성장률",
+   "value": "approximately 30%",
+   "prev": "approximately 30%",
+   "change": "유지",
+   "quote": "For Oncology, we continue to expect revenue growth of approximately 30% and now expect volume growth of more than 50%."
+  },
+  {
+   "item": "FY26 종양학 볼륨 성장률",
+   "value": "more than 50%",
+   "prev": "approximately 50%",
+   "change": "상향",
+   "quote": "For Oncology, we continue to expect revenue growth of approximately 30% and now expect volume growth of more than 50%."
+  },
+  {
+   "item": "FY26 바이오파마 및 데이터 성장률",
+   "value": "low double-digit growth",
+   "prev": "low double-digit growth",
+   "change": "유지",
+   "quote": "For biopharma and data, our outlook remains unchanged at low double-digit growth, supported by continued progress across our companion diagnostic pipeline, new regulatory approvals and expanding strategic partnerships."
+  },
+  {
+   "item": "FY26 스크리닝 매출",
+   "value": "$233 million to $238 million",
+   "prev": "$218 million to $230 million",
+   "change": "상향",
+   "quote": "In screening, we are raising our full year revenue guidance to a range of $233 million to $238 million and now expect 285,000 to 290,000 field tests."
+  },
+  {
+   "item": "FY26 쉴드 검사 건수",
+   "value": "285,000 to 290,000",
+   "prev": "270,000 to 285,000",
+   "change": "상향",
+   "quote": "In screening, we are raising our full year revenue guidance to a range of $233 million to $238 million and now expect 285,000 to 290,000 field tests."
+  },
+  {
+   "item": "FY26 비일반회계기준(Non-GAAP) 매출총이익률",
+   "value": "65%",
+   "prev": "64% to 65%",
+   "change": "상향",
+   "quote": "We now expect full year non-GAAP gross margin of 65%."
+  },
+  {
+   "item": "FY26 비일반회계기준(Non-GAAP) 영업비용",
+   "value": "$1.105 billion to $1.125 billion",
+   "prev": "$1.08 billion to $1.1 billion",
+   "change": "상향",
+   "quote": "As a result, we now expect 2026 non-GAAP operating expenses of approximately $1.105 billion to $1.125 billion, representing growth of 22% to 24% compared with 2025."
+  },
+  {
+   "item": "FY26 잉여현금흐름(Free Cash Flow) 번",
+   "value": "$205 million to $220 million",
+   "prev": "$195 million to $205 million",
+   "change": "상향",
+   "quote": "We now expect full year free cash flow burn of $205 million to $220 million compared with our prior outlook of $195 million to $205 million."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "가던트360 액체 CDx의 ADLT 지정 획득",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "PLA 코드 확정 및 ADLT 신청을 완료하였으며 20세기 상반기 / 2027년 상반기 지정 일정을 유지함.",
+   "quote": "We remain on track for ADLT designation in the first half of 2027."
+  },
+  {
+   "item": "리빌 울트라(Reveal Ultra) 출시",
+   "target": "올해 말",
+   "status": "진행 중",
+   "note": "바이오파마 파트너 대상 선출시를 완료했으며, 연말 내 임상 고객 대상 출시가 예정대로 진행 중임.",
+   "quote": "We recently launched Reveal Ultra to our biopharma partners and are extremely pleased with the performance we are seeing, giving us increasing confidence as we prepare to bring Reveal Ultra to clinical customers before year-end."
+  },
+  {
+   "item": "회사 전체 현금흐름 손익분기점 달성",
+   "target": "2027년 말",
+   "status": "진행 중",
+   "note": "2027년 말까지 전사적 잉여현금흐름 손익분기점 도달 목표를 재확인함.",
+   "quote": "We remain confident in achieving company-wide free cash flow breakeven by the end of 2027."
+  },
+  {
+   "item": "쉴드 테스트 비용(COGS) 200달러 달성",
+   "target": "2028년",
+   "status": "진행 중",
+   "note": "자동화 및 펠로알토 신규 실험실 가동 등을 통해 2028년 말까지 검사당 원가 200달러 달성 목표를 진행 중임.",
+   "quote": "Together, these initiatives and efficiencies will drive us to our target of $200 cost per test by the end of 2028."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "가던트360 ESR1 동반진단 승인 효과 및 성장 기여도",
+   "analysts": [
+    "Mark Massaro (BTIG)"
+   ],
+   "question": "ESR1 변이 동반진단 FDA 승인에 따른 반복 검사 시점 및 G360 성장 기여도에 대한 기대감은 어떠한가?",
+   "answer": "해당 승인은 유방암 치료 과정에서 지속적인 모니터링과 치료 변경 시점을 정확히 포착하는 중요한 도약이며, 향후 표준 치료로 자리 잡을 것으로 기대함."
+  },
+  {
+   "theme": "쉴드 검사 볼륨 및 계절성 영향",
+   "analysts": [
+    "Subbu Nambi (Guggenheim)"
+   ],
+   "question": "스크리닝 검사인 쉴드에서 여름철 등 계절성에 따른 볼륨 영향이 있었는가?",
+   "answer": "여름철 전통적 유동성 감소에도 불구하고, 영업사원 생산성 향상, 퀘스트(Quest)와의 협업 및 DTC 캠페인 성과로 예상보다 뛰어난 볼륨 성장을 달성함."
+  },
+  {
+   "theme": "유나이티드헬스 계약 진행 상황 및 주정부 법안 영향",
+   "analysts": [
+    "Daniel Markowitz (Evercore ISI)"
+   ],
+   "question": "유나이티드헬스케어 커버리지 이후 수가 협상 진행 상황과 펜실베이니아 등 주정부 법안이 USPSTF에 미치는 영향은 어떠한가?",
+   "answer": "유나이티드헬스와의 계약 논의는 긍정적으로 초기 대화가 진행 중이며 시간이 소요될 것임. 주정부 법안은 USPSTF 지연 상황에서 혁신 기술 접근성을 높이는 긍정적 흐름을 만들고 있음."
+  },
+  {
+   "theme": "쉴드 평균판매가격(ASP) 지속 가능성 및 성장 동력",
+   "analysts": [
+    "Doug Schenkel (UBS)"
+   ],
+   "question": "쉴드 ASP가 800달러 상단에서 유지되는 배경과 향후 65세 미만 상업보험 환자 혼합에 따른 ASP 추이는 어떠한가?",
+   "answer": "메디케어 및 메디케어 어드밴티지 환자의 탄탄한 상환 덕분이며, 향후 상업보험 환자 비중이 늘어나면서 단기적으로 ASP가 일부 하락할 수 있으나 장기적으로는 다시 회복될 것으로 전망함."
+  },
+  {
+   "theme": "리빌 울트라(Reveal Ultra) 출시 전략 및 경쟁력",
+   "analysts": [
+    "Kyle Mikson (Canaccord Genuity)"
+   ],
+   "question": "리빌 울트라는 메디케어 커버리지와 함께 임상 출시되는가? 전장유전체(WGS) 기반 미세잔존질환(MRD) 시장에서 성장 가속화를 기대할 수 있는가?",
+   "answer": "올해 말 임상 출시를 앞두고 있으며 기존 MRD 제품들의 한계를 극복하는 최고 수준의 민감도를 보여주어 포트폴리오의 강력한 성장 동력이 될 것임."
+  },
+  {
+   "theme": "치료 모니터링(Reveal Therapy Monitoring) 시장 침투",
+   "analysts": [
+    "Dan Arias (Stifel)"
+   ],
+   "question": "치료 모니터링 목적의 리빌 활용도 및 향후 12~18개월 내 매출 기여 규모에 대한 전망은 어떠한가?",
+   "answer": "영향력 있는 의료진과 제약사들이 CT 스캔보다 수개월 앞서 치료 반응을 확인하는 ctDNA의 효용성을 깨닫고 있어 매우 빠른 채택과 거대한 시장 기회를 형성하고 있음."
+  },
+  {
+   "theme": "다중암 조기진단(MCED) 및 쉴드 연계 현황",
+   "analysts": [
+    "Dan Brennan (TD Cowen)"
+   ],
+   "question": "쉴드와 연계된 MCED(다중암 조기진단)의 최근 참여 추세와 FDA 승인 타임라인은 어떠한가?",
+   "answer": "매 분기 더 많은 의사와 환자가 MCED 결과 보고를 선택하고 있으며, 규제 수준의 실사용 데이터(RWD)를 축적하여 향후 FDA 허가에 대비하고 있음."
+  },
+  {
+   "theme": "가던트360 조직 검사(Tissue) 승인 및 ADLT 경로",
+   "analysts": [
+    "Mason Carrico (Stephens)"
+   ],
+   "question": "가던트360 조직 검사의 FDA 승인 타임라인과 액체 검사와 비교한 ADLT 수가 기회는 어떻게 보는가?",
+   "answer": "일반적으로 승인 심사에는 약 12개월이 소요되어 내년 중 승인을 예상하며, 조직 검사 수가 상향에 긍정적인 업사이드 기회를 제공할 것으로 기대함."
+  }
+ ]
+}

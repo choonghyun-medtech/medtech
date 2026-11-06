@@ -1,0 +1,135 @@
+{
+ "ticker": "NTRA",
+ "company": "Natera, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-05",
+ "file": "NTRA_2026Q3.json",
+ "source_hash": "97a1323fb0d8",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-06T04:55:08.925931+00:00",
+ "headline": [
+  "2026년 3분기 매출액은 전년 동기 대비 약 34% 증가한 7억 9,400만 달러를 기록함.",
+  "시그나테라는 임상 MRD 검사 물량이 전년 동기 대비 약 56% 성장한 31만 6,000건을 달성함.",
+  "미국 FDA로부터 간세포암(HCC)에 대한 시그나테라 감시 설정(surveillance setting) 급여가 승인됨.",
+  "2026년 연간 매출액 가이던스를 기존 대비 1억 4,000만 달러 상향 조정한 30억 5,000만~31억 3,500만 달러로 제시함."
+ ],
+ "changes": [
+  "CEO가 스티브 채프먼에서 솔로몬 모슈케비치로 교체됨.",
+  "2029년까지 매출액 60억 달러 달성이라는 새로운 장기 재무 목표가 신규 제시됨.",
+  "2026년 연간 매출액 가이던스가 기존 28억 5,000만~29억 1,000만 달러에서 30억 5,000만~31억 3,500만 달러로 상향 조정됨.",
+  "R&D 및 SG&A OpEx 가이던스가 제약/데이터 서비스 수요 대응 및 일회성 비용 반영으로 상향 조정됨."
+ ],
+ "prepared": {
+  "summary": [
+   "2026년 3분기 총 검사 건수는 약 109만 건으로 전년 동기 대비 22% 이상 증가함.",
+   "매출액은 7억 9,400만 달러를 기록하였으며, 진정한 기본 성장률은 true-up을 제외할 때 전년 대비 40%를 상회함.",
+   "매출총이익률은 65%를 기록하였으며, true-up 제외 시 63.2%로 전분기 대비 140bp 개선됨.",
+   "2026년 연간 매출 가이던스를 30억 5,000만~31억 3,500만 달러로 상향하고, 2029년까지 60억 달러 매출을 달성하겠다는 장기 목표를 제시함."
+  ],
+  "sections": [
+   {
+    "title": "재무 및 실적 개요",
+    "points": [
+     "3분기 총 검사 건수는 약 109만 건, 시그나테라 임상 MRD 검사 물량은 약 31만 6,000건으로 56% 성장함.",
+     "GAAP 기준 매출액은 7억 9,400만 달러이며, true-up을 제외하면 전년 동기 대비 40% 이상 성장함.",
+     "매출총이익률은 약 65%를 기록했고, 현금 창출을 지속하며 손실을 유의미하게 축소함."
+    ]
+   },
+   {
+    "title": "종양학 및 임상 데이터 업데이트",
+    "points": [
+     "미국 MolDX로부터 조기 간세포암(HCC) 감시 설정 내 시그나테라 반복 사용에 대한 급여를 획득함.",
+     "일본에서 방광암 규제 승인을 획득하였으며 보건당국과 가격 및 상환 협의를 진행 중임.",
+     "FIND 연구의 PMA 코호트 환자 3만 명 등록을 완료하였으며, 다암종 조기암 검출(MCED) 검사가 FDA 혁신기기 지정(Breakthrough Device Designation)을 획득함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "2026년 연간 매출액",
+   "value": "$3.05 billion to $3.135 billion",
+   "prev": "$2.85 billion to $2.91 billion",
+   "change": "상향",
+   "quote": "Given the strength of the third quarter, we are raising our full year 2026 revenue guidance to a range of $3.05 billion to $3.135 billion, up from the $2.85 billion to $2.91 billion on our last call."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "FIND study full enrollment completion in early cancer detection",
+   "target": "2026년 3분기",
+   "status": "달성",
+   "note": "PMA 코호트 대상 환자 3만 명 등록을 완료함.",
+   "quote": "The study is fully enrolled with 30,000 patients in the PMA cohort."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "CEO 승계 및 향후 전략",
+   "analysts": [
+    "Daniel Brennan (TD Cowen)",
+    "Puneet Souda (Leerink Partners)"
+   ],
+   "question": "CEO 교체 배경과 향후 경영 전략에 변화가 있는지에 대한 질문",
+   "answer": "15년간 함께 호흡을 맞춰온 만큼 급격한 전략적 변화는 없으며, 고객 서비스와 임상 데이터 생성 등 기존의 성공 방정식을 유지할 것임."
+  },
+  {
+   "theme": "2029년 60억 달러 장기 매출 목표",
+   "analysts": [
+    "Daniel Brennan (TD Cowen)",
+    "Puneet Souda (Leerink Partners)"
+   ],
+   "question": "2029년 60억 달러 매출 목표의 달성 경로와 조기암 검진(ECD) 및 신약 개발 파트너십의 기여도에 대한 질문",
+   "answer": "핵심 종양학 포트폴리오의 볼륨 및 ASP 성장, 글로벌 확장, 제약사 데이터 라이선스 사업 등이 주도하며 ECD는 후반부에 미미한 기여를 할 것으로 예상됨."
+  },
+  {
+   "theme": "MolDX 추가 급여 승인 및 HCC 업데이트",
+   "analysts": [
+    "Daniel Markowitz (Evercore ISI)"
+   ],
+   "question": "간세포암(HCC) 급여 승인에 따른 영향과 남은 MolDX 제출 건들의 잠재적 매출 기여도에 대한 질문",
+   "answer": "HCC 급여 승인으로모멘텀을 얻었으며, 현재 9~10개의 추가 제출 건이 대기 중으로 Signatera ASP 상승의 중요한 동력이 될 것임."
+  },
+  {
+   "theme": "매출총이익률 궤적 및 신제품 영향",
+   "analysts": [
+    "Daniel Markowitz (Evercore ISI)"
+   ],
+   "question": "Signatera 게놈 및 fetal focus 등 마진 희석 효과가 있는 신제품 출시 속에서 2027~2028년 마진 개선 경로에 대한 질문",
+   "answer": "단기적인 COGS 압박은 원가 절감 프로젝트와 ASP 상승을 통해 상쇄할 것이며, 장기적으로 70% 이상의 마진 목표를 향해 나아갈 것임."
+  },
+  {
+   "theme": "제약 및 데이터 서비스 사업 투자",
+   "analysts": [
+    "Casey Woodring (JPMorgan)"
+   ],
+   "question": "제약사 및 데이터 라이선스 수요에 대응하기 위한 OpEx 투자 및 인프라 구축 내용에 대한 질문",
+   "answer": "보유한 50만 명 이상의 독보적인 환자 데이터 자산을 바탕으로 큐레이션, 과학자 확충, 소프트웨어 툴 등에 투자하고 있으며 수억 달러 규모의 기여를 기대함."
+  },
+  {
+   "theme": "여성 건강 및 산전 시장 경쟁 구도",
+   "analysts": [
+    "Subhalaxmi Nambi (Guggenheim)"
+   ],
+   "question": "산전 시장의 경쟁사 통합(LabCorp 등)이 Natera의 산전 사업 경쟁 구도에 미치는 영향에 대한 질문",
+   "answer": "시장 내 일부 변동성이 존재하나 기존에도 경쟁해왔으며 고객과 환자 만족을 위한 혁신에 집중하고 있음."
+  },
+  {
+   "theme": "일본 시장 진출 및 상환 전략",
+   "analysts": [
+    "Tycho Peterson (Jefferies)"
+   ],
+   "question": "일본 시장 론칭의 성공 기준과 상환/수가 경로에 대한 질문",
+   "answer": "대장암과 방광암을 통합 가격 협상 중이며 현지 임상 경험이 풍부하여 미국보다 빠른 채택 속도를 기대하며 미국 Medicare 수준의 가산(accretive) 효과를 기대함."
+  },
+  {
+   "theme": "Signatera 포트폴리오 믹스 및 경쟁 환경",
+   "analysts": [
+    "Tycho Peterson (Jefferies)"
+   ],
+   "question": "대장암/유방암 대비 신규 적응증(두경부암, 림프종 등)의 믹스 비중 및 경쟁 환경에 대한 질문",
+   "answer": "대장암과 유방암이 주축이나 신규 암종의 비중이 빠르게 증가하고 있으며, 검사의 정확도와 임상 데이터 축소로 경쟁력을 유지하고 있음."
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+{
+ "ticker": "IRTC",
+ "company": "iRhythm Holdings, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-05",
+ "file": "IRTC_2026Q3.json",
+ "source_hash": "7e1e3d4211da",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-06T04:54:49.345709+00:00",
+ "headline": [
+  "2026년 3분기 매출액은 2억 2,160만 달러로 전년 동기 대비 약 15% 증가하였으며, 핵심 Zio Monitor 사업이 예상을 상회하는 견조한 성장을 기록함.",
+  "바이탈 커넥트 인수 완료를 통해 모바일 심장 원격 측정(MCT) 포트폴리오를 조기 확장하고 통합 플랫폼 구축을 추진 중임.",
+  "총이익률 74.2%, 조정 EBITDA 마진 23.1%로 역대 최고 수준의 영업 레버리지를 시현하며 수익성 개선세를 증명함.",
+  "Zio AT 제품은 바이탈 커넥트 인수 발표에 따른 고객사의 구매 연기 영향으로 전년 동기 대비 플랫한 수준에 그침.",
+  "2026년 연간 매출액 가이던스를 8억 9,000만~8억 9,500만 달러로, 조정 EBITDA 마진은 15.5%~16%로 상향 조정함."
+ ],
+ "changes": [
+  "바이탈 커넥트 인수 완료 시점이 연말에서 10월 5일로 앞당겨지면서 4분기 실적 및 2027년 전망에 조기 반영됨.",
+  "Zio MCT FDA 허가 신청 일정을 당초 올해 말에서 2027년으로 연기하고, 단기적으로 바이탈 커넥트 통합 및 상용화에 집중하기로 전략을 수정함.",
+  "Zio AT 매출이 당초 예상과 달리 전년 동기 대비 정체 양상을 보이며 단기 가이던스 및 전망에 보수적 가정 반영.",
+  "2027년 오가닉 코어 사업 매출 10억 달러 전망을 제시하며, 바이탈 커넥트는 오가닉 성장률을 소폭 상회하는 성장을 가정함."
+ ],
+ "prepared": {
+  "summary": [
+   "2026년 3분기 매출액 2억 2,160만 달러, 총이익률 74.2%, 조정 EBITDA 마진 23.1%를 기록하며 강력한 수익성과 운영 레버리지를 증명함.",
+   "코어 Zio Monitor 사업이 일차 진료, 혁신 채널, 해외 시장의 지속적인 모멘텀에 힘입어 예상을 상회하는 성장을 기록함.",
+   "10월 5일 바이탈 커넥트 인수 완료를 계기로 MCT 시장 전반을 아우르는 멀티모달리티 포트폴리오를 확보하고 통합 작업을 가속화하고 있음.",
+   "Zio AT는 인수 관련 고객사 구매 지연으로 성장이 주춤했으나, 향후 통합 플랫폼을 통해 반등할 것으로 기대됨."
+  ],
+  "sections": [
+   {
+    "title": "재무 및 경영 실적",
+    "points": [
+     "3분기 매출액 2억 2,160만 달러 (전년 대비 약 15% 증가)",
+     "총이익률 74.2%, 일회성 관세 환급 300만 달러(약 140bp) 포함",
+     "조정 EBITDA 5,120만 달러(마진 23.1%)로 전년 대비 1,100bp 이상 개선"
+    ]
+   },
+   {
+    "title": "전략 및 파이프라인 업데이트",
+    "points": [
+     "바이탈 커넥트 인수 완료(10월 5일)로 MCT 시장 내 즉각적인 제품 포트폴리오 강화",
+     "Zio MCT FDA 허가 신청은 2027년으로 조정하고 바이탈 커넥트 통합에 우선 집중",
+     "수면 진단(Sleep Diagnostics) 및 Zio Monitor 소아용 적응증 FDA 허가 신청 등 신규 영역 진출 추진"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "2026 회계연도 전체 매출액",
+   "value": "$890M to $895M",
+   "prev": "8억 8,000만~8억 9,000만 달러",
+   "change": "상향",
+   "quote": "we are raising full year 2026 revenue guidance to $890 million to $895 million, representing 19% to 20% year-over-year growth."
+  },
+  {
+   "item": "2026 회계연도 조정 EBITDA 마진",
+   "value": "15.5% to 16%",
+   "prev": "13%~14%",
+   "change": "상향",
+   "quote": "Based on our strong operating performance year-to-date and our expectations for continued execution in the fourth quarter, we are raising our full year adjusted EBITDA margin guidance to 15.5% to 16%."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Zio MCT 1.0 FDA 허가",
+   "target": "2027년",
+   "status": "진행 중",
+   "note": "당초 올해 말 예정이었으나 바이탈 커넥트 통합에 집중하기 위해 제출 일정을 2027년으로 조정함.",
+   "quote": "As a result, we no longer plan to submit Zio MCT to the FDA later this year... We expect to submit our Zio MCT filing to the FDA in 2027."
+  },
+  {
+   "item": "3세대 알고리즘 런칭",
+   "target": "2027년 상반기",
+   "status": "진행 중",
+   "note": "2027년 초 상용화를 앞두고 있으며 향후 5년간 1,000만 달러 이상의 누적 절감 효과가 기대됨.",
+   "quote": "We are excited to put this new capability into production in the early part of next year."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "Zio AT 부진 및 가이던스 영향",
+   "analysts": [
+    "John Young (Canaccord)",
+    "Brandon Vazquez (William Blair)",
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "Zio AT의 매출 성장 둔화와 볼륨 정체의 원인이 무엇이며, 바이탈 커넥트 인수 발표가 고객사 구매 결정에 어떤 영향을 미쳤는가?",
+   "answer": "고객사들이 향후 통합된 바이탈 커넥트 플랫폼 출시를 기대하며 단기 플랫폼 도입 및 교육 과정을 유예하고 있기 때문이며, 통합 솔루션이 제공되면 반등할 것으로 예상함."
+  },
+  {
+   "theme": "Zio MCT 개발 일정 변경",
+   "analysts": [
+    "Joanne Wuensch (Citibank)"
+   ],
+   "question": "Zio MCT FDA 제출 일정이 연기된 구체적인 배경과 2027년 내 타임라인은 어떻게 되는가?",
+   "answer": "바이탈 커넥트를 통한 MCT 시장 기회를 즉각 확보하기 위해 단기적으로 바이탈 커넥트 통합에 집중하며, Zio MCT는 시제품 테스트 등 검증 작업을 거쳐 2027년 FDA에 제출할 예정임."
+  },
+  {
+   "theme": "바이탈 커넥트 통합 시점 및 2027년 전망",
+   "analysts": [
+    "Stephanie Piazzola (Bank of America)",
+    "Suraj Kalia (Oppenheimer)",
+    "Vijay Kumar (Evercore ISI)"
+   ],
+   "question": "바이탈 커넥트의 완전한 플랫폼 통합 시점은 언제이며, 2027년 오가닉 10억 달러 매출 및 바이탈 커넥트 성장 가정의 근거는 무엇인가?",
+   "answer": "내년 1분기 중반 단일 플랫폼 통합을 목표로 하며, 바이탈 커넥트는 오가닉 성장률을 소폭 상회하는 수준으로 성장할 것으로 보수적으로 가정함."
+  },
+  {
+   "theme": "2027년 수익성 및 EBITDA 마진 가이던스",
+   "analysts": [
+    "Daniel Wilson (Baird)",
+    "Adam Maeder (Piper Sandler)"
+   ],
+   "question": "2027년 적어도 15%의 조정 EBITDA 마진 목표를 달성하기 위한 P&L 상의 주요 동력과 투자 계획은 무엇인가?",
+   "answer": "총이익률 70% 상회 유지 및 비용 구조 내 운영 레버리지를 바탕으로 수익성을 확보하는 동시에, 1차 진료 및 DTC 마케팅 등 성장 투자를 균형 있게 집행할 것임."
+  }
+ ]
+}
