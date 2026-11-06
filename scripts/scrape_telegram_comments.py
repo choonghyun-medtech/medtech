@@ -52,6 +52,7 @@ EN_TO_KO_ALIAS = {
     "stryker": "스트라이커",
     "dexcom": "덱스컴",
     "edwards lifesciences": "에드워즈 라이프사이언시스",
+    "edward lifesciences": "에드워즈 라이프사이언시스",  # 채널 오타 표기(2026-11-05 메시지)
     "thermo fisher": "써모 피셔 사이언티픽",
     "intuitive surgical": "인튜이티브 서지컬",
     "abbott laboratories": "애보트 래보러토리",
@@ -231,6 +232,15 @@ def extract_report_comments(messages, known_companies: set, title_to_report: dic
             if resolved:
                 co = resolved
                 title = candidate_title
+            else:
+                # [2026-11-06] 회사명이 오타·약칭이라 별칭에도 없을 때(예: "Edward Lifesciences:
+                # 임상근거에 기반한 ..." — Edwards의 s 누락으로 11/5 EW 코멘트가 누락됨), 콜론 뒤
+                # 제목이 reports.json 리포트 제목과 정확히 같으면 그 리포트의 종목으로 매칭한다.
+                # 제목 완전일치라 잡담이 잘못 걸릴 위험은 거의 없다.
+                hit = title_to_report.get(candidate_title)
+                if hit:
+                    co = hit["co"]
+                    title = candidate_title
 
         if co is None:
             # "헬스케어 산업(비중확대)"처럼 여러 애널리스트가 공동 작성한 산업 리포트는
