@@ -1,0 +1,184 @@
+{
+ "ticker": "RDNT",
+ "company": "RadNet, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-09",
+ "file": "RDNT_2026Q3.json",
+ "source_hash": "9b136390d3ac",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-11-09T23:10:12.156046+00:00",
+ "headline": [
+  "2026년 3분기 전사 매출액은 전년 동기 대비 22.1% 증가한 6억 3,830만 달러, 조정 EBITDA는 23.8% 증가한 1억 500만 달러로 모두 분기 역대 최고 실적을 기록함.",
+  "고성능 영상(MRI, CT, PET/CT) 수요 호조 및 디지털 헬스 부문의 성장(매출 3,290만 달러, 전년 대비 32.6% 증가)이 실적 성장을 견인함.",
+  "견조한 본업 실적 흐름을 반영해 2026년 연간 영상 센터 부문 매출·조정 EBITDA·잉여현금흐름 가이던스와 디지털 헬스 부문 조정 EBITDA 가이던스를 추가 상향함.",
+  "원격방사선 판독 및 병원 방사선 전문의 인력 공급 업체인 ONRAD 인수 계약을 발표하며 제3의 보고 부문인 '방사선 전문 서비스(Radiology Professional Services)' 설립을 추진함."
+ ],
+ "changes": [
+  "영상 센터 부문 및 디지털 헬스 부문 연간 가이던스가 추가 상향 조정됨.",
+  "ONRAD 인수 합의에 따라 새로운 사업 보고 부문(방사선 전문 서비스) 신설 계획이 구체화됨.",
+  "2027년 1.68% 인하가 제안되었던 메디케어 의사 수가 환율(conversion factor) 감소폭이 최종안에서 2.3%로 확정됨."
+ ],
+ "prepared": {
+  "summary": [
+   "래드넷은 2026년 3분기 매출액 6억 3,830만 달러, 조정 EBITDA 1억 500만 달러를 기록하며 분기 최대 실적을 달성했습니다.",
+   "동일 센터 기준 영상 검사 건수는 전년 동기 대비 8.9% 증가했으며, MRI·CT·PET/CT 등 고성능 영상의 비중 확대로 수익성이 크게 개선되었습니다.",
+   "디지털 헬스 부문은 연간반복매출(ARR) 1억 1,260만 달러를 달성하고 신규 계약 체결액(TCV) 7,100만 달러를 기록하는 등 강력한 성장세를 이어갔습니다.",
+   "ONRAD 인수를 통해 병원 대상 방사선 전문 서비스를 확장하고, 딥헬스(DeepHealth) AI 기술과 결합하여 병원 안팎의 방사선 통합 솔루션을 제공할 계획입니다."
+  ],
+  "sections": [
+   {
+    "title": "전사 및 영상 센터 부문 실적",
+    "points": [
+     "3분기 전사 매출액 6억 3,830만 달러(YoY +22.1%), 조정 EBITDA 1억 500만 달러(YoY +23.8%), 조정 EPS $0.30를 기록함.",
+     "전체 검사량은 YoY 19.9% 증가, 동일 센터 기준 8.9% 증가했으며 고성능 영상 비중은 30.6%로 232bp 상승함.",
+     "메디컬 센터 합작투자(JV)는 총 439개 센터 중 161개(약 37%)로 확대되었으며 메릴랜드 대학교 메디컬 시스템과의 파트너십을 확장함."
+    ]
+   },
+   {
+    "title": "ONRAD 인수 및 사업 확장",
+    "points": [
+     "26개 주 225개 이상 병원에 원격 판독 및 방사선 전문 인력을 제공하는 ONRAD 인수 합의 발표.",
+     "인수 완료 후 첫 1년간 매출액 1억 9,000만~2억 달러, 조정 EBITDA 6,000만~6,500만 달러 기여 예상.",
+     "종합병원 시장 직접 진출 및 딥헬스 AI 플랫폼과의 시너지 창출 기대."
+    ]
+   },
+   {
+    "title": "디지털 헬스 부문 및 AI 솔루션",
+    "points": [
+     "디지털 헬스 부문 3분기 매출 3,290만 달러(YoY +32.6%), 조정 EBITDA 300만 달러 기록.",
+     "3분기 말 ARR 1억 1,260만 달러(YoY +67%), 외부 고객 매출 비중은 65%로 확대됨.",
+     "유방 초음파 AI, 유방 동맥 석회화 평가, 차세대 흉부 X-ray 솔루션 등 FDA 510(k) 허가 추가 획득."
+    ]
+   },
+   {
+    "title": "메디케어 수가 동향",
+    "points": [
+     "11월 4일 최종 확정된 2027년 메디케어 의사 수가 환율은 2.3% 인하($33.40 → $32.63)로 결정됨.",
+     "2027년 래드넷 매출에 약 500만 달러의 영향이 예상되나, 연말 미 의회의 일부 소급 보완 조치 가능성이 존재함."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "영상 센터 부문 순매출",
+   "value": "$2.385 billion to $2.435 billion",
+   "prev": "$2.370 billion to $2.420 billion",
+   "change": "상향",
+   "quote": "Total net revenue guidance for the Imaging Center segment increased to a range of $2.385 billion to $2.435 billion, an increase of $15 million at both the low and high ends of the range as compared with the guidance we provided after our second quarter results."
+  },
+  {
+   "item": "영상 센터 부문 조정 EBITDA",
+   "value": "$350 million to $363 million",
+   "prev": "$345 million to $358 million",
+   "change": "상향",
+   "quote": "Adjusted EBITDA guidance for the Imaging Center segment increased to a range of $350 million to $363 million, an increase of $5 million at both the low and high ends of the range."
+  },
+  {
+   "item": "영상 센터 부문 잉여현금흐름",
+   "value": "$120 million to $130 million",
+   "prev": "$115 million to $125 million",
+   "change": "상향",
+   "quote": "Free cash flow guidance increased to a range of $120 million to $130 million, an increase of $5 million at both the low and high end of the range."
+  },
+  {
+   "item": "디지털 헬스 부문 매출",
+   "value": "$135 million to $145 million",
+   "prev": "$135 million to $145 million",
+   "change": "유지",
+   "quote": "For the Digital Health segment, we are reaffirming our revenue guidance range of $135 million to $145 million."
+  },
+  {
+   "item": "디지털 헬스 부문 조정 EBITDA",
+   "value": "$11 million to $13 million",
+   "prev": "$10 million to $12 million",
+   "change": "상향",
+   "quote": "We increased our guidance range for adjusted EBITDA before noncapitalized R&D to $11 million to $13 million as a result of effective expense management and faster-than-projected integration of acquired operations."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "연간 ARR(연간반복매출) 1억 4,000만 달러 달성",
+   "target": "2026년 연말",
+   "status": "진행 중",
+   "note": "3분기 ARR 1억 1,260만 달러를 달성하였으며 연말까지 1억 4,000만 달러 달성이 충분히 가능하다고 재확인함.",
+   "quote": "Looking ahead to the fourth quarter, we're very confident and we are on track for more than $140 million of ARR by year-end, roughly 87% growth over 2025."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "고성능 영상(Advanced Imaging) 성장 동력 및 TechLive 진척도",
+   "analysts": [
+    "Brian Tanquilut (Jefferies)"
+   ],
+   "question": "고성능 영상(CT, MRI, PET/CT) 분야의 지속적인 성장을 이끄는 요인과 TechLive 원격 조종 기술 적용 확대 계획은 어떠한가?",
+   "answer": "인구 고령화뿐만 아니라 장비 속도 향상(PET/CT 검사 시간을 15분 미만으로 단축) 및 새로운 임상 적응증(심달혈관 CT 등) 확대가 성장을 견인하고 있음. TechLive는 3분기 MRI 검사의 13%에 적용되었으며, 원격 조종을 통해 방사선사 부족에 따른 검사실 휴무 시간을 크게 줄이고 있음."
+  },
+  {
+   "theme": "디지털 헬스 부문 4분기 실적 가시성 및 ARR 전환",
+   "analysts": [
+    "Brian Tanquilut (Jefferies)"
+   ],
+   "question": "4분기 디지털 헬스 매출 및 EBITDA 급증에 대한 가시성과 ARR의 매출 전환 시점은 어떠한가?",
+   "answer": "Q3 말 ARR 1억 1,260만 달러는 내년 매출로 바로 반영되는 구조임. 외부 고객 프로젝트 백로그 설치, 래드넷 내부 솔루션 확장(유방 초음파 등), 영구 라이선스 수주 확보 등에 기반하여 4분기 매출 4,000만 달러 이상 달성을 확신함."
+  },
+  {
+   "theme": "운영 효율화 및 디지털 환자 등록 시스템 효과",
+   "analysts": [
+    "Clarke Murphy (Truist Securities)"
+   ],
+   "question": "디지털 환자 등록 솔루션 등 운영 효율화 도구가 센터 수용 능력과 환자 처리량에 미치는 영향은 어떠한가?",
+   "answer": "모바일 디지털 환자 등록 도입으로 30여 개 센터에서 환자의 1/3이 데스크를 거치지 않고 등록과 수수가 완결됨. 우수 센터의 경우 75%까지 자동화되어 대기 시간 단축, 접수 인력 부담 경감 및 처리 용량 증가 효과를 얻고 있음."
+  },
+  {
+   "theme": "ONRAD 인수에 따른 JV 파트너십 및 종합병원 반응",
+   "analysts": [
+    "Clarke Murphy (Truist Securities)"
+   ],
+   "question": "ONRAD 인수 발표 후 합작투자(JV) 파트너나 신규 고객의 반응 및 사업적 시너지는 어떠한가?",
+   "answer": "방사선 전문의 부족을 겪는 JV 파트너 및 신규 고객의 관심이 매우 높음. ONRAD의 판독 인력망에 딥헬스 AI 및 운영 노하우를 결합한 통합 엔드투엔드 솔루션을 제공함으로써 종합병원 시장 진출이 가속화될 것임."
+  },
+  {
+   "theme": "2027년 실적 방향성 및 주요 변수",
+   "analysts": [
+    "Andrew Mok (Barclays)"
+   ],
+   "question": "ONRAD 인수와 메디케어 수가 변화 외에 2027년 실적에 고려해야 할 주요 변수들은 무엇인가?",
+   "answer": "기존 센터의 검사량 증가 및 고성능 영상 비중 확대, 2026년 인수 센터(플로리다, 인디애나 등)의 통합 시너지, 디지털 헬스의 높은 ARR 매출 전환, 추가 인수합병 및 신규 JV 체결 등이 긍정적 성장을 이끌 것임."
+  },
+  {
+   "theme": "ONRAD 인수 계약 조건 및 인수후 정산(Earn-out)",
+   "analysts": [
+    "Andrew Mok (Barclays)"
+   ],
+   "question": "ONRAD 인수 대금 구조와 2027년 EBITDA 목표에 따른 언아웃(Earn-out) 방식은 어떻게 구성되어 있는가?",
+   "answer": "종료 시 현금 3억 5,000만 달러와 래드넷 보통주 500만 주를 지급함. 2027년 ONRAD EBITDA가 5,600만 달러를 초과할 경우 초과분의 15배를 현금 또는 주식으로 지급하는 언아웃 조건이 포함되어 있음."
+  },
+  {
+   "theme": "검사 용량 확대 방안 및 4분기 마진 트렌드",
+   "analysts": [
+    "Matthew Gillmor (KeyBanc)",
+    "Yuan Zhi (B. Riley Securities)"
+   ],
+   "question": "검사 용량 확대 방식과 4분기 예상 EBITDA 마진 트렌드는 어떠한가?",
+   "answer": "운영시간 연장(야간/주말), 최신 장비 도입, 디지털 등록 및 신규 센터 설립(올해 10개 개설)을 통해 용량을 확장함. 4분기는 유방암 예방의 달 행사 및 연말 공제한도 소진 수요로 연중 가장 높은 마진과 실적을 기록하는 계절성을 보임."
+  },
+  {
+   "theme": "AI 솔루션 전면 도입에 따른 방사선사 생산성 개선",
+   "analysts": [
+    "Yuan Zhi (B. Riley Securities)"
+   ],
+   "question": "2027년 중반까지 AI 적용 비율을 50% 이상으로 올릴 경우 판독 속도 및 수익성에 미치는 영향은 어떠한가?",
+   "answer": "AI 자동 초안 작성(Draft Reporting)과 초음파/X-ray 판독 지원으로 방사선사의 판독 시간을 단축해 생산성을 최대 50% 이상 향상시킬 수 있음. 이를 통해 방사선사 구인 난에 따른 비용 증가를 억제하고 판독 처리 시간을 획기적으로 줄여 서비스 경쟁력을 확보함."
+  },
+  {
+   "theme": "GLEAMER 신규 고객 확보 및 십자 판매(Cross-selling)",
+   "analysts": [
+    "James Sidoti (Sidoti & Company)"
+   ],
+   "question": "3분기 추가된 GLEAMER 신규 고객 63곳 중 기존 래드넷 고객 비중과 향후 제품 교차 판매 가능성은 어떠한가?",
+   "answer": "신규 고객 63곳은 모두 래드넷 외부의 순수 신규 고객임. 딥헬스 플랫폼으로 통합된 전체 AI 제품군을 기존 및 신규 고객에게 교차 판매(Cross-sell) 및 업셀링할 수 있는 기회가 매우 큼."
+  }
+ ]
+}
