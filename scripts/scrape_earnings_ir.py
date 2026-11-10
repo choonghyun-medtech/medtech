@@ -66,7 +66,7 @@ from company_names import glossary_text, normalize_text
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 MAX_QUARTERS_PER_TICKER = 8
 
-# SEC EDGAR 공시 대상 18개사 — https://www.sec.gov/files/company_tickers.json로 확인한
+# SEC EDGAR 공시 대상 20개사(캘린더 18개사 + 컨콜 전용 2개사) — https://www.sec.gov/files/company_tickers.json로 확인한
 # CIK(10자리 0 패딩). form은 대부분 "8-K"(미국 국내 상장사), InMode만 "6-K"(외국민간발행인).
 EDGAR_SOURCES = {
     "SYK":  {"name": "Stryker",              "cik": "0000310764", "form": "8-K"},
@@ -87,6 +87,10 @@ EDGAR_SOURCES = {
     "ALGN": {"name": "Align Technology",      "cik": "0001097149", "form": "8-K"},
     "TEM":  {"name": "Tempus AI",             "cik": "0001717115", "form": "8-K"},
     "INMD": {"name": "InMode",                "cik": "0001742692", "form": "6-K"},
+    # 2026-11-10: 해외기업 컨콜 탭 전용으로 치과 2개사 추가(이벤트 캘린더 calendar_ir_sources.json에는
+    # 넣지 않음 — 사용자 요청). CIK는 data.sec.gov submissions로 사명·티커·8-K(2.02) 이력 확인.
+    "XRAY": {"name": "Dentsply Sirona",       "cik": "0000818479", "form": "8-K"},
+    "NVST": {"name": "Envista",               "cik": "0001757073", "form": "8-K"},
 }
 
 # SEC는 자동화 요청(특히 data.sec.gov)에 "이름 연락처이메일" 형식의 식별 가능한
@@ -139,10 +143,14 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, m
             return False
         return d >= cutoff
 
-    candidates = [i for i, f in enumerate(forms) if f == form_type and _recent_enough(i)]
+    # [2026-11-10] 정정공시("8-K/A")도 본다 — XRAY는 2Q26 실적 8-K(2026-08-06)를 items "9.01"만으로
+    # 냈다가 다음 날 8-K/A로 "2.02"를 붙여 다시 제출해, 원본만 보던 예전 코드로는 그 분기가 통째로 빠졌다.
+    # 같은 분기가 원본·정정 둘 다 들어오면 dedupe_and_trim()이 발표일이 늦은 쪽 하나만 남긴다.
+    candidates = [i for i, f in enumerate(forms) if f in (form_type, form_type + "/A") and _recent_enough(i)]
     if form_type == "8-K":
         earnings_first = [i for i in candidates if "2.02" in (items_list[i] if i < len(items_list) else "")]
-        other = [i for i in candidates if i not in earnings_first]
+        # 정정공시는 실적(2.02)으로 분류된 것만 — 실적과 무관한 정정(임원 변경 등)까지 LLM에 보내지 않는다
+        other = [i for i in candidates if i not in earnings_first and forms[i] == form_type]
         # [2026-10-01] 예전엔 earnings_first + other로 2.02 아닌 8-K까지 이어서 시도했는데,
         # 회사당 2025-10 이후 8-K가 9~19건인데 실적(2.02)은 4~5건뿐이라 나머지가 전부 LLM
         # 판정으로 넘어가 하루 무료 쿼터(20회)를 다 태웠다 — 백필이 HIMS 이후로 한 건도 못
@@ -191,7 +199,7 @@ def find_earnings_release_candidates(ticker, cik, form_type, max_candidates=3, m
             found += 1
             # is_202: SEC 분류상 실적 공시(8-K item 2.02) — AI가 "실적 아님"이라 해도 영구 제외하지 않는 근거(2026-10-16)
             is_202 = form_type == "8-K" and "2.02" in (items_list[i] if i < len(items_list) else "")
-            yield {"title": f"{ticker} {form_type} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i], "is_202": is_202}
+            yield {"title": f"{ticker} {forms[i]} Exhibit 99 ({dates[i]})", "url": url, "date": dates[i], "is_202": is_202}
     if found == 0:
         print(f"[INFO] {ticker} 최근 {form_type} 공시 중 실적 보도자료로 보이는 첨부문서를 찾지 못함", file=sys.stderr)
 

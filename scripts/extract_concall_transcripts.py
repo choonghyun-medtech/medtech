@@ -41,6 +41,9 @@ NAME_TO_TICKER = [
     ("Medtronic", "MDT"), ("Natera", "NTRA"), ("RadNet", "RDNT"), ("Stryker", "SYK"),
     ("Teladoc", "TDOC"), ("Tempus AI", "TEM"), ("Thermo Fisher", "TMO"),
     ("UnitedHealth", "UNH"), ("InMode", "INMD"),
+    # 2026-11-10 컨콜 전용 추가 — TIKR 제목 예: "DENTSPLY SIRONA Inc., Q3 2026 Earnings Call, ..."(대소문자 무시),
+    # "Envista Holdings Corporation, Q3 2026 Earnings Call, ..."
+    ("Dentsply Sirona", "XRAY"), ("Envista", "NVST"),
 ]
 TITLE_RE = re.compile(r"^(?P<company>.+?), Q(?P<q>[1-4]) (?P<y>\d{4}) Earnings Call, (?P<date>.+)$")
 MONTHS = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -89,7 +92,8 @@ def parse_call_date(s):
 
 def ticker_for(company):
     for key, tk in NAME_TO_TICKER:
-        if company.startswith(key):
+        # 대소문자 무시 — TIKR가 사명을 "DENTSPLY SIRONA Inc."처럼 대문자로 쓰는 경우가 있다(2026-11-10)
+        if company.lower().startswith(key.lower()):
             return tk
     return None
 
