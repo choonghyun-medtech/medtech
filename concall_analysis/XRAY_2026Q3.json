@@ -1,0 +1,114 @@
+{
+ "ticker": "XRAY",
+ "company": "DENTSPLY SIRONA Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-05",
+ "file": "XRAY_2026Q3.json",
+ "source_hash": "f868593fb878",
+ "prior_basis": "",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-10T04:56:57.914383+00:00",
+ "headline": [
+  "덴츠플라이 시로나의 2026년 3분기 매출액은 8.36억 달러로 전년 동기 대비 7.6% 감소(환율 고정 기준 7.0% 감소)함.",
+  "회사는 실적발표에서 회계 추정 변경에 따른 3,900만 달러의 세전 이익 반영 효과(세후 약 3,000만 달러)를 포함함.",
+  "덴츠플라이 시로나는 연간 실적 가이던스를 하향 조정하여, 순매출액은 기존 35억~36억 달러에서 약 35억 달러로, 조정 EPS는 관세 환급에 따른 0.17달러 일회성 이익을 제외하고 1.20~1.30달러로 수정함.",
+  "웰스펙트 헬스케어는 신제품 출시와 미국 시장 성장에 힘입어 분기 기준 사상 최대 매출을 기록함."
+ ],
+ "changes": [],
+ "prepared": {
+  "summary": [
+   "2026년 3분기 총 매출은 8억 3,600만 달러로 바이트(Byte) 매출 부재 및 계획된 딜러 재고 감축 영향으로 전년 동기 대비 7.6% 감소함.",
+   "조정 매출총이익률은 190bp 개선되었으나, 재고 이전 관련 회계 추정 변경으로 3,900만 달러의 긍정적 효과가 포함됨.",
+   "영업비용은 영업 조직, 임상 교육, R&D 투자 확대로 소폭 증가하였으며, 조정 EPS는 0.29달러를 기록함.",
+   "미국 시장에서는 미스(MIS) 임플란트와 엔도(Endo) 부문 등에서그린슈트(회복 조짐)가 관찰되며 성과가 가시화됨.",
+   "유럽(EMEA) 지역은 딜러 재고 조정과 중동 갈등 여파로 자본재 수요가 위축되며 실적에 부담으로 작용함."
+  ],
+  "sections": [
+   {
+    "title": "전사 실적 요약",
+    "points": [
+     "3분기 매출액 8억 3,600만 달러 (보고 기준 7.6% 감소, 환율 고정 기준 7.0% 감소)",
+     "조정 EPS 0.29달러 (전년 동기 0.42달러에서 0.13달러 감소)",
+     "영업 현금흐름 3,200만 달러 기록 (전년 동기 7,900만 달러)"
+    ]
+   },
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "CTS(소모품 및 기술) 매출 2억 3,000만 달러 (11% 감소), 장비 부문 역풍 지속",
+     "EDS(엔도, 보존, 예방) 매출 3억 4,300만 달러 (4% 감소), 미국 엔도 부문은 반등 기록",
+     "OIS(교정 및 임플란트) 매출 1억 7,100만 달러 (17% 감소), 바이트 영향 포함",
+     "웰스펙트 헬스케어 매출 9,200만 달러 (10% 증가), 신제품 및 미국 수리티(Surity) 호조"
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY2026 순매출액",
+   "value": "약 $3.5 billion",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect full year net sales of approximately $3.5 billion versus the range of $3.5 billion to $3.6 billion previously and adjusted EPS of $1.20 to $1.30 from $1.40 to $1.50, excluding the $0.17 onetime gain from tariff refunds."
+  },
+  {
+   "item": "FY2026 조정 EPS",
+   "value": "$1.20 to $1.30",
+   "prev": "",
+   "change": "신규",
+   "quote": "We now expect full year net sales of approximately $3.5 billion versus the range of $3.5 billion to $3.6 billion previously and adjusted EPS of $1.20 to $1.30 from $1.40 to $1.50, excluding the $0.17 onetime gain from tariff refunds."
+  }
+ ],
+ "milestones": [],
+ "qa": [
+  {
+   "theme": "DSO 파트너십 및 전략",
+   "analysts": [
+    "Allen Lutz (Bank of America)"
+   ],
+   "question": "DSO 전담 팀 구축 이후의 진척 상황과 잠재 파트너들이 원하는 핵심 소구 포인트는 무엇인가?",
+   "answer": "광범위한 포트폴리오를 바탕으로 일반의부터 스페셜리스트, 장비와 소모품을 아우르는 강력한 제안을 전달하고 있으며 현재 다양한 수준의 협의가 진행 중임."
+  },
+  {
+   "theme": "3분기 회계 조정 항목(3,900만 달러) 가이던스 반영 여부",
+   "analysts": [
+    "Allen Lutz (Bank of America)",
+    "Jeffrey Johnson (R.W. Baird)"
+   ],
+   "question": "재고 이전 관련 3,900만 달러(세후 약 3,000만 달러)의 혜택이 연간 EPS 가이던스에 포함되어 있는지, 그리고 다년도에 걸친 이벤트를 왜 올해 가이던스에 유지하는지?",
+   "answer": "해당 금액은 세후 기준으로 가이던스에 포함되어 있으며, 회계 통합 시스템 구축 및 FP&A 역량 개선 과정에서 발생한 조정 사항으로 적절한 회계 처리를 거쳐 반영한 것임."
+  },
+  {
+   "theme": "그린슈트 및 웰스펙트/임플란트 성장 지속성",
+   "analysts": [
+    "Elizabeth Anderson (Evercore)"
+   ],
+   "question": "웰스펙트와 미스(MIS) 및 밸류 임플란트 등에서 나타난 성장세가 2027년에도 이어질 것으로 보는지, 재고 디스토킹의 타이밍은 어떠한가?",
+   "answer": "웰스펙트는 미국 내 초기 진입 단계와 메디케어 커버리지 확대에 힘입어 내년에도 강세가 지속될 것으로 기대하며, 임플란트와 엔도 역시 영업 조직 확대와 임상 교육 효과로 긍정적 흐름을 보이고 있음."
+  },
+  {
+   "theme": "미국 시장 '플러스(+)' 성장 전환 가능성",
+   "analysts": [
+    "Jeffrey Johnson (R.W. Baird)"
+   ],
+   "question": "최근 아메리카 지역의 조정 기준 실적이 -3%에서 -4% 수준을 보였는데, 4분기에 이를 극복하고 미국 매출에 플러스(+) 성장을 기록할 수 있는가?",
+   "answer": "안정화 단계를 거쳐 성사 가능성을 보고 있으며, 만약 4분기에 달성하지 못하더라도 다음 분기에는 가시화될 수 있도록 노력할 것임."
+  },
+  {
+   "theme": "2027년 전망 및 턴투그로스(Return-to-Growth) 계획",
+   "analysts": [
+    "Lilia-Celine Lozada (JPMorgan)"
+   ],
+   "question": "2027년 턴투그로스 관점에서 고려해야 할 주요 테마, 역풍, 순풍 및 실적 방향성에 대한 최신 의견은 무엇인가?",
+   "answer": "향후 1~2개월 동안 이사회와 함께 Return-to-Growth 플랜의 다음 단계를 확정할 예정이므로, 구체적인 수치는 준비가 완료되는 대로 시장과 공유할 것임."
+  },
+  {
+   "theme": "3분기에서 4분기로의 실적 브리지 및 가시성",
+   "analysts": [
+    "Leah Waldman Bailey (Leerink Partners)"
+   ],
+   "question": "수정된 4분기 실적 가이던스를 달성하기 위한 믹스 변화 및 자본재 장비 부문의 가시성은 어떠한가?",
+   "answer": "4분기는 전통적으로 자본재 장비(Capital Equipment) 수요가 양호한 분기이며, 고수익 제품 중심의 믹스 개선 등을 통해 제시된 가이던스 범위 달성은 충분히 가능하다고 판단함."
+  }
+ ]
+}

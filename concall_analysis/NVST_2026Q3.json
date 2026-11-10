@@ -1,0 +1,145 @@
+{
+ "ticker": "NVST",
+ "company": "Envista Holdings Corporation",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-04",
+ "file": "NVST_2026Q3.json",
+ "source_hash": "a18434b00d37",
+ "prior_basis": "",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-10T04:56:38.324390+00:00",
+ "headline": [
+  "엔비스타는 2026년 3분기 2.7%의 유기적 매출 성장을 기록하며 조정 EBITDA와 조정 EPS가 각각 9%, 25% 증가함.",
+  "중국 시장은 VBP(가치기반 조달) 준비에 따른 교정기 재고 조정으로 전년 동기 대비 두 자릿수 역성장을 기록함.",
+  "견조한 실적과 모멘텀을 바탕으로 2026년 연간 가이던스를 상향 및 좁혀서 제시함.",
+  "가격 인상과 공장 생산성 향상에 힘입어 조정 매출총이익률과 EBITDA 마이진이 각각 20bp, 80bp 개선됨."
+ ],
+ "changes": [
+  "직전 분기 정리가 없어 해당 항목 없음."
+ ],
+ "prepared": {
+  "summary": [
+   "엔비스타의 2026년 3분기 총 매출은 6억 9,100만 달러로 전년 동기 대비 21만 달러 증가했으며, 유기적 매출 성장은 2.7%를 기록함.",
+   "치과 시장 전반의 거시적 불확실성이 지속되는 가운데, 중국을 제외한 신흥국과 유럽 등이 성장을 주도함.",
+   "조정 영업이익과 마이진은 가격 인상과 생산성 향상에 힘입어 개선되었으며, 세율 하락의 영향으로 조정 EPS가 25% 성장함.",
+   "중국 VBP 영향으로 브래킷 및 와이어 부문이 타격을 입었으나, 임플란트 및 기타 사업부는 긍정적 흐름을 유지함."
+  ],
+  "sections": [
+   {
+    "title": "전사 실적 개요",
+    "points": [
+     "3분기 매출 6억 9,100만 달러, 유기적 성장률 2.7%, 환율 영향 중립.",
+     "조정 EBITDA 1억 600만 달러(마이진 15.3%, 80bp 개선), 조정 EPS $0.40(25% 증가).",
+     "잉여현금흐름은 6,300만 달러로 조정 순이익의 97% 전환율 기록."
+    ]
+   },
+   {
+    "title": "사업부별 실적",
+    "points": [
+     "특수 제품 및 기술(Specialty Products & Technologies) 매출은 4,440만 달러로 core 성장 2% 기록 (스파크 고성장, 중국 VBP로 브래킷/와이어 부진).",
+     "장비 및 소모품(Equipment & Consumables) 코어 성장 4% 상회, 진단 사업부는 하드웨어·소프트웨어·서비스 전반에서 고른 성장."
+    ]
+   },
+   {
+    "title": "지리적 시장 및 중국 VBP 동향",
+    "points": [
+     "개발도상국(중국 제외) 한 자릿수 후반 성장, 유럽 중기 성장, 북미 한 자릿수 초반 성장.",
+     "중국은 VBP 준비에 따른 유통 채널 재고 조정으로 약 7백만 달러의 역풍 발생, VBP 결과는 12월 중순 발표 예상, 2027년 상반기 시행 전망."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY2026 유기적 매출 성장률",
+   "value": "3.75% to 4.25%",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our updated 2026 expectations call for core growth of 3.75% to 4.25%, adjusted EBITDA growth of 12.5% to 14% and adjusted EPS of $1.54 to $1.58, up more than 10% at the midpoint from our initial 2026 guide."
+  },
+  {
+   "item": "FY2026 조정 EBITDA 성장률",
+   "value": "12.5% to 14%",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our updated 2026 expectations call for core growth of 3.75% to 4.25%, adjusted EBITDA growth of 12.5% to 14% and adjusted EPS of $1.54 to $1.58, up more than 10% at the midpoint from our initial 2026 guide."
+  },
+  {
+   "item": "FY2026 조정 EPS",
+   "value": "$1.54 to $1.58",
+   "prev": "",
+   "change": "신규",
+   "quote": "Our updated 2026 expectations call for core growth of 3.75% to 4.25%, adjusted EBITDA growth of 12.5% to 14% and adjusted EPS of $1.54 to $1.58, up more than 10% at the midpoint from our initial 2026 guide."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "중국 VBP 결과 발표 시기",
+   "target": "2026년 12월 중순",
+   "status": "진행 중",
+   "note": "정부 커뮤니케이션에 따르면 12월 중순 결과 발표가 예상되며, 시행은 2027년 상반기로 전망됨.",
+   "quote": "The latest government communications point to mid-December timing for results to be announced. Although as we know, due to the complexity of these processes, VBP time lines often run long. We expect VBP implementation most likely to commence in the first half of 2027."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "2027년 성장 동력 및 운영 방향",
+   "analysts": [
+    "Brandon Vazquez (William Blair)"
+   ],
+   "question": "2027년을 앞두고 모멘텀을 유지하기 위한 주요 성장 및 운영상의 기회 요소는 무엇인가?",
+   "answer": "신제품 출시 가속화와 상업화 역량 집중, COGS 및 G&A 생산성 향상 지속, 안정적인 리더십과 인재 개발이 핵심임."
+  },
+  {
+   "theme": "자본 배분 및 주식 환매 우선순위",
+   "analysts": [
+    "Vikramjeet Chopra (BMO Capital Markets)"
+   ],
+   "question": "순레버리지가 EBITDA의 0.6배인 상황에서 M&A, 부채 감축, 내부 투자 대비 자사주 매입을 우선시하는 이유는 무엇인가?",
+   "answer": "내실 다지기와 유기적 투자, M&A가 우선순위이며, 주주 환원은 연간 잉여현금흐름의 약 1/3 수준에서 신중하게 병행하고 있음."
+  },
+  {
+   "theme": "가격 인상 지속 가능성",
+   "analysts": [
+    "Vikramjeet Chopra (BMO Capital Markets)",
+    "Jeffrey Johnson (Baird)",
+    "Oli (Evercore)"
+   ],
+   "question": "3분기 가격 인상 기여도가 지속 가능하며, 가격 인상이 완화될 경우 마이진에 미치는 영향은 어떠한가?",
+   "answer": "치과 시장의 역사적 수준인 1~1.5% 수준으로 안정화될 것으로 보이며, 중국 VBP에 따른 일시적 가격 하락 효과가 타 지역의 인상분과 상쇄될 것임."
+  },
+  {
+   "theme": "중국 VBP 영향 및 진행 상황",
+   "analysts": [
+    "Jeffrey Johnson (Baird)",
+    "Lilia-Celine Lozada (JPMorgan)"
+   ],
+   "question": "중국 VBP로 인한 3분기 채널 재고 조정 영향과 향후 가격 인하 및 매출 회복 시점은 어떻게 되는가?",
+   "answer": "3분기 예상되었던 1천만 달러 규모의 재고 조정이 발생했으며, 4분기에는 채널 영향이 미미할 것으로 보이며 VBP 시행은 2027년 상반기로 예상됨."
+  },
+  {
+   "theme": "스파크(Spark) 및 치과 교정기 성장 전망",
+   "analysts": [
+    "Jonathan Block (Stifel)"
+   ],
+   "question": "스파크의 고성장세와 일본 등 신규 시장 진출이 부문 성장을 가속화할 수 있는가?",
+   "answer": "스파크는 시장 성장률을 상회하며 지속적으로 점유율을 확대하고 있으며, 글로벌 시장에서 강력한 성장을 이어가고 있음."
+  },
+  {
+   "theme": "장비 및 소모품(E&C) 사업부 마이진 동향",
+   "analysts": [
+    "Lilia-Celine Lozada (JPMorgan)"
+   ],
+   "question": "3분기 장비 및 소모품 사업부의 마이진 상승폭이 컸는데, 이를 향후 벤치마크로 삼아야 하는가?",
+   "answer": "매우 강력한 분기였으나 향후에도 이와 유사한 안정적인 저단가 소모품 성장과 진단 부문의 다각화된 포트폴리오를 통해 수익성 기조를 유지할 것임."
+  },
+  {
+   "theme": "진단 사업부 점유율 확대 및 AI 기능",
+   "analysts": [
+    "Ahmed Muhammad Rahat (Leerink Partners)"
+   ],
+   "question": "진단 사업부에서 시장 점유율을 확대하는 동력은 무엇이며, AI 기능이 수익성 개선에 기여하고 있는가?",
+   "answer": "북미 지역의 거대한 설치 기반, 활발한 신제품 출시(CBCT, IOS 등), 하드웨어와 소프트웨어의 통합 워크플로우 제공이 경쟁 우위를 제공함."
+  }
+ ]
+}

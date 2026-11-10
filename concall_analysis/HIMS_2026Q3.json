@@ -1,0 +1,162 @@
+{
+ "ticker": "HIMS",
+ "company": "Hims & Hers Health, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-09",
+ "file": "HIMS_2026Q3.json",
+ "source_hash": "c6941ef8af2a",
+ "prior_basis": "2026년 2분기(Q2) 컨콜 분석",
+ "model": "gemini-3.5-flash-lite",
+ "generated_at": "2026-11-10T04:57:31.520803+00:00",
+ "headline": [
+  "2026년 3분기 매출액은 전년 동기 대비 49% 증가한 8억 9,000만 달러를 기록하며 2분기 연속 가속화됨.",
+  "미국 비만 치료제 부문의 마케팅 지출 조절 및 국제 부문 브랜드 통합으로 구독자 수는 전분기 대비 10만 명 감소한 280만 명을 기록함.",
+  "릴리(Eli Lilly)와의 제휴를 통해 Zepbound 및 Foundayo를 플랫폼에 추가하며 비만 치료 제품군을 대폭 확장함.",
+  "테스토스테론 대체 요법(TRT) 주사제 및 경구용 제품을 성공적으로 론칭하며 최초의 향정신성 의약품 카테고리에 진입함.",
+  "AI 네이티브 플랫폼 적용 확대로 비만 고객의 참여도가 4배 증가하는 등 운영 효율성과 환자 몰입도가 크게 개선됨."
+ ],
+ "changes": [
+  "미국 비만 치료제 시장의 전략적 마케팅 일시 조절과 국제 시장(영국, 독일, Australia) 브랜드 마이그레이션으로 인해 구독자 수가 직전 분기 대비 순감소함.",
+  "일라이 릴리와의 신규 파트너십 체결을 통해 Zepbound와 Foundayo가 비만 치료제 라인업에 새롭게 추가됨.",
+  "체중 감량 신규 전문 분야의 멤버십 매출 이연(약 1,800만 달러)으로 인해 3분기 실적에 일부 반영되지 않음.",
+  "2026년 연간 매출액 가이던스를 기존 31억~33억 달러에서 31억 3,000만~31억 5,000만 달러로 타이트하게 조정함.",
+  "국제 부문 연간 매출 가이던스를 기존 6억 달러 이상에서 6억 5,000만 달러 이상으로 상향 조정함."
+ ],
+ "prepared": {
+  "summary": [
+   "3분기 매출액은 8억 9,000만 달러로 전년 동기 대비 49% 성장하며 가속화 기조를 이어감.",
+   "비만 치료제 부문의 전략적 마케팅 조절과 해외 브랜드 통합으로 총 구독자 수는 280만 명을 기록함.",
+   "일라이 릴리 제휴 및 릴리·노보 너보디스크 제품군 확대를 통해 연말 및 새해 성수기 준비에 집중함.",
+   "AI 네이티브 플랫폼이 비만 고객의 70% 이상에 도달하며 환자 참여도와 임상 효율성을 대폭 향상시킴."
+  ],
+  "sections": [
+   {
+    "title": "재무 및 실적 개요",
+    "points": [
+     "3분기 매출액 8억 9,000만 달러(전년 동기 대비 +49%), 조정 EBITDA 8,200만 달러 기록.",
+     "영업 현금흐름 6,500만 달러, 잉여현금흐름(FCF) 2,600만 달러 창출하며 현금성 자산 7억 1,000만 달러 이상 확보.",
+     "무게 중심을 둔 마케팅 지출 조절로 마케팅 비용 비중이 매출 대비 28%로 전분기 대비 7%p 개선됨."
+    ]
+   },
+   {
+    "title": "미국 및 국제 사업 부문",
+    "points": [
+     "미국 매출은 전년 동기 대비 21% 증가한 6억 5,700만 달러를 기록하며 성장 가속화.",
+     "국제 부문 매출은 2억 3,300만 달러로 4배 이상 급증했으며, 유칼립투스(Eucalyptus) 기여도가 약 1억 3,500만 달러에 달함.",
+     "영국, 독일, 호주 등 주요 해외 시장에서 Hims & Hers 브랜드 통합 작업이 진행 중임."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY26 매출액",
+   "value": "$3.13 billion to $3.15 billion",
+   "prev": "$3.1 billion to $3.3 billion",
+   "change": "조정",
+   "quote": "For the full year, we are tightening our 2026 revenue outlook to $3.13 billion to $3.15 billion, representing a year-over-year increase of 33% to 34%."
+  },
+  {
+   "item": "FY26 조정 EBITDA",
+   "value": "$257 million to $277 million",
+   "prev": "$275 million to $325 million",
+   "change": "하향",
+   "quote": "We are reducing our 2026 adjusted EBITDA guidance range to between $257 million to $277 million."
+  },
+  {
+   "item": "Q4 FY26 매출액",
+   "value": "$875 million to $895 million",
+   "prev": "언급 없음",
+   "change": "신규",
+   "quote": "In the fourth quarter, we are anticipating revenue in the range of $875 million to $895 million, representing a year-over-year increase of approximately 42% to 45%."
+  },
+  {
+   "item": "Q4 FY26 조정 EBITDA",
+   "value": "$70 million to $90 million",
+   "prev": "언급 없음",
+   "change": "신규",
+   "quote": "We expect adjusted EBITDA to be between $70 million to $90 million, representing an adjusted EBITDA margin of 9% at the midpoint of both ranges."
+  },
+  {
+   "item": "FY26 국제 부문 매출",
+   "value": "at least $650 million",
+   "prev": "at least $600 million",
+   "change": "상향",
+   "quote": "Our expectation is that our international business delivers at least $650 million of revenue in 2026, up from our prior expectation of $600 million."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "브랜드 GLP-1 제품군 확대 및 월간 주기 전환",
+   "target": "2026년 연중",
+   "status": "진행 중",
+   "note": "릴리(Zepbound, Foundayo) 및 노보(Wegovy)와의 파트너십을 통해 제품군을 확장하고 다개월 구독 플랜을 준비 중임.",
+   "quote": "Through our recently announced agreement, we will expand access to Lilly's GLP-1 medications, Zepbound and Foundayo, offering customers a seamless experience across the full assortment of their weight loss medicines."
+  },
+  {
+   "item": "테스토스테론 대체 요법(TRT) 주사 및 경구용 제품군 확장",
+   "target": "2026년 연말 이전",
+   "status": "달성",
+   "note": "직전 분기 목표대로 지난달 주사 및 경구용 TRT 제품군을 성공적으로 플랫폼에 론칭함.",
+   "quote": "We expanded our testosterone offering to include both injectable and oral TRT, our first launch of controlled substances."
+  },
+  {
+   "item": "펩타이드 치료제 포트폴리오 상용화",
+   "target": "2026년 연말 이전 (규제 승인 대기 중)",
+   "status": "진행 중",
+   "note": "세모렐린, 글루타치온, NAD+ 등이 포함된 Peptides+ 서비스가 이달 말 1단계로 론칭될 예정이며, BPC-157 및 TB-500은 규제 허용 시 추가될 예정임.",
+   "quote": "Later this month, we expect to launch the first phase of our peptide offering that includes sermorelin, glutathione, and NAD+. We plan to add BPC-157 and TB-500 when the regulatory environment permits."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "구독자 동향 및 마케팅 지출 조정",
+   "analysts": [
+    "Maria Ripps (Canaccord)"
+   ],
+   "question": "매출 성장이 가속화됨에도 구독자 수가 감소한 이유는 마케팅 축소와 리텐션 변화 중 무엇 때문이며, 향후 구독자 증가 추세를 어떻게 보아야 하는가?",
+   "answer": "비만 치료 부문에서 릴리 제품군 추가와 새로운 다개월 구독 등 플랫폼 서비스를 강화하기 위해 3분기 마케팅 지출을 의도적으로 조절한 결과이며, 1분기 성수기를 앞두고 마케팅을 재개하면 구독자 성장이 회복될 것임."
+  },
+  {
+   "theme": "릴리 및 노보 파트너십과 비만 치료제 전략",
+   "analysts": [
+    "Maria Ripps (Canaccord)",
+    "Ryan MacDonald (Needham)"
+   ],
+   "question": "일라이 릴리의 가세가 기존 노보 수요를 잠식하는 것인지 아니면 신규 회원 유입을 촉진하는 것인지, 그리고 마케팅 축소가 ROI 저하 때문이었는지 궁금함.",
+   "answer": "다양한 제형과 가격대에 대한 소비자 선호도가 다르므로 assortment 확대는 전체 카테고리 성장을 견인할 것이며, 마케팅 축소는 ROI 저하가 아니라 연초 성수기를 겨냥한 전략적 준비 과정이었음."
+  },
+  {
+   "theme": "펩타이드 규제 환경 및 상용화 타임라인",
+   "analysts": [
+    "Ryan MacDonald (Needham)"
+   ],
+   "question": "TB-500 및 BPC-157 관련해서 FDA/HHS의 집행 유예 조치 외에 추가로 주시하고 있는 규제적 요소는 무엇인가?",
+   "answer": "현재 FDA가 공개한 규제 제안에 대한 의견 수렴 기간이 진행 중이며, 향후 최종 규칙 제정 과정에서 API 테스트 요건이나 시설 표준에 대한 명확성을 확인하고자 함."
+  },
+  {
+   "theme": "AI 네이티브 플랫폼의 영향과 운영 효율성",
+   "analysts": [
+    "Jacob (KeyBanc Capital Markets)"
+   ],
+   "question": "AI 네이티브 플랫폼 도입이 고객 경험 개선과 내부 운영 효율성에 미치는 가장 큰 기회는 무엇인가?",
+   "answer": "HERS 2.0 앱 등을 통해 고객 참여도가 4배 증가하여 부작용 관리와 복약 순응도가 높아졌고, EMR 내에서 의료진에게 사전 작성된 노트를 제공함으로써 서류 업무를 줄이고 임상적 판단에 집중할 수 있게 함."
+  },
+  {
+   "theme": "국제 부문 실적 상향 및 총이익률(Gross Margin) 동향",
+   "analysts": [
+    "Craig Hettenbach (Morgan Stanley)"
+   ],
+   "question": "국제 부문 가이던스 상향의 원인과, 총이익률 하락 요인 중 단기적 영향 및 향후 개선 방안은 무엇인가?",
+   "answer": "국제 부문은 해외 시장의 크로스러닝과 브랜드 확장 덕분이며, 총이익률 하락은 해외 및 비만 브랜드 제품 비중 확대에 기인하나 플랫폼 규모의 경제와 성장에 따라 중장기적으로 개선될 것임."
+  },
+  {
+   "theme": "글로벌 비만 치료 시장의 경제성 및 제네릭 진화",
+   "analysts": [
+    "Eric Percher (Nephron Research)"
+   ],
+   "question": "유럽 등 해외 시장에서 확인된 경제성 개선 효과가 미국 시장에도 동일하게 적용될 수 있는가?",
+   "answer": "캐나다 등 선행 시장에서 제네릭 도입과 경쟁 심화로 가격이 안정화되면서 오히려 가입자 유입과 리텐션이 개선되는 양상을 확인했으며, 비만 치료 카테고리도 이와 유사한 궤적을 밟을 것으로 전망함."
+  }
+ ]
+}
