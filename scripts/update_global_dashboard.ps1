@@ -45,6 +45,19 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
+Write-Host "-- 0) GitHub 최신 내용 받아오기 --" -ForegroundColor Cyan
+# [2026-11-12] 예전엔 커밋 직후(푸시 직전)에만 pull해서, 변환은 이 PC의 옛날 코드·파일로 돌았다 —
+# 다른 PC(개인 노트북 등)에서 고친 변환 코드나 tickers.json이 반영되지 않은 채 변환될 수 있어
+# 시작할 때 먼저 받아온다. 푸시 직전 pull(아래 5단계)은 실행 중 봇이 올린 커밋 대비로 그대로 둔다.
+git pull --rebase --autostash
+if ($LASTEXITCODE -ne 0) {
+    git rebase --abort 2>$null
+    Write-Host "[오류] GitHub 최신 내용을 받아오지 못했습니다(인터넷 연결 또는 충돌). 아무것도 바꾸지 않고 종료합니다. VS Code 터미널에서 'git pull --rebase'를 직접 실행해 확인해주세요." -ForegroundColor Red
+    Read-Host "종료하려면 Enter"
+    exit 1
+}
+
+Write-Host ""
 Write-Host "-- 1) 엑셀 -> JSON 변환 --" -ForegroundColor Cyan
 & $pythonCmd scripts\convert_global_dashboard.py --out global_dashboard.json
 if ($LASTEXITCODE -ne 0) {
