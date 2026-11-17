@@ -1,0 +1,500 @@
+{
+ "ticker": "HNGE",
+ "company": "Hinge Health, Inc.",
+ "quarter": "2026년 3분기(Q3)",
+ "call_date": "2026-11-02",
+ "title": "Hinge Health, Inc., Q3 2026 Earnings Call, Nov 02, 2026",
+ "source": "TIKR 컨콜 스크립트(수동 복사)",
+ "qa_start": 8,
+ "segments": [
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Hello, everyone. Thank you for joining us, and welcome to the Hinge Health Third Quarter 2026 Earnings Call. [Operator Instructions] I will now hand the conference over to Bianca Buck, Head of Investor Relations. Bianca, please go ahead."
+   ]
+  },
+  {
+   "speaker": "Bianca Buck",
+   "paras": [
+    "Good afternoon, and welcome to Hinge Health's Third Quarter 2026 Earnings Call. I'm Bianca Buck, Head of Investor Relations. With me on the call are Daniel Perez, our Co-Founder and CEO; Jim Pursley, our President; Aaryn Pure, our Chief Commercial Officer; and James Budge, our CFO. I want to thank everyone for joining us. As a reminder, this conference call is being recorded. All relevant materials are available on the Investor Relations section of our website.",
+    "Today's discussion will include forward-looking statements, which are subject to various risks, uncertainties and assumptions. These statements reflect our current views and expectations regarding future events, including expected performance of our business, future financial results and growth strategies. While these statements represent our good faith judgment and beliefs, actual results may differ materially from those projected or implied. We undertake no obligation to update any forward-looking statements, except as required by law. For a detailed discussion of the risks, please refer to our SEC filings, including our annual report on Form 10-K for the year ended December 31, 2025, and our quarterly reports on Form 10-Q. We expect to file our next quarterly report on Form 10-Q in the next week.",
+    "All income statement financial measures discussed today, other than revenue, are non-GAAP. These measures should be viewed in addition to, and not as a substitute for, our GAAP results. Reconciliations to the most comparable GAAP measures are included in the appendix to our earnings release.",
+    "With that, I'll turn it over to Dan."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Thanks, Bianca. Q3 was another strong proof point that automating care delivery works: for our members, our clients, our partners and our financials. Here's what I'll cover today: first, a quick snapshot of our Q3 financial performance and the momentum we're carrying; second, a product update -- what's working in our core MSK business, some early data from our Migraine Care Program, and I want to spend a few moments on what our GI Care Program is going to look like since I know that's been a common question; third, I'll hand it to Jim and Aaryn for the commercial update and Jim has a personal note he'd like to share as well; and lastly, James will take us through the financials and updated guidance before we open it up for questions. Before I begin, apologies for my hoarse voice. I'm fighting a cold, but we've got great numbers to report. Let's dive in.",
+    "Q3 saw strong top line performance and all-time highs on profitability. Revenue came in at $235 million, up 52% from $154 million in Q3 of last year. Last 12 months calculated billings were strong as well, up 54% year-over-year to $960 million. Gross margin came in at 88%, up about 480 basis points from the same period last year. On the bottom line, operating income came in at $77 million, a 33% operating margin, up about 1,300 basis points year-over-year. Free cash flow, excluding onetime acquisition-related payments, was $120 million, representing a 51% free cash flow margin. As you can see, the momentum we saw in the first half of the year has continued, and that's a testament to the team, product and business we've built.",
+    "Let me now turn to product. Let's start with our core MSK product, where we've spent over a decade automating care and continue to see progress. A good example is Movement Analysis, which uses our TrueMotion technology to give members a quantitative, objective way to track their progress, and it's being used by more and more of our members. It scores them across joint angles, symmetry and endurance and gives them Hinge Scores, so they can actually see how they're improving over time rather than just feeling they might be. And the data shows it is resonating: members who use Movement Analysis are doing more computer vision-based exercises overall. We believe that when people can see their progress in real numbers, they adhere better.",
+    "We also began rolling out a redesigned exercise experience this quarter, with new exercises that load faster, preview clips that show members what's coming, and a new control bar that puts them in charge of their session. These might sound like small things, but they're critical to ensuring a consumer-grade product experience, why we're the top-rated digital MSK app and something people want to open rather than feel they have to. This technical foundation for our MSK product is also what lets us add care for new conditions like Migraine and GI efficiently. We've built an extensible platform, and we believe this unified approach is a meaningful advantage for us in the market.",
+    "Speaking of our new programs, let me turn to our Migraine Care Program. We're still in early access with clients, but the data we're seeing is genuinely exciting. Initial results of our surveyed members show a 23% reduction in monthly migraine days. And when migraines did occur, members reported they were shorter by roughly 5 hours, or a 28% reduction in the duration of the attack. We're also seeing a meaningful reduction in monthly prescription use days, which matters both for members and for the clients paying for their care. We're also tracking HIT-6 scores. That's a validated 6-item measure used widely in migraine research that captures what migraine actually takes away from someone: that is their ability to focus, work, stay present and get through their day. About 2/3 of our members improved their HIT-6 score and just over half crossed the threshold for a clinically meaningful change. That's a really strong early signal, and we're looking forward to sharing more as the program scales.",
+    "Thirdly, many of you have asked what our GI Care Program will eventually look like in the unified offering, so let me walk you through it. It's the same playbook we've run in MSK and Migraine: we start with the member intake, create a personalized care program, apply technology to automate care delivery, supplement the technology with access to clinicians and connected hardware when applicable and hold it all to the same clinical rigor as our other programs. Fortunately, our acquisition of Cylinder and the incredible team that built it has given us a big head start.",
+    "Nearly one in two people with GI conditions also have MSK pain and 70% of people with migraine also have a GI condition. These conditions are connected and most people can't always tell how. With Hinge Health, we make it easy. When a member opens the Hinge Health app, our AI-powered intake screener, the same engine that triages MSK migraine members today, routes them to the right care automatically: back pain, pelvic floor conditions, migraine, GI or all of the above.",
+    "Our GI Care Program itself will have two main parts. First, AI that turns raw signals into action, including personalized care plans. Our Food Analysis model can read what's going into the gut from a photo, a voice note or a text. Robin, our AI Care Assistant, connects that input to symptoms in real time. And with our AI-powered Stool Scan, a member could capture a photo and our technology analyzes stool according to the Bristol Stool Scale, capturing form, consistency and volume, giving us a structured, longitudinal data set that both our models and our clinicians can act on. Those signals feed personalized care plans that evolve as our model learns what's driving someone's symptoms.",
+    "Second, immediate access to a multidisciplinary care team from day 1, no referral needed. That means a GI specialist who could prescribe and make in-person referrals when needed, a dietitian focused on triggers and nutrition and a gut-brain therapist delivering Cognitive Behavioral Therapy, which is the evidence-based standard of care for IBS. Moreover, one of the top referrals for GI symptoms is pelvic floor therapy, and we're the only GI solution with that embedded in the same app, available the same day.",
+    "We're really excited about where this is heading, and we think our integrated vision is differentiated. The full integrated program is targeted for the summer of 2027. We're selling the existing GI Care program today, and we plan to upgrade those clients when the integrated version is ready. We expect meaningful growth and revenue contribution to come in 2028 once we've had a full 2027 selling season with the integrated program.",
+    "While I love where Migraine and GI are headed, I want to remind everyone that core MSK is still our largest revenue contributor by a wide margin, is growing robustly, and we expect it to remain that way for years to come. The opportunity in MSK remains massively underpenetrated and everything we're doing in Migraine and GI is built on the foundation of what we've achieved in MSK.",
+    "With that, I'll hand it over to Jim. Jim joined us in 2021 and has helped take us from a couple of hundred clients to over 3,200, and to partnerships with 60-plus health plans, PBMs and TPAs. That distribution model is the second wall of our moat, and much of it was built under Jim and Aaryn's leadership.",
+    "Jim, over to you."
+   ]
+  },
+  {
+   "speaker": "James Pursley",
+   "paras": [
+    "Thank you, Dan. I very much appreciate the kind words. Before I hand things over, I want to share something personal with everyone on the call. After a lot of reflection, I've made the decision to step back from my role as President at the end of the year. This isn't a decision I came to lightly, but after a couple of decades of running hard -- building two companies, taking them both public and leading through some really demanding chapters -- I'm ready to spend more time with my family.",
+    "That time is something I can't get back, and I've decided it's the right moment to prioritize it. I want to be clear: I'm not stepping back entirely. I'll be joining the Hinge Health Board because I believe in this company, and I want to continue helping us grow. I remain as excited as ever about where we're headed, particularly given how strong the commercial performance has been, and I believe we're doing something that genuinely matters. We are changing how health care is delivered, and I want to continue to be a part of that story, just in a different capacity.",
+    "What makes this transition easier is knowing exactly who is going to lead our go-to-market function moving forward. I've had the privilege of working alongside Aaryn Pure for the past 12 years at both Hinge Health and Livongo, and many of you had the chance to meet him at our Investor Day in Chicago this past June. He's been a close deputy, a sharp strategic thinker, and frankly, one of the most talented leaders I've worked with in my career. He knows this business, he knows our clients and he knows how to win. I couldn't be more confident in him.",
+    "Aaryn, the floor is yours."
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Thanks, Jim. Decades of running hard, two IPOs and a lot of cross-country flights -- what you've done just in the last 12 years is a career's worth of work compressed into a run that most people couldn't sustain for half that long. What you've built here at Hinge Health, the culture you've helped shape and the way you've shown up for this team every single day it means a lot to us. I speak for everyone at Hinge Health when I say we're grateful, and we're glad you're not going far.",
+    "Now let's get into the commercial update because there's a lot to be excited about. The sales season accelerated meaningfully this quarter, ending Q3 with 3,270 contracted clients, up 28% year-over-year. We added three new Fortune 15 clients and expanded to cover the full population of another. These are some of the largest, most sophisticated buyers in the country, and they're choosing Hinge Health. That tells you something about where we stand competitively, and we continue to find large opportunities in the enterprise segment.",
+    "Our SMB category that we started investing in about a year ago is also paying off in a real way. Through Q3, we closed almost 1 million SMB lives, demonstrating we're not just winning at the top of the market, we're adding clients across every size tier. This is one of our most underpenetrated categories. And since these SMB sales are usually faster, more efficient and come with higher yields, we're excited to see such substantial progress.",
+    "And here's a number that really stands out to us internally: we've already received verbal agreements on more lives this year than we closed in all of last year. And last year was a record-breaking sales year for adding eligible lives. And that number excludes lives from Cylinder. Win rates continue to trend up year-over-year and the conversations we're having with prospective clients still in a final decision mode are tracking very favorably.",
+    "Our multiproduct approach is also landing well. A growing number of lives -- now over 10 million across over 800 clients -- have access to multiple Hinge Health products, whether MSK, Migraine, GI or HingeSelect. Also, since announcing our Cylinder acquisition, we've grown our GI clients by around 40%. When a client turns on a second or third product, it deepens the relationship and increases the clinical value we deliver to both the member and the client.",
+    "On HingeSelect, and specifically our surgery product which we announced in June, the reception has been really strong. The feedback we're getting directly from surgeons has been particularly encouraging, and it's what gives us confidence as we continue to build out our network. Two things keep coming up: first, they value we only send them prequalified members. We handle all the clinical screening and intake upfront, so surgeons can use their time more effectively. Second, they appreciate our integrated hybrid care model because surgeons care deeply about patient outcomes and our ability to wrap pre and postsurgical care around their work, which helps the member achieve better results. We also have a robust contracting playbook built out by geography, which lets us navigate the nuances of each local market as we expand.",
+    "All in all, it's been a strong year commercially, and we feel really good about the setup heading into the end of the year and into 2027.",
+    "With that, I'll hand it over to James to walk through the financials."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Thanks, Jim and Aaryn. And Jim, on behalf of the whole finance team, we're going to miss having you in the seat, although we know we're in great hands with Aaryn.",
+    "Now let me walk you through the numbers. This was a really strong quarter across the board. Before I get into the details, though, let me quickly remind everyone how our billings model works, since it's the foundation for the rest of the numbers. Our calculated billings are a function of three things: the number of eligible lives on our platform, the yield -- meaning the share of those lives that actually enroll and engage with our programs -- and the average selling price per member. When any one of those moves, we see it in billings and ultimately in revenue.",
+    "On that note, LTM calculated billings came in at $960 million, up 54% year-over-year. That's a strong top-of-funnel signal for where revenue is headed. For Q3, specifically, revenue came in at $235 million, up 52% from $154 million in Q3 of last year. To put that in context, our guidance heading into the quarter was $223 million to $225 million.",
+    "That beat was driven entirely by billings outperformance, and billings outperformance was driven by yield. Yield came in stronger than we anticipated, and we believe the gain is durable. The yield improvements we're seeing are coming from a few places, similar to what we've shared in the past. First, members joining from clinically targeted enrollment campaigns that are reaching the right members at the right time are up almost 75% year-over-year. And second, member renewals, people who've gone through the program and are choosing to come back, are up almost 25% year-over-year. That last one is particularly meaningful because it tells us the product is delivering real value in a member's time of need. We don't view these as onetime tailwinds, but rather as structural improvements in how we engage members.",
+    "Turning to gross margin. We came in at 88% for the quarter, up 480 basis points from 83% in Q3 of last year. That improvement is a direct result of efficiency gains we've been driving through reduced hardware costs, AI and automation. On operating expenses, we saw leverage across every category this quarter. Total operating expenses came in at 55% of revenue, down from 63% in Q3 of last year. We're being disciplined about where we spend, and the combination of top line outperformance and that spending discipline is what's driving the profitability results.",
+    "Income from operations came in at $77 million, representing a 33% operating margin. That compares to our guided range of $61 million to $63 million. Year-over-year, operating margin expanded around 1,300 basis points from the 20% we reported in Q3 2025. Expanding our margin by that magnitude at this rate of revenue growth is something we're really proud of. Free cash flow for the quarter was $120 million, which excludes $7 million of onetime acquisition-related payments, representing a 51% free cash flow margin. That compares to $81 million in Q3 of last year. The cash our business is generating gives us real flexibility, both to invest in solutions for our members, clients and partners, while also returning capital to shareholders.",
+    "On the balance sheet, we ended the quarter with $358 million in cash and investments. In Q3, we purchased 296,000 shares for $26 million through our share repurchase program and saw another $209 million of outflows from M&A and net share settlements on employee RSU vestings. Despite those outflows, our cash position remains strong, and we feel well capitalized for the foreseeable future. Finally, our weighted average diluted share count for the quarter was 86.5 million shares, and our diluted net income per share attributable to common shareholders for the quarter was $0.71.",
+    "Given everything I just walked you through, we feel confident in raising our guidance for the remainder of the year. For Q4 2026, we're guiding to revenue of $249 million to $251 million, which represents 46% growth at the midpoint compared to Q4 of last year. On profitability, we expect income from operations of $81 million to $83 million, representing a 33% operating margin at the midpoint.",
+    "For the full year 2026, we're raising our revenue guidance to $879 million to $881 million. That's 50% growth at the midpoint and up from $856 million to $860 million range we provided last quarter. On income from operations, we're raising our full year range to $266 million to $268 million, representing a 30% operating margin at the midpoint.",
+    "Let me walk you through the key inputs that underpin those numbers. On lives, we're now expecting end-of-year LTM average eligible lives of approximately 25.5 million. That's about $0.5 million higher than our expectations from our last call, and the primary driver is the inclusion of Cylinder's net new lives following the close of the acquisition. On yield, we're now expecting a full year yield of 4.6%, up from the 4.45% we guided to last quarter. That incremental improvement in yield flows directly through to billings and revenue, and it's a big part of why we're able to raise the top line the way we are.",
+    "On profitability, the increase in our income from operations guidance reflects two things working together: top line outperformance from the yield and lives dynamics I just described, coupled with spending that has come in more slowly as we manage expenses. We're continuing to invest in the things that matter to our members and clients as evidenced by our new Migraine and GI Care programs, and we're being disciplined, and that discipline is showing up in the margin profile. On share count, we expect both our Q4 and our 2026 weighted average diluted share count to be in the range of 85 million to 87 million shares, consistent with what we've shared previously.",
+    "All in, we feel really good about where the business is and where it's headed. And with that, I'll turn it back over to Dan to wrap us up."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Thanks, James. Let me take a step back for a moment, because I think it's worth reflecting on what this quarter actually represents. We delivered meaningful clinical outcomes and a great health care experience for hundreds of thousands of people this quarter, while lowering the cost of care for our members, clients and partners.",
+    "Because of our ability to consistently deliver the triple aim: we're growing revenue at 50% year-over-year; we're generating hundreds of millions in annual free cash flow; we're expanding our operating margin by 1,000 basis points, all while continuing to invest in the next chapter of the company. That combination, delivering for our members and clients, combined with growth and profitability at this scale, is something we don't take for granted, and it's a direct reflection of the durability of the model we've built.",
+    "Here are two reasons we're bullish heading into the end of 2026 and beyond. First, the MSK opportunity is still enormous. Musculoskeletal conditions are among the leading drivers of disability and health care spend in the United States, and the vast majority of people in America still don't have access to a digital MSK solution. We've built something that works -- clinically, commercially and economically -- and we're still in the early innings of penetrating that market. We are the undisputed leader in this space and we estimate 88% of lives within our markets are yet to be won, leaving a long runway for growth. That alone is a multiyear growth opportunity.",
+    "Second, we're building on top of that foundation. Our vision has always been to automate the delivery of care, using technology to close the gap between the care people need and the care they actually receive. We're now applying that same approach and the same trusted relationships with employers and partners in neurology and gastrointestinal care.",
+    "We're not starting from scratch in each new category. We're extending a platform that's already proven into conditions that are often connected to the ones we already treat. We believe that's a fundamentally different and more powerful way to expand than what other companies in our space are attempting. Every quarter we get a little closer to our vision of automating and scaling the delivery of health care, and we have decades of work ahead.",
+    "We're grateful for your continued support and interest in Hinge Health, and we're looking forward to finishing 2026 strong. And before handing it back to Bianca, let me also say thank you to Jim for your incredible partnership these past 6 years. We wouldn't be here without you, and thank you for continuing this journey by accepting our invitation to join the Board.",
+    "Over to you, Bianca."
+   ]
+  },
+  {
+   "speaker": "Bianca Buck",
+   "paras": [
+    "Thanks, Dan. Operator, we're now ready to take questions."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "[Operator Instructions] Your first question comes from the line of Elizabeth Anderson from Evercore ISI."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Anderson",
+   "paras": [
+    "Jim, congratulations. And Dan, I hope you feel better soon. I was wondering if you could double-click a little bit on HingeSelect. Obviously, you talked about the physician feedback and how that had gone. How are you seeing it on the opposite side, on the employer side? Are you seeing increased traction in that? Is that something they're watching and waiting until the physician network is built up a bit more? Like how is that going as you're working through this early selling season?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Good question. And I took some tea, so voice is hopefully a little less raspy now than it was earlier. It's still very early days for HingeSelect. We're making very real progress. We've built a broad provider density across the country with approximately 5,500 provider locations as of Q3, majority being PT and imaging centers still. We added surgery in June and are contracting surgical sites market by market with a geographical playbook. So the network grows where our members are.",
+    "We don't need the same density with surgery centers as we do with PT or imaging sites. And surgeons are responding very well to integrated hybrid model. We are moving very quickly to get dots on the map for surgeons signed up. But I do want to emphasize we are a precision network. We are absolutely not looking to compete with the large health plans; rather to complement them. So what matters is having a high-quality sites within each of our members.",
+    "Now with regard to client reception, it has been very, very strong. HingeSelect is part of our multiproduct adoption we are seeing. We've roughly doubled the number of lives on HingeSelect since Investor Day, which was in June. And the work now is expanding coverage across our book of business as the provider network builds out. HingeSelect will be a slower burn than a digital program that could be available nationwide on day 1. However, we think long term will be one of our most enduring moats."
+   ]
+  },
+  {
+   "speaker": "Elizabeth Anderson",
+   "paras": [
+    "And then maybe on the GI side, if we think about that, it's obviously nice to see the client growth there. Where are you in terms of the integration efforts? I know you've been working hard, obviously, to integrate those on the app and some of you highlighted some of the things. When do you expect that to be completed? And are you still thinking next season should be like the real start to the selling season momentum? Or you're starting to even get that interest in that this year ahead of that?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Also a great question. Integration is going well, both the operations side of the business as well as the product. We continue to serve Cylinder clients and members on their existing program. And in parallel, we're building our integrated GI Care Program into the Hinge Health app. We are targeting summer of 2027 to have our integrated product experience live and the clients we signed today will be upgraded when it's ready.",
+    "In regards to client sales, the reaction has been very positive, and it really reinforces why we did the deal. GI cost has been a growing pain point for employers and health plans, especially with the growth of GLP-1s, given GI side effects are so common and our employer clients are very grateful we're taking this on. And as we mentioned in our release, since announcing the acquisition in August, we've expanded Cylinder's GI client base by 40%, adding more GI clients in Q3 than Cylinder added in all of 2025. So we really like the momentum we're seeing both on the product delivery front as well as on the -- from our clients.",
+    "And then you also asked about when we'll expect the revenue. Yes, in the back half of next year, but especially in 2028, we'll have a more fulsome sales season next year. But even that will be somewhat truncated because the integrated product won't be live until June, but we're getting really good feedback now, and we're hitting the pavement."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Saket Kalia from Barclays."
+   ]
+  },
+  {
+   "speaker": "Saket Kalia",
+   "paras": [
+    "Congrats both Jim and Aaryn on your next steps. Dan, maybe for you to start. Can you just talk a little bit about the migraine business a little bit and what some of your early observations are, whether that's adoption of lives or what ARPU you're seeing? Just expand a little bit on what you're seeing there and how you feel about that looking forward?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Well, let me give you a little bit about what we're seeing on the member experience front, some of the outcomes and then AP could give you a little bit -- Aaryn could give a little bit more around client adoption. So we're early access, but the data has been very compelling. Again, we're seeing about a 23% reduction in monthly migraine days, 28% reduction in migraine duration, and a very meaningful reduction in monthly prescription use. On HIT-6, it's the validated measure of what migraine takes away from daily life, about 2/3 of members improved and just over half crossed the threshold for a clinically meaningful change.",
+    "We're going to share more as the program scales, and we're actually submitting our results for public review later this year. And with regards to enrollment, again, we launched Migraine early access in May and enrollment engagement are tracking expectations. We've got a very robust road map to build upon our early baseline and our Migraine program lets us care for more people. So some of those are MSK members already, so are incremental yield, but are additive to ASP. And we aren't seeing any impact to yields this year given the very small set of lives that were launched. But starting in 2027, we expect to see an uptick in our 2026 yield improvements are really coming from our core MSK business. But Aaryn, do you want to share a little bit more on the client adoption?"
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. I would just add we're around 9 million lives. There are over 800 clients now have access to Migraine. So we're very proud to have doubled over the past quarter. Clients see migraines as a large unmet need and because it runs on the same engagement-based billing model, it layers on top of existing contracts with no new contracting, which is really how we went from 0 to 1 million lives within just a few months. We expect to launch the bulk of those lives in early 2027."
+   ]
+  },
+  {
+   "speaker": "Saket Kalia",
+   "paras": [
+    "James, maybe for you. 4.6% yield this year. It's just been great to see just more eligible lives take advantage of Hinge Health. Maybe the question is, what are some of the things that you feel like have helped you raise that rate of engagement over the years? And as you look forward, are there any knobs that you want to turn to keep that engagement up or even continue improving? Curious how you think about that."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Yes. Thanks, Saket. First off. We've got a great product, best-in-class, best product out there for this market that we're in. And we have a great team that is part of the team that goes out and reaches out to those members and prospective members to engage them in the product. So those two are just working extremely well.",
+    "The two things that I mentioned in the prepared remarks are a couple of things we're really proud of: one, 75% up on our target enrollment activities. And while the number is smaller, it's coming off of a much higher base, the 25% increase on our retained members is extraordinary and really points back to that best-in-class product again that we have. People are -- they love the experience. They see an improved outcome. And when something goes awry with their MSK needs in their body, they come back. And that's a great validation of the product.",
+    "So that's what we're seeing. Those are durable capabilities that we have. We think they're not just 1-year tailwinds. They have been getting better every year for the next last three years, and we see more growth coming in the next couple of years as well."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Jailendra Singh from Truist Securities."
+   ]
+  },
+  {
+   "speaker": "Jailendra Singh",
+   "paras": [
+    "Jim and Aaryn, congrats to both of you. My first question is on gross margin, really strong trends there, benefiting from lower hardware costs, AI and automation. How sustainable is that as you onboard a large new cohort and scale GI? And how are you thinking about care team staffing heading into 2027? Do you still see more opportunity for leverage from AI and automation on the gross margin line?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Great question. And yes, we see more leverage for AI across the business, not just in our care team, but in our internal operations and across the care experience overall. This year, regards to gross margin, we were targeting 85-ish percent gross margin. We came in a little bit above that. We will again target 85% next year as we continue to invest in the member experience. We think that's an appropriate gross margin. And we are hiring more care team members. We're actually hiring across the board. We're seeing just insatiable demand from clients as well as from members.",
+    "As Aaryn mentioned in our prepared remarks, we've closed more clients this year than all of last year combined. And last year was a record sales season, and we're enrolling -- our member enrollment, our yield has increased more this year than any year in our history. And so this insatiable -- and that's just for our core MSK product. And so we're breaking records on our core MSK product and then you layer in the insatiable demand we're seeing for our Migraine product, which has really caught us, even in our wildest expectations, by surprise in terms of the client adoption, really demonstrating the unmet clinical need and the take-up of our GI Care Program as well, up 40% since August. So we are hiring care team members, and we don't -- we are not aiming for a gross margin above 85% next year, similar to what we tried to shoot for this year."
+   ]
+  },
+  {
+   "speaker": "Jailendra Singh",
+   "paras": [
+    "And so my follow-up is you guys have talked about lives and yield as the key growth drivers. How should we think about the ASP entering next year? As engagement-based pricing becomes more prevalent and utilization improves, can ASP become a much more meaningful contributor to growth? Or should we think about pricing as broadly stable? We recall you talked about the ASP being flat in 2026, some on a contractual basis. So I just want to see if there's any natural lift as those flat ASP agreements roll off."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Yes. Thanks, Jailendra. And maybe if I could just quickly add to Dan's comments on gross margin. While we do see gross margins leveling off a bit, definitely targeting 85%, we still are committed to continued improvement in the operating margin line. We're trending towards the midpoint of the range we just gave around 30%. At the Investor Day, we said we'd be at 35% plus. So we think 900 basis points improvement this year, if we hit that midpoint is on a really good path to that 35%-plus despite the gross margin leveling off.",
+    "On the ASP comment that you had, we expect roughly flat ASPs this year and again in 2027. When Dan mentioned the taking off of Migraine -- and Aaryn as well on when Migraine starts to take off and when GI starts to take off, those will be second half 2027 events. They won't really impact the billable activities until we get into 2028. So that's, I think, an opportunity where we can first start to see some ASP uplift as we get into 2028 and beyond, but 2027 specifically will be a flattish year."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of David Grossman from Stifel."
+   ]
+  },
+  {
+   "speaker": "David Grossman",
+   "paras": [
+    "So our understanding is that, generally speaking, the more the client believes in the ROI, the more likely they are to assist in marketing Hinge's services and helping drive yields higher. Are there any stats that you track or can share that may stratify the client base and help us understand what percentage of the portfolio is fully engaged, which are partially engaged and what percentage maybe never will fully engage just based on how they view employee privacy? And just maybe what the evolution of that may look like over the life of a client."
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. I would say that we have a number of metrics that we look at when we are selling and launching our clients. But we are up meaningfully year-over-year in terms of touch points, and we secure these marketing touch points well in advance of the actual sales season. So we are well on track and really even above where we wanted to be at this time in terms of communicating the programs for 2027."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "And you're right to say that, generally speaking, the employers' faith in the return of the program correlates well with their approval of marketing. It's not a perfect one-to-one correlation. Sometimes there's just simply conflicting calendars or communication blackouts that employers have. But as we've continued to demonstrate strong outcomes, clinical outcomes, member experience outcomes, high NPS and especially strong ROI, we gain a lot of credibility to where our clients want to make sure that their members are enrolling in Hinge Health. And Aaryn holds his team accountable quite robustly to ensuring that we secure those marketing touch points."
+   ]
+  },
+  {
+   "speaker": "David Grossman",
+   "paras": [
+    "And then just -- I think this just came up a moment ago, but you raised your yield assumption for the year. You kept lives flat organically, it appears. That said, you spoke about adding 3 Fortune 15 clients with very strong billings and sales. As you look at the growth algorithm going into next year, is there anything that would suggest a departure from the operating model you laid out a few months ago in June in terms of the relative contribution from yield and eligibles? It sounds like you think pricing is going to be flat. So really just the relative contribution between yield and eligibles next year versus what we've been seeing this year?"
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "No, I think you're reading it right. We mentioned a few months ago, we're, I think, definitely overachieving on both yield and lives. So the relative weighting and contribution from each of those areas is probably going to be roughly the same, but both better than what we thought just a few months ago. And as you mentioned, the ASP or ARPU or however you want to think about that language, that's roughly going to be flat again in 2027. So growth coming equally from yield and lives again."
+   ]
+  },
+  {
+   "speaker": "David Grossman",
+   "paras": [
+    "Jim and Aaryn, congratulations."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Ryan MacDonald from Needham & Co."
+   ]
+  },
+  {
+   "speaker": "Ryan MacDonald",
+   "paras": [
+    "Congrats on a great quarter, everyone. Maybe just to ask about some of the early readings you're getting from the migraine and the GI programs, whether it's on a stand-alone basis in terms of net new members that you're engaging with in those populations, how are the yield trends trending in GI and Migraine relative to core MSK? Or if you're able to cross-sell and go multiprogram with existing MSK members on the new programs, what are you seeing in terms of increased level of engagement in terms of number of active sessions or something along those lines?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "And I mentioned earlier that our Migraine program, we launched early access in May, and our enrollment and engagement is actually tracking to our expectations. We have a very robust road map to build on the baseline. And we like the enrollment on migraine. About 1 in 6 people have migraine, about 20% of women, maybe 10% of men adults are afflicted with migraine, so there's a very, very large TAM, and we're seeing very strong clinical outcomes. And the bulk of our lives are yet to launch. They will be launching in Q1 of the 800 clients and 9 million lives that have upsold or enhanced their Hinge Health partnership to include Migraine will be launching in Q1. And therefore, through the first half of next year, we'll have a much better read of our migraine incremental yield, but we're getting -- we're very, very optimistic around where things are trending right now for Migraine enrollment."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Yes. Thanks, Ryan. I might just add on to Dan there. We've said a couple of times dating back to our Investor Day that we expected migraine to add about 10 to 20 basis points in yield for us in 2027. We still stand by that. It's tracking quite well towards that. And we also said that at scale, a few years down the line for each of the GI and migraine programs, each be producing about 2 percentage points of yield each. So that's, again, at scale. It's not a 2027 statement, but a few years down the road. When we have tens of millions of lives and some strong yield going, we expect each of those to be strong contributors."
+   ]
+  },
+  {
+   "speaker": "Ryan MacDonald",
+   "paras": [
+    "Maybe a follow-up for Aaryn. It's interesting from the prepared remarks, you talked about within the three new Fortune 15 clients and full population expansion. I guess it was interesting to us in terms of your penetration within the entire employee population at your clients. I guess when you think about the client base today, what percent of the population are you only serving maybe a portion of the member or employee population? How material could that expansion to full population opportunity be just within the existing covered lives you serve?"
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. Good question. The vast majority, we have full population access. This was a very large Fortune 15 company where we were rolled out to two of their three health plans, and we were able to secure that third health plan here in Q3. Does that help?"
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Jessica Tassan from Piper Sandler."
+   ]
+  },
+  {
+   "speaker": "Jessica Tassan",
+   "paras": [
+    "I'm going to share my question and follow up concurrently. So I know as on Investor Day, Hinge was expecting to have its strongest selling season ever in 2026. We're really excited to hear that the selling season accelerated in 3Q. Sequential client adds look great. Congratulations. So Jim, definitely transitioning to the Board on a high note. But I think you were instrumental to Hinge's channel partnerships across PBMs and TPAs. So first, maybe can you discuss how important those channel relationships are to Hinge's record 2026 selling season, whether they're more or less important to the Fortune 15 versus SMB? And then as a follow-up, can you talk about any impending renewals of those channel partnerships and Hinge's posture heading into those renewals that I think start in '27? And then maybe how are you preparing Aaryn to take over those negotiations? Congrats and feel better, Dan."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Thank you. I feel better."
+   ]
+  },
+  {
+   "speaker": "James Pursley",
+   "paras": [
+    "Thank you, Jess. So I appreciate the kind words, but the reality is it was really a team effort. Aaryn Pure leads a team of -- our health services team that is remarkably talented and actually really played a tremendously active role in those health plan negotiations. So while I'd like to think I contributed, the reality is a lot of people that are all still here doing great work were a big part of that. So I'll let Aaryn touch on your questions around renewal and retention in our health plan channel, but I've got all the confidence in the world and the team that's still in place that we're just going to keep building on the success that we've seen over the last six years."
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. I would say with 60-plus health plan TPA and other ecosystem partners, we're always in some kind of cycle of renewals and have 100% health plan retention. We work incredibly hard to ensure that we are supporting these health plans and operationally everything is running smoothly. So we work through those renewals regularly. And I think there was a part of the question of do we view them as more important as we continue to grow. And I would say equally as important. Health plans are definitely -- these preferred partnerships that we have are proving to be very meaningful for not just our MSK growth, but as we add on additional products at MSK and GI, some of the health plans that we've added in the last 12 to 18 months have really started to bear fruit.",
+    "So we have more health plans where we're listed as preferred partner than ever before. I think that is a big reason why we've had a record-breaking year thus far. I would also add enterprise space, we talked about those three large wins in the expansion, but we're still only 30%, 35% penetrated there. And as we're starting to turn our attention to 2027, where we see a growing pipeline building with very large enterprise clients that will be making decisions in the coming months and quarters ahead that we're already focused on.",
+    "Maybe one other thing I'd add that's related to the health plans is the SMB segment, where you heard me talk about a little bit this summer at Investor Day. We started investing in this space really about 12 months ago. And we already have closed 1 million lives through Q3 in this segment. So we're going to add additional sales capacity there for 2027 and continue to streamline that sales cycle, looking at more broad-based demand generation campaigns, automating parts of the sales cycle there because we are just seeing really an untapped part of the market that we're capitalizing on right now and health plans enable a lot of that. So thank you for the question."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "And I'll just add, and thank you for your question, Jess, we take our health plan partnerships very seriously and part of delivering for our employer clients and our health plan partners is just making sure we bring to market a product of substance and both our core product and any other products that we launch. And then having a maniacal focus on clinical outcomes, a great member experience and lowering costs and being very intellectually honest about our ability to deliver that triple aim.",
+    "And we've -- I'd like to think we've earned a lot of credibility with our employer clients and a lot of credibility with our health plan partners that we are taking, let's say, honest approach to delivering that triple aim and only bringing products to market of substance that will meaningfully move those. And you'll see it when we publish our results for migraine, and you're going to see our substantial enhancements to Cylinder's already great product for GI care as well. And of course, we're not taking our eye off the ball in MSK. I think we're actually widening our lead in MSK, and we want to continue to widen our lead in MSK because it's driving such phenomenal free cash flow and great outcomes that is allowing us to expand into other areas as well."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Craig Hettenbach from Morgan Stanley."
+   ]
+  },
+  {
+   "speaker": "Craig Hettenbach",
+   "paras": [
+    "Just following up on the comments just now on the SMB market in terms of some of the investments that you've made. Can you also touch on, is there any early-mover advantage that you have? Or just how you see that landscape a little bit of a compare and contrast versus some of the things you see in the enterprise market?"
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. I think there are more clients in the SMB space that haven't heard about digital MSK than as you make your way upmarket. So our investments there, I think, are really paying off. You heard me talk about the broad demand generation efforts to get them more familiar with these capabilities. I'd probably also mention that we're seeing some of our TPA and health plan partners are implementing or exploring new models where we're automatically embedded into their SMB book of business or function as an opt-out. So by default, us being first mover preferred partner is allowing us to capture that market. We had 1 million lives in really nine months is exciting to us."
+   ]
+  },
+  {
+   "speaker": "Craig Hettenbach",
+   "paras": [
+    "And then just as a follow-up question on the member renewals up 25% from a yield perspective. Can you just touch on maybe any influence that you're seeing from Enso, any other product features that are helping drive that metric up?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "It's really -- it's a great question, and it's a confluence of factors. It's just as we continue to enhance the overall product performance, members will trust us for their future care as well as we're also seeing a surge in member referrals that is not just members coming back to receive care, say, if they have a flareup in the next year or another joint area is afflicting them in the next year, but also referring their spouse or their coworkers or their friends to join Hinge Health and that's up. It was up very strongly last year. I think we're up nearly triple digits again in that regard this year. And so we're really just -- both of those are a manifestations of just an ever-improving product and us never getting complacent about the product experience."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Scott Schoenhaus from KeyBanc Capital Markets."
+   ]
+  },
+  {
+   "speaker": "Scott Schoenhaus",
+   "paras": [
+    "Follow-up on that selling season SMB commentary. I think you mentioned last quarter that you saw some competitive win-aways. Just wondered if you continue to see that throughout this quarter. And is there anything incremental left in the next two months that you see on the horizon for incremental customer wins, whether it be in the large enterprise or SMB opportunities?"
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. We're not done yet. We have a very healthy pipeline that we are working to close. That's across the board, SMB into the enterprise space. So more gas in the tank that we're working to get over the finish line. But yes, competitively, nothing new that we saw in market this year. And we continue to be frankly, dominating the space at the moment with just outsized wins across the board in really every market that we're in."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Yes. Our win rates are up year-over-year. Again, clients are choosing us for our clinical outcomes, our ROI, member experience and now increasingly our multiproduct platform, whereas other competitors or players, I should say, in digital health are just adding random condition areas to their product portfolio. We want to be very deliberate about what conditions we add, and we want to make sure that they're all integrated into our care program into one unified care program, and that really makes a big difference.",
+    "On pricing, clients value that our model is engagement based. They pay for members who actually enroll and engage and see clinical improvement and financial savings. And again, we've probably taken away or clients have switched over to us from competitors -- more clients switched to us from competitors this year than maybe all other years combined. Just to give you a sense of the -- I don't want to call it a stampede, but I'm struggling to find another word to describe it in terms of how many clients have switched over to Hinge Health from our competitors this year, and that's been a phenomenal outcome."
+   ]
+  },
+  {
+   "speaker": "Scott Schoenhaus",
+   "paras": [
+    "And then just a follow-up on the SMB side, I think there's some confusion here. So just remind us on the incremental margins on these customers and potentially maybe higher ASP caps. I think people are just thinking about this in terms of number of lives, but it's good to frame out the incremental revenue opportunities on these SMB customers."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Yes. Thanks for the follow-up question. Yes, Aaryn in his prepared remarks mentioned that the yield, especially the initial yield, because they get up to speed quicker, launch cycle is faster, the time to sale is certainly faster in the SMB world, so you see meaningful improvements in yield in that area, which translates into all the other goodies that you mentioned. The margin is better, it costs less to actually make the sale happen, so it improves operating margin. So there's a lot to like about the SMB space. We love our enterprise customers. We love all of our customers. But the economics in SMB are. across the board, slightly better than the bigger clients."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of Stan Berenshteyn from Wells Fargo."
+   ]
+  },
+  {
+   "speaker": "Corey DeVito",
+   "paras": [
+    "This is Corey DeVito on for Stan. On open enrollment, are you seeing employers approach benefit packages any different this open enrollment season versus prior years? Any meaningful changes in the scope of solutions, type of benefits or areas of focus? And then are SMBs approaching it any different than your enterprise clients?"
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "Yes. I think James just mentioned, SMB, it's a little bit more out of the box following our best practices and time to launch and get live is pretty short and seamless. But no, conversations continue to be essentially the same or similar to previous years. Big focus on driving down costs and tackling some of these growing inflationary aspects that our clients are facing. And whether it's existing or new clients, they're looking at Hinge as a key partner in doing that."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question comes from the line of John Pinney from Canaccord."
+   ]
+  },
+  {
+   "speaker": "John Granville Pinney",
+   "paras": [
+    "John Pinney on for Richard Close. Congrats on the quarter. I just wanted to ask about an article a couple of months ago where, Dan, I believe you said that you're looking and interested in hardware acquisitions. I just wanted to see if you can elaborate on any specific areas you're looking at or how you're thinking about evaluating those opportunities and how you would think about gross margin in that context?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Really great question. I think too many technology companies, especially in health care, focus exclusively on software. But I absolutely firmly believe you will not automate care delivery without also investing in hardware. And we've shown we're pretty good at hardware. Our approach to M&A hasn't changed hardware. We will build organically first and use M&A when it accelerates our time line. And our acquisitions, particularly in hardware, have historically been small tuck-ins of technology and a team and then we build it out to something much larger.",
+    "And with hardware, we have a robust hardware engineering team here in San Francisco. They're very good. We've designed all of our hardware here, and we have manufacturing partners in Asia. Of course, pretty much all consumer electronics or electronics of this caliber are often manufactured in Asia, but we do the design ourselves here and own all of our IP and do it end to end.",
+    "We also have a very high bar for anything that we will acquire. And we're really focused on MSK, GI and migraine right now because there's a huge runway ahead of us. And so 90%-ish or so of lives in the United States still do not have access to a musculoskeletal -- digital MSK solution, and we want to win them all. And we want every adult in America to have access to Hinge Health one day. And we're seeing early traction -- very strong early traction for Migraine and GI. So just delivering on the MSK, Migraine and GI, the opportunity in front of us, should turbocharge years of growth. And you're seeing that this year. Almost all of our growth is driven by our core MSK market -- product, and you're starting to see the inklings or the saplings of Migraine and GI, which we hope will grow into a very large tree soon."
+   ]
+  },
+  {
+   "speaker": "John Granville Pinney",
+   "paras": [
+    "And just for one follow-up. I believe the verbiage in the prepared remarks or the new lives for the 2026 selling season for 2027, I believe it was verbally agreed on. Can you just, I guess, clarify like what -- like how many lives are actually contracted as of right now for visibility for Jan 1 starts for 2027?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "We're going to share that in our February earnings call, and we share that number on an annual basis."
+   ]
+  },
+  {
+   "speaker": "Aaryn Pure",
+   "paras": [
+    "I would just say the way that 90-plus percent of our lives contract through channel partners, essentially that amount of lives will turn into signed clients by the end of the year. It's just a very quick contracting process. So we'll be working through those confirmation forms over the next couple of months in advance for launching those clients."
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "Maybe if I pile on here, John. Just as a reminder, we did 4.8 million lives last year. So we're comfortably ahead of that number already this year. As Aaryn just mentioned, most of those verbal lives, 95% of them, end up getting signed by the end of the year. Those that don't, they get signed at the beginning of next year. And on your final point about starting Jan 1, I would broaden that out a little bit. Not everybody starts on Jan 1. I would say it's more of a Q1 launch as opposed to everybody piling on Jan 1. It is a big day for launches in early January, but there's also a lot of launches in February and March as well."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "Your next question and final question will be Tomer Zilberman from Bank of America."
+   ]
+  },
+  {
+   "speaker": "Tomer Zilberman",
+   "paras": [
+    "I wanted to go back to the ASP discussion earlier in the Q&A. To double-click on the -- what you mentioned about the potential ASP uplift in the back half of 2027, maybe into 2028. Is it mostly a byproduct of increasing the number of billable sessions as you scale these new adjacencies like Migraine and GI? Or is there also an opportunity to increase pricing on the core MSK areas?"
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "We're really focused on engaging members in our care. Look, if you're not going to get a great shot or not have a really good opportunity to improve somebody's clinical outcomes and therefore reduce downstream health care costs, we can't engage people in their care. And that's why we're so focused on engaging people with our programs because we feel that's going to position us to drive those outcomes. And yes, ASP will follow that as we're able to drive additional engagement in our MSK program, our migraine program and our GI Care Program as well as people doing concurrent care that is doing multiple programs at once, it will drive ASP. But importantly, it's going to allow us to have a stronger clinical impact across our member base. But yes, that's why it will be in the second half of '27, likely '28, as these new programs start maturing because they're maturing from a lower base and they're frankly less mature than our musculoskeletal care program right now."
+   ]
+  },
+  {
+   "speaker": "Tomer Zilberman",
+   "paras": [
+    "Maybe as a quick follow-up then on margins. You printed an operating margin of 33%. You came in a couple of points above the Street. I know in the prepared remarks, you talked about the better-than-expected revenue performance supporting. But can you just double-click into any other levers that supported the growth this quarter? Was it around your earlier comment that SMB provides the better margins? Or was there any particular area where you saw better cost discipline?"
+   ]
+  },
+  {
+   "speaker": "James Budge",
+   "paras": [
+    "I think it's largely across the board. Dan mentioned -- I think there was a question earlier about some more AI initiative and efficiency initiatives in the care team, and Dan's answer to that was yes, and we're pushing that across the entire organization. So whether it was the sales and marketing team, product development, even G&A, every part of the organization is more efficient than they were a year ago, and we expect that trend to continue in Q4."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "There are no further questions at this time. And I will now turn the call back to Daniel Perez for closing remarks."
+   ]
+  },
+  {
+   "speaker": "Daniel Perez",
+   "paras": [
+    "Again, thank you so much, everybody, for dialing in, for hearing our story and for learning about Hinge Health. I want to emphasize we are still in the very early innings of automating care delivery. We've demonstrated pretty good traction in MSK. We have a lot of runway to run in MSK. And now we're just starting to plant our seeds in migraine and GI care as well. And I want to emphasize that long term, we are emphasized not just on growing revenue, but free cash flow per share. And we hope over the coming decades, you're going to see us impact that as an organization. But thank you very much."
+   ]
+  },
+  {
+   "speaker": "Operator",
+   "paras": [
+    "This concludes today's call. Thank you for attending. You may now disconnect."
+   ]
+  }
+ ]
+}
