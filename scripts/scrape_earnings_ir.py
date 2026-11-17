@@ -66,7 +66,7 @@ from company_names import glossary_text, normalize_text
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 MAX_QUARTERS_PER_TICKER = 8
 
-# SEC EDGAR 공시 대상 20개사(캘린더 18개사 + 컨콜 전용 2개사) — https://www.sec.gov/files/company_tickers.json로 확인한
+# SEC EDGAR 공시 대상 22개사(캘린더 18개사 + 컨콜 전용 4개사) — https://www.sec.gov/files/company_tickers.json로 확인한
 # CIK(10자리 0 패딩). form은 대부분 "8-K"(미국 국내 상장사), InMode만 "6-K"(외국민간발행인).
 EDGAR_SOURCES = {
     "SYK":  {"name": "Stryker",              "cik": "0000310764", "form": "8-K"},
@@ -91,6 +91,10 @@ EDGAR_SOURCES = {
     # 넣지 않음 — 사용자 요청). CIK는 data.sec.gov submissions로 사명·티커·8-K(2.02) 이력 확인.
     "XRAY": {"name": "Dentsply Sirona",       "cik": "0000818479", "form": "8-K"},
     "NVST": {"name": "Envista",               "cik": "0001757073", "form": "8-K"},
+    # 2026-11-17: 컨콜 전용 2개사 추가(캘린더에는 넣지 않음). TWST는 회계연도가 9월 말 결산이라
+    # 분기 표기가 회계연도 기준(예: 11월 발표 = FY2026 4분기) — MDT처럼 TIKR 제목도 같은 기준이라 그대로 맞는다.
+    "HNGE": {"name": "Hinge Health",          "cik": "0001673743", "form": "8-K"},
+    "TWST": {"name": "Twist Bioscience",      "cik": "0001581280", "form": "8-K"},
 }
 
 # SEC는 자동화 요청(특히 data.sec.gov)에 "이름 연락처이메일" 형식의 식별 가능한

@@ -44,6 +44,8 @@ NAME_TO_TICKER = [
     # 2026-11-10 컨콜 전용 추가 — TIKR 제목 예: "DENTSPLY SIRONA Inc., Q3 2026 Earnings Call, ..."(대소문자 무시),
     # "Envista Holdings Corporation, Q3 2026 Earnings Call, ..."
     ("Dentsply Sirona", "XRAY"), ("Envista", "NVST"),
+    # 2026-11-17 컨콜 전용 추가 — "Hinge Health, Inc.", "Twist Bioscience Corporation"
+    ("Hinge Health", "HNGE"), ("Twist Bioscience", "TWST"),
 ]
 TITLE_RE = re.compile(r"^(?P<company>.+?), Q(?P<q>[1-4]) (?P<y>\d{4}) Earnings Call, (?P<date>.+)$")
 MONTHS = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun",
