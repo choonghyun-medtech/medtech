@@ -1,0 +1,195 @@
+{
+ "ticker": "MDT",
+ "company": "Medtronic plc",
+ "quarter": "2027년 2분기(Q2)",
+ "call_date": "2026-11-24",
+ "file": "MDT_2027Q2.json",
+ "source_hash": "5a9964e8e85f",
+ "prior_basis": "2027년 1분기(Q1) 컨콜 분석",
+ "model": "gemini-3.6-flash",
+ "generated_at": "2026-11-25T08:11:35.596531+00:00",
+ "headline": [
+  "메드트로닉은 2027 회계연도 2분기 유기적 매출 성장률 6.5%, 조정 EPS $1.34를 기록함.",
+  "당뇨 사업부 MiniMed 분할에 따른 유기적 매출 성장률 20bp 차감 효과를 자체 성장으로 흡수하며 FY27 유기적 매출 성장률 가이던스(7.25~7.75%)를 유지함.",
+  "심장 절제술 솔루션(CAS) 매출이 전 세계 58%, 미국 80% 고성장하며 점유율 확대를 지속함.",
+  "수술용 로봇 Hugo의 미국 일반외과 적응증 및 LigaSure RAS 승인, Symplicity 및 Altaviva CPT Category I 코드 획득 등 주요 임상·규제 마일스톤을 달성함."
+ ],
+ "changes": [
+  "MiniMed 매각/분할 완료에 따라 FY27 보고 매출 성장률 전망이 약 2.5% 수준으로 조정됨(MiniMed 분할이 2분기 중 완료되어 당뇨 매출은 10월 15일까지 기타 항목에 포함된 후 차기 분기부터 유기적 성장률 산정 제외).",
+  "SPR Therapeutics와 Scientia 인수 영향으로 FY27 비유기적 매출 기여 전망치가 1억 7,500만 달러 이상으로 구체화됨.",
+  "중국 VBP(부피기반조달) 영향이 뇌혈관(Neurovascular) 등 일부 사업부의 후반기 성장에 제약 요인으로 명시됨."
+ ],
+ "prepared": {
+  "summary": [
+   "메드트로닉은 FY27 2분기 보고 매출액 94억 달러(전년 동기 대비 4.5% 증가, 유기적 성장률 6.5%)와 조정 EPS $1.34를 달성함.",
+   "심혈관(Cardiovascular) 부문이 10.4% 성장하였고, 특히 심장 절제술 솔루션(CAS)이 58% 급증하며 시장 점유율을 대폭 확대함.",
+   "수술용 로봇 Hugo의 일반외과 적응증 FDA 승인과 MiniMed 분할 완료 등 포트폴리오 재편 및 핵심 신제품 승인을 완료함.",
+   "경영진은 당뇨 사업 분할 여파를 극복하고 FY27 유기적 매출 성장률(7.25~7.75%)과 조정 EPS($5.94~$6.00) 가이던스를 유지함."
+  ],
+  "sections": [
+   {
+    "title": "심혈관 (Cardiovascular)",
+    "points": [
+     "매출액 유기적 성장률 10.4% 기록. 심장 절제술(CAS) 매출 58% 성장(미국 80% 성장) 및 미국 점유율 7%p 추가 확대.",
+     "심장 리듬 관리(CRM) 8% 성장(글로벌 점유율 80bp 확대). Micra 20%대 초반 성장.",
+     "Ardian(Symplicity) 및 Altaviva의 2028년 1월 적용 CPT Category I 코드 승인 획득."
+    ]
+   },
+   {
+    "title": "신경과학 (Neuroscience)",
+    "points": [
+     "매출액 유기적 성장률 3% (미국 4% 성장). 두경부·척추 기술(CST) 6% 성장하며 글로벌 Stealth AXiS 출시에 따른 수술 장비 견인 지속.",
+     "미국 핵심 척추 및 생체재료(Core Spine and Biologics) mid-single digit 성장, 신경외과 low double-digit 성장으로 점유율 확대."
+    ]
+   },
+   {
+    "title": "의료수술 (Medical Surgical)",
+    "points": [
+     "매출액 유기적 성장률 4% (미국 7% 성장). 일반 수술(Surgical) 3% 성장.",
+     "Hugo 로봇 플랫폼의 미국 일반외과(General Surgery) 절차 적응증 및 LigaSure RAS 에너지도구 FDA 승인 달성."
+    ]
+   },
+   {
+    "title": "재무 성과 및 수익성 코멘트",
+    "points": [
+     "조정 총마진 65.0%. 가격 정책 개선(+20bp)에도 불구하고 제품 믹스 악화(-60bp) 및 환율 하락(-80bp) 영향 받음.",
+     "조정 영업이익 22억 달러(전년 동기 대비 1% 증가), 영업마진 23.4%. 조정 EPS는 $1.34로 가이던스 상단 달성."
+    ]
+   }
+  ]
+ },
+ "guidance": [
+  {
+   "item": "FY27 유기적 매출 성장률",
+   "value": "7.25% to 7.75%",
+   "prev": "7.25% to 7.75%",
+   "change": "유지",
+   "quote": "On the top line, we delivered a strong second quarter and continue to expect fiscal year '27 organic revenue growth of 7.25% to 7.75%."
+  },
+  {
+   "item": "FY27 조정 EPS",
+   "value": "$5.94 to $6",
+   "prev": "$5.94 to $6",
+   "change": "유지",
+   "quote": "And finally, on EPS, we are maintaining our fiscal year '27 guidance range of $5.94 to $6."
+  },
+  {
+   "item": "Q2 유기적 매출 성장률",
+   "value": "",
+   "prev": "roughly 6%",
+   "change": "언급 없음",
+   "quote": ""
+  },
+  {
+   "item": "Q2 조정 EPS",
+   "value": "",
+   "prev": "$1.32 to $1.34",
+   "change": "언급 없음",
+   "quote": ""
+  },
+  {
+   "item": "Q3 유기적 매출 성장률",
+   "value": "roughly 5%",
+   "prev": "",
+   "change": "신규",
+   "quote": "In the third quarter, we're expecting roughly 5% organic revenue growth, translating into down roughly 3.8% on a reported basis."
+  },
+  {
+   "item": "Q3 조정 EPS",
+   "value": "$1.40 to $1.42",
+   "prev": "",
+   "change": "신규",
+   "quote": "For the third quarter, we expect EPS of $1.40 to $1.42, which represents approximately 3.7% growth at the midpoint."
+  }
+ ],
+ "milestones": [
+  {
+   "item": "Hugo RAS 50,000 completed procedures",
+   "target": "",
+   "status": "언급 없음",
+   "note": "이번 분기 원문에서 누적 시술 수 50,000건 달성 목표에 대한 직접적인 수치급이 없음(누적 250대 설치 목표 및 일반외과 FDA 승인 등만 언급됨).",
+   "quote": ""
+  },
+  {
+   "item": "Ardian transradial catheter launch",
+   "target": "FY27 하반기",
+   "status": "진행 중",
+   "note": "이번 회계연도 하반기 중 경요골(transradial) Spyral+ 카테터 출시 일정이 정상 진행 중이라고 밝힘.",
+   "quote": "Our transradial Spyral+ catheter also remains on track for launch later this fiscal year, bringing Ardian into a familiar physician workflow with the majority of U.S. PCIs now performed transradially."
+  },
+  {
+   "item": "MiniMed separation completion",
+   "target": "FY27 회계연도 말 이전",
+   "status": "달성",
+   "note": "분기 종료 2주를 남겨둔 10월 15일에 MiniMed의 분할(split-off) 절차를 완료함.",
+   "quote": "First, we successfully completed the separation of our Diabetes business, MiniMed."
+  },
+  {
+   "item": "Sphere-360 U.S. pivotal trial enrollment",
+   "target": "PMA 신청 전",
+   "status": "달성",
+   "note": "미국 Sphere-360 핵심 임상 환자 등록을 완료하고 12개월 추적 관찰 기간에 진입함.",
+   "quote": "Enrollment in the U.S. pivotal trial for Sphere-360 is now complete and has entered its 12-month follow-up period ahead of the PMA submission."
+  },
+  {
+   "item": "Hugo FDA clearance for general surgery",
+   "target": "",
+   "status": "달성",
+   "note": "Hugo 수술용 로봇의 미국 FDA 일반외과 적응증 및 LigaSure RAS 승인을 완료함.",
+   "quote": "This quarter, we achieved 2 important regulatory milestones for Hugo, FDA clearance for multiple general surgery procedures and for LigaSure RAS."
+  }
+ ],
+ "qa": [
+  {
+   "theme": "FY27 가이던스 산정 배경 및 심장 절제술(CAS) 경쟁 구도",
+   "analysts": [
+    "Matt O'Brien (Piper Sandler)"
+   ],
+   "question": "당뇨 사업 분할에 따른 20bp 차감 효과를 고려하면 실질적인 유기적 매출 성장률 가이던스가 상향된 것인지, 경쟁사의 이중 에너지 카테터 진입 속에서 CAS(Sphere-9) 시장 지배력이 유지될 수 있는지 질의함.",
+   "answer": "MiniMed 분할(20bp 차감)에도 불구하고 가이던스를 유지한 것은 실질적 성장을 반영함. 경쟁사의 이중 에너지 제품은 팁이 작고 워크플로우 효율성이 낮아 당사 지배력을 훼손하지 않으며 타 경쟁사 점유율을 흡수하는 양상임. FY27 3분기에도 시장 성장률의 약 4배, 연간 2.5배 수준의 고성장을 전망함."
+  },
+  {
+   "theme": "중장기 총마진(Gross Margin) 개선 방안 및 영업마진 레버리지",
+   "analysts": [
+    "Travis Steed (BofA)"
+   ],
+   "question": "코로나 이전 수준으로의 총마진 회복을 위한 방안과 향후 한 획기적 마진 개선 동인에 대해 질의함.",
+   "answer": "가격 정책 개선(+20bp) 및 제조원가 절감(연간 1.5~2% 절감)을 지속 추진 중임. 당뇨 분할로 희석 요인이 해소되고, CAS 장비 설치 확대에 따른 고마진 카테터 소모품 매출 이익 확대가 본격화될 것임. 초기 개발 단계부터 공급업체 참여 및 단가 최적화 설계를 병행하여 체질을 개선 중임."
+  },
+  {
+   "theme": "3분기 매출 성장률 둔화 요인 및 중국 VBP 영향",
+   "analysts": [
+    "Vijay Kumar (Evercore)",
+    "Joshua Jennings (TD)"
+   ],
+   "question": "2분기 6.5%에서 3분기 5%로 성장률이 감소하는 주요 세그먼트별 원인 및 중국 VBP 여파에 대해 설명 요청함.",
+   "answer": "전년 동기 높은 기저 효과(CAS, CRM의 OmniaSecure 출시 착시 기저)와 MiniMed 분할(분기당 -25bp) 영향임. 중국의 뇌혈관(Neurovascular) 분야 VBP가 일부 성장을 억제하나 과거 파급력 대비 안정적임. 미국 뇌혈관 사업은 Scientia 인수 효과 등으로 강력한 성장세를 지속 중임."
+  },
+  {
+   "theme": "인베스터 데이 주요 내용 및 FY28 재무 변수",
+   "analysts": [
+    "Larry Biegelsen (Wells Fargo)"
+   ],
+   "question": "곧 열릴 인베스터 데이의 주요 발표 내용과 FY28 실적(53주 차 기저, 관세 환급 소멸, 비유기적 매출 전환 등)의 주요 변수에 대해 질의함.",
+   "answer": "인베스터 데이에서는 파이프라인 성장 동력 시연과 영업이익 레버리지 창출 구조를 제시할 것임. FY28에는 53주 차 효과 소멸 및 관세 환급 비반영 악재가 있으나, Scientia/SPR 등 1억 7,500만 달러 이상 인수 매출의 유기적 성장 전환 및 오버헤드 비용 절감 효과가 상쇄할 것임."
+  },
+  {
+   "theme": "고혈압 치료제 Symplicity(RDN) 임상 데이터 및 경요골(Transradial) 카테터 상용화",
+   "analysts": [
+    "Pito Chickering (Deutsche)",
+    "Anthony Petrone (Mizuho)"
+   ],
+   "question": "Spyral AFFIRM 임상 결과와 2028년 적용 예정인 CPT Category I 코드, 경요골 접근법 카테터 도입이 의료진 채택에 미칠 영향을 질의함.",
+   "answer": "AFFIRM 임상은 실생활(Real-world) 환경에서 6개월 만에 18mmHg 수축기 혈압 강하 효과와 90% 응답률을 입증함. CPT Category I 코드는 보험사의 '실험적 치료' 분류를 해제하여 상업 보험 등재를 획기적으로 가속화할 것이며, 경요골 카테터(Spyral+) 출시는 시술 편의성을 크게 끌어올려 시장 개척의 변곡점이 될 것임."
+  },
+  {
+   "theme": "Hugo 수술용 로봇 파이프라인 및 CAS Sphere-360 임상 일정",
+   "analysts": [
+    "Anthony Petrone (Mizuho)",
+    "Michael Kratky (Leerink)"
+   ],
+   "question": "Hugo 로봇의 글로벌 설치 목표 및 미국 일반외과 승인 효과, 그리고 CAS 파이프라인인 Sphere-360의 미국 임상 및 승인 타임라인을 확인 요청함.",
+   "answer": "Hugo는 회계연도 말까지 누적 250대 이상 설치 목표를 유지하고 있으며, 전체 수술의 60%를 차지하는 일반외과 적응증 승인으로 병원 도입 결정이 대폭 가속화될 것임. Sphere-360은 미국 피보탈 임상 등록을 완료하여 12개월 추적 관찰 후 PMA 신청을 진행할 예정임."
+  }
+ ]
+}
