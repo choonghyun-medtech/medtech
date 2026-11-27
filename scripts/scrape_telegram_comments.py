@@ -241,6 +241,19 @@ def extract_report_comments(messages, known_companies: set, title_to_report: dic
                 if hit:
                     co = hit["co"]
                     title = candidate_title
+        else:
+            # [2026-11-27] 첫 줄이 FIRST_LINE_RE(종목명 자리에 한글·영문·숫자만 허용)에서 아예
+            # 탈락해도, 첫 콜론 뒤 제목이 reports.json 리포트 제목과 정확히 같으면 매칭한다.
+            # 산업 전망 리포트가 "‘27년 의료기기 전망: 반격의 2027년"처럼 따옴표로 시작해
+            # 11/18 코멘트가 통째로 누락됐다(리포트 co는 "[2027년 전망] 의료기기/디지털헬스").
+            # 위의 오타 대응과 같은 제목 완전일치라 잡담이 걸릴 위험은 거의 없다.
+            parts = re.split(r"[:：]", first_line, maxsplit=1)
+            if len(parts) == 2:
+                candidate_title = parts[1].strip()
+                hit = title_to_report.get(candidate_title)
+                if hit:
+                    co = hit["co"]
+                    title = candidate_title
 
         if co is None:
             # "헬스케어 산업(비중확대)"처럼 여러 애널리스트가 공동 작성한 산업 리포트는
